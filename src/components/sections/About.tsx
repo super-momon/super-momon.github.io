@@ -38,16 +38,17 @@ export default function About() {
 
           <FadeIn direction="right" delay={0.15}>
             <div className="space-y-4">
-              <p className="text-[var(--color-muted)] leading-relaxed text-lg">
-                Hi! I&apos;m a passionate full-stack developer with a love for
-                building products that live at the intersection of great
-                engineering and great design.
+              <p className="text-[var(--color-muted)] leading-relaxed">
+                Full Stack Software Developer with 4+ years of experience designing,
+                developing, and maintaining scalable web applications, internal platforms,
+                and data integration solutions. Experienced in .NET, C#, JavaScript, SQL,
+                PostgreSQL, MongoDB, REST APIs, and AWS cloud services.
               </p>
               <p className="text-[var(--color-muted)] leading-relaxed">
-                I enjoy turning complex problems into simple, elegant solutions.
-                When I&apos;m not writing code, you&apos;ll find me exploring
-                open-source projects, reading about distributed systems, or
-                perfecting my coffee brewing technique.
+                Skilled in backend development,
+                third-party integrations, event-driven architectures, and performance optimization.
+                Strong understanding of software engineering best practices, system reliability,
+                and maintainable application design.
               </p>
               <div className="flex flex-wrap gap-3 pt-2">
                 {["TypeScript", "React", "Node.js", "PostgreSQL"].map((tag) => (
