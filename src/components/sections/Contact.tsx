@@ -1,6 +1,7 @@
 "use client";
 
 import { FadeIn } from "@/components/FadeIn";
+import { trackEvent } from "@/lib/analytics";
 
 const socialLinks = [
   {
@@ -51,6 +52,12 @@ export default function Contact() {
         <FadeIn delay={0.1}>
           <a
             href="mailto:dev@super-momon.github.io"
+            onClick={() =>
+              trackEvent("cta_click", {
+                event_category: "contact",
+                event_label: "say_hello",
+              })
+            }
             className="inline-block px-8 py-3 rounded-lg bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-medium transition-colors mb-12"
           >
             Say Hello →
@@ -66,6 +73,12 @@ export default function Contact() {
                 target={link.href.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 aria-label={link.label}
+                onClick={() =>
+                  trackEvent("social_link_click", {
+                    event_category: "contact",
+                    event_label: link.label.toLowerCase(),
+                  })
+                }
                 className="text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:scale-110 transition-all"
               >
                 {link.icon}
