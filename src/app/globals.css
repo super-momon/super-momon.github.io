@@ -58,3 +58,17 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+@keyframes marquee-ltr {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-ltr 50s linear infinite;
+}

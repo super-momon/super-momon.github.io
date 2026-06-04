@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import MarqueeBanner from "./MarqueeBanner";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -63,6 +64,7 @@ export default function Navbar() {
         : "bg-transparent"
         }`}
     >
+      <MarqueeBanner />
 
       <nav className="w-full max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
         <a
