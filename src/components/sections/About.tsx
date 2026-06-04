@@ -17,21 +17,11 @@ export default function About() {
             <div className="flex justify-center">
               <div className="w-56 h-56 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden">
                 {/* Replace src with your actual photo */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="80"
-                  height="80"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                  className="text-[var(--color-muted)]"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
+                <img
+                  src="/logo.PNG"
+                  alt="Mark Raymond Ayade"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </FadeIn>

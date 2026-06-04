@@ -16,8 +16,52 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio | Developer",
-  description: "Personal developer portfolio showcasing projects, experience, and skills.",
+  metadataBase: new URL("https://super-momon.github.io"),
+  title: {
+    default: "Mark Raymond Ayade | Full Stack Developer",
+    template: "%s | Mark Raymond Ayade",
+  },
+  description:
+    "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
+  keywords: [
+    "Mark Raymond Ayade",
+    "Full Stack Developer",
+    "AI Development",
+    "Web Developer",
+    "React",
+    "Next.js",
+    "Portfolio",
+  ],
+  authors: [{ name: "Mark Raymond Ayade", url: "https://super-momon.github.io" }],
+  creator: "Mark Raymond Ayade",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  openGraph: {
+    type: "website",
+    url: "https://super-momon.github.io",
+    title: "Mark Raymond Ayade | Full Stack Developer",
+    description:
+      "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
+    siteName: "Mark Raymond Ayade — Portfolio",
+    images: [
+      {
+        url: "/logo.PNG",
+        width: 1200,
+        height: 630,
+        alt: "Mark Raymond Ayade — Full Stack Developer Portfolio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mark Raymond Ayade | Full Stack Developer",
+    description:
+      "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
+    images: ["/logo.PNG"],
+  },
 };
 
 export default function RootLayout({
