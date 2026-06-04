@@ -2,6 +2,7 @@
 
 import { LazyMotion, domAnimation, m } from "motion/react";
 import { FadeIn } from "@/components/FadeIn";
+import { HighlightText } from "@/components/HighlightText";
 
 export default function Hero() {
   return (
@@ -29,7 +30,7 @@ export default function Hero() {
 
         <FadeIn delay={0.2}>
           <h1 className="text-5xl sm:text-7xl font-bold text-[var(--color-foreground)] mb-4 leading-tight">
-            Ayade, Mark Raymond M.
+            <HighlightText className="text-5xl sm:text-7xl px-2">Ayade</HighlightText> Mark Raymond M.
           </h1>
         </FadeIn>
 
