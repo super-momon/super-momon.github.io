@@ -8,8 +8,19 @@ export default function Hero() {
     <LazyMotion features={domAnimation}>
       <section
         id="hero"
-        className="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-16"
+        className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-16"
       >
+        {/* Radial gradient background */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 55% at 75% 15%, rgba(99,102,241,0.22) 0%, transparent 80%), " +
+              "radial-gradient(ellipse 55% 45% at 20% 80%, rgba(110,192,56,0.17) 0%, transparent 75%), " +
+              "radial-gradient(ellipse 40% 35% at 50% 50%, rgba(129,140,248,0.13) 0%, transparent 70%)",
+          }}
+        />
         <FadeIn delay={0.1}>
           <p className="text-sm font-mono text-[var(--color-accent)] mb-4 tracking-widest uppercase">
             Hello, I&apos;m
