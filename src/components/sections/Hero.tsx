@@ -2,7 +2,7 @@
 
 import { LazyMotion, domAnimation, m } from "motion/react";
 import { FadeIn } from "@/components/FadeIn";
-import { HighlightText } from "@/components/HighlightText";
+import { HighlightText } from "@/components/common/HighlightText";
 
 export default function Hero() {
   return (

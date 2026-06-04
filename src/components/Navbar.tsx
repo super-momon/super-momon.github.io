@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import MarqueeBanner from "./MarqueeBanner";
+import MarqueeBanner from "./common/MarqueeBanner";
 
 const navLinks = [
   { label: "About", href: "#about" },
