@@ -5,19 +5,75 @@ import { FadeIn } from "@/components/FadeIn";
 const skills = [
   {
     category: "Frontend",
-    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    // items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    items: [
+      {
+        name: "TypeScript",
+        icon: "devicon-typescript-plain",
+      },
+      {
+        name: "Blazor",
+        icon: "devicon-blazor-original",
+      },
+      {
+        name: "React",
+        icon: "devicon-react-original",
+      },
+      {
+        name: "Next.js",
+        icon: "devicon-nextjs-line",
+      }
+    ]
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "PostgreSQL", "Prisma", "REST / GraphQL"],
+    // items: ["Node.js", "Express", "PostgreSQL", "Prisma", "REST / GraphQL"],
+    items: [
+      {
+        name: ".Net",
+        icon: "devicon-dotnetcore-plain",
+      },
+      {
+        name: "Node.js",
+        icon: "devicon-nodejs-plain-wordmark",
+      },
+      {
+        name: "MS SQL Server",
+        icon: "devicon-microsoftsqlserver-plain",
+      },
+      {
+        name: "PostgreSQL",
+        icon: "devicon-postgresql-plain",
+      },
+      {
+        name: "MongoDB",
+        icon: "devicon-mongodb-plain",
+      }
+    ]
   },
   {
     category: "DevOps & Tools",
-    items: ["Git", "Docker", "GitHub Actions", "Vercel", "Linux"],
+    // items: ["Git", "Docker", "GitHub Actions", "Vercel", "Linux"],
+    items: [
+      {
+        name: "Git",
+        icon: "devicon-git-plain",
+      },
+      {
+        name: "Docker",
+        icon: "devicon-docker-plain",
+      }
+    ]
   },
   {
     category: "Testing",
-    items: ["Jest", "Vitest", "React Testing Library", "Playwright"],
+    // items: ["Jest", "Vitest", "React Testing Library", "Playwright"],
+    items: [
+      {
+        name: "TypeScript",
+        icon: "devicon-typescript-plain",
+      }
+    ]
   },
 ];
 
@@ -44,11 +100,13 @@ export default function Skills() {
                 <ul className="space-y-2">
                   {group.items.map((item) => (
                     <li
-                      key={item}
+                      key={item.name}
                       className="flex items-center gap-2 text-sm text-[var(--color-muted)]"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" />
-                      {item}
+
+                      <i className={item.icon} style={{ fontSize: "1.5rem" }}></i>
+
+                      {item.name}
                     </li>
                   ))}
                 </ul>
