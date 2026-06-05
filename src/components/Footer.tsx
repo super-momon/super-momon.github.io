@@ -1,3 +1,5 @@
+import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/constants";
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
@@ -9,7 +11,7 @@ export default function Footer() {
         </p>
         <div className="flex items-center gap-4">
           <a
-            href="https://github.com/super-momon"
+            href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
@@ -20,7 +22,7 @@ export default function Footer() {
             </svg>
           </a>
           <a
-            href="https://linkedin.com/in/super-momon"
+            href={LINKEDIN_URL}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -31,7 +33,7 @@ export default function Footer() {
             </svg>
           </a>
           <a
-            href="mailto:dev@super-momon.github.io"
+            href={`mailto:${EMAIL}`}
             aria-label="Email"
             className="text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-colors"
           >

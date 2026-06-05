@@ -3,6 +3,17 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import {
+  SITE_OWNER,
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  SITE_NAME,
+  OG_IMAGE,
+  GA_ID,
+  GITHUB_URL,
+  LINKEDIN_URL,
+} from "@/lib/constants";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,24 +27,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://super-momon.github.io"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Mark Raymond Ayade | Full Stack Developer",
-    template: "%s | Mark Raymond Ayade",
+    default: `${SITE_OWNER} | ${SITE_TITLE}`,
+    template: `%s | ${SITE_OWNER}`,
   },
-  description:
-    "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
+  description: SITE_DESCRIPTION,
   keywords: [
-    "Mark Raymond Ayade",
-    "Full Stack Developer",
+    SITE_OWNER,
+    SITE_TITLE,
     "AI Development",
     "Web Developer",
     "React",
     "Next.js",
     "Portfolio",
   ],
-  authors: [{ name: "Mark Raymond Ayade", url: "https://super-momon.github.io" }],
-  creator: "Mark Raymond Ayade",
+  authors: [{ name: SITE_OWNER, url: SITE_URL }],
+  creator: SITE_OWNER,
   robots: {
     index: true,
     follow: true,
@@ -41,26 +51,24 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    url: "https://super-momon.github.io",
-    title: "Mark Raymond Ayade | Full Stack Developer",
-    description:
-      "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
-    siteName: "Mark Raymond Ayade — Portfolio",
+    url: SITE_URL,
+    title: `${SITE_OWNER} | ${SITE_TITLE}`,
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
     images: [
       {
-        url: "/logo.PNG",
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Mark Raymond Ayade — Full Stack Developer Portfolio",
+        alt: `${SITE_OWNER} — ${SITE_TITLE} Portfolio`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mark Raymond Ayade | Full Stack Developer",
-    description:
-      "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
-    images: ["/logo.PNG"],
+    title: `${SITE_OWNER} | ${SITE_TITLE}`,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
   },
 };
 
@@ -77,14 +85,14 @@ export default function RootLayout({
     >
       <head>
         {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-C3EYYVGG42"></script>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-C3EYYVGG42');
+              gtag('config', '${GA_ID}');
             `,
           }}
         />
@@ -94,16 +102,12 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              name: "Mark Raymond Ayade",
-              url: "https://super-momon.github.io",
-              image: "https://super-momon.github.io/logo.PNG",
-              jobTitle: "Full Stack Developer",
-              description:
-                "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
-              sameAs: [
-                "https://www.linkedin.com/in/super-momon",
-                "https://github.com/super-momon",
-              ],
+              name: SITE_OWNER,
+              url: SITE_URL,
+              image: `${SITE_URL}${OG_IMAGE}`,
+              jobTitle: SITE_TITLE,
+              description: SITE_DESCRIPTION,
+              sameAs: [LINKEDIN_URL, GITHUB_URL],
             }),
           }}
         />
