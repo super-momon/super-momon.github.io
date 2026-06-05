@@ -88,6 +88,25 @@ export default function RootLayout({
             `,
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Mark Raymond Ayade",
+              url: "https://super-momon.github.io",
+              image: "https://super-momon.github.io/logo.PNG",
+              jobTitle: "Full Stack Developer",
+              description:
+                "Full Stack Developer specializing in AI-assisted development. Explore my projects, skills, and experience.",
+              sameAs: [
+                "https://www.linkedin.com/in/super-momon",
+                "https://github.com/super-momon",
+              ],
+            }),
+          }}
+        />
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
