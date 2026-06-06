@@ -4,77 +4,113 @@ import { FadeIn } from "@/components/FadeIn";
 
 const skills = [
   {
-    category: "Frontend",
-    // items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-    items: [
-      {
-        name: "TypeScript",
-        icon: "devicon-typescript-plain",
-      },
-      {
-        name: "Blazor",
-        icon: "devicon-blazor-original",
-      },
-      {
-        name: "React",
-        icon: "devicon-react-original",
-      },
-      {
-        name: "Next.js",
-        icon: "devicon-nextjs-line",
-      }
-    ]
+    name: "TypeScript",
+    icon: "devicon-typescript-plain",
   },
   {
-    category: "Backend",
-    // items: ["Node.js", "Express", "PostgreSQL", "Prisma", "REST / GraphQL"],
-    items: [
-      {
-        name: ".Net",
-        icon: "devicon-dotnetcore-plain",
-      },
-      {
-        name: "Node.js",
-        icon: "devicon-nodejs-plain-wordmark",
-      },
-      {
-        name: "MS SQL Server",
-        icon: "devicon-microsoftsqlserver-plain",
-      },
-      {
-        name: "PostgreSQL",
-        icon: "devicon-postgresql-plain",
-      },
-      {
-        name: "MongoDB",
-        icon: "devicon-mongodb-plain",
-      }
-    ]
+    name: "Blazor",
+    icon: "devicon-blazor-original",
   },
   {
-    category: "DevOps & Tools",
-    // items: ["Git", "Docker", "GitHub Actions", "Vercel", "Linux"],
-    items: [
-      {
-        name: "Git",
-        icon: "devicon-git-plain",
-      },
-      {
-        name: "Docker",
-        icon: "devicon-docker-plain",
-      }
-    ]
+    name: "React",
+    icon: "devicon-react-original",
   },
   {
-    category: "Testing",
-    // items: ["Jest", "Vitest", "React Testing Library", "Playwright"],
-    items: [
-      {
-        name: "TypeScript",
-        icon: "devicon-typescript-plain",
-      }
-    ]
+    name: "Next.js",
+    icon: "devicon-nextjs-line",
   },
+  {
+    name: ".Net",
+    icon: "devicon-dotnetcore-plain",
+  },
+  {
+    name: "Node.js",
+    icon: "devicon-nodejs-plain-wordmark",
+  },
+  {
+    name: "MSSQL Server",
+    icon: "devicon-microsoftsqlserver-plain",
+  },
+  {
+    name: "PostgreSQL",
+    icon: "devicon-postgresql-plain",
+  },
+  {
+    name: "MongoDB",
+    icon: "devicon-mongodb-plain",
+  },
+  {
+    name: "GraphQL",
+    icon: "devicon-graphql-plain",
+  },
+  {
+    name: "Git",
+    icon: "devicon-git-plain",
+  },
+  {
+    name: "Docker",
+    icon: "devicon-docker-plain",
+  },
+  {
+    name: "Postman",
+    icon: "devicon-postman-plain",
+  },
+  {
+    name: "AWS",
+    icon: "devicon-amazonwebservices-plain-wordmark",
+  },
+  {
+    name: "HTML",
+    icon: "devicon-html5-plain",
+  },
+  {
+    name: "C#",
+    icon: "devicon-csharp-plain",
+  },
+  {
+    name: "CSS",
+    icon: "devicon-css3-plain",
+  },
+  {
+    name: "Bootstrap",
+    icon: "devicon-bootstrap-plain",
+  },
+  {
+    name: "JavaScript",
+    icon: "devicon-javascript-plain",
+  },
+  {
+    name: "Entity Framework",
+    icon: "devicon-entityframeworkcore-plain",
+  },
+  {
+    name: "Figma",
+    icon: "devicon-figma-plain",
+  },
+  {
+    name: "Jira",
+    icon: "devicon-jira-plain",
+  },
+  {
+    name: "JQuery",
+    icon: "devicon-jquery-plain",
+  },
+  {
+    name: "JSON",
+    icon: "devicon-json-plain",
+  },
+  {
+    name: "PHP",
+    icon: "devicon-php-plain",
+  },
+  {
+    name: "Visual Studio",
+    icon: "devicon-visualstudio-plain",
+  },
+  {
+    name: "Visual Studio Code",
+    icon: "devicon-vscode-plain",
+  }
 ];
 
 export default function Skills() {
@@ -86,30 +122,18 @@ export default function Skills() {
             Skills &amp; Tech Stack
           </h2>
           <p className="text-[var(--color-muted)] text-center mb-12 max-w-xl mx-auto">
-            Technologies I work with on a daily basis.
+            Technologies I worked with and have hands-on experience in. I&apos;m always eager to learn new tools and
           </p>
         </FadeIn>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skills.map((group, i) => (
-            <FadeIn key={group.category} delay={i * 0.1}>
-              <div className="p-6 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] h-full">
-                <h3 className="font-semibold text-[var(--color-foreground)] mb-4 text-sm tracking-wide uppercase">
-                  {group.category}
-                </h3>
-                <ul className="space-y-2">
-                  {group.items.map((item) => (
-                    <li
-                      key={item.name}
-                      className="flex items-center gap-2 text-sm text-[var(--color-muted)]"
-                    >
-
-                      <i className={item.icon} style={{ fontSize: "1.5rem" }}></i>
-
-                      {item.name}
-                    </li>
-                  ))}
-                </ul>
+        <div className="flex flex-wrap justify-center gap-4">
+          {skills.map((skill, i) => (
+            <FadeIn key={skill.name} delay={i * 0.05}>
+              <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-colors w-[120px] h-[120px]">
+                <i className={skill.icon} style={{ fontSize: "2.25rem" }}></i>
+                <span className="mt-3 text-sm font-medium text-center text-[var(--color-foreground)]">
+                  {skill.name}
+                </span>
               </div>
             </FadeIn>
           ))}
