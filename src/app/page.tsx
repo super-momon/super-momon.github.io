@@ -12,23 +12,11 @@ export default function Home() {
     <main>
       <Hero />
 
-      <MarqueeBanner text="Work In Progress : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
-        separator="⚠️"
-        repeat={12}
-        bgColor="var(--color-warning)"
-        textColor="#0f172a" />
-
       <About />
-
-      <MarqueeBanner text="Work In Progress : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
-        separator="⚠️"
-        repeat={12}
-        bgColor="var(--color-warning)"
-        textColor="#0f172a" />
 
       <Skills />
 
-      <MarqueeBanner text="Work In Progress : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
+      <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
         repeat={12}
         bgColor="var(--color-warning)"
@@ -36,7 +24,7 @@ export default function Home() {
 
       <Projects />
 
-      <MarqueeBanner text="Work In Progress : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
+      <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
         repeat={12}
         bgColor="var(--color-warning)"
@@ -44,7 +32,7 @@ export default function Home() {
 
       <Experience />
 
-      <MarqueeBanner text="Work In Progress : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
+      <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
         repeat={12}
         bgColor="var(--color-warning)"
@@ -52,7 +40,7 @@ export default function Home() {
 
       <Education />
 
-      <MarqueeBanner text="Work In Progress : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
+      <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
         repeat={12}
         bgColor="var(--color-warning)"
@@ -60,7 +48,7 @@ export default function Home() {
 
       <Contact />
 
-      <MarqueeBanner text="Work In Progress : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
+      <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
         repeat={12}
         bgColor="var(--color-warning)"
