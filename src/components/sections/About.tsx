@@ -40,16 +40,6 @@ export default function About() {
                 Strong understanding of software engineering best practices, system reliability,
                 and maintainable application design.
               </p>
-              <div className="flex flex-wrap gap-3 pt-2">
-                {["TypeScript", "React", "Node.js", "PostgreSQL"].map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 rounded-full text-sm bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
             </div>
           </FadeIn>
         </div>
