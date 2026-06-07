@@ -129,8 +129,8 @@ export default function Skills() {
         <div className="flex flex-wrap justify-center gap-4">
           {skills.map((skill, i) => (
             <FadeIn key={skill.name} delay={i * 0.05}>
-              <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-colors w-[120px] h-[120px]">
-                <i className={skill.icon} style={{ fontSize: "2.25rem" }}></i>
+              <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-colors w-[120px] h-[110px]">
+                <i className={skill.icon} style={{ fontSize: "2rem" }}></i>
                 <span className="mt-3 text-sm font-medium text-center text-[var(--color-foreground)]">
                   {skill.name}
                 </span>
