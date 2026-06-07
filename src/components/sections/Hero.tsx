@@ -23,7 +23,7 @@ export default function Hero() {
           }}
         />
         <FadeIn delay={0.1}>
-          <p className="text-sm font-mono text-[var(--color-accent)] mb-4 tracking-widest uppercase">
+          <p className="text-sm font-mono font-semibold text-[var(--color-accent)] mb-4 tracking-widest uppercase">
             Hello, I&apos;m
           </p>
         </FadeIn>
@@ -35,8 +35,11 @@ export default function Hero() {
         </FadeIn>
 
         <FadeIn delay={0.3}>
-          <p className="text-lg text-[var(--color-muted)] mb-8 max-w-3xl">
-            Full Stack Developer | AI-Assisted Development |{" "}
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-lg text-[var(--color-muted)] mb-8 max-w-3xl">
+            <span>Full Stack Developer</span>
+            <span className="hidden sm:inline text-[var(--color-border)]">•</span>
+            <span>AI-Assisted Development</span>
+            <span className="hidden sm:inline text-[var(--color-border)]">•</span>
             <m.span
               className="inline-flex items-center gap-1.5 font-semibold text-[var(--color-highlight-01)] bg-[var(--color-highlight-01)]/10 rounded-full px-2.5 py-0.5"
               animate={{ opacity: [1, 0.45, 1, 0.7, 1] }}
@@ -49,7 +52,7 @@ export default function Hero() {
               />
               Open to Opportunities
             </m.span>
-          </p>
+          </div>
         </FadeIn>
 
         <FadeIn delay={0.4}>
