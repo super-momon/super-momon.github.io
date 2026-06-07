@@ -18,41 +18,46 @@ export default function Home() {
 
       <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
-        repeat={12}
+        repeat={3}
         bgColor="var(--color-warning)"
-        textColor="#0f172a" />
+        textColor="#0f172a"
+        animationDurationInSeconds={60} />
 
       <Projects />
 
       <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
-        repeat={12}
+        repeat={3}
         bgColor="var(--color-warning)"
-        textColor="#0f172a" />
+        textColor="#0f172a"
+        animationDurationInSeconds={60} />
 
       <Experience />
 
       <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
-        repeat={12}
+        repeat={3}
         bgColor="var(--color-warning)"
-        textColor="#0f172a" />
+        textColor="#0f172a"
+        animationDurationInSeconds={60} />
 
       <Education />
 
       <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
-        repeat={12}
+        repeat={3}
         bgColor="var(--color-warning)"
-        textColor="#0f172a" />
+        textColor="#0f172a"
+        animationDurationInSeconds={60} />
 
       <Contact />
 
       <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
-        repeat={12}
+        repeat={3}
         bgColor="var(--color-warning)"
-        textColor="#0f172a" />
+        textColor="#0f172a"
+        animationDurationInSeconds={60} />
 
     </main>
   );

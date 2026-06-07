@@ -62,16 +62,34 @@ a {
   text-decoration: none;
 }
 
-@keyframes marquee-ltr {
+
+@keyframes scroll {
   from {
-    transform: translateX(-50%);
+    transform: translateX(calc(-100% - 1rem));
   }
 
   to {
-    transform: translateX(0%);
+    transform: translateX(0);
   }
 }
 
+.marquee {
+  --gap: 1rem;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: var(--gap);
+}
+
+.marquee-content {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  gap: var(--gap);
+  min-width: 100%;
+}
+
 .animate-marquee {
-  animation: marquee-ltr 50s linear infinite;
+  animation: scroll 30s linear infinite;
 }
