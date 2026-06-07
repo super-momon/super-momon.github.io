@@ -4,18 +4,11 @@ import { FadeIn } from "@/components/FadeIn";
 
 const education = [
   {
-    degree: "B.S. in Computer Science",
-    institution: "State University",
-    period: "2016 — 2020",
+    degree: "B.S. in Information Technology",
+    institution: "University of Cebu - Lapulapu and Mandaue",
+    period: "2018 - 2022",
     details:
-      "Graduated with honors. Focused on algorithms, distributed systems, and human-computer interaction. Capstone project: a peer-to-peer file sharing system using Rust.",
-  },
-  {
-    degree: "AWS Certified Solutions Architect",
-    institution: "Amazon Web Services",
-    period: "2022",
-    details:
-      "Associate-level certification covering cloud architecture best practices, networking, storage, and security on AWS.",
+      "Focused on algorithms, distributed systems, and human-computer interaction. Capstone project: An online platform for asynchronous learning and collaboration.",
   },
 ];
 
@@ -25,7 +18,7 @@ export default function Education() {
       <div className="max-w-4xl mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-12 text-center">
-            Education
+            Learning Journey & Education
           </h2>
         </FadeIn>
 

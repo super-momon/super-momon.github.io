@@ -4,28 +4,31 @@ import { FadeIn } from "@/components/FadeIn";
 
 const experiences = [
   {
-    role: "Senior Frontend Engineer",
-    company: "Tech Company Inc.",
-    period: "Jan 2023 — Present",
+    role: "Full Stack Developer",
+    company: "Talleco.com Inc. | JobTarget PH",
+    period: "Feb 2025 — Present",
     description:
       "Led the migration of a legacy React app to Next.js 14 App Router, reducing TTFB by 40%. Mentored 3 junior engineers and drove adoption of design tokens across the product.",
     tags: ["Next.js", "TypeScript", "Design Systems"],
+    current: true,
   },
   {
-    role: "Full-Stack Developer",
-    company: "Startup Studio",
-    period: "Jun 2021 — Dec 2022",
+    role: "Mid-Level Software Developer",
+    company: "Talleco.com Inc. | JobTarget PH",
+    period: "Mar 2024 — Feb 2025",
     description:
       "Built and shipped 4 client products end-to-end. Implemented real-time features using WebSockets and designed a multi-tenant architecture on PostgreSQL with Row Level Security.",
     tags: ["React", "Node.js", "PostgreSQL", "WebSockets"],
+    current: false,
   },
   {
-    role: "Junior Developer",
-    company: "Digital Agency",
-    period: "Jul 2020 — May 2021",
+    role: "Junior Software Developer",
+    company: "Talleco.com Inc. | JobTarget PH",
+    period: "Jul 2022 — Mar 2024",
     description:
       "Developed marketing sites and internal tools. Introduced automated testing with Jest, raising test coverage from 0% to 65% across three projects.",
     tags: ["Vue.js", "PHP", "MySQL", "Jest"],
+    current: false,
   },
 ];
 
@@ -35,7 +38,7 @@ export default function Experience() {
       <div className="max-w-4xl mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-12 text-center">
-            Work Experience
+            Related & Professional Experience
           </h2>
         </FadeIn>
 
@@ -48,14 +51,31 @@ export default function Experience() {
               <FadeIn key={exp.role + exp.company} delay={i * 0.1}>
                 <div className="sm:pl-12 relative">
                   {/* Dot */}
-                  <div className="hidden sm:block absolute left-[11px] top-1.5 w-3 h-3 rounded-full bg-[var(--color-accent)] border-2 border-[var(--color-background)]" />
+                  <div
+                    className={`hidden sm:block absolute left-[11px] top-1.5 w-3 h-3 rounded-full border-2 border-[var(--color-background)] ${exp.current
+                      ? "bg-[var(--color-accent)] shadow-[0_0_8px_rgba(var(--accent-rgb),0.6)]"
+                      : "bg-[var(--color-accent)]"
+                      }`}
+                  />
 
-                  <div className="p-6 rounded-xl bg-[var(--color-background)] border border-[var(--color-border)]">
+                  <div
+                    className={`p-6 rounded-xl border transition-all ${exp.current
+                      ? "bg-[var(--color-background)] border-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/10"
+                      : "bg-[var(--color-background)] border-[var(--color-border)]"
+                      }`}
+                  >
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-3">
                       <div>
-                        <h3 className="font-semibold text-[var(--color-foreground)]">
-                          {exp.role}
-                        </h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-semibold text-[var(--color-foreground)]">
+                            {exp.role}
+                          </h3>
+                          {exp.current && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[var(--color-accent)] text-white">
+                              Current
+                            </span>
+                          )}
+                        </div>
                         <p className="text-[var(--color-accent)] text-sm font-medium">
                           {exp.company}
                         </p>

@@ -71,7 +71,7 @@ export default function Navbar() {
           href="#hero"
           className="text-lg font-bold text-[var(--color-foreground)] hover:text-[var(--color-accent)] transition-colors justify-self-start"
         >
-          &lt;dev /&gt;
+          &lt;momon /&gt;
         </a>
 
         {/* Desktop links */}
