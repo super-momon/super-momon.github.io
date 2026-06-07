@@ -4,11 +4,12 @@ import { FadeIn } from "@/components/FadeIn";
 
 const projects = [
   {
-    title: "Project Alpha",
+    title: "Internal Admin",
     description:
-      "A full-stack SaaS dashboard for tracking key business metrics in real time. Features role-based access, CSV export, and WebSocket-powered live updates.",
-    tags: ["Next.js", "TypeScript", "PostgreSQL", "Tailwind"],
-    github: "https://github.com/super-momon/project-alpha",
+      "A full-stack admin dashboard built on ASP.NET. A legacy application I maintained and enhanced with new features, bug fixes, and performance optimizations to support internal operations and data management.",
+    tags: ["C#", "ASP.NET", "MSSQL", "Bootstrap", "jQuery"],
+    type: "work" as const,
+    // github: "https://github.com/super-momon/project-alpha",
     live: null,
   },
   {
@@ -16,7 +17,8 @@ const projects = [
     description:
       "An open-source CLI tool that scaffolds monorepo projects with opinionated configs for ESLint, Prettier, Husky, and CI pipelines.",
     tags: ["Node.js", "TypeScript", "GitHub Actions"],
-    github: "https://github.com/super-momon/project-beta",
+    type: "personal" as const,
+    // github: "https://github.com/super-momon/project-beta",/
     live: null,
   },
   {
@@ -24,16 +26,18 @@ const projects = [
     description:
       "A real-time collaborative markdown editor with operational transformation, syntax highlighting, and shareable room links.",
     tags: ["React", "Socket.io", "Express", "MongoDB"],
-    github: "https://github.com/super-momon/project-gamma",
-    live: "https://project-gamma.vercel.app",
+    type: "personal" as const,
+    // github: "https://github.com/super-momon/project-gamma",
+    live: null,
   },
   {
     title: "Project Delta",
     description:
       "A headless e-commerce storefront using Next.js App Router and a custom Stripe checkout integration with webhook-based order fulfillment.",
     tags: ["Next.js", "Stripe", "Prisma", "Vercel"],
-    github: "https://github.com/super-momon/project-delta",
-    live: "https://project-delta.vercel.app",
+    type: "learning" as const,
+    // github: "https://github.com/super-momon/project-delta",
+    live: null,
   },
 ];
 
@@ -46,17 +50,32 @@ export default function Projects() {
             Projects
           </h2>
           <p className="text-[var(--color-muted)] text-center mb-12 max-w-xl mx-auto">
-            A selection of things I&apos;ve built.
+            A selection of things I worked on and contributed to.
           </p>
         </FadeIn>
 
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid sm:grid-cols-3 gap-6">
           {projects.map((project, i) => (
             <FadeIn key={project.title} delay={i * 0.1}>
               <div className="group flex flex-col h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] transition-colors">
-                <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2 group-hover:text-[var(--color-accent)] transition-colors">
-                  {project.title}
-                </h3>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="text-lg font-semibold text-[var(--color-foreground)] group-hover:text-[var(--color-accent)] transition-colors">
+                    {project.title}
+                  </h3>
+                  <span
+                    className={`
+                      px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wide whitespace-nowrap flex-shrink-0
+                      ${project.type === "work"
+                        ? "bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400 border border-blue-500/20"
+                        : project.type === "personal"
+                          ? "bg-purple-500/10 text-purple-600 dark:bg-purple-400/10 dark:text-purple-400 border border-purple-500/20"
+                          : "bg-green-500/10 text-green-600 dark:bg-green-400/10 dark:text-green-400 border border-green-500/20"
+                      }
+                    `}
+                  >
+                    {project.type}
+                  </span>
+                </div>
                 <p className="text-sm text-[var(--color-muted)] leading-relaxed mb-4 flex-1">
                   {project.description}
                 </p>
@@ -71,7 +90,7 @@ export default function Projects() {
                   ))}
                 </div>
                 <div className="flex items-center gap-3">
-                  {project.github && (
+                  {/* {project.github && (
                     <a
                       href={project.github}
                       target="_blank"
@@ -83,7 +102,7 @@ export default function Projects() {
                       </svg>
                       Code
                     </a>
-                  )}
+                  )} */}
                   {project.live && (
                     <a
                       href={project.live}
