@@ -113,7 +113,7 @@ export default function RootLayout({
         />
 
         <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-
+        <script src="https://kit.fontawesome.com/71cdb6ba78.js" crossOrigin="anonymous"></script>
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

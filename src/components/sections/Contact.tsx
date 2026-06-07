@@ -61,7 +61,7 @@ export default function Contact() {
             }
             className="inline-block px-8 py-3 rounded-lg bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-medium transition-colors mb-12"
           >
-            Say Hello →
+            Say Hello <i className="fa-regular fa-paper-plane"></i>
           </a>
         </FadeIn>
 
