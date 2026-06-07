@@ -4,7 +4,7 @@ import { FadeIn } from "@/components/FadeIn";
 
 export default function About() {
   return (
-    <section id="about" className="py-24 px-6">
+    <section id="about" className="py-32 px-6">
       <div className="max-w-6xl mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-12 text-center">
