@@ -8,35 +8,23 @@ const projects = [
     description:
       "A full-stack admin dashboard built on ASP.NET. A legacy application I maintained and enhanced with new features, bug fixes, and performance optimizations to support internal operations and data management.",
     tags: ["C#", "ASP.NET", "MSSQL", "Bootstrap", "jQuery"],
-    type: "work" as const,
-    // github: "https://github.com/super-momon/project-alpha",
+    type: "work",
     live: null,
   },
   {
-    title: "Project Beta",
+    title: "Job Manager",
     description:
-      "An open-source CLI tool that scaffolds monorepo projects with opinionated configs for ESLint, Prettier, Husky, and CI pipelines.",
-    tags: ["Node.js", "TypeScript", "GitHub Actions"],
-    type: "personal" as const,
-    // github: "https://github.com/super-momon/project-beta",/
+      "A job posting management tool built on .Net both frontend and backend. A client facing application where clients can manage their job postings. I contributed to the development of new features, integration with other services, and performance improvements to enhance user experience and operational efficiency.",
+    tags: [".NET", "Blazor", "MSSQL", "Rest API", "Bootstrap", "AI Integration"],
+    type: "work",
     live: null,
   },
   {
-    title: "Project Gamma",
+    title: "Several Client Facing Applications",
     description:
-      "A real-time collaborative markdown editor with operational transformation, syntax highlighting, and shareable room links.",
-    tags: ["React", "Socket.io", "Express", "MongoDB"],
-    type: "personal" as const,
-    // github: "https://github.com/super-momon/project-gamma",
-    live: null,
-  },
-  {
-    title: "Project Delta",
-    description:
-      "A headless e-commerce storefront using Next.js App Router and a custom Stripe checkout integration with webhook-based order fulfillment.",
-    tags: ["Next.js", "Stripe", "Prisma", "Vercel"],
-    type: "learning" as const,
-    // github: "https://github.com/super-momon/project-delta",
+      "Various client-facing application built on different tech stacks. I contributed to the development and maintenance of several client-facing applications across different technology stacks. My work involved implementing new features, optimizing performance, and ensuring seamless integration with backend services to enhance user experience and meet client requirements.",
+    tags: ["React", "Next.js", "Node.js", "GraphQL", "AWS", "Docker"],
+    type: "work",
     live: null,
   },
 ];
