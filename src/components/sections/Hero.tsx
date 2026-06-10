@@ -3,6 +3,7 @@
 import { LazyMotion, domAnimation, m } from "motion/react";
 import { FadeIn } from "@/components/FadeIn";
 import { HighlightText } from "@/components/common/HighlightText";
+import { trackEvent } from "@/lib/analytics";
 
 export default function Hero() {
   return (
@@ -71,8 +72,8 @@ export default function Hero() {
             </a>
             <a
               href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+              download="Mark_Raymond_Ayade_Resume.pdf"
+              onClick={() => trackEvent("resume_download", { method: "hero_button" })}
               className="px-6 py-3 rounded-lg border border-[var(--color-border)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-surface)] font-medium transition-colors"
             >
               Resume <i className="fa-solid fa-file-arrow-down"></i>
