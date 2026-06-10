@@ -57,12 +57,15 @@ export default function Education() {
     <section id="education" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <FadeIn>
-          <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-12 text-center">
+          <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-4 text-center">
             Educational Journey & Growth
           </h2>
+          <p className="text-[var(--color-muted)] text-center mb-12 max-w-xl mx-auto">
+            A selection of my educational background, certifications, and continuous learning efforts that have contributed to my growth as a software developer.
+          </p>
         </FadeIn>
 
-        <div className="space-y-6 grid sm:grid-cols-2 gap-6">
+        <div className="space-y-6 grid lg:grid-cols-2 gap-6">
           {education.map((item, i) => (
             <FadeIn key={item.topic} delay={i * 0.1}>
               <div
