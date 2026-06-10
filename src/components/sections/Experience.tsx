@@ -4,30 +4,30 @@ import { FadeIn } from "@/components/FadeIn";
 
 const experiences = [
   {
-    role: "Full Stack Developer",
+    role: "Full Stack Software Developer",
     company: "Talleco.com Inc. | JobTarget PH",
     period: "Feb 2025 — Present",
     description:
-      "Led the migration of a legacy React app to Next.js 14 App Router, reducing TTFB by 40%. Mentored 3 junior engineers and drove adoption of design tokens across the product.",
-    tags: ["Next.js", "TypeScript", "Design Systems"],
+      "Implemented event-driven backend solutions using AWS services (Lambda, SQS, SNS, S3) to support scalable application workflows. Developed and enhanced features across client-facing and internal services while contributing to UI modernization initiatives. Diagnosed complex production issues and optimized database operations across MS SQL Server, PostgreSQL, and MongoDB, working with diverse technology stacks and architectures.",
+    tags: ["AWS", "Lambda", "SQS", "SNS", "S3", "MS SQL Server", "PostgreSQL", "MongoDB", "Event-Driven Architecture"],
     current: true,
   },
   {
-    role: "Mid-Level Software Developer",
+    role: "Software Developer (Mid-Level)",
     company: "Talleco.com Inc. | JobTarget PH",
-    period: "Mar 2024 — Feb 2025",
+    period: "Mar 2024 — Jan 2025",
     description:
-      "Built and shipped 4 client products end-to-end. Implemented real-time features using WebSockets and designed a multi-tenant architecture on PostgreSQL with Row Level Security.",
-    tags: ["React", "Node.js", "PostgreSQL", "WebSockets"],
+      "Developed and maintained web application features with third-party system integrations. Implemented secure client profile management workflows supporting data retrieval, updates, and access control. Optimized data retrieval and reporting processes for improved performance and accuracy. Configured and maintained data integrations from multiple sources including XML, RSS, and API feeds, while investigating and resolving data issues using SQL and scripting.",
+    tags: ["Web Development", "API Integration", "SQL", "Data Management", "Security", "XML", "RSS"],
     current: false,
   },
   {
-    role: "Junior Software Developer",
+    role: "Software Developer (Junior)",
     company: "Talleco.com Inc. | JobTarget PH",
-    period: "Jul 2022 — Mar 2024",
+    period: "Jul 2022 — Feb 2024",
     description:
-      "Developed marketing sites and internal tools. Introduced automated testing with Jest, raising test coverage from 0% to 65% across three projects.",
-    tags: ["Vue.js", "PHP", "MySQL", "Jest"],
+      "Developed and maintained web application features with third-party system integrations into company platforms and internal tools. Configured data integrations from multiple sources and investigated data issues using SQL and scripting for reporting and operational support. Contributed to client profile management workflows and data retrieval processes.",
+    tags: ["JavaScript", "SQL", "API Integration", "Web Development", "Data Integration"],
     current: false,
   },
 ];
@@ -38,7 +38,7 @@ export default function Experience() {
       <div className="max-w-4xl mx-auto">
         <FadeIn>
           <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-12 text-center">
-            Related & Professional Experience
+            Relevant & Professional Experience
           </h2>
         </FadeIn>
 

@@ -14,7 +14,7 @@ export default function Home() {
 
       <About />
 
-      <Skills />
+      <Experience />
 
       <MarqueeBanner text="WORK IN PROGRESS : Content is being updated and may be incomplete, outdated or a dummy data. Please check back later for the latest information."
         separator="⚠️"
@@ -32,7 +32,7 @@ export default function Home() {
         textColor="#0f172a"
         animationDurationInSeconds={60} />
 
-      <Experience />
+      <Skills />
 
       <Education />
 
