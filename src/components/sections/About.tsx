@@ -41,6 +41,43 @@ export default function About() {
                 and maintainable application design.
               </p>
             </div>
+
+            <div className="mt-6 space-y-3">
+              <div className="flex items-center gap-3 text-[var(--color-muted)]">
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+                  <i className="fa-solid fa-location-dot text-[var(--color-primary)]"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-[var(--color-muted)] opacity-75">Based in</p>
+                  <p className="font-medium text-[var(--color-foreground)]">Cebu, Philippines</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-[var(--color-muted)]">
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+                  <i className="fa-solid fa-briefcase text-[var(--color-primary)]"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-[var(--color-muted)] opacity-75">Current Employer</p>
+                  <p className="font-medium text-[var(--color-foreground)]">Talleco.com Inc. | JobTarget PH</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 grid grid-cols-3 gap-4">
+              <div className="flex flex-col items-center p-4 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors">
+                <i className="fa-solid fa-code text-xl text-[var(--color-primary)] mb-2"></i>
+                <span className="text-xs text-[var(--color-muted)] text-center">Full Stack Dev</span>
+              </div>
+              <div className="flex flex-col items-center p-4 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors">
+                <i className="fa-solid fa-database text-xl text-[var(--color-primary)] mb-2"></i>
+                <span className="text-xs text-[var(--color-muted)] text-center">Data Integration</span>
+              </div>
+              <div className="flex flex-col items-center p-4 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors">
+                <i className="fa-solid fa-cloud text-xl text-[var(--color-primary)] mb-2"></i>
+                <span className="text-xs text-[var(--color-muted)] text-center">Cloud Services</span>
+              </div>
+            </div>
           </FadeIn>
         </div>
       </div>
