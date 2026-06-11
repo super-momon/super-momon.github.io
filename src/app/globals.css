@@ -12,8 +12,16 @@
   --color-foreground: #0f172a;
   --color-surface: #f8fafc;
   --color-border: #e2e8f0;
-  --color-accent: #6366f1;
-  --color-accent-hover: #4f46e5;
+
+  /* purple */
+  /* --color-accent: #6366f1;
+  --color-accent-hover: #4f46e5; */
+
+  /* green */
+  --color-accent: #00c758;
+  --color-accent-hover: #00a64c;
+
+
   --color-muted: #64748b;
   --color-warning: #facc15;
 
@@ -28,8 +36,16 @@
   --color-foreground: #f1f5f9;
   --color-surface: #111827;
   --color-border: #1e293b;
-  --color-accent: #818cf8;
-  --color-accent-hover: #6366f1;
+
+  /* purple */
+  /* --color-accent: #818cf8;
+  --color-accent-hover: #6366f1; */
+
+  /* green */
+  --color-accent: #07dd66;
+  --color-accent-hover: #07ce60;
+
+
   --color-muted: #94a3b8;
   --color-warning: #facc15;
 
