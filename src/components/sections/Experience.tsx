@@ -11,6 +11,7 @@ const experiences = [
       "Implemented event-driven backend solutions using AWS services (Lambda, SQS, SNS, S3) to support scalable application workflows. Developed and enhanced features across client-facing and internal services while contributing to UI modernization initiatives. Diagnosed complex production issues and optimized database operations across MS SQL Server, PostgreSQL, and MongoDB, working with diverse technology stacks and architectures.",
     tags: ["AWS", "Lambda", "SQS", "SNS", "S3", "MS SQL Server", "PostgreSQL", "MongoDB", "Event-Driven Architecture"],
     current: true,
+    industry: "Human Capital Management - Recruitment Software",
   },
   {
     role: "Software Developer (Mid-Level)",
@@ -20,6 +21,7 @@ const experiences = [
       "Developed and maintained web application features with third-party system integrations. Implemented secure client profile management workflows supporting data retrieval, updates, and access control. Optimized data retrieval and reporting processes for improved performance and accuracy. Configured and maintained data integrations from multiple sources including XML, RSS, and API feeds, while investigating and resolving data issues using SQL and scripting.",
     tags: ["Web Development", "API Integration", "SQL", "Data Management", "Security", "XML", "RSS"],
     current: false,
+    industry: "Human Capital Management - Recruitment Software",
   },
   {
     role: "Software Developer (Junior)",
@@ -29,6 +31,7 @@ const experiences = [
       "Developed and maintained web application features with third-party system integrations into company platforms and internal tools. Configured data integrations from multiple sources and investigated data issues using SQL and scripting for reporting and operational support. Contributed to client profile management workflows and data retrieval processes.",
     tags: ["JavaScript", "SQL", "API Integration", "Web Development", "Data Integration"],
     current: false,
+    industry: "Human Capital Management - Recruitment Software",
   },
 ];
 
@@ -78,6 +81,11 @@ export default function Experience() {
                         </div>
                         <p className="text-[var(--color-accent)] text-sm font-medium">
                           {exp.company}
+                        </p>
+                        <p className="text-xs text-[var(--color-muted)] mt-1 flex items-center gap-1.5">
+                          <i className="fa-solid fa-industry"></i>
+                          <span>Industry: </span>
+                          {exp.industry}
                         </p>
                       </div>
                       <span className="text-xs text-[var(--color-muted)] shrink-0">
