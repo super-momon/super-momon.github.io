@@ -45,7 +45,7 @@ export default function Projects() {
           </p>
         </FadeIn>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {projects.map((project, i) => (
             <FadeIn key={project.title} delay={i * 0.1}>
               <div className="group flex flex-col h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] transition-colors">
