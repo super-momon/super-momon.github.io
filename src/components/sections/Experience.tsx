@@ -40,9 +40,12 @@ export default function Experience() {
     <section id="experience" className="py-24 px-6 bg-[var(--color-surface)]">
       <div className="max-w-4xl mx-auto">
         <FadeIn>
-          <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-12 text-center">
+          <h2 className="text-3xl font-bold text-[var(--color-foreground)] mb-4 text-center">
             Relevant & Professional Experience
           </h2>
+          <p className="text-center text-[var(--color-muted)] mb-16">
+            A snapshot of my journey in the software development world, showcasing my growth and impact across various roles and projects.
+          </p>
         </FadeIn>
 
         <div className="relative">
