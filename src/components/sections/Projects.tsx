@@ -4,15 +4,6 @@ import { FadeIn } from "@/components/FadeIn";
 
 const projects = [
   {
-    title: "Internal Admin",
-    description:
-      "A full-stack admin dashboard built on ASP.NET. A legacy application I maintained and enhanced with new features, bug fixes, and performance optimizations to support internal operations and data management.",
-    tags: ["C#", "ASP.NET", "MSSQL", "Bootstrap", "jQuery"],
-    type: "work",
-    live: null,
-    withAi: false,
-  },
-  {
     title: "Job Manager",
     description:
       "A job posting management tool built on .Net both frontend and backend. A client facing application where clients can manage their job postings. I contributed to the development of new features, integration with other services, and performance improvements to enhance user experience and operational efficiency.",
@@ -20,6 +11,15 @@ const projects = [
     type: "work",
     live: null,
     withAi: true,
+  },
+  {
+    title: "Internal Admin",
+    description:
+      "A full-stack admin dashboard built on ASP.NET. A legacy application I maintained and enhanced with new features, bug fixes, and performance optimizations to support internal operations and data management.",
+    tags: ["C#", "ASP.NET", "MSSQL", "Bootstrap", "jQuery"],
+    type: "work",
+    live: null,
+    withAi: false,
   },
   {
     title: "Several Client Facing Applications",
@@ -45,7 +45,7 @@ export default function Projects() {
           </p>
         </FadeIn>
 
-        <div className="grid sm:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {projects.map((project, i) => (
             <FadeIn key={project.title} delay={i * 0.1}>
               <div className="group flex flex-col h-full p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)] transition-colors">
