@@ -99,18 +99,18 @@ const skills = [
     name: "JSON",
     icon: "devicon-json-plain",
   },
-  {
-    name: "PHP",
-    icon: "devicon-php-plain",
-  },
-  {
-    name: "Visual Studio",
-    icon: "devicon-visualstudio-plain",
-  },
-  {
-    name: "Visual Studio Code",
-    icon: "devicon-vscode-plain",
-  }
+  // {
+  //   name: "PHP",
+  //   icon: "devicon-php-plain",
+  // },
+  // {
+  //   name: "Visual Studio",
+  //   icon: "devicon-visualstudio-plain",
+  // },
+  // {
+  //   name: "Visual Studio Code",
+  //   icon: "devicon-vscode-plain",
+  // }
 ];
 
 export default function Skills() {
