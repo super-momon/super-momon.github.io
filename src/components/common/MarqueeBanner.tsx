@@ -14,7 +14,7 @@ export default function MarqueeBanner({
   separator = "✦",
   repeat = 5,
   bgColor = "var(--color-accent)",
-  textColor = "white",
+  textColor = "var(--color-foreground)",
   animationDurationInSeconds = 30,
 }: MarqueeBannerProps) {
   return (
