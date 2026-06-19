@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import MarqueeBanner from "./common/MarqueeBanner";
 
@@ -11,6 +11,27 @@ const navLinks = [
   { label: "Experience", href: "#experience" },
   { label: "Education", href: "#education" },
   { label: "Contact", href: "#contact" },
+];
+
+const notifications = [
+  {
+    id: 2,
+    text: "🎯 Completed Workplace Insight Professional Assessment by Criteria Corp",
+    icon: "fa-solid fa-chart-line",
+    timestamp: "June 20, 2026",
+    color: "text-blue-500",
+    link: "#about",
+    linkText: "View Assessment",
+  },
+  {
+    id: 1,
+    text: "💼 Actively seeking new opportunities! Open to full-time roles and exciting projects",
+    icon: "fa-solid fa-briefcase",
+    timestamp: "June 01, 2026",
+    color: "text-green-500",
+    link: "#contact",
+    linkText: "Get in touch",
+  },
 ];
 
 function ThemeToggle() {
@@ -44,6 +65,92 @@ function ThemeToggle() {
         </svg>
       )}
     </button>
+  );
+}
+
+function NotificationDropdown() {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Notifications"
+        className="relative w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-surface)] transition-colors"
+      >
+        <i className="fa-solid fa-bell text-lg"></i>
+        {notifications.length > 0 && (
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        )}
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-80 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden z-50">
+          <div className="px-4 py-3 border-b border-[var(--color-border)]">
+            <h3 className="text-sm font-semibold text-[var(--color-foreground)]">
+              Notifications
+            </h3>
+          </div>
+          <div className="max-h-96 overflow-y-auto">
+            {notifications.length === 0 ? (
+              <div className="px-4 py-6 text-center text-sm text-[var(--color-muted)]">
+                No notifications
+              </div>
+            ) : (
+              notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className="px-4 py-3 hover:bg-[var(--color-surface)] transition-colors border-b border-[var(--color-border)] last:border-b-0"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 mt-0.5">
+                      <i className={`${notification.icon} ${notification.color} text-lg`}></i>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-[var(--color-foreground)] leading-snug">
+                        {notification.text}
+                      </p>
+                      <div className="flex items-center justify-between mt-2">
+                        <p className="text-xs text-[var(--color-muted)]">
+                          {notification.timestamp}
+                        </p>
+                        {notification.link && (
+                          <a
+                            href={notification.link}
+                            onClick={() => setIsOpen(false)}
+                            className="text-xs font-medium text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors flex items-center gap-1"
+                          >
+                            {notification.linkText}
+                            <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -89,6 +196,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2 justify-self-end">
+          <NotificationDropdown />
           <ThemeToggle />
           {/* Mobile menu button */}
           <button
