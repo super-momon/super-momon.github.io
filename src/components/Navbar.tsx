@@ -97,7 +97,9 @@ function NotificationDropdown() {
       >
         <i className="fa-solid fa-bell text-lg"></i>
         {notifications.length > 0 && (
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-red-500 text-white text-xs font-semibold rounded-full flex items-center justify-center">
+            {notifications.length}
+          </span>
         )}
       </button>
 
@@ -105,7 +107,7 @@ function NotificationDropdown() {
         <div className="absolute right-0 mt-2 w-80 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden z-50">
           <div className="px-4 py-3 border-b border-[var(--color-border)]">
             <h3 className="text-sm font-semibold text-[var(--color-foreground)]">
-              Notifications
+              Updates
             </h3>
           </div>
           <div className="max-h-96 overflow-y-auto">
