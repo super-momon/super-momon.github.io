@@ -88,7 +88,7 @@ export default function About() {
                 className="relative flex items-center gap-3 p-4 pl-5 rounded-lg bg-[#002554] transition-all duration-300 group shadow-lg shadow-[var(--color-primary)]/10 hover:shadow-xl hover:shadow-[var(--color-primary)]/30"
               >
                 <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-white transition-all shadow-md group-hover:shadow-[var(--color-primary)]/40">
-                  <i className="fa-solid fa-file-lines text-xl text-dark group-hover:scale-110 transition-transform"></i>
+                  <i className="fa-solid fa-file-lines text-xl text-black transition-transform"></i>
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-white font-semibold mb-1">📊 Professional Assessment</p>
