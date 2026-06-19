@@ -78,6 +78,36 @@ export default function About() {
                 <span className="text-xs text-[var(--color-muted)] text-center">Cloud Services</span>
               </div>
             </div>
+
+
+            <div className="mt-6">
+              <a
+                href="/workplace-insights.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative flex items-center gap-3 p-4 pl-5 rounded-lg bg-[#002554] transition-all duration-300 group shadow-lg shadow-[var(--color-primary)]/10 hover:shadow-xl hover:shadow-[var(--color-primary)]/30"
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-white transition-all shadow-md group-hover:shadow-[var(--color-primary)]/40">
+                  <i className="fa-solid fa-file-lines text-xl text-dark group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-white font-semibold mb-1">📊 Professional Assessment</p>
+                  <p className="font-bold text-white group-hover:text-[var(--color-accent)] transition-colors text-lg">
+                    Workplace Insight Test
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="inline-flex items-center px-2 py-1 rounded bg-[#002554]">
+                      <img
+                        src="/Criteria-logo-web-white.png"
+                        alt="Criteria Corp"
+                        className="h-4 opacity-90 group-hover:opacity-100 transition-opacity"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <i className="fa-solid fa-arrow-up-right-from-square text-white text-lg opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all"></i>
+              </a>
+            </div>
           </FadeIn>
         </div>
       </div>
