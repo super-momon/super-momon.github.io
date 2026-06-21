@@ -6,298 +6,101 @@ argument-hint: 'Path to file/directory to review (optional - defaults to current
 
 # Next.js Best Practices Enforcer
 
-Comprehensive skill for enforcing Next.js best practices with focus on readability, maintainability, and modern patterns over complexity.
-
-## When to Use
-
-- Reviewing or refactoring Next.js components
-- Checking code structure and organization
-- Validating TypeScript types and interfaces
-- Ensuring proper client/server component usage
-- Optimizing performance and bundle size
-- Auditing accessibility compliance
-- Enforcing consistent code style
-- Before committing major changes
+Enforce readability, maintainability, and modern patterns. Prefer simple and clear code over clever or complex solutions.
 
 ## Core Philosophy
 
-**Readability > Cleverness**: Simple, clear code that any team member can understand.  
-**Maintainability > Performance**: Optimize only when needed, keep code easy to modify.  
-**Standards > Custom**: Use established patterns and conventions.  
-**Progressive Enhancement**: Start simple, add complexity only when justified.
+- **Readability > Cleverness** — code should be easy for any teammate to understand
+- **Maintainability > Premature Optimization** — optimize only when justified
+- **Standards > Custom Solutions** — follow established conventions
+- **Progressive Enhancement** — start simple, add complexity only when needed
 
-## Review Process
+## Review Checklist
 
-### 1. **Initial Assessment**
+### TypeScript & Type Safety
+- All props have explicit interfaces/types; no `any` (use `unknown` or specific types)
+- Event handlers properly typed; avoid unnecessary type assertions
 
-First, determine the scope:
-- Single file review (current editor file)
-- Directory scan (specific folder path)
-- Full workspace audit (all src files)
+### Component Architecture
+- Use `"use client"` only when required (interactivity, browser APIs)
+- Prefer server components for data fetching; minimize client boundaries
+- One component per file; PascalCase filenames
 
-Identify file types:
-- Client Components (`"use client"`)
-- Server Components (default)
-- Route handlers (app/api)
-- Layouts and templates
-- Configuration files
+### Performance
+- Use `next/image` with explicit dimensions
+- Dynamic imports for large client-only components
+- Add Suspense boundaries and loading states where needed
+- Use memoization (`useMemo`, `useCallback`, `React.memo`) only where measurably beneficial
 
-### 2. **Critical Checks** (Must Fix)
+### File Modularity (Critical)
+Avoid monolithic files. Extract when:
+- A subcomponent is reused in 2+ places → move to `components/common/`
+- A subcomponent exceeds ~50 lines → extract to its own file
+- A subcomponent has its own state/hooks → extract for independent testability
+- A utility function is pure and reusable → move to `lib/utils/`
+- A custom hook is used across components → move to `hooks/` with `use` prefix
 
-Run these checks in order, fixing issues before proceeding:
+**File size targets:** components < 200 lines, utilities < 300 lines, hooks < 100 lines
 
-#### A. TypeScript & Type Safety
-- [ ] All props have explicit TypeScript interfaces/types
-- [ ] No `any` types (use `unknown` or proper types)
-- [ ] Event handlers properly typed
-- [ ] No type assertions unless absolutely necessary
-- [ ] Proper generic type usage
-
-#### B. Component Architecture
-- [ ] Proper `"use client"` directive placement (only when needed)
-- [ ] Server components for data fetching (when possible)
-- [ ] Client components only for interactivity (useState, useEffect, event handlers)
-- [ ] No unnecessary client boundaries
-- [ ] Proper component file naming (PascalCase)
-
-#### C. Performance & Optimization
-- [ ] Images use `next/image` with proper sizing
-- [ ] Dynamic imports for large client components
-- [ ] No blocking operations in server components
-- [ ] Proper loading states and Suspense boundaries
-- [ ] Memoization only where needed (useMemo, useCallback, React.memo)
-
-#### D. Code Organization
-- [ ] One component per file (exceptions: small related components)
-- [ ] Proper import ordering (React → Next → External → Internal → Types)
-- [ ] Constants extracted to `/lib/constants.ts` or local const
-- [ ] Types in `/types/` or co-located with components
-- [ ] Utility functions in `/lib/` or `/utils/`
-
-### 3. **Best Practices** (Should Fix)
-
-#### A. React Patterns
-```typescript
-// ✅ GOOD: Clear, readable hooks
-const [isOpen, setIsOpen] = useState(false);
-const [count, setCount] = useState(0);
-
-useEffect(() => {
-  // Clear purpose
-  document.title = `Count: ${count}`;
-}, [count]); // Proper dependencies
-
-// ❌ BAD: Complex nested logic
-const [state, setState] = useState({ data: [], loading: false, error: null });
-useEffect(() => {
-  if (state.loading && !state.error) {
-    // Nested complexity
-  }
-}, [state]);
+### Recommended Directory Structure
 ```
-
-#### B. Component Structure (Consistent Order)
-1. Type definitions
-2. Component function
-3. Hooks (useState, useEffect, custom hooks)
-4. Computed values and handlers
-5. Return JSX
-6. Export statement
-
-```typescript
-// ✅ GOOD: Clear structure
-interface ButtonProps {
-  label: string;
-  onClick: () => void;
-  variant?: 'primary' | 'secondary';
-}
-
-export default function Button({ label, onClick, variant = 'primary' }: ButtonProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const handleClick = async () => {
-    setIsLoading(true);
-    await onClick();
-    setIsLoading(false);
-  };
-  
-  return (
-    <button 
-      onClick={handleClick}
-      disabled={isLoading}
-      className={`btn-${variant}`}
-    >
-      {isLoading ? 'Loading...' : label}
-    </button>
-  );
-}
-```
-
-#### C. File Naming & Organization
-```
-✅ GOOD:
 src/
-  components/
-    sections/
-      Hero.tsx          (PascalCase for components)
-      About.tsx
-    common/
-      Button.tsx
-      Card.tsx
-  lib/
-    utils.ts          (camelCase for utilities)
-    constants.ts
-  types/
-    global.d.ts       (TypeScript declarations)
-
-❌ BAD:
-src/
-  components/
-    hero-section.tsx   (kebab-case for components)
-    aboutUs.jsx        (wrong extension)
-    BUTTON.tsx         (all caps)
+├── app/              # App Router pages and layouts
+├── components/
+│   ├── common/       # Shared reusable components
+│   ├── sections/     # Page-level sections
+│   └── ui/           # Base UI primitives
+├── hooks/            # Custom React hooks (use* prefix)
+├── lib/              # Utilities, constants, API helpers
+└── types/            # Shared TypeScript definitions
 ```
 
-### 4. **Style & Readability**
+### Code Organization
+- Import order: React → Next.js → external libs → internal modules → types
+- Constants in `lib/constants.ts`; types in `types/` or co-located
+- No utility functions or custom hooks defined inside component files
+- No magic numbers or inline string literals — extract to named constants
 
-#### A. JSX/TSX Formatting
-- [ ] Max 100 characters per line
-- [ ] Props on new lines if more than 2 or line too long
-- [ ] Logical grouping of props (data → handlers → styling)
-- [ ] Self-closing tags when no children
-- [ ] Consistent quotation (prefer double quotes)
+### Naming Conventions
+- Components & types: `PascalCase`
+- Functions, variables, hooks: `camelCase`
+- Constants: `UPPER_SNAKE_CASE`
+- Booleans: `is`, `has`, or `should` prefix
+- Event handlers: `handle` prefix
 
-```typescript
-// ✅ GOOD: Readable formatting
-<Button
-  label="Submit"
-  onClick={handleSubmit}
-  variant="primary"
-  disabled={isLoading}
-  className="mt-4"
-/>
+### JSX Formatting
+- Max ~100 characters per line; props on separate lines when more than 2
+- Group props: data → handlers → styling
+- Self-closing tags when no children; consistent double quotes
 
-// ❌ BAD: Hard to read
-<Button label="Submit" onClick={handleSubmit} variant="primary" disabled={isLoading} className="mt-4" />
-```
+### Comments
+- JSDoc only for exported functions
+- Inline comments only for non-obvious logic
+- No commented-out code; use git history instead
 
-#### B. Naming Conventions
-- Components: `PascalCase` (Hero.tsx, UserProfile.tsx)
-- Functions/Variables: `camelCase` (handleClick, isLoading)
-- Constants: `UPPER_SNAKE_CASE` (API_URL, MAX_RETRIES)
-- Types/Interfaces: `PascalCase` (UserProps, ApiResponse)
-- Boolean variables: `is`, `has`, `should` prefix (isLoading, hasError)
-- Event handlers: `handle` prefix (handleClick, handleSubmit)
+### Accessibility (WCAG 2.1 AA)
+- Semantic HTML (`<nav>`, `<main>`, `<section>`, `<article>`)
+- Proper heading hierarchy; descriptive alt text; ARIA labels for icon buttons
+- Keyboard navigable; visible focus indicators; sufficient color contrast (4.5:1)
 
-#### C. Comments & Documentation
-- JSDoc for exported functions
-- Inline comments for complex logic only
-- No commented-out code (use git history)
-- TODO comments with ticket/issue references
+## Refactoring Strategy
 
-### 5. **Accessibility (WCAG 2.1 AA)**
+1. Preserve existing behavior — only change structure
+2. Make one improvement at a time
+3. Extract before optimizing
+4. Verify build and functionality after each change
 
-- [ ] Semantic HTML (`<nav>`, `<main>`, `<section>`, `<article>`)
-- [ ] Proper heading hierarchy (h1 → h2 → h3)
-- [ ] Alt text for images (descriptive, not decorative)
-- [ ] ARIA labels for icon buttons
-- [ ] Keyboard navigation support
-- [ ] Sufficient color contrast (4.5:1 for text)
-- [ ] Focus indicators visible
-- [ ] Form labels properly associated
-
-### 6. **Refactoring Strategy**
-
-When refactoring code that doesn't meet standards:
-
-1. **Preserve Functionality**: Don't change behavior, only structure
-2. **Small Commits**: One improvement at a time
-3. **Test After Each Change**: Ensure nothing breaks
-4. **Extract Before Optimize**: Move code to proper locations first
-5. **Document Changes**: Note what was improved and why
-
-#### Common Refactoring Patterns
-
-**Extract Complex JSX to Components:**
-```typescript
-// Before: Large component with nested JSX
-export default function Dashboard() {
-  return (
-    <div>
-      {/* 200 lines of JSX */}
-    </div>
-  );
-}
-
-// After: Extracted into smaller components
-export default function Dashboard() {
-  return (
-    <div>
-      <DashboardHeader />
-      <DashboardStats />
-      <DashboardContent />
-    </div>
-  );
-}
-```
-
-**Extract Inline Styles to Tailwind/CSS:**
-```typescript
-// ❌ BAD: Inline style objects
-<div style={{ 
-  backgroundColor: 'blue', 
-  padding: '20px',
-  borderRadius: '8px' 
-}}>
-
-// ✅ GOOD: Tailwind classes
-<div className="bg-blue-500 p-5 rounded-lg">
-```
-
-**Extract Constants:**
-```typescript
-// ❌ BAD: Magic numbers and strings
-if (items.length > 10) { /* ... */ }
-fetch('https://api.example.com/data');
-
-// ✅ GOOD: Named constants
-const MAX_ITEMS = 10;
-const API_BASE_URL = 'https://api.example.com';
-
-if (items.length > MAX_ITEMS) { /* ... */ }
-fetch(`${API_BASE_URL}/data`);
-```
-
-### 7. **Output Format**
+## Output Format
 
 After review, provide:
-
-1. **Summary**: Overall code health (Excellent/Good/Needs Improvement/Poor)
-2. **Critical Issues**: Must-fix items with file:line references
-3. **Improvements**: Should-fix items prioritized by impact
-4. **Refactoring Plan**: Step-by-step changes if major refactoring needed
-5. **Code Samples**: Before/after examples for complex changes
-
-## Advanced Patterns
-
-For deeper guidance on specific areas, see:
-- [Component Patterns](./references/component-patterns.md)
-- [Performance Optimization](./references/performance.md)
-- [TypeScript Best Practices](./references/typescript.md)
-
-## Example Invocation
-
-```
-/nextjs-best-practices
-/nextjs-best-practices src/components/Hero.tsx
-/nextjs-best-practices src/components/sections/
-```
+1. **Summary** — overall health (Excellent / Good / Needs Improvement / Poor)
+2. **Critical Issues** — must-fix with file and line references
+3. **Improvements** — should-fix, ordered by impact
+4. **Refactoring Plan** — step-by-step if major changes are needed
 
 ## Post-Review Actions
 
-After identifying issues:
-1. Implement fixes using multi_replace_string_in_file for efficiency
-2. Run linter: `npm run lint` or `next lint`
-3. Verify build: `npm run build`
-4. Test functionality manually
-5. Update tests if applicable
+1. Apply fixes with `multi_replace_string_in_file` for efficiency
+2. Run `npm run lint` or `next lint`
+3. Verify with `npm run build`
+4. Manually test affected functionality
