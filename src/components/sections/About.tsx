@@ -303,17 +303,6 @@ export default function About() {
       </div>
 
       <style jsx>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
         @media (prefers-reduced-motion: reduce) {
           * {
             animation: none !important;
