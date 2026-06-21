@@ -14,6 +14,21 @@ export const GITHUB_USERNAME = "super-momon";
 export const LINKEDIN_URL = "https://linkedin.com/in/super-momon";
 export const LINKEDIN_USERNAME = "super-momon";
 
+// ─── Navigation ───────────────────────────────────────────────────────────────
+export interface NavLink {
+  label: string;
+  href: string;
+}
+
+export const NAV_LINKS: NavLink[] = [
+  { label: "About", href: "/#about" },
+  { label: "Experience", href: "/#experience" },
+  { label: "Projects", href: "/#projects" },
+  { label: "Skills", href: "/#skills" },
+  { label: "Education", href: "/#education" },
+  { label: "Contact", href: "/#contact" },
+];
+
 // ─── Site ─────────────────────────────────────────────────────────────────────
 export const SITE_URL = "https://super-momon.github.io";
 export const SITE_NAME = `${SITE_OWNER} — Portfolio`;
