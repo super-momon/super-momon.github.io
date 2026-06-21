@@ -12,6 +12,7 @@ const education = [
     details:
       "Gained hands-on experience with AWS services including EC2, S3, Lambda, and RDS. Contributed to several projects using AWS Services, learning about cloud architecture, serverless computing, and best practices for scalability and security.",
     skills: ["AWS", "Cloud Computing", "Serverless", "DevOps"],
+    certifications: [],
   },
   {
     icon: "fa-brands fa-linkedin",
@@ -21,6 +22,7 @@ const education = [
     details:
       "80+ LinkedIn Learning Certificates. Continuously expanding my knowledge through courses on JavaScript, TypeScript, Next.js, Software architecture, and intermediate to advanced topics. Focused on best practices, design patterns, and modern development workflows.",
     skills: ["Best Practices", "UI/UX", "Software Architecture", "Software Development Cycle"],
+    certifications: [],
   },
   {
     icon: "fa-brands fa-free-code-camp",
@@ -30,6 +32,10 @@ const education = [
     details:
       "Completed a comprehensive web development bootcamp covering HTML, CSS, JavaScript, React, Node.js, and database management.",
     skills: ["Responsive Design", "JavaScript", "Data Structures", "Algorithms"],
+    certifications: [
+      'https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/javascript-algorithms-and-data-structures',
+      'https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/responsive-web-design',
+    ],
   },
   {
     icon: "fa-solid fa-graduation-cap",
@@ -39,6 +45,7 @@ const education = [
     details:
       "Focused on algorithms, distributed systems, and human-computer interaction. Capstone project: An online platform for asynchronous learning and collaboration.",
     skills: ["Programming", "Web Development", "UI/UX", "OOP", "Data Structures"],
+    certifications: [],
   },
 ];
 
@@ -285,6 +292,83 @@ export default function Education() {
                     ))}
                   </div>
                 </div>
+
+                {/* Certifications */}
+                {selectedItem.certifications && selectedItem.certifications.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-bold text-[var(--color-accent)] mb-4 uppercase tracking-widest">
+                      Certifications
+                    </h4>
+                    <div className="space-y-3">
+                      {selectedItem.certifications.map((cert, index) => {
+                        // Extract domain/platform from URL for display
+                        let platformName = "View Certificate";
+                        try {
+                          const url = new URL(cert);
+                          const hostname = url.hostname.replace('www.', '');
+                          platformName = hostname.split('.')[0];
+                          platformName = platformName.charAt(0).toUpperCase() + platformName.slice(1);
+                        } catch (e) {
+                          // Keep default if URL parsing fails
+                        }
+
+                        return (
+                          <a
+                            key={index}
+                            href={cert}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative flex items-center justify-between gap-4 p-4 rounded-xl
+                                       bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20
+                                       hover:bg-[var(--color-accent)]/10 hover:border-[var(--color-accent)]/40
+                                       hover:shadow-[0_8px_30px_rgba(0,199,88,0.15)]
+                                       transition-all duration-300 hover:translate-x-1
+                                       active:scale-[0.98] overflow-hidden"
+                            style={{
+                              animationDelay: `${index * 75}ms`,
+                            }}
+                          >
+                            {/* Animated glow effect */}
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--color-accent)]/10 to-transparent 
+                                              translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                            </div>
+
+                            <div className="flex items-center gap-3 flex-1 relative z-10">
+                              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent)]/10 
+                                              border border-[var(--color-accent)]/30
+                                              flex items-center justify-center shrink-0
+                                              group-hover:bg-[var(--color-accent)]/20 
+                                              group-hover:shadow-[0_0_15px_rgba(0,199,88,0.3)]
+                                              transition-all duration-300">
+                                <i className="fa-solid fa-award text-[var(--color-accent)]" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-[var(--color-foreground)] 
+                                              group-hover:text-[var(--color-accent)] transition-colors duration-300">
+                                  {platformName} Certification
+                                </p>
+                                <p className="text-xs text-[var(--color-muted)] truncate mt-0.5">
+                                  {cert}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="relative z-10 flex items-center gap-2 text-[var(--color-accent)] shrink-0">
+                              <span className="text-xs font-medium uppercase tracking-wider opacity-0 
+                                               group-hover:opacity-100 transition-opacity duration-300">
+                                View
+                              </span>
+                              <i className="fa-solid fa-arrow-up-right-from-square text-sm
+                                           group-hover:translate-x-0.5 group-hover:-translate-y-0.5 
+                                           transition-transform duration-300" />
+                            </div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
