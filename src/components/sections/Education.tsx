@@ -2,10 +2,13 @@
 
 import { FadeIn } from "@/components/FadeIn";
 import { useState, useRef, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGraduationCap, faArrowUpRightFromSquare, faXmark, faAward, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faAws, faLinkedin, faFreeCodeCamp } from "@fortawesome/free-brands-svg-icons";
 
 const education = [
   {
-    icon: "fa-brands fa-aws",
+    icon: faAws,
     topic: "AWS Services",
     institution: "AWS Skill Builder",
     period: "2024 - Present",
@@ -15,7 +18,7 @@ const education = [
     certifications: [],
   },
   {
-    icon: "fa-brands fa-linkedin",
+    icon: faLinkedin,
     topic: "Various Programming Courses",
     institution: "LinkedIn Learning",
     period: "2022 - Present",
@@ -25,7 +28,7 @@ const education = [
     certifications: [],
   },
   {
-    icon: "fa-brands fa-free-code-camp",
+    icon: faFreeCodeCamp,
     topic: "Programming Bootcamp",
     institution: "Freecodecamp",
     period: "2021 - 2022",
@@ -38,7 +41,7 @@ const education = [
     ],
   },
   {
-    icon: "fa-solid fa-graduation-cap",
+    icon: faGraduationCap,
     topic: "B.S. in Information Technology",
     institution: "University of Cebu - Lapulapu and Mandaue",
     period: "2018 - 2022",
@@ -145,7 +148,7 @@ export default function Education() {
                     <div className="w-14 h-14 rounded-xl bg-[var(--color-accent)]/10 flex items-center justify-center
                                     group-hover:bg-[var(--color-accent)]/20 transition-colors duration-300
                                     group-hover:shadow-[0_0_20px_rgba(0,199,88,0.3)]">
-                      <i className={`text-[var(--color-accent)] text-xl ${item.icon || "fa-solid fa-graduation-cap"}`} />
+                      <FontAwesomeIcon icon={item.icon} className="text-[var(--color-accent)] text-xl" />
                     </div>
                   </div>
                   <div className="flex-1">
@@ -192,7 +195,7 @@ export default function Education() {
                 {/* Click indicator */}
                 <div className="absolute bottom-6 right-6 text-[var(--color-muted)] text-xs 
                                 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <i className="fa-solid fa-arrow-up-right-from-square" />
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                 </div>
               </div>
             </FadeIn>
@@ -228,7 +231,7 @@ export default function Education() {
                 <div className="shrink-0">
                   <div className="w-16 h-16 rounded-2xl bg-[var(--color-accent)]/10 flex items-center justify-center
                                   shadow-[0_0_30px_rgba(0,199,88,0.2)] border border-[var(--color-accent)]/20">
-                    <i className={`text-[var(--color-accent)] text-2xl ${selectedItem.icon || "fa-solid fa-graduation-cap"}`} />
+                    <FontAwesomeIcon icon={selectedItem.icon} className="text-[var(--color-accent)] text-2xl" />
                   </div>
                 </div>
                 <div className="flex-1">
@@ -243,8 +246,7 @@ export default function Education() {
                                  hover:scale-110 active:scale-95 group"
                       aria-label="Close modal"
                     >
-                      <i className="fa-solid fa-xmark text-[var(--color-muted)] text-xl 
-                                    group-hover:text-[var(--color-accent)] transition-colors" />
+                      <FontAwesomeIcon icon={faXmark} className="text-[var(--color-muted)] text-xl group-hover:text-[var(--color-accent)] transition-colors" />
                     </button>
                   </div>
                   <p className="text-[var(--color-accent)] text-lg font-bold mb-1">
@@ -341,7 +343,7 @@ export default function Education() {
                                               group-hover:bg-[var(--color-accent)]/20 
                                               group-hover:shadow-[0_0_15px_rgba(0,199,88,0.3)]
                                               transition-all duration-300">
-                                <i className="fa-solid fa-award text-[var(--color-accent)]" />
+                                <FontAwesomeIcon icon={faAward} className="text-[var(--color-accent)]" />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold text-[var(--color-foreground)] 
@@ -359,9 +361,7 @@ export default function Education() {
                                                group-hover:opacity-100 transition-opacity duration-300">
                                 View
                               </span>
-                              <i className="fa-solid fa-arrow-up-right-from-square text-sm
-                                           group-hover:translate-x-0.5 group-hover:-translate-y-0.5 
-                                           transition-transform duration-300" />
+                              <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-sm group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
                             </div>
                           </a>
                         );

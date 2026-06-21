@@ -1,4 +1,10 @@
 import type { Metadata } from "next";
+
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+import '@/lib/icons'
+config.autoAddCss = false
+
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
@@ -127,12 +133,33 @@ export default function RootLayout({
           }}
         />
 
-        {/* Font Awesome */}
-        <Script
+        {/* Font Awesome - Configure to prevent hydration mismatch */}
+        {/* <Script
+          id="font-awesome-config"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.FontAwesomeConfig = { autoReplaceSvg: false };
+            `,
+          }}
+        /> */}
+        {/* <Script
           src="https://kit.fontawesome.com/71cdb6ba78.js"
           crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        /> */}
+        {/* <Script
+          id="font-awesome-init"
           strategy="afterInteractive"
-        />
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (window.FontAwesome) {
+                window.FontAwesome.config.autoReplaceSvg = 'nest';
+                window.FontAwesome.dom.i2svg();
+              }
+            `,
+          }}
+        /> */}
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
           {children}

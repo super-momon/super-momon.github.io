@@ -6,25 +6,28 @@ import Experience from "@/components/sections/Experience";
 import Education from "@/components/sections/Education";
 import Contact from "@/components/sections/Contact";
 import MarqueeBanner from "@/components/common/MarqueeBanner";
+import { ClientPageWrapper } from "@/components/ClientPageWrapper";
 
 export default function Home() {
   return (
-    <main>
-      <Hero />
+    <ClientPageWrapper>
+      <main>
+        <Hero />
 
-      <About />
+        <About />
 
-      <Experience />
+        <Experience />
 
-      <Projects />
+        <Projects />
 
-      <Skills />
+        <Skills />
 
-      <Education />
+        <Education />
 
-      <Contact />
+        <Contact />
 
-    </main>
+      </main>
+    </ClientPageWrapper>
   );
 }
 

@@ -5,6 +5,8 @@ import { FadeIn } from "@/components/FadeIn";
 import { HighlightText } from "@/components/common/HighlightText";
 import { trackEvent } from "@/lib/analytics";
 import { useState, useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
@@ -316,7 +318,7 @@ export default function Hero() {
               >
                 <span className="relative z-10 inline-flex items-center gap-2">
                   Resume
-                  <i className="fa-solid fa-arrow-down transition-transform group-hover:translate-y-1"></i>
+                  <FontAwesomeIcon icon={faArrowDown} className="transition-transform group-hover:translate-y-1" />
                 </span>
               </a>
             </div>
@@ -338,7 +340,7 @@ export default function Hero() {
               }}
             >
               <span className="text-xs uppercase tracking-widest font-medium">Scroll</span>
-              <i className="fa-solid fa-chevron-down text-sm"></i>
+              <FontAwesomeIcon icon={faChevronDown} className="text-sm" />
             </m.a>
           </FadeIn>
         </div>

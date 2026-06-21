@@ -3,6 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import MarqueeBanner from "./common/MarqueeBanner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBell,
+  faPalette,
+  faChartLine,
+  faBriefcase,
+  faInbox,
+  faArrowRight,
+  type IconDefinition
+} from "@fortawesome/free-solid-svg-icons";
+import { faClock, faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
 
 const navLinks = [
   { label: "About", href: "/#about" },
@@ -17,14 +28,14 @@ const notifications = [
   {
     id: 3,
     text: "✨ Refreshed website design with smooth animations, enhanced mobile experience, and modern aesthetic",
-    icon: "fa-solid fa-palette",
+    icon: faPalette,
     timestamp: "June 21, 2026",
     color: "text-purple-500",
   },
   {
     id: 2,
     text: "🎯 Completed Workplace Insight Professional Assessment by Criteria Corp",
-    icon: "fa-solid fa-chart-line",
+    icon: faChartLine,
     timestamp: "June 20, 2026",
     color: "text-blue-500",
     link: "#about",
@@ -33,7 +44,7 @@ const notifications = [
   {
     id: 1,
     text: "💼 Actively seeking new opportunities! Open to full-time roles and exciting projects",
-    icon: "fa-solid fa-briefcase",
+    icon: faBriefcase,
     timestamp: "June 01, 2026",
     color: "text-green-500",
     link: "#contact",
@@ -91,34 +102,11 @@ function ThemeToggle() {
       className="relative w-10 h-10 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/50 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 backdrop-blur-sm transition-all duration-300 will-change-transform"
       style={{ transitionProperty: 'color, background-color, border-color' }}
     >
-      <div className="relative w-[18px] h-[18px]">
+      <div className="relative w-[18px] h-[18px] flex items-center justify-center">
         {resolvedTheme === "dark" ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="animate-[spin_20s_linear_infinite]"
-          >
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" />
-            <line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-            <line x1="1" y1="12" x2="3" y2="12" />
-            <line x1="21" y1="12" x2="23" y2="12" />
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-          </svg>
+          <FontAwesomeIcon icon={faSun} className="text-base" />
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
+          <FontAwesomeIcon icon={faMoon} className="text-base" />
         )}
       </div>
     </button>
@@ -167,7 +155,10 @@ function NotificationDropdown() {
         className="relative w-10 h-10 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/50 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 backdrop-blur-sm transition-all duration-300 will-change-transform group"
         style={{ transitionProperty: 'color, background-color, border-color' }}
       >
-        <i className={`fa-solid fa-bell text-base transition-transform duration-300 ${isOpen ? 'scale-110 rotate-12' : 'group-hover:scale-110'}`}></i>
+        <span suppressHydrationWarning>
+          {/* <i className={`fa-solid fa-bell text-base transition-transform duration-300 ${isOpen ? 'scale-110 rotate-12' : 'group-hover:scale-110'}`}></i> */}
+          <FontAwesomeIcon icon={faBell} className={`text-base transition-transform duration-300 ${isOpen ? 'scale-110 rotate-12' : 'group-hover:scale-110'}`} suppressHydrationWarning />
+        </span>
         {notifications.length > 0 && (
           <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-red-500/30 animate-pulse">
             {notifications.length}
@@ -205,7 +196,7 @@ function NotificationDropdown() {
             {notifications.length === 0 ? (
               <div className="px-5 py-12 text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--color-surface)]/50 mb-3">
-                  <i className="fa-solid fa-inbox text-2xl text-[var(--color-muted)]"></i>
+                  <FontAwesomeIcon icon={faInbox} className="text-2xl text-[var(--color-muted)]" />
                 </div>
                 <p className="text-sm text-[var(--color-muted)] font-medium">
                   All caught up!
@@ -230,7 +221,7 @@ function NotificationDropdown() {
                     <div className="flex-shrink-0 mt-0.5 relative">
                       <div className={`absolute inset-0 ${notification.color} opacity-20 blur-lg rounded-full`} />
                       <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-[var(--color-surface)]/80 backdrop-blur-sm border border-[var(--color-border)]/50">
-                        <i className={`${notification.icon} ${notification.color} text-base`}></i>
+                        <FontAwesomeIcon icon={notification.icon} className={`${notification.color} text-base`} />
                       </div>
                     </div>
 
@@ -242,7 +233,7 @@ function NotificationDropdown() {
 
                       <div className="flex items-center justify-between mt-2.5 gap-3">
                         <div className="flex items-center gap-1.5 text-[11px] text-[var(--color-muted)]">
-                          <i className="fa-regular fa-clock text-[10px]"></i>
+                          <FontAwesomeIcon icon={faClock} className="text-[10px]" />
                           <span>{notification.timestamp}</span>
                         </div>
 
@@ -253,7 +244,7 @@ function NotificationDropdown() {
                             className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] bg-[var(--color-accent)]/5 hover:bg-[var(--color-accent)]/10 rounded-lg transition-all duration-200 group/link"
                           >
                             {notification.linkText}
-                            <i className="fa-solid fa-arrow-right text-[9px] group-hover/link:translate-x-0.5 transition-transform"></i>
+                            <FontAwesomeIcon icon={faArrowRight} className="text-[9px] group-hover/link:translate-x-0.5 transition-transform" />
                           </a>
                         )}
                       </div>
@@ -360,7 +351,7 @@ export default function Navbar() {
       <nav className="w-full max-w-6xl mx-auto px-6 h-16 flex justify-between items-center relative">
         {/* Logo with premium hover effect */}
         <a
-          href="#hero"
+          href="/#hero"
           className="relative text-lg font-bold text-[var(--color-foreground)] hover:text-[var(--color-accent)] transition-all duration-300 justify-self-start group z-10"
         >
           <span className="relative inline-block">
@@ -467,7 +458,7 @@ export default function Navbar() {
                   {/* Content */}
                   <span className="relative z-10 flex items-center justify-between">
                     <span>{link.label}</span>
-                    <i className="fa-solid fa-arrow-right text-[10px] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></i>
+                    <FontAwesomeIcon icon={faArrowRight} className="text-[10px] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                   </span>
 
                   {/* Left accent line */}

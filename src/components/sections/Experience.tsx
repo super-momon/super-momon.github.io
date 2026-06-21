@@ -2,6 +2,8 @@
 
 import { FadeIn } from "@/components/FadeIn";
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faIndustry } from "@fortawesome/free-solid-svg-icons";
 
 const experiences = [
   {
@@ -122,7 +124,7 @@ export default function Experience() {
                           {exp.company}
                         </p>
                         <p className="text-sm text-[var(--color-muted)] flex items-center gap-2 mt-2">
-                          <i className="fa-solid fa-industry text-[var(--color-accent)]"></i>
+                          <FontAwesomeIcon icon={faIndustry} className="text-[var(--color-accent)]" />
                           <span className="font-medium">Industry:</span>
                           <span>{exp.industry}</span>
                         </p>

@@ -5,22 +5,39 @@ import { motion, useInView, useMotionValue, useSpring, useTransform } from 'moti
 
 const buys = [
   {
-    name: "Phone",
+    name: "Xiaomi 17T Pro",
     date: "2026-06-01",
-    price: 1000.00,
-    category: "Electronics"
+    price: 42599.00,
+    category: "Electronics",
+    costPerDayTarget: 50.00
   },
   {
-    name: "Laptop",
-    date: "2026-05-15",
-    price: 2500.00,
-    category: "Electronics"
+    name: "ASUS Zenbook 14X OLED",
+    date: "2024-01-30",
+    price: 57230.00,
+    category: "Electronics",
+    costPerDayTarget: 50.00
   },
   {
-    name: "Headphones",
-    date: "2026-04-20",
-    price: 350.00,
-    category: "Audio"
+    name: "Dentist",
+    date: "2026-03-25",
+    price: 42500.00,
+    category: "Health",
+    costPerDayTarget: 50.00
+  },
+  {
+    name: "FujiFilm XS20",
+    date: "2025-12-25",
+    price: 85000.00,
+    category: "Electronics",
+    costPerDayTarget: 120.00
+  },
+  {
+    name: "Road Bike",
+    date: "2025-02-10",
+    price: 25990.00,
+    category: "Exercise",
+    costPerDayTarget: 100.00
   }
 ]
 
@@ -81,7 +98,7 @@ function MagneticBuyCard({ buy, index }: { buy: typeof buys[0], index: number })
       viewport={{ once: true, margin: "-100px" }}
       transition={{
         duration: 0.8,
-        delay: index * 0.15,
+        delay: (index % 2) * 0.1 + Math.floor(index / 2) * 0.15,
         ease: [0.21, 0.47, 0.32, 0.98]
       }}
       onMouseMove={handleMouseMove}
@@ -95,8 +112,8 @@ function MagneticBuyCard({ buy, index }: { buy: typeof buys[0], index: number })
       className="group relative will-change-transform"
     >
       <motion.div
-        className="relative overflow-hidden rounded-2xl border border-border bg-surface/60 backdrop-blur-xl p-8 hover:border-accent/50 transition-colors duration-500"
-        whileHover={{ scale: 1.02 }}
+        className="relative overflow-hidden rounded-2xl border border-border bg-surface/60 backdrop-blur-xl p-6 lg:p-8 hover:border-accent/50 transition-colors duration-500 h-full"
+        whileHover={{ scale: 1.015 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
       >
         {/* Atmospheric noise overlay */}
@@ -130,7 +147,7 @@ function MagneticBuyCard({ buy, index }: { buy: typeof buys[0], index: number })
 
           {/* Item name - extreme scale */}
           <motion.h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight"
+            className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-4 leading-tight"
             style={{
               textShadow: isHovered ? '0 0 40px rgba(var(--color-accent-rgb), 0.3)' : 'none',
               transition: 'text-shadow 0.5s ease',
@@ -198,7 +215,7 @@ function MagneticBuyCard({ buy, index }: { buy: typeof buys[0], index: number })
                 </p>
                 <div className="flex items-baseline gap-2">
                   <motion.p
-                    className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-accent to-accent/60 bg-clip-text text-transparent"
+                    className="text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-accent to-accent/60 bg-clip-text text-transparent"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                   >
@@ -214,6 +231,25 @@ function MagneticBuyCard({ buy, index }: { buy: typeof buys[0], index: number })
                 >
                   Based on {days} {days === 1 ? 'day' : 'days'} of ownership
                 </motion.p>
+
+                {/* Target comparison */}
+                <motion.div
+                  className="flex items-center gap-2 mt-2 pt-2 border-t border-border/30"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <span className="text-xs text-muted/60">Target: ₱{buy.costPerDayTarget.toFixed(2)}/day</span>
+                  {dailyCost <= buy.costPerDayTarget ? (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 border border-green-500/20">
+                      ✓ On track
+                    </span>
+                  ) : (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                      ↑ Above target
+                    </span>
+                  )}
+                </motion.div>
               </div>
 
               {/* Visual indicator - animated ring */}
@@ -373,9 +409,9 @@ export default function BuysPage() {
 
       {/* Purchases Grid - Scroll-driven reveals */}
       <section className="relative px-6 py-20">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1600px] mx-auto">
           <motion.div
-            className="space-y-6"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: "-50px" }}

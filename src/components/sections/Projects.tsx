@@ -2,6 +2,8 @@
 
 import { FadeIn } from "@/components/FadeIn";
 import { useRef, useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWandSparkles } from "@fortawesome/free-solid-svg-icons";
 
 const projects = [
   {
@@ -130,7 +132,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
 
                     {/* Content */}
                     <span className="relative z-10 flex items-center gap-1.5">
-                      <i className="fa-solid fa-wand-sparkles text-xs text-violet-300 drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]"></i>
+                      <FontAwesomeIcon icon={faWandSparkles} className="text-xs text-violet-300 drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
                       <span className="text-violet-200 font-black drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]">AI</span>
                     </span>
                   </span>

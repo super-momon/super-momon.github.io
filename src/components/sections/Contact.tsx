@@ -4,22 +4,25 @@ import { FadeIn } from "@/components/FadeIn";
 import { trackEvent } from "@/lib/analytics";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/constants";
 import { useRef, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faArrowRight, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
 const socialLinks = [
   {
     label: "GitHub",
     href: GITHUB_URL,
-    icon: 'fa-brands fa-github',
+    icon: faGithub,
   },
   {
     label: "LinkedIn",
     href: LINKEDIN_URL,
-    icon: 'fa-brands fa-linkedin',
+    icon: faLinkedin,
   },
   {
     label: "Email",
     href: `mailto:${EMAIL}`,
-    icon: 'fa-solid fa-envelope',
+    icon: faEnvelope,
   },
 ];
 
@@ -117,7 +120,7 @@ export default function Contact() {
                               bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
               <span className="relative z-10">Start a Conversation</span>
-              <i className="fa-solid fa-arrow-right relative z-10 transition-transform duration-300 group-hover:translate-x-1"></i>
+              <FontAwesomeIcon icon={faArrowRight} className="relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </div>
         </FadeIn>
@@ -154,9 +157,7 @@ export default function Contact() {
                                   group-hover:-translate-y-2
                                   group-active:scale-95"
                   >
-                    <i className={`text-2xl ${link.icon} text-[var(--color-muted)] 
-                                   transition-colors duration-300
-                                   group-hover:text-[var(--color-accent)]`}></i>
+                    <FontAwesomeIcon icon={link.icon} className="text-2xl text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-accent)]" />
                   </div>
 
                   {/* Label on hover */}

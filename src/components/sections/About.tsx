@@ -2,9 +2,20 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FadeIn } from "@/components/FadeIn";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLayerGroup,
+  faPlug,
+  faGaugeHigh,
+  faMapMarkerAlt,
+  faBuilding,
+  faChartLine,
+  faArrowRight,
+  type IconDefinition
+} from "@fortawesome/free-solid-svg-icons";
 
 interface InfoCardProps {
-  icon: string;
+  icon: IconDefinition;
   label: string;
   value: string;
   delay: number;
@@ -45,7 +56,7 @@ function InfoCard({ icon, label, value, delay }: InfoCardProps) {
       className="relative flex items-center gap-4 p-4 rounded-xl bg-[var(--color-surface)]/50 backdrop-blur-sm border border-[var(--color-border)] transition-all duration-300 will-change-transform group hover:border-[var(--color-accent)]/50 hover:shadow-lg hover:shadow-[var(--color-accent)]/10 animate-[slideUp_0.6s_ease-out_forwards] opacity-0"
     >
       <div className="relative flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-accent)]/5 border border-[var(--color-accent)]/20 group-hover:scale-110 transition-transform duration-300">
-        <i className={`${icon} text-xl text-[var(--color-accent)] group-hover:rotate-12 transition-transform duration-300`}></i>
+        <FontAwesomeIcon icon={icon} className="text-xl text-[var(--color-accent)] group-hover:rotate-12 transition-transform duration-300" />
         {isHovered && (
           <div
             className="absolute inset-0 rounded-lg bg-[var(--color-accent)]/20 blur-xl animate-pulse"
@@ -62,7 +73,7 @@ function InfoCard({ icon, label, value, delay }: InfoCardProps) {
 }
 
 interface ExpertiseCardProps {
-  icon: string;
+  icon: IconDefinition;
   title: string;
   description: string;
   index: number;
@@ -84,7 +95,7 @@ function ExpertiseCard({ icon, title, description, index }: ExpertiseCardProps) 
 
       <div className="relative">
         <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-accent)]/5 mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-          <i className={`${icon} text-2xl text-[var(--color-accent)] group-hover:scale-110 transition-transform duration-300`}></i>
+          <FontAwesomeIcon icon={icon} className="text-2xl text-[var(--color-accent)] group-hover:scale-110 transition-transform duration-300" />
         </div>
         <h3 className="text-base font-bold text-[var(--color-foreground)] mb-2 group-hover:text-[var(--color-accent)] transition-colors duration-300">
           {title}
@@ -121,17 +132,17 @@ export default function About() {
 
   const expertiseAreas = [
     {
-      icon: "fa-solid fa-layer-group",
+      icon: faLayerGroup,
       title: "Full Stack Architecture",
       description: "End-to-end development of scalable web applications with modern frameworks and cloud infrastructure"
     },
     {
-      icon: "fa-solid fa-plug",
+      icon: faPlug,
       title: "System Integration",
       description: "Seamless third-party integrations, REST APIs, and event-driven architectures for connected ecosystems"
     },
     {
-      icon: "fa-solid fa-gauge-high",
+      icon: faGaugeHigh,
       title: "Performance Engineering",
       description: "Optimization of application performance, system reliability, and maintainable design patterns"
     }
@@ -226,13 +237,13 @@ export default function About() {
             {/* Info Cards */}
             <div className="space-y-3">
               <InfoCard
-                icon="fa-solid fa-map-marker-alt"
+                icon={faMapMarkerAlt}
                 label="Location"
                 value="Cebu, Philippines"
                 delay={0}
               />
               <InfoCard
-                icon="fa-solid fa-building"
+                icon={faBuilding}
                 label="Current Company"
                 value="Talleco.com Inc. | JobTarget PH"
                 delay={100}
@@ -264,7 +275,7 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
 
                 <div className="relative flex items-center justify-center w-14 h-14 rounded-xl bg-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                  <i className="fa-solid fa-chart-line text-2xl text-[#002554]"></i>
+                  <FontAwesomeIcon icon={faChartLine} className="text-2xl text-[#002554]" />
                 </div>
 
                 <div className="relative flex-1">
@@ -284,7 +295,7 @@ export default function About() {
                   </div>
                 </div>
 
-                <i className="relative fa-solid fa-arrow-right text-white text-xl opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300"></i>
+                <FontAwesomeIcon icon={faArrowRight} className="relative text-white text-xl opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
               </a>
             </div>
           </FadeIn>
