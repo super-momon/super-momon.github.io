@@ -12,8 +12,8 @@ export default function About() {
           </h2>
         </FadeIn>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <FadeIn direction="left">
+        <div className="grid md:grid-cols-3 gap-12 items-center">
+          <FadeIn direction="left" className="col-span-1">
             <div className="flex justify-center">
               <div className="w-56 h-56 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center overflow-hidden">
                 {/* Replace src with your actual photo */}
@@ -26,7 +26,7 @@ export default function About() {
             </div>
           </FadeIn>
 
-          <FadeIn direction="right" delay={0.15}>
+          <FadeIn direction="right" delay={0.15} className="col-span-2">
             <div className="space-y-4">
               <p className="text-[var(--color-muted)] leading-relaxed">
                 Full Stack Software Developer with 4+ years of experience designing,
