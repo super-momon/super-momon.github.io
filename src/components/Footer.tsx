@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <React.Fragment>
       <footer className="border-t border-[var(--color-border)] py-8 mt-16">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 h-[400px]">
           <p className="text-sm text-[var(--color-muted)]">
             © {year} &nbsp; Mark Raymond Ayade
           </p>
