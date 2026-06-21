@@ -15,6 +15,13 @@ const navLinks = [
 
 const notifications = [
   {
+    id: 3,
+    text: "✨ Refreshed website design with smooth animations, enhanced mobile experience, and modern aesthetic",
+    icon: "fa-solid fa-palette",
+    timestamp: "June 21, 2026",
+    color: "text-purple-500",
+  },
+  {
     id: 2,
     text: "🎯 Completed Workplace Insight Professional Assessment by Criteria Corp",
     icon: "fa-solid fa-chart-line",
