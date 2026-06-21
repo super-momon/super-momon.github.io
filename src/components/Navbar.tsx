@@ -139,13 +139,22 @@ function NotificationDropdown() {
       }
     };
 
+    const handleScroll = () => {
+      if (isOpen) {
+        setIsOpen(false);
+        setTimeout(() => setHasAnimated(false), 300);
+      }
+    };
+
     if (isOpen) {
       setHasAnimated(true);
       document.addEventListener("mousedown", handleClickOutside);
+      window.addEventListener("scroll", handleScroll, { passive: true });
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [isOpen]);
 
