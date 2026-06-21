@@ -82,8 +82,8 @@ export default function Experience() {
                   {/* Enhanced animated dot */}
                   <div
                     className={`hidden sm:flex absolute left-[7px] top-2 w-5 h-5 rounded-full items-center justify-center transition-all duration-500 ${exp.current || hoveredIndex === i
-                        ? "scale-125"
-                        : "scale-100"
+                      ? "scale-125"
+                      : "scale-100"
                       }`}
                     style={{
                       background: exp.current || hoveredIndex === i
@@ -99,8 +99,8 @@ export default function Experience() {
 
                   <div
                     className={`p-8 rounded-2xl border backdrop-blur-sm transition-all duration-500 ${exp.current
-                        ? "bg-[var(--color-background)]/80 border-[var(--color-accent)] shadow-2xl shadow-[var(--color-accent)]/20"
-                        : "bg-[var(--color-background)]/60 border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:shadow-xl hover:shadow-[var(--color-accent)]/10"
+                      ? "bg-[var(--color-background)]/80 border-[var(--color-accent)] shadow-2xl shadow-[var(--color-accent)]/20"
+                      : "bg-[var(--color-background)]/60 border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:shadow-xl hover:shadow-[var(--color-accent)]/10"
                       } ${hoveredIndex === i ? "translate-x-2" : "translate-x-0"
                       }`}
                     style={{

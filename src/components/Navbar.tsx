@@ -11,11 +11,28 @@ import {
   faBriefcase,
   faInbox,
   faArrowRight,
-  type IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
 import { faClock, faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
-const navLinks = [
+// TypeScript Interfaces
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+interface Notification {
+  id: number;
+  text: string;
+  icon: IconDefinition;
+  timestamp: string;
+  color: string;
+  link?: string;
+  linkText?: string;
+}
+
+// Navigation configuration
+const navLinks: NavLink[] = [
   { label: "About", href: "/#about" },
   { label: "Experience", href: "/#experience" },
   { label: "Projects", href: "/#projects" },
@@ -24,7 +41,8 @@ const navLinks = [
   { label: "Contact", href: "/#contact" },
 ];
 
-const notifications = [
+// Notifications data
+const notifications: Notification[] = [
   {
     id: 3,
     text: "✨ Refreshed website design with smooth animations, enhanced mobile experience, and modern aesthetic",
@@ -52,7 +70,13 @@ const notifications = [
   },
 ];
 
-// Magnetic button hook for premium micro-interactions
+/**
+ * Custom hook for magnetic button effect that creates premium micro-interactions.
+ * Button follows cursor movement within its boundaries.
+ * 
+ * @param strength - Multiplier for the magnetic effect intensity (default: 0.4)
+ * @returns Ref to attach to the button element
+ */
 function useMagneticEffect(strength = 0.4) {
   const ref = useRef<HTMLButtonElement>(null);
 
@@ -86,6 +110,10 @@ function useMagneticEffect(strength = 0.4) {
   return ref;
 }
 
+/**
+ * Theme toggle button component with magnetic hover effect.
+ * Switches between light and dark themes.
+ */
 function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
@@ -113,6 +141,10 @@ function ThemeToggle() {
   );
 }
 
+/**
+ * Notification dropdown component displaying recent updates.
+ * Auto-closes on outside click or scroll.
+ */
 function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -156,8 +188,11 @@ function NotificationDropdown() {
         style={{ transitionProperty: 'color, background-color, border-color' }}
       >
         <span suppressHydrationWarning>
-          {/* <i className={`fa-solid fa-bell text-base transition-transform duration-300 ${isOpen ? 'scale-110 rotate-12' : 'group-hover:scale-110'}`}></i> */}
-          <FontAwesomeIcon icon={faBell} className={`text-base transition-transform duration-300 ${isOpen ? 'scale-110 rotate-12' : 'group-hover:scale-110'}`} suppressHydrationWarning />
+          <FontAwesomeIcon
+            icon={faBell}
+            className={`text-base transition-transform duration-300 ${isOpen ? 'scale-110 rotate-12' : 'group-hover:scale-110'}`}
+            suppressHydrationWarning
+          />
         </span>
         {notifications.length > 0 && (
           <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-red-500/30 animate-pulse">
@@ -256,53 +291,15 @@ function NotificationDropdown() {
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes dropdownSlideIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95) translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-
-        @keyframes notificationSlideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: var(--color-surface);
-          border-radius: 10px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: var(--color-border);
-          border-radius: 10px;
-          transition: background 0.2s;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: var(--color-muted);
-        }
-      `}</style>
     </div>
   );
 }
 
+/**
+ * Main navigation bar component with scroll-aware behavior.
+ * Features: theme toggle, notifications, responsive mobile menu, magnetic interactions.
+ * Auto-hides on scroll down, shows on scroll up.
+ */
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -470,7 +467,30 @@ export default function Navbar() {
         </div>
       )}
 
+      {/* Global animation styles */}
       <style jsx>{`
+        @keyframes dropdownSlideIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes notificationSlideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
         @keyframes mobileMenuSlideDown {
           from {
             opacity: 0;
@@ -491,6 +511,25 @@ export default function Navbar() {
             opacity: 1;
             transform: translateX(0);
           }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: var(--color-surface);
+          border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: var(--color-border);
+          border-radius: 10px;
+          transition: background 0.2s;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: var(--color-muted);
         }
 
         @media (prefers-reduced-motion: reduce) {
