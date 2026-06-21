@@ -89,6 +89,20 @@ a {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
 .marquee {
   --gap: 1rem;
   position: relative;
@@ -96,6 +110,20 @@ a {
   overflow: hidden;
   user-select: none;
   gap: var(--gap);
+}
+
+/* Premium UI - 3D Transform Support */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .marquee-content {

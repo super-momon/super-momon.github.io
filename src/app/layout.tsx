@@ -71,6 +71,11 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
   },
+  icons: {
+    icon: "https://github.githubassets.com/favicons/favicon.svg",
+    shortcut: "https://github.githubassets.com/favicons/favicon.svg",
+    apple: "https://github.githubassets.com/favicons/favicon.svg",
+  },
 };
 
 export default function RootLayout({
