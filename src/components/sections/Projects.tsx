@@ -1,6 +1,6 @@
 "use client";
 
-import { FadeIn } from "@/components/FadeIn";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandSparkles } from "@fortawesome/free-solid-svg-icons";
@@ -37,201 +37,227 @@ const projects = [
 
 function ProjectCard({ project, index }: { project: typeof projects[0]; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const card = cardRef.current;
     if (!card) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
+    const onMouseMove = (e: MouseEvent) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      setMousePosition({ x, y });
+      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     };
-
-    card.addEventListener("mousemove", handleMouseMove);
-    return () => card.removeEventListener("mousemove", handleMouseMove);
+    card.addEventListener("mousemove", onMouseMove);
+    return () => card.removeEventListener("mousemove", onMouseMove);
   }, []);
 
-  const magneticStyle = isHovered
-    ? {
-      transform: `translateY(-8px) scale(1.02)`,
-    }
-    : {};
-
   return (
-    <FadeIn delay={index * 0.15}>
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -5 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="group relative h-full will-change-transform"
+    >
+      {/* Card body */}
       <div
-        ref={cardRef}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="group relative h-full"
+        className="relative h-full flex flex-col p-7 rounded-2xl border bg-surface/60 backdrop-blur-sm overflow-hidden"
         style={{
-          transition: "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          ...magneticStyle,
+          borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
+          transition: "border-color 0.3s ease",
         }}
       >
-        {/* Glow effect on hover */}
+        {/* Mouse spotlight using accent color */}
         <div
-          className="absolute -inset-4 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.25), rgba(236, 72, 153, 0.15), transparent 70%)`,
-            pointerEvents: "none",
+            opacity: isHovered ? 0.08 : 0,
+            transition: "opacity 0.4s ease",
+            background: `radial-gradient(360px circle at ${mousePos.x}px ${mousePos.y}px, var(--color-accent), transparent 55%)`,
           }}
         />
 
-        {/* Main card with glassmorphism */}
-        <div className="relative h-full p-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/50 backdrop-blur-sm overflow-hidden transition-all duration-500 group-hover:border-[var(--color-accent)]/50 group-hover:bg-[var(--color-surface)]/80">
-          {/* Animated gradient overlay */}
-          <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-            style={{
-              background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.06), transparent 40%)`,
-              pointerEvents: "none",
-            }}
-          />
+        {/* Grain texture */}
+        <div
+          className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
 
-          {/* Content */}
-          <div className="relative z-10">
-            {/* Header with badges */}
-            <div className="flex items-start justify-between gap-3 mb-6">
-              <h3 className="text-2xl font-bold text-[var(--color-foreground)] group-hover:text-[var(--color-accent)] transition-colors duration-300 leading-tight">
-                {project.title}
-              </h3>
-              <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Content */}
+        <div className="relative z-10 flex flex-col flex-1">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-3 mb-5">
+            <h3
+              className="text-xl font-bold leading-snug"
+              style={{
+                color: isHovered ? "var(--color-accent)" : "var(--color-foreground)",
+                transition: "color 0.25s ease",
+              }}
+            >
+              {project.title}
+            </h3>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Type badge */}
+              <span className="px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider border border-border text-muted bg-background/50 whitespace-nowrap">
+                {project.type}
+              </span>
+              {/* AI badge */}
+              {project.withAi && (
                 <span
-                  className={`
-                    px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap
-                    ${project.type === "work"
-                      ? "bg-blue-500/15 text-blue-600 dark:bg-blue-400/15 dark:text-blue-400 border border-blue-500/30"
-                      : project.type === "personal"
-                        ? "bg-purple-500/15 text-purple-600 dark:bg-purple-400/15 dark:text-purple-400 border border-purple-500/30"
-                        : "bg-green-500/15 text-green-600 dark:bg-green-400/15 dark:text-green-400 border border-green-500/30"
-                    }
-                    transition-all duration-300 group-hover:scale-105
-                  `}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider border border-accent/40 text-accent bg-accent/8 whitespace-nowrap"
+                  title="AI-Powered"
                 >
-                  {project.type}
-                </span>
-                {project.withAi && (
-                  <span
-                    className="relative px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest whitespace-nowrap overflow-hidden flex items-center gap-1.5 transition-all duration-500 group-hover:scale-110"
-                    title="AI-Powered"
-                  >
-                    {/* Animated gradient background */}
-                    <span className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 opacity-20 animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
-                    <span className="absolute inset-0 bg-gradient-to-r from-violet-500/30 to-fuchsia-500/30" />
-
-                    {/* Glow effect */}
-                    <span className="absolute inset-0 rounded-full shadow-[0_0_20px_rgba(139,92,246,0.4)] group-hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] transition-shadow duration-500" />
-
-                    {/* Border */}
-                    <span className="absolute inset-0 rounded-full border-2 border-violet-400/60" />
-
-                    {/* Content */}
-                    <span className="relative z-10 flex items-center gap-1.5">
-                      <FontAwesomeIcon icon={faWandSparkles} className="text-xs text-violet-300 drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
-                      <span className="text-violet-200 font-black drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]">AI</span>
-                    </span>
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-[15px] text-[var(--color-muted)] leading-relaxed mb-6 min-h-[120px]">
-              {project.description}
-            </p>
-
-            {/* Tags with staggered animation */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {project.tags.map((tag, i) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-background)]/70 backdrop-blur-sm border border-[var(--color-border)] text-[var(--color-muted)] transition-all duration-300 hover:border-[var(--color-accent)]/30 hover:text-[var(--color-foreground)] hover:scale-105"
-                  style={{
-                    transitionDelay: `${i * 30}ms`,
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* Action area */}
-            <div className="flex items-center gap-4 pt-4 border-t border-[var(--color-border)]/50">
-              {project.live ? (
-                <a
-                  href={project.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-all duration-300 group/link"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    viewBox="0 0 24 24"
-                    className="transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
-                  >
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                  <span>View Project</span>
-                </a>
-              ) : (
-                <span className="text-sm font-medium text-[var(--color-muted)]/50 italic">
-                  Internal Project
+                  <FontAwesomeIcon icon={faWandSparkles} className="text-[10px]" />
+                  AI
                 </span>
               )}
             </div>
           </div>
 
-          {/* Corner accent */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--color-accent)]/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          {/* Description */}
+          <p className="text-sm leading-relaxed text-muted mb-5 flex-1">
+            {project.description}
+          </p>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-2.5 py-1 rounded-md text-xs font-medium bg-background/70 border border-border text-muted"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div className="pt-4 border-t border-border/50">
+            {project.live ? (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent transition-colors duration-200 group/link"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  viewBox="0 0 24 24"
+                  className="transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                >
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+                View Project
+              </a>
+            ) : (
+              <span className="text-xs text-muted/50 font-medium italic">
+                Internal Project
+              </span>
+            )}
+          </div>
         </div>
       </div>
-    </FadeIn>
+    </motion.div>
   );
 }
 
 export default function Projects() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
   return (
-    <section id="projects" className="relative py-32 px-6 overflow-hidden">
-      {/* Ambient background elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-      </div>
+    <section
+      id="projects"
+      ref={sectionRef}
+      className="relative py-28 px-6 bg-background overflow-hidden"
+    >
+      {/* Ambient orbs */}
+      <motion.div
+        style={{ y: orb1Y }}
+        className="absolute top-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
+      <motion.div
+        style={{ y: orb2Y }}
+        className="absolute bottom-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
 
-      <div className="relative max-w-7xl mx-auto">
-        {/* Section header with enhanced typography */}
-        <FadeIn>
-          <div className="text-center mb-20">
-            <div className="inline-block mb-6">
-              <span className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/20">
-                Selected Work
-              </span>
-            </div>
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--color-foreground)] mb-6 tracking-tight">
-              Projects
-            </h2>
-            <p className="text-lg md:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
-              A selection of things I worked on and contributed to.
-            </p>
-          </div>
-        </FadeIn>
+      {/* Grain texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
 
-        {/* Projects grid with enhanced spacing */}
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="relative max-w-5xl mx-auto">
+        {/* Section header */}
+        <div className="text-center mb-14">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="inline-block mb-3 text-xs font-mono font-semibold tracking-[0.18em] uppercase text-accent"
+          >
+            Selected Work
+          </motion.span>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 22 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
+            className="text-[clamp(2.25rem,5vw,3.5rem)] font-bold text-foreground tracking-tight leading-[1.1] mb-4"
+          >
+            Projects &amp;{" "}
+            <span
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover"
+              style={{ fontStyle: "italic" }}
+            >
+              Contributions
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
+            className="text-muted text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+          >
+            A selection of things I worked on and contributed to.
+          </motion.p>
+
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={isInView ? { scaleX: 1 } : {}}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+            className="w-14 h-px mx-auto mt-6 bg-linear-to-r from-transparent via-accent to-transparent"
+          />
+        </div>
+
+        {/* Project cards grid */}
+        <div className="grid lg:grid-cols-3 gap-6">
           {projects.map((project, i) => (
             <ProjectCard key={project.title} project={project} index={i} />
           ))}

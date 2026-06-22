@@ -1,7 +1,7 @@
 "use client";
 
-import { FadeIn } from "@/components/FadeIn";
-import { useState } from "react";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndustry } from "@fortawesome/free-solid-svg-icons";
 
@@ -38,123 +38,174 @@ const experiences = [
   },
 ];
 
-export default function Experience() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section id="experience" className="py-32 px-6 bg-[var(--color-surface)] relative overflow-hidden">
-      {/* Atmospheric background texture */}
-      <div className="absolute inset-0 opacity-[0.015] pointer-events-none"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ x: 4, transition: { type: "spring", stiffness: 280, damping: 25 } }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="sm:pl-16 relative will-change-transform"
+    >
+      {/* Timeline dot */}
+      <div className="hidden sm:block absolute top-3" style={{ left: "7px" }}>
+        <motion.div
+          animate={{ scale: exp.current || isHovered ? 1.3 : 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="relative w-5 h-5 rounded-full bg-accent flex items-center justify-center"
+        >
+          <motion.div
+            animate={{ opacity: exp.current || isHovered ? 0.6 : 0.2 }}
+            transition={{ duration: 0.3 }}
+            className="absolute w-5 h-5 rounded-full bg-accent blur-md"
+            style={{ transform: "scale(1.6)" }}
+          />
+          <div className="relative w-2 h-2 rounded-full bg-white" />
+        </motion.div>
+      </div>
+
+      {/* Card */}
+      <div
+        className="p-7 rounded-2xl border backdrop-blur-sm"
         style={{
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' /%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' /%3E%3C/svg%3E")',
-          mixBlendMode: 'overlay'
+          borderColor: exp.current || isHovered ? "var(--color-accent)" : "var(--color-border)",
+          transition: "border-color 0.3s ease",
+        }}
+      >
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-5">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 flex-wrap mb-1.5">
+              <h3 className="text-xl font-bold text-foreground tracking-tight">
+                {exp.role}
+              </h3>
+              {exp.current && (
+                <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-widest bg-accent text-white">
+                  Active
+                </span>
+              )}
+            </div>
+            <p className="text-accent text-base font-semibold mb-2">{exp.company}</p>
+            <p className="text-sm text-muted flex items-center gap-2">
+              <FontAwesomeIcon icon={faIndustry} className="text-accent text-xs" />
+              <span className="font-medium">Industry:</span>
+              <span>{exp.industry}</span>
+            </p>
+          </div>
+          <span className="text-sm text-muted shrink-0 font-mono tracking-tight lg:text-right">
+            {exp.period}
+          </span>
+        </div>
+
+        <p className="text-sm leading-relaxed text-muted mb-5">{exp.description}</p>
+
+        <div className="flex flex-wrap gap-2">
+          {exp.tags.map((tag) => (
+            <span
+              key={tag}
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-surface border border-border text-muted"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function Experience() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
+  return (
+    <section
+      id="experience"
+      ref={sectionRef}
+      className="relative py-28 px-6 bg-surface overflow-hidden"
+    >
+      {/* Ambient orbs */}
+      <motion.div
+        style={{ y: orb1Y }}
+        className="absolute top-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
+      <motion.div
+        style={{ y: orb2Y }}
+        className="absolute bottom-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
+
+      {/* Grain texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      <div className="max-w-5xl mx-auto relative">
-        <FadeIn>
-          <div className="mb-20 text-center">
-            <h2 className="text-[clamp(2.5rem,6vw,4.5rem)] font-bold text-[var(--color-foreground)] mb-6 leading-[1.1] tracking-tight">
-              Professional <span className="text-[var(--color-accent)] inline-block" style={{ fontStyle: 'italic' }}>Journey</span>
-            </h2>
-            <p className="text-[clamp(1rem,2vw,1.125rem)] text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
-              Chronicling my evolution in software development—from foundational work to architecting scalable solutions across diverse technology stacks.
-            </p>
-          </div>
-        </FadeIn>
+      <div className="max-w-5xl mx-auto relative z-10">
+        {/* Section header */}
+        <div className="mb-16 text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="inline-block mb-3 text-xs font-mono font-semibold tracking-[0.18em] uppercase text-accent"
+          >
+            Career History
+          </motion.span>
 
-        <div className="relative">
-          {/* Enhanced Timeline line with gradient */}
-          <div className="absolute left-4 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--color-accent)] via-[var(--color-border)] to-transparent hidden sm:block"
-            style={{
-              boxShadow: '0 0 20px rgba(var(--accent-rgb), 0.2)',
-            }}
+          <motion.h2
+            initial={{ opacity: 0, y: 22 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
+            className="text-[clamp(2.25rem,5vw,3.5rem)] font-bold text-foreground tracking-tight leading-[1.1] mb-4"
+          >
+            Professional{" "}
+            <span
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover"
+              style={{ fontStyle: "italic" }}
+            >
+              Journey
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
+            className="text-muted text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+          >
+            Chronicling my evolution in software development — from foundational work to architecting scalable solutions.
+          </motion.p>
+
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={isInView ? { scaleX: 1 } : {}}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+            className="w-14 h-px mx-auto mt-6 bg-linear-to-r from-transparent via-accent to-transparent"
           />
+        </div>
 
-          <div className="space-y-12">
+        {/* Timeline */}
+        <div className="relative">
+          {/* Vertical line */}
+          <div className="absolute top-2 bottom-0 w-px bg-linear-to-b from-accent/60 via-border to-transparent hidden sm:block" style={{ left: "17px" }} />
+
+          <div className="space-y-10">
             {experiences.map((exp, i) => (
-              <FadeIn key={exp.role + exp.company} delay={i * 0.15}>
-                <div
-                  className="sm:pl-16 relative group"
-                  onMouseEnter={() => setHoveredIndex(i)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  {/* Enhanced animated dot */}
-                  <div
-                    className={`hidden sm:flex absolute left-[7px] top-2 w-5 h-5 rounded-full items-center justify-center transition-all duration-500 ${exp.current || hoveredIndex === i
-                      ? "scale-125"
-                      : "scale-100"
-                      }`}
-                    style={{
-                      background: exp.current || hoveredIndex === i
-                        ? 'radial-gradient(circle, var(--color-accent) 0%, var(--color-accent) 40%, transparent 70%)'
-                        : 'var(--color-accent)',
-                      boxShadow: exp.current || hoveredIndex === i
-                        ? '0 0 20px rgba(var(--accent-rgb), 0.6), 0 0 40px rgba(var(--accent-rgb), 0.3)'
-                        : '0 0 8px rgba(var(--accent-rgb), 0.4)',
-                    }}
-                  >
-                    <div className="w-2 h-2 rounded-full bg-white" />
-                  </div>
-
-                  <div
-                    className={`p-8 rounded-2xl border backdrop-blur-sm transition-all duration-500 ${exp.current
-                      ? "bg-[var(--color-background)]/80 border-[var(--color-accent)] shadow-2xl shadow-[var(--color-accent)]/20"
-                      : "bg-[var(--color-background)]/60 border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:shadow-xl hover:shadow-[var(--color-accent)]/10"
-                      } ${hoveredIndex === i ? "translate-x-2" : "translate-x-0"
-                      }`}
-                    style={{
-                      backdropFilter: 'blur(8px)',
-                      willChange: hoveredIndex === i ? 'transform' : 'auto',
-                    }}
-                  >
-                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 flex-wrap mb-2">
-                          <h3 className="text-xl font-bold text-[var(--color-foreground)] tracking-tight">
-                            {exp.role}
-                          </h3>
-                          {exp.current && (
-                            <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/30 animate-pulse">
-                              Active
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[var(--color-accent)] text-base font-semibold mb-2">
-                          {exp.company}
-                        </p>
-                        <p className="text-sm text-[var(--color-muted)] flex items-center gap-2 mt-2">
-                          <FontAwesomeIcon icon={faIndustry} className="text-[var(--color-accent)]" />
-                          <span className="font-medium">Industry:</span>
-                          <span>{exp.industry}</span>
-                        </p>
-                      </div>
-                      <span className="text-sm text-[var(--color-muted)] shrink-0 font-mono tracking-tight lg:text-right">
-                        {exp.period}
-                      </span>
-                    </div>
-
-                    <p className="text-[15px] text-[var(--color-muted)] leading-relaxed mb-5 max-w-none">
-                      {exp.description}
-                    </p>
-
-                    <div className="flex flex-wrap gap-2.5">
-                      {exp.tags.map((tag, tagIndex) => (
-                        <span
-                          key={tag}
-                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:bg-[var(--color-background)] transition-all duration-300 cursor-default"
-                          style={{
-                            transitionDelay: hoveredIndex === i ? `${tagIndex * 30}ms` : '0ms',
-                            transform: hoveredIndex === i ? 'translateY(-2px)' : 'translateY(0)',
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
+              <ExperienceCard key={exp.role + exp.company} exp={exp} index={i} />
             ))}
           </div>
         </div>

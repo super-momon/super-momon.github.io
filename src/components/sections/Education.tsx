@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
-import { FadeIn } from "@/components/FadeIn";
-import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence, useInView, useScroll, useTransform } from "motion/react";
+import { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap, faArrowUpRightFromSquare, faXmark, faAward, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faGraduationCap, faArrowUpRightFromSquare, faXmark, faAward } from "@fortawesome/free-solid-svg-icons";
 import { faAws, faLinkedin, faFreeCodeCamp } from "@fortawesome/free-brands-svg-icons";
 
 const education = [
@@ -36,8 +36,8 @@ const education = [
       "Completed a comprehensive web development bootcamp covering HTML, CSS, JavaScript, React, Node.js, and database management.",
     skills: ["Responsive Design", "JavaScript", "Data Structures", "Algorithms"],
     certifications: [
-      'https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/javascript-algorithms-and-data-structures',
-      'https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/responsive-web-design',
+      "https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/javascript-algorithms-and-data-structures",
+      "https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/responsive-web-design",
     ],
   },
   {
@@ -52,328 +52,350 @@ const education = [
   },
 ];
 
-const MAX_TEXT_LENGTH = 120;
-const MAX_SKILLS_PREVIEW = 5;
+const PREVIEW_LENGTH = 130;
 
-export default function Education() {
-  const [selectedItem, setSelectedItem] = useState<typeof education[0] | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+type EducationItem = typeof education[0];
 
-  useEffect(() => {
-    if (selectedItem) {
-      setModalOpen(true);
-    } else {
-      setModalOpen(false);
-    }
-  }, [selectedItem]);
+function EducationCard({
+  item,
+  index,
+  onClick,
+}: {
+  item: EducationItem;
+  index: number;
+  onClick: () => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
 
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength).trim() + "...";
-  };
-
-  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
-    const card = cardRefs.current[index];
-    if (!card) return;
-
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = (y - centerY) / 20;
-    const rotateY = (centerX - x) / 20;
-
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-  };
-
-  const handleCardMouseLeave = (index: number) => {
-    const card = cardRefs.current[index];
-    if (!card) return;
-    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-  };
+  const preview =
+    item.details.length > PREVIEW_LENGTH
+      ? item.details.slice(0, PREVIEW_LENGTH).trimEnd() + "…"
+      : item.details;
 
   return (
-    <section id="education" className="relative py-32 px-6 overflow-hidden">
-      {/* Atmospheric noise overlay */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+    <motion.div
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4, transition: { type: "spring", stiffness: 300, damping: 22 } }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      onClick={onClick}
+      className="group relative flex flex-col min-h-56 p-7 rounded-2xl border bg-surface backdrop-blur-sm cursor-pointer will-change-transform"
+      style={{
+        borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
+        transition: "border-color 0.3s ease",
+      }}
+    >
+      {/* Hover fill */}
+      <motion.div
+        initial={false}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.25 }}
+        className="absolute inset-0 rounded-2xl bg-accent/5 pointer-events-none"
+      />
+
+      {/* Grain texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none rounded-2xl"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-          mixBlendMode: "overlay",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      <div className="max-w-6xl mx-auto relative">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <h2 className="text-[clamp(2.5rem,7vw,4.5rem)] font-bold text-[var(--color-foreground)] leading-[0.95] tracking-tight mb-6">
-              Continuous
-              <br />
-              <span className="text-[var(--color-accent)]">Learning Journey</span>
-            </h2>
-            <p className="text-lg md:text-xl text-[var(--color-muted)] leading-relaxed max-w-2xl mx-auto font-light">
-              A curated collection of formal education, certifications, and self-directed learning
-              that shapes my engineering perspective and technical foundation.
-            </p>
-          </div>
-        </FadeIn>
-
-        <div className="grid lg:grid-cols-2 gap-6">
-          {education.map((item, i) => (
-            <FadeIn key={item.topic} delay={i * 0.1}>
-              <div
-                ref={(el) => { cardRefs.current[i] = el; }}
-                onClick={() => setSelectedItem(item)}
-                onMouseMove={(e) => handleCardMouseMove(e, i)}
-                onMouseLeave={() => handleCardMouseLeave(i)}
-                className="group relative h-[280px] p-8 rounded-2xl border border-[var(--color-border)] 
-                           bg-[var(--color-surface)] flex flex-col cursor-pointer
-                           transition-all duration-300 ease-out
-                           hover:border-[var(--color-accent)]
-                           hover:shadow-[0_20px_60px_-15px_rgba(0,199,88,0.2)]
-                           active:scale-[0.98]"
+      <div className="relative z-10 flex flex-col flex-1">
+        {/* Header row */}
+        <div className="flex gap-4 mb-5">
+          <div className="shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
+              <FontAwesomeIcon
+                icon={item.icon}
+                className="text-accent text-lg"
                 style={{
-                  transition: 'transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s',
+                  filter: isHovered ? "drop-shadow(0 0 5px var(--color-accent))" : "none",
+                  transition: "filter 0.25s ease",
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-1">
+              <h3
+                className="font-bold text-lg leading-snug"
+                style={{
+                  color: isHovered ? "var(--color-accent)" : "var(--color-foreground)",
+                  transition: "color 0.25s ease",
                 }}
               >
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 rounded-2xl bg-[var(--color-accent)] opacity-0 
-                                group-hover:opacity-5 transition-opacity duration-300 pointer-events-none" />
+                {item.topic}
+              </h3>
+              <span className="text-xs text-muted shrink-0 font-mono tracking-tight">
+                {item.period}
+              </span>
+            </div>
+            <p className="text-accent text-sm font-semibold">{item.institution}</p>
+          </div>
+        </div>
 
-                <div className="flex gap-4 mb-4 relative z-10">
-                  <div className="shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-[var(--color-accent)]/10 flex items-center justify-center
-                                    group-hover:bg-[var(--color-accent)]/20 transition-colors duration-300
-                                    group-hover:shadow-[0_0_20px_rgba(0,199,88,0.3)]">
-                      <FontAwesomeIcon icon={item.icon} className="text-[var(--color-accent)] text-xl" />
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-[var(--color-foreground)] text-lg group-hover:text-[var(--color-accent)] 
-                                     transition-colors duration-300">
-                        {item.topic}
-                      </h3>
-                      <span className="text-xs text-[var(--color-muted)] shrink-0 font-medium uppercase tracking-wider">
-                        {item.period}
-                      </span>
-                    </div>
-                    <p className="text-[var(--color-accent)] text-sm font-semibold">
-                      {item.institution}
-                    </p>
-                  </div>
-                </div>
+        {/* Description preview */}
+        <p className="text-sm text-muted leading-relaxed flex-1 mb-4">{preview}</p>
 
-                <div className="flex-1 flex flex-col justify-between relative z-10">
-                  <p className="text-sm text-[var(--color-muted)] leading-relaxed mb-4">
-                    {truncateText(item.details, MAX_TEXT_LENGTH)}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {item.skills.slice(0, MAX_SKILLS_PREVIEW).map((skill) => (
-                      <span
-                        key={skill}
-                        className="text-xs text-[var(--color-muted)] bg-[var(--color-accent)]/5 
-                                   border border-[var(--color-border)] rounded-full px-3 py-1.5
-                                   transition-all duration-300
-                                   group-hover:border-[var(--color-accent)]/30 group-hover:bg-[var(--color-accent)]/10"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                    {item.skills.length > MAX_SKILLS_PREVIEW && (
-                      <span className="text-xs text-[var(--color-accent)] bg-[var(--color-accent)]/10 
-                                       border border-[var(--color-accent)]/30 rounded-full px-3 py-1.5 font-semibold">
-                        +{item.skills.length - MAX_SKILLS_PREVIEW}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Click indicator */}
-                <div className="absolute bottom-6 right-6 text-[var(--color-muted)] text-xs 
-                                opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-                </div>
-              </div>
-            </FadeIn>
+        {/* Skill tags */}
+        <div className="flex flex-wrap gap-1.5 mt-auto">
+          {item.skills.map((skill) => (
+            <span
+              key={skill}
+              className="text-xs text-muted bg-background/70 border border-border rounded-md px-2.5 py-1"
+            >
+              {skill}
+            </span>
           ))}
         </div>
       </div>
 
-      {/* Premium Modal */}
-      {selectedItem && (
-        <div
-          className={`fixed inset-0 z-50 flex items-center justify-center p-4 
-                      ${modalOpen ? 'opacity-100' : 'opacity-0'}
-                      transition-opacity duration-300`}
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            backdropFilter: 'blur(12px)',
-          }}
-          onClick={() => setSelectedItem(null)}
-        >
-          <div
-            className={`bg-[var(--color-surface)] rounded-3xl shadow-2xl max-w-2xl w-full 
-                        max-h-[90vh] overflow-y-auto border-2 border-[var(--color-accent)]/20
-                        ${modalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
-                        transition-all duration-300 ease-out`}
-            style={{
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 199, 88, 0.15)',
-            }}
-            onClick={(e) => e.stopPropagation()}
+      {/* View indicator */}
+      <motion.div
+        animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 4 }}
+        transition={{ duration: 0.2 }}
+        className="absolute bottom-5 right-5 text-accent text-xs flex items-center gap-1.5 font-medium"
+      >
+        <span>Details</span>
+        <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-[10px]" />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export default function Education() {
+  const [selectedItem, setSelectedItem] = useState<EducationItem | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
+  return (
+    <section
+      id="education"
+      ref={sectionRef}
+      className="relative py-28 px-6 bg-background overflow-hidden"
+    >
+      {/* Ambient orbs */}
+      <motion.div
+        style={{ y: orb1Y }}
+        className="absolute top-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
+      <motion.div
+        style={{ y: orb2Y }}
+        className="absolute bottom-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
+
+      {/* Grain texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        {/* Section header */}
+        <div className="text-center mb-14">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="inline-block mb-3 text-xs font-mono font-semibold tracking-[0.18em] uppercase text-accent"
           >
-            <div className="p-10">
-              {/* Header */}
-              <div className="flex gap-5 mb-8">
-                <div className="shrink-0">
-                  <div className="w-16 h-16 rounded-2xl bg-[var(--color-accent)]/10 flex items-center justify-center
-                                  shadow-[0_0_30px_rgba(0,199,88,0.2)] border border-[var(--color-accent)]/20">
-                    <FontAwesomeIcon icon={selectedItem.icon} className="text-[var(--color-accent)] text-2xl" />
+            Academic Background
+          </motion.span>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 22 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
+            className="text-[clamp(2.25rem,5vw,3.5rem)] font-bold text-foreground tracking-tight leading-[1.1] mb-4"
+          >
+            Learning &amp;{" "}
+            <span
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover"
+              style={{ fontStyle: "italic" }}
+            >
+              Journey
+            </span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
+            className="text-muted text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+          >
+            Formal education, certifications, and self-directed learning that shape my engineering perspective.
+          </motion.p>
+
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={isInView ? { scaleX: 1 } : {}}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+            className="w-14 h-px mx-auto mt-6 bg-linear-to-r from-transparent via-accent to-transparent"
+          />
+        </div>
+
+        {/* Cards */}
+        <div className="grid lg:grid-cols-2 gap-5">
+          {education.map((item, i) => (
+            <EducationCard
+              key={item.topic}
+              item={item}
+              index={i}
+              onClick={() => setSelectedItem(item)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Detail modal */}
+      <AnimatePresence>
+        {selectedItem && (
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ backgroundColor: "rgba(0,0,0,0.72)", backdropFilter: "blur(12px)" }}
+            onClick={() => setSelectedItem(null)}
+          >
+            <motion.div
+              key="panel"
+              initial={{ scale: 0.96, opacity: 0, y: 12 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.96, opacity: 0, y: 12 }}
+              transition={{ type: "spring", stiffness: 320, damping: 28 }}
+              className="bg-surface rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-accent/20"
+              style={{ boxShadow: "0 25px 60px rgba(0,0,0,0.5)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-8">
+                {/* Modal header */}
+                <div className="flex gap-5 mb-7">
+                  <div className="w-14 h-14 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
+                    <FontAwesomeIcon icon={selectedItem.icon} className="text-accent text-xl" />
                   </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-4 mb-3">
-                    <h3 className="font-bold text-[var(--color-foreground)] text-3xl leading-tight">
-                      {selectedItem.topic}
-                    </h3>
-                    <button
-                      onClick={() => setSelectedItem(null)}
-                      className="shrink-0 w-10 h-10 rounded-xl hover:bg-[var(--color-accent)]/10 
-                                 flex items-center justify-center transition-all duration-300
-                                 hover:scale-110 active:scale-95 group"
-                      aria-label="Close modal"
-                    >
-                      <FontAwesomeIcon icon={faXmark} className="text-[var(--color-muted)] text-xl group-hover:text-[var(--color-accent)] transition-colors" />
-                    </button>
-                  </div>
-                  <p className="text-[var(--color-accent)] text-lg font-bold mb-1">
-                    {selectedItem.institution}
-                  </p>
-                  <p className="text-sm text-[var(--color-muted)] font-medium uppercase tracking-widest">
-                    {selectedItem.period}
-                  </p>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent mb-8" />
-
-              {/* Content */}
-              <div className="space-y-8">
-                <div>
-                  <h4 className="text-xs font-bold text-[var(--color-accent)] mb-3 uppercase tracking-widest">
-                    Overview
-                  </h4>
-                  <p className="text-base text-[var(--color-foreground)] leading-relaxed">
-                    {selectedItem.details}
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="text-xs font-bold text-[var(--color-accent)] mb-4 uppercase tracking-widest">
-                    Skills & Technologies
-                  </h4>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedItem.skills.map((skill, index) => (
-                      <span
-                        key={skill}
-                        className="text-sm text-[var(--color-foreground)] bg-[var(--color-accent)]/10 
-                                   border border-[var(--color-accent)]/30 rounded-xl px-5 py-2.5 font-medium
-                                   hover:bg-[var(--color-accent)]/20 hover:border-[var(--color-accent)]/50
-                                   transition-all duration-300 hover:scale-105 hover:shadow-lg
-                                   cursor-default"
-                        style={{
-                          animationDelay: `${index * 50}ms`,
-                        }}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-4 mb-2">
+                      <h3 className="font-bold text-foreground text-2xl leading-tight">
+                        {selectedItem.topic}
+                      </h3>
+                      <button
+                        onClick={() => setSelectedItem(null)}
+                        className="w-9 h-9 rounded-lg hover:bg-accent/10 flex items-center justify-center transition-colors duration-200 shrink-0"
+                        aria-label="Close"
                       >
-                        {skill}
-                      </span>
-                    ))}
+                        <FontAwesomeIcon icon={faXmark} className="text-muted text-base" />
+                      </button>
+                    </div>
+                    <p className="text-accent text-base font-semibold mb-1">
+                      {selectedItem.institution}
+                    </p>
+                    <p className="text-xs text-muted font-mono tracking-wider">
+                      {selectedItem.period}
+                    </p>
                   </div>
                 </div>
 
-                {/* Certifications */}
-                {selectedItem.certifications && selectedItem.certifications.length > 0 && (
+                {/* Divider */}
+                <div className="h-px bg-linear-to-r from-transparent via-border to-transparent mb-7" />
+
+                <div className="space-y-7">
+                  {/* Overview */}
                   <div>
-                    <h4 className="text-xs font-bold text-[var(--color-accent)] mb-4 uppercase tracking-widest">
-                      Certifications
+                    <h4 className="text-xs font-semibold text-accent mb-3 uppercase tracking-widest">
+                      Overview
                     </h4>
-                    <div className="space-y-3">
-                      {selectedItem.certifications.map((cert, index) => {
-                        // Extract domain/platform from URL for display
-                        let platformName = "View Certificate";
-                        try {
-                          const url = new URL(cert);
-                          const hostname = url.hostname.replace('www.', '');
-                          platformName = hostname.split('.')[0];
-                          platformName = platformName.charAt(0).toUpperCase() + platformName.slice(1);
-                        } catch (e) {
-                          // Keep default if URL parsing fails
-                        }
+                    <p className="text-base text-foreground leading-relaxed">
+                      {selectedItem.details}
+                    </p>
+                  </div>
 
-                        return (
-                          <a
-                            key={index}
-                            href={cert}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group relative flex items-center justify-between gap-4 p-4 rounded-xl
-                                       bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20
-                                       hover:bg-[var(--color-accent)]/10 hover:border-[var(--color-accent)]/40
-                                       hover:shadow-[0_8px_30px_rgba(0,199,88,0.15)]
-                                       transition-all duration-300 hover:translate-x-1
-                                       active:scale-[0.98] overflow-hidden"
-                            style={{
-                              animationDelay: `${index * 75}ms`,
-                            }}
-                          >
-                            {/* Animated glow effect */}
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--color-accent)]/10 to-transparent 
-                                              translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                            </div>
-
-                            <div className="flex items-center gap-3 flex-1 relative z-10">
-                              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent)]/10 
-                                              border border-[var(--color-accent)]/30
-                                              flex items-center justify-center shrink-0
-                                              group-hover:bg-[var(--color-accent)]/20 
-                                              group-hover:shadow-[0_0_15px_rgba(0,199,88,0.3)]
-                                              transition-all duration-300">
-                                <FontAwesomeIcon icon={faAward} className="text-[var(--color-accent)]" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-[var(--color-foreground)] 
-                                              group-hover:text-[var(--color-accent)] transition-colors duration-300">
-                                  {platformName} Certification
-                                </p>
-                                <p className="text-xs text-[var(--color-muted)] truncate mt-0.5">
-                                  {cert}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="relative z-10 flex items-center gap-2 text-[var(--color-accent)] shrink-0">
-                              <span className="text-xs font-medium uppercase tracking-wider opacity-0 
-                                               group-hover:opacity-100 transition-opacity duration-300">
-                                View
-                              </span>
-                              <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-sm group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                            </div>
-                          </a>
-                        );
-                      })}
+                  {/* Skills */}
+                  <div>
+                    <h4 className="text-xs font-semibold text-accent mb-3 uppercase tracking-widest">
+                      Skills &amp; Technologies
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedItem.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="text-sm text-foreground bg-accent/8 border border-accent/25 rounded-lg px-4 py-2 font-medium"
+                        >
+                          {skill}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                )}
+
+                  {/* Certifications */}
+                  {selectedItem.certifications.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-accent mb-3 uppercase tracking-widest">
+                        Certifications
+                      </h4>
+                      <div className="space-y-2.5">
+                        {selectedItem.certifications.map((cert, i) => {
+                          let platformName = "Certificate";
+                          try {
+                            const url = new URL(cert);
+                            const part = url.hostname.replace("www.", "").split(".")[0];
+                            platformName =
+                              part.charAt(0).toUpperCase() + part.slice(1) + " Certification";
+                          } catch {
+                            // keep default
+                          }
+                          return (
+                            <a
+                              key={i}
+                              href={cert}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-3 p-3.5 rounded-xl bg-accent/5 border border-accent/20 hover:bg-accent/10 hover:border-accent/40 transition-colors duration-200 group/cert"
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
+                                <FontAwesomeIcon
+                                  icon={faAward}
+                                  className="text-accent text-sm"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-foreground group-hover/cert:text-accent transition-colors duration-200">
+                                  {platformName}
+                                </p>
+                                <p className="text-xs text-muted truncate">{cert}</p>
+                              </div>
+                              <FontAwesomeIcon
+                                icon={faArrowUpRightFromSquare}
+                                className="text-accent text-xs opacity-60 group-hover/cert:opacity-100 transition-opacity shrink-0"
+                              />
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

@@ -2,25 +2,32 @@
 
 import { FadeIn } from "@/components/FadeIn";
 import { trackEvent } from "@/lib/analytics";
-import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/constants";
+import { EMAIL, GITHUB_URL, GITHUB_USERNAME, LINKEDIN_URL, LINKEDIN_USERNAME } from "@/lib/constants";
 import { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faArrowRight, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faArrowRight, faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
-const socialLinks = [
+const contactMethods = [
   {
     label: "GitHub",
+    handle: `@${GITHUB_USERNAME}`,
+    description: "See my open source work",
     href: GITHUB_URL,
     icon: faGithub,
   },
   {
     label: "LinkedIn",
+    handle: `in/${LINKEDIN_USERNAME}`,
+    description: "Connect professionally",
     href: LINKEDIN_URL,
     icon: faLinkedin,
   },
   {
     label: "Email",
+    handle: EMAIL,
+    description: "Drop me a line directly",
     href: `mailto:${EMAIL}`,
     icon: faEnvelope,
   },
@@ -28,8 +35,17 @@ const socialLinks = [
 
 export default function Contact() {
   const ctaRef = useRef<HTMLAnchorElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 50]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -59,119 +75,205 @@ export default function Contact() {
   }, [isHovering]);
 
   return (
-    <section id="contact" className="relative py-32 px-6 bg-[var(--color-surface)] overflow-hidden">
-      {/* Atmospheric noise overlay */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+    <section
+      ref={sectionRef}
+      id="contact"
+      className="relative py-32 px-6 bg-surface overflow-hidden"
+    >
+      {/* Ambient orbs */}
+      <motion.div
+        style={{ y: orb1Y }}
+        className="absolute top-1/4 left-[5%] w-96 h-96 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
+      <motion.div
+        style={{ y: orb2Y }}
+        className="absolute bottom-1/4 right-[5%] w-96 h-96 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+      />
+
+      {/* Grain texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-          mixBlendMode: "overlay",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      <div className="max-w-3xl mx-auto text-center relative">
+      {/* Ambient glow — bottom center */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-225 h-100 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 100%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent)",
+        }}
+      />
+
+      {/* Ambient glow — top right */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 right-0 w-125 h-125 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 50% 50% at 100% 0%, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent)",
+        }}
+      />
+
+      <div className="max-w-6xl mx-auto relative">
+        {/* Eyebrow label */}
         <FadeIn>
-          <div className="mb-8">
-            <h2 className="text-[clamp(2.5rem,8vw,5.5rem)] font-bold text-[var(--color-foreground)] leading-[0.95] tracking-tight mb-6">
-              Let&apos;s Build
-              <br />
-              <span className="text-[var(--color-accent)] inline-block"
+          <span className="inline-block text-xs font-semibold uppercase tracking-[0.22em] text-accent mb-10">
+            Get In Touch
+          </span>
+        </FadeIn>
+
+        {/* Two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* ── Left col: headline + copy + CTA ── */}
+          <div>
+            <FadeIn delay={0.05}>
+              <h2 className="text-[clamp(2.8rem,5.5vw,5rem)] font-bold text-foreground leading-[0.95] tracking-tight mb-6">
+                Let&apos;s Build
+                <br />
+                <span
+                  className="text-accent"
+                  style={{
+                    textShadow: "0 0 60px color-mix(in srgb, var(--color-accent) 35%, transparent)",
+                  }}
+                >
+                  Something Great
+                </span>
+              </h2>
+            </FadeIn>
+
+            <FadeIn delay={0.1}>
+              <p className="text-[1.05rem] leading-relaxed text-muted mb-10 max-w-md font-light">
+                I&apos;m actively seeking opportunities to collaborate on ambitious
+                projects. Whether you&apos;re building something transformative or
+                exploring a technical challenge —{" "}
+                <span className="text-foreground font-medium">
+                  I&apos;d love to hear from you
+                </span>
+                .
+              </p>
+            </FadeIn>
+
+            {/* Availability badge */}
+            <FadeIn delay={0.15}>
+              <div className="inline-flex items-center gap-2.5 mb-10 px-4 py-2 rounded-full border border-border bg-surface">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
+                </span>
+                <span className="text-xs font-semibold text-muted tracking-wide">
+                  Open to opportunities
+                </span>
+              </div>
+            </FadeIn>
+
+            {/* Magnetic CTA */}
+            <FadeIn delay={0.2}>
+              <a
+                ref={ctaRef}
+                href={`mailto:${EMAIL}`}
+                onClick={() =>
+                  trackEvent("cta_click", {
+                    event_category: "contact",
+                    event_label: "send_message",
+                  })
+                }
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => {
+                  setIsHovering(false);
+                  setMousePosition({ x: 0, y: 0 });
+                }}
+                className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-accent text-white font-semibold text-base overflow-hidden active:scale-95"
                 style={{
-                  textShadow: "0 0 40px var(--color-accent)",
-                }}>
-                Something Great
-              </span>
-            </h2>
-            <p className="text-lg md:text-xl text-[var(--color-muted)] leading-relaxed max-w-2xl mx-auto font-light tracking-wide">
-              I&apos;m actively seeking opportunities to collaborate on ambitious projects.
-              Whether you&apos;re envisioning a transformative product,
-              exploring a technical challenge, or simply want to connect—
-              <span className="text-[var(--color-foreground)] font-medium"> I&apos;d love to hear from you</span>.
-            </p>
+                  transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
+                  transition: isHovering
+                    ? "transform 0.2s ease-out, box-shadow 0.3s"
+                    : "all 0.5s ease-out",
+                  boxShadow: isHovering ? "0 0 40px color-mix(in srgb, var(--color-accent) 40%, transparent)" : undefined,
+                }}
+              >
+                {/* Shimmer */}
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-linear-to-r from-transparent via-white/20 to-transparent" />
+                <span className="relative z-10">Start a Conversation</span>
+                <FontAwesomeIcon
+                  icon={faArrowRight}
+                  className="relative z-10 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </a>
+            </FadeIn>
           </div>
-        </FadeIn>
 
-        <FadeIn delay={0.1}>
-          <div className="mb-16 mt-12">
-            <a
-              ref={ctaRef}
-              href={`mailto:${EMAIL}`}
-              onClick={() =>
-                trackEvent("cta_click", {
-                  event_category: "contact",
-                  event_label: "send_message",
-                })
-              }
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={() => {
-                setIsHovering(false);
-                setMousePosition({ x: 0, y: 0 });
-              }}
-              className="group relative inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-[var(--color-accent)] text-white font-semibold text-lg overflow-hidden
-                         transition-all duration-300 ease-out
-                         hover:shadow-[0_0_40px_rgba(0,199,88,0.4)]
-                         active:scale-95"
-              style={{
-                transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
-                transition: isHovering ? "transform 0.2s ease-out, box-shadow 0.3s" : "all 0.5s ease-out",
-              }}
-            >
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out
-                              bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-              <span className="relative z-10">Start a Conversation</span>
-              <FontAwesomeIcon icon={faArrowRight} className="relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={0.2}>
-          <div className="pt-8 border-t border-[var(--color-border)]">
-            <p className="text-sm uppercase tracking-widest text-[var(--color-muted)] mb-6 font-medium">
-              Connect With Me
-            </p>
-            <div className="flex items-center justify-center gap-8">
-              {socialLinks.map((link, index) => (
+          {/* ── Right col: contact method cards ── */}
+          <div className="flex flex-col gap-3">
+            {contactMethods.map((method, index) => (
+              <FadeIn key={method.label} delay={0.1 + index * 0.09} direction="left">
                 <a
-                  key={link.label}
-                  href={link.href}
-                  target={link.href.startsWith("mailto") ? undefined : "_blank"}
+                  href={method.href}
+                  target={method.href.startsWith("mailto") ? undefined : "_blank"}
                   rel="noopener noreferrer"
-                  aria-label={link.label}
                   onClick={() =>
                     trackEvent("social_link_click", {
                       event_category: "contact",
-                      event_label: link.label.toLowerCase(),
+                      event_label: method.label.toLowerCase(),
                     })
                   }
-                  className="group relative"
+                  className="group relative flex items-center gap-4 px-5 py-4 rounded-2xl border border-border bg-surface overflow-hidden transition-all duration-300 hover:border-accent hover:-translate-y-0.5"
                   style={{
-                    transitionDelay: `${index * 50}ms`,
+                    boxShadow: undefined,
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.boxShadow =
+                      "0 8px 32px color-mix(in srgb, var(--color-accent) 12%, transparent)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "";
                   }}
                 >
-                  <div className="relative z-10 w-14 h-14 flex items-center justify-center rounded-full 
-                                  bg-[var(--color-background)] border-2 border-[var(--color-border)]
-                                  transition-all duration-300
-                                  group-hover:border-[var(--color-accent)]
-                                  group-hover:shadow-[0_0_20px_rgba(0,199,88,0.3)]
-                                  group-hover:-translate-y-2
-                                  group-active:scale-95"
-                  >
-                    <FontAwesomeIcon icon={link.icon} className="text-2xl text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-accent)]" />
+                  {/* Radial inner glow on hover */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{
+                      background:
+                        "radial-gradient(ellipse 60% 100% at 0% 50%, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent)",
+                    }}
+                  />
+
+                  {/* Icon box */}
+                  <div className="relative z-10 w-11 h-11 flex items-center justify-center rounded-xl bg-background border border-border group-hover:border-accent group-hover:bg-accent transition-all duration-300 shrink-0">
+                    <FontAwesomeIcon
+                      icon={method.icon}
+                      className="text-lg text-muted group-hover:text-white transition-colors duration-300"
+                    />
                   </div>
 
-                  {/* Label on hover */}
-                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 
-                                   text-xs font-medium text-[var(--color-muted)] 
-                                   opacity-0 group-hover:opacity-100 
-                                   transition-opacity duration-300 whitespace-nowrap">
-                    {link.label}
-                  </span>
+                  {/* Text */}
+                  <div className="relative z-10 flex-1 min-w-0">
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-muted mb-0.5">
+                      {method.label}
+                    </p>
+                    <p className="text-sm font-medium text-foreground truncate leading-tight">
+                      {method.handle}
+                    </p>
+                    <p className="text-xs text-muted mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      {method.description}
+                    </p>
+                  </div>
+
+                  {/* External link arrow */}
+                  <FontAwesomeIcon
+                    icon={faArrowUpRightFromSquare}
+                    className="relative z-10 text-xs text-muted group-hover:text-accent transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 shrink-0"
+                  />
                 </a>
-              ))}
-            </div>
+              </FadeIn>
+            ))}
           </div>
-        </FadeIn>
+        </div>
       </div>
     </section>
   );
