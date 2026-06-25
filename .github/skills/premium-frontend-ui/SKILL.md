@@ -1,9 +1,6 @@
 ---
 name: premium-frontend-ui
 description: 'Craft premium, professional, and visually refined web experiences with intentional motion design, consistent polish, and high craft across every page — from hero sections to detail and utility pages. Use when: building any page that should feel polished, implementing scroll animations, adding micro-interactions, creating custom cursors, using GSAP/Framer Motion, applying glassmorphism or depth effects, optimizing animation performance, enforcing design consistency site-wide.'
-metadata:
-  author: 'Utkarsh Patrikar'
-  author_url: 'https://github.com/utkarsh232005'
 ---
 
 # Premium & Professional Frontend UI
