@@ -4,7 +4,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { trackEvent } from "@/lib/analytics";
 import { EMAIL, GITHUB_URL, GITHUB_USERNAME, LINKEDIN_URL, LINKEDIN_USERNAME } from "@/lib/constants";
 import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faArrowRight, faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
@@ -38,6 +38,18 @@ export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const skipParallax = isMobile || !!prefersReducedMotion;
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -82,17 +94,17 @@ export default function Contact() {
     >
       {/* Ambient orbs */}
       <motion.div
-        style={{ y: orb1Y }}
-        className="absolute top-1/4 left-[5%] w-96 h-96 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb1Y }}
+        className="absolute top-1/4 left-[5%] w-48 h-48 md:w-96 md:h-96 rounded-full bg-accent/6 blur-xl md:blur-3xl pointer-events-none will-change-transform"
       />
       <motion.div
-        style={{ y: orb2Y }}
-        className="absolute bottom-1/4 right-[5%] w-96 h-96 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb2Y }}
+        className="absolute bottom-1/4 right-[5%] w-48 h-48 md:w-96 md:h-96 rounded-full bg-accent/6 blur-xl md:blur-3xl pointer-events-none will-change-transform"
       />
 
       {/* Grain texture */}
       <div
-        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none hidden md:block"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
