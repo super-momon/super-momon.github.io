@@ -38,7 +38,7 @@ const notifications: Notification[] = [
     icon: faChartLine,
     timestamp: "June 20, 2026",
     color: "text-blue-500",
-    link: "#about",
+    link: "/#about",
     linkText: "View Assessment",
   },
   {
@@ -47,7 +47,7 @@ const notifications: Notification[] = [
     icon: faBriefcase,
     timestamp: "June 01, 2026",
     color: "text-green-500",
-    link: "#contact",
+    link: "/#contact",
     linkText: "Get in touch",
   },
 ];
