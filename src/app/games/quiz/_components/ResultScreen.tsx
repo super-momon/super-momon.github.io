@@ -8,6 +8,7 @@ interface Props {
   score: number;
   totalAnswered: number;
   correctCount: number;
+  avgSecondsPerQuestion: number;
   mode: GameMode;
   onPlayAgain: () => void;
   onChangeMode: () => void;
@@ -60,6 +61,7 @@ export function ResultScreen({
   score,
   totalAnswered,
   correctCount,
+  avgSecondsPerQuestion,
   mode,
   onPlayAgain,
   onChangeMode,
@@ -143,13 +145,14 @@ export function ResultScreen({
 
           {/* Stat row */}
           <div
-            className="grid grid-cols-3 gap-4 pt-6 border-t"
+            className="grid grid-cols-2 gap-4 pt-6 border-t"
             style={{ borderColor: 'var(--color-border)' }}
           >
             {[
               { value: totalAnswered, label: 'Answered', color: 'var(--color-foreground)' },
               { value: correctCount, label: 'Correct', color: '#22c55e' },
               { value: `${accuracy}%`, label: 'Accuracy', color: accuracyColor },
+              { value: `${avgSecondsPerQuestion}s`, label: 'Avg / Question', color: '#60a5fa' },
             ].map(({ value, label, color }) => (
               <div key={label}>
                 <div

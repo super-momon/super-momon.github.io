@@ -95,6 +95,7 @@ export default function QuizPage() {
             score={game.score}
             totalAnswered={game.totalAnswered}
             correctCount={game.correctCount}
+            avgSecondsPerQuestion={game.avgSecondsPerQuestion}
             mode={game.mode!}
             onPlayAgain={game.playAgain}
             onChangeMode={game.resetGame}

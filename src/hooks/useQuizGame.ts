@@ -6,6 +6,8 @@ import { QUESTIONS_BY_CATEGORY, type CategoryKey, getAllQuestions } from '@/data
 
 const TOTAL_LIVES = 3;
 const TIMER_SECONDS = 15;
+const FEEDBACK_DELAY_CORRECT_MS = 1200;
+const FEEDBACK_DELAY_WRONG_MS = 3000;
 
 const DIFFICULTY_POINTS: Record<string, number> = {
   easy: 1,
@@ -35,6 +37,7 @@ export function useQuizGame() {
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [totalTimeSpentMs, setTotalTimeSpentMs] = useState(0);
 
   // Refs for use inside async callbacks (avoid stale closures)
   const modeRef = useRef<GameMode | null>(null);
@@ -43,6 +46,8 @@ export function useQuizGame() {
   const currentIndexRef = useRef(0);
   const isProcessingRef = useRef(false);
   const pendingAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const questionStartTimeRef = useRef<number>(0);
+  const totalTimeSpentMsRef = useRef(0);
 
   const clearPendingAdvance = useCallback(() => {
     if (pendingAdvanceRef.current) {
@@ -69,6 +74,7 @@ export function useQuizGame() {
 
     currentIndexRef.current = newIdx;
     isProcessingRef.current = false;
+    questionStartTimeRef.current = Date.now();
     setCurrentIndex(newIdx);
     setAnswerState('unanswered');
     setSelectedAnswer(null);
@@ -78,6 +84,7 @@ export function useQuizGame() {
   const resolveAfterFeedback = useCallback(
     (isWrong: boolean, updatedLives: number) => {
       clearPendingAdvance();
+      const delay = isWrong ? FEEDBACK_DELAY_WRONG_MS : FEEDBACK_DELAY_CORRECT_MS;
       pendingAdvanceRef.current = setTimeout(() => {
         const gameOver =
           (modeRef.current === 'survival' && isWrong) ||
@@ -88,7 +95,7 @@ export function useQuizGame() {
         } else {
           advanceToNext();
         }
-      }, 800);
+      }, delay);
     },
     [clearPendingAdvance, advanceToNext]
   );
@@ -112,6 +119,8 @@ export function useQuizGame() {
       setSelectedAnswer(-1); // -1 signals timeout
       setAnswerState('incorrect');
       setTotalAnswered(prev => prev + 1);
+      totalTimeSpentMsRef.current += TIMER_SECONDS * 1000;
+      setTotalTimeSpentMs(totalTimeSpentMsRef.current);
       resolveAfterFeedback(true, updatedLives);
       return;
     }
@@ -132,6 +141,8 @@ export function useQuizGame() {
       setSelectedAnswer(index);
       setAnswerState(isCorrect ? 'correct' : 'incorrect');
       setTotalAnswered(prev => prev + 1);
+      totalTimeSpentMsRef.current += Date.now() - questionStartTimeRef.current;
+      setTotalTimeSpentMs(totalTimeSpentMsRef.current);
 
       if (isCorrect) {
         setScore(prev => prev + points);
@@ -177,6 +188,9 @@ export function useQuizGame() {
       setTimeLeft(TIMER_SECONDS);
       setTotalAnswered(0);
       setCorrectCount(0);
+      setTotalTimeSpentMs(0);
+      totalTimeSpentMsRef.current = 0;
+      questionStartTimeRef.current = Date.now();
     },
     [clearPendingAdvance]
   );
@@ -200,6 +214,9 @@ export function useQuizGame() {
     setTimeLeft(TIMER_SECONDS);
     setTotalAnswered(0);
     setCorrectCount(0);
+    setTotalTimeSpentMs(0);
+    totalTimeSpentMsRef.current = 0;
+    questionStartTimeRef.current = 0;
   }, [clearPendingAdvance]);
 
   // Cleanup on unmount
@@ -219,6 +236,10 @@ export function useQuizGame() {
     totalSeconds: TIMER_SECONDS,
     totalAnswered,
     correctCount,
+    avgSecondsPerQuestion:
+      totalAnswered > 0
+        ? Math.round((totalTimeSpentMs / totalAnswered / 1000) * 10) / 10
+        : 0,
     startGame,
     handleAnswer,
     resetGame,
