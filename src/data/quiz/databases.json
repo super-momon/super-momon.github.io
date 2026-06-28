@@ -1,0 +1,136 @@
+[
+  {
+    "id": "db-001",
+    "category": "Databases",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "SQL stands for Structured Query Language.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "db-002",
+    "category": "Databases",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which SQL statement retrieves data from a table?",
+    "options": [
+      "DELETE",
+      "INSERT",
+      "SELECT",
+      "UPDATE"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "db-003",
+    "category": "Databases",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is database normalization?",
+    "options": [
+      "Organizing data to reduce redundancy and improve integrity",
+      "Compressing database files for storage efficiency",
+      "Backing up and encrypting the database",
+      "Distributing a database across multiple servers"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "db-004",
+    "category": "Databases",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "A primary key column can contain NULL values.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "db-005",
+    "category": "Databases",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What does ACID stand for in database transactions?",
+    "options": [
+      "Availability, Consistency, Integrity, Durability",
+      "Availability, Concurrency, Isolation, Durability",
+      "Atomicity, Concurrency, Integrity, Dependency",
+      "Atomicity, Consistency, Isolation, Durability"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "db-006",
+    "category": "Databases",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "NoSQL databases are always faster than relational databases for all use cases.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "db-007",
+    "category": "Databases",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What is a foreign key?",
+    "options": [
+      "A composite primary key",
+      "A column that references the primary key of another table",
+      "A key used to encrypt sensitive data",
+      "Always the first column in a table"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "db-008",
+    "category": "Databases",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the primary purpose of a database index?",
+    "options": [
+      "Enforce referential integrity between tables",
+      "Speed up data retrieval at the cost of additional storage",
+      "Encrypt sensitive column data",
+      "Automatically back up table rows"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "db-009",
+    "category": "Databases",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the N+1 query problem?",
+    "options": [
+      "A database running out of connections",
+      "A deadlock between two concurrent transactions",
+      "Fetching a list then issuing one additional query per record",
+      "A type of SQL injection attack"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "db-010",
+    "category": "Databases",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is MVCC (Multi-Version Concurrency Control)?",
+    "options": [
+      "A schema migration and versioning strategy",
+      "Maintaining multiple data versions to allow concurrent reads and writes without locking",
+      "A type of composite database index",
+      "A strategy for replicating data across nodes"
+    ],
+    "correctAnswer": 1
+  }
+]

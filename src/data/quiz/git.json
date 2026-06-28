@@ -1,0 +1,136 @@
+[
+  {
+    "id": "git-001",
+    "category": "Git",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "git pull is equivalent to git fetch followed by git merge.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "git-002",
+    "category": "Git",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which command stages all changes for the next commit?",
+    "options": [
+      "git add .",
+      "git commit",
+      "git status",
+      "git push"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "git-003",
+    "category": "Git",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does git rebase do?",
+    "options": [
+      "Moves or replays commits from one branch onto another, rewriting history",
+      "Merges branches with a new merge commit",
+      "Reverts only the most recent commit",
+      "Permanently deletes a local branch"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "git-004",
+    "category": "Git",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "git reset --hard is a safe operation that can always be undone.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "git-005",
+    "category": "Git",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is a detached HEAD state in Git?",
+    "options": [
+      "HEAD points directly to a commit instead of a branch reference",
+      "A rebasing operation that was paused",
+      "A repository with a corrupted index file",
+      "An in-progress merge conflict state"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "git-006",
+    "category": "Git",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "git cherry-pick can apply a single specific commit to the current branch.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "git-007",
+    "category": "Git",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which command displays the commit history?",
+    "options": [
+      "git show",
+      "git status",
+      "git history",
+      "git log"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "git-008",
+    "category": "Git",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does git stash do?",
+    "options": [
+      "Creates a new branch from current changes",
+      "Commits changes without requiring a message",
+      "Permanently deletes all uncommitted changes",
+      "Temporarily saves uncommitted changes and reverts to HEAD"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "git-009",
+    "category": "Git",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the key difference between git merge and git rebase?",
+    "options": [
+      "Rebase creates a merge commit; merge moves commits",
+      "Merge is only for local branches; rebase only for remote",
+      "Merge preserves branch history with a merge commit; rebase rewrites history into a linear sequence",
+      "They produce identical repository histories"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "git-010",
+    "category": "Git",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is the Git reflog?",
+    "options": [
+      "A log of all changes pushed to remote repositories",
+      "A list of all Git configuration settings",
+      "A local log of all HEAD reference changes, useful for recovering lost commits",
+      "A backup system for deleted branches"
+    ],
+    "correctAnswer": 2
+  }
+]

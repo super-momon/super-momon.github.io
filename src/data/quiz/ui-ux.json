@@ -1,0 +1,136 @@
+[
+  {
+    "id": "ux-001",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "The F-pattern describes a common way users visually scan web pages.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-002",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does 'affordance' mean in UX design?",
+    "options": [
+      "The color contrast ratio of text",
+      "The amount of whitespace in a layout",
+      "The loading time of a page",
+      "A design property that suggests how an object should be used"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "ux-003",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the minimum contrast ratio for normal text under WCAG AA guidelines?",
+    "options": [
+      "4.5:1",
+      "7:1",
+      "3:1",
+      "2:1"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-004",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "According to Hick's Law, more choices lead to faster decision-making.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-005",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is 'progressive disclosure' in UX design?",
+    "options": [
+      "Reducing the total number of UI components",
+      "Showing essential information first and revealing complexity on demand",
+      "Using animations to guide user attention",
+      "Hiding all secondary navigation elements"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-006",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "A higher Fitts' Law index of difficulty means a target is easier to interact with.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-007",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does CTA stand for in UX and marketing?",
+    "options": [
+      "Content Type Attribute",
+      "Component Test Area",
+      "Call to Action",
+      "Click Through Analytics"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "ux-008",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which of Nielsen's heuristics states users should always be informed about what is happening?",
+    "options": [
+      "User control and freedom",
+      "Visibility of system status",
+      "Error prevention",
+      "Consistency and standards"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-009",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the 'peak-end rule' in UX psychology?",
+    "options": [
+      "Users scan interfaces in a Z-pattern by default",
+      "Users remember the beginning of an experience most vividly",
+      "People judge experiences based on the peak intensity and how they ended",
+      "First interactions determine overall satisfaction"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "ux-010",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "In usability metrics, what is the difference between effectiveness and efficiency?",
+    "options": [
+      "Efficiency measures satisfaction; effectiveness measures speed",
+      "Effectiveness measures task completion rate; efficiency measures resources used",
+      "They are synonyms in usability testing",
+      "Effectiveness measures speed; efficiency measures error rate"
+    ],
+    "correctAnswer": 1
+  }
+]

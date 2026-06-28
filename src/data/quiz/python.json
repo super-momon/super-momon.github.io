@@ -1,0 +1,136 @@
+[
+  {
+    "id": "py-001",
+    "category": "Python",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Python uses indentation to define code blocks.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "py-002",
+    "category": "Python",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which of the following is a mutable data type in Python?",
+    "options": [
+      "tuple",
+      "str",
+      "int",
+      "list"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "py-003",
+    "category": "Python",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is a generator in Python?",
+    "options": [
+      "A decorator for async functions",
+      "A function that always returns None",
+      "A class that generates random numbers",
+      "A function using yield that returns values lazily"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "py-004",
+    "category": "Python",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Python's is operator checks for value equality.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "py-005",
+    "category": "Python",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the GIL (Global Interpreter Lock) in CPython?",
+    "options": [
+      "A mutex allowing only one thread to execute Python bytecode at a time",
+      "A memory management module",
+      "A module import lock",
+      "Python's garbage collector"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "py-006",
+    "category": "Python",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Python list comprehensions are always faster than equivalent for loops.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "py-007",
+    "category": "Python",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does len([]) return in Python?",
+    "options": [
+      "-1",
+      "None",
+      "0",
+      "1"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "py-008",
+    "category": "Python",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does the @property decorator do in Python?",
+    "options": [
+      "Makes a method static",
+      "Creates a class method",
+      "Allows a method to be accessed like an attribute",
+      "Prevents method overriding"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "py-009",
+    "category": "Python",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the average-case time complexity of Python dictionary lookup?",
+    "options": [
+      "O(n²)",
+      "O(n)",
+      "O(1)",
+      "O(log n)"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "py-010",
+    "category": "Python",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What does __slots__ do in a Python class?",
+    "options": [
+      "Prevents subclassing",
+      "Restricts instance attributes to a predefined set, reducing memory usage",
+      "Enables operator overloading",
+      "Enables multiple inheritance"
+    ],
+    "correctAnswer": 1
+  }
+]

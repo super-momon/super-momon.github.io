@@ -1,0 +1,136 @@
+[
+  {
+    "id": "ds-001",
+    "category": "Data Structures",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "A stack follows FIFO (First In, First Out) ordering.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ds-002",
+    "category": "Data Structures",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What is the time complexity of accessing an array element by index?",
+    "options": [
+      "O(log n)",
+      "O(n)",
+      "O(1)",
+      "O(n²)"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "ds-003",
+    "category": "Data Structures",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which data structure is best suited for implementing a priority queue?",
+    "options": [
+      "Linked List",
+      "Hash Table",
+      "Stack",
+      "Heap"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "ds-004",
+    "category": "Data Structures",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "A binary search tree guarantees O(log n) lookup time in all cases.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ds-005",
+    "category": "Data Structures",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the time complexity of inserting at the head of a singly linked list?",
+    "options": [
+      "O(n)",
+      "O(n log n)",
+      "O(1)",
+      "O(log n)"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "ds-006",
+    "category": "Data Structures",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Dijkstra's algorithm works correctly with negative edge weights.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ds-007",
+    "category": "Data Structures",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which data structure uses FIFO ordering?",
+    "options": [
+      "Stack",
+      "Binary Tree",
+      "Graph",
+      "Queue"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "ds-008",
+    "category": "Data Structures",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the worst-case time complexity of quicksort?",
+    "options": [
+      "O(log n)",
+      "O(n²)",
+      "O(n log n)",
+      "O(n)"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ds-009",
+    "category": "Data Structures",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is a Red-Black tree?",
+    "options": [
+      "A tree where all leaf nodes are colored red",
+      "A B+ tree variant used in databases",
+      "A self-balancing BST using color properties to guarantee O(log n) operations",
+      "A tree that only stores data in leaf nodes"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "ds-010",
+    "category": "Data Structures",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is the time complexity of BFS on a graph with V vertices and E edges?",
+    "options": [
+      "O(E log V)",
+      "O(V + E)",
+      "O(V log V)",
+      "O(V²)"
+    ],
+    "correctAnswer": 1
+  }
+]

@@ -1,0 +1,654 @@
+[
+  {
+    "id": "net-001",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": ".NET is a cross-platform, open-source framework.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-002",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does CLR stand for in .NET?",
+    "options": [
+      "Common Language Runtime",
+      "Core Language Repository",
+      "Common Library Reference",
+      "Compilation Language Resolver"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-003",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "C# is the primary language for .NET development.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-004",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which keyword is used to create a class in C#?",
+    "options": [
+      "struct",
+      "Class",
+      "class",
+      "interface"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "net-005",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "In C#, the string type is a reference type.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-006",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What is the purpose of the 'using' statement in C#?",
+    "options": [
+      "Create disposal scope for resources",
+      "Import namespaces",
+      "Both A and B",
+      "Define variable scope"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "net-007",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Abstract classes can be instantiated in C#.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-008",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which collection type maintains insertion order and allows duplicates in .NET?",
+    "options": [
+      "Queue",
+      "HashSet",
+      "Dictionary",
+      "List"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "net-009",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Nullable types in C# are declared using the '?' operator.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-010",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does LINQ stand for?",
+    "options": [
+      "Logic Integrated Query",
+      "Language Interface Query",
+      "Linear Integrated Query",
+      "Language Integrated Query"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "net-011",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "The 'async' keyword in C# automatically makes a method asynchronous.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-012",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which access modifier restricts access to the same class only?",
+    "options": [
+      "protected",
+      "internal",
+      "private",
+      "public"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "net-013",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Value types in C# are allocated on the heap.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-014",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What is the base class for all types in .NET?",
+    "options": [
+      "Object",
+      "Base",
+      "Type",
+      "System"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-015",
+    "category": ".NET",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Properties in C# must have both get and set accessors.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-016",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the purpose of Dependency Injection in .NET?",
+    "options": [
+      "Improve testability",
+      "Reduce coupling between classes",
+      "All of the above",
+      "Manage object lifecycles"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "net-017",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Extension methods in C# must be defined in static classes.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-018",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which LINQ method returns a single element or throws an exception?",
+    "options": [
+      "Single",
+      "SingleOrDefault",
+      "FirstOrDefault",
+      "First"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-019",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Delegates in C# are type-safe function pointers.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-020",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does the 'where' keyword do in a generic constraint?",
+    "options": [
+      "Filter LINQ results",
+      "Add SQL WHERE clause",
+      "Define method parameters",
+      "Restrict type parameters to specific types"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "net-021",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Interface members in C# are abstract by default.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-022",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is Entity Framework used for?",
+    "options": [
+      "UI framework",
+      "Object-Relational Mapping",
+      "Database query optimization",
+      "Network communication"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-023",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "The 'sealed' keyword prevents a class from being inherited.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-024",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does 'async' and 'await' enable in C#?",
+    "options": [
+      "Task scheduling",
+      "Multithreading",
+      "Parallel processing",
+      "Asynchronous programming"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "net-025",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Lambda expressions in C# require explicit parameter types.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-026",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the difference between 'ref' and 'out' parameters?",
+    "options": [
+      "ref must be initialized; out must be assigned in method",
+      "ref returns a value; out passes by reference",
+      "out cannot be used in method parameters",
+      "They are identical"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-027",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Struct types in C# are reference types.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-028",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the purpose of the IEnumerable interface?",
+    "options": [
+      "Add sorting capabilities",
+      "Enable iteration over collections",
+      "Define collection size",
+      "Make objects countable"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-029",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Exception handling in C# uses try-catch-finally blocks.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-030",
+    "category": ".NET",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does CRUD represent in .NET applications?",
+    "options": [
+      "Create, Read, Update, Delete",
+      "Cache, Read, Update, Delete",
+      "Core, Runtime, Utility, Data",
+      "Configure, Retrieve, Upgrade, Debug"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-031",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the difference between Task and Thread in .NET?",
+    "options": [
+      "Threads are always faster than tasks",
+      "Tasks run on threads; threads are OS-level",
+      "Tasks can only run synchronously",
+      "They are identical concepts"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-032",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Virtual methods in C# can be overridden by derived classes.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-033",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What does the '?.' operator do in C#?",
+    "options": [
+      "Null coalescing operator",
+      "Ternary operator",
+      "Safe cast operator",
+      "Conditional access operator"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "net-034",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Reflection in C# allows inspecting and invoking members at runtime.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-035",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the purpose of the lock statement in C#?",
+    "options": [
+      "Encrypt data",
+      "Lock files from modification",
+      "Secure database connections",
+      "Prevent concurrent access to shared resources"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "net-036",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "IDisposable pattern is used for managing unmanaged resources.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-037",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What does covariance enable in C# generics?",
+    "options": [
+      "Use derived types where base types are expected",
+      "Mix different generic types",
+      "Override generic constraints",
+      "Inherit from multiple generics"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-038",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Attributes in C# provide metadata but do not affect code execution.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-039",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is DbContext in Entity Framework?",
+    "options": [
+      "Query builder",
+      "Data access layer",
+      "Cache manager",
+      "Session to the database"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "net-040",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Yield keyword in C# enables lazy evaluation of collections.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-041",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is a race condition in multithreaded .NET applications?",
+    "options": [
+      "Threads completing faster than expected",
+      "Unpredictable behavior when multiple threads access shared data",
+      "Memory leak in thread pool",
+      "Deadlock between threads"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-042",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Partial classes in C# allow splitting a class across multiple files.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "net-043",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is an explicit interface implementation used for?",
+    "options": [
+      "Hide interface members from public API",
+      "Implement multiple interfaces with conflicting members",
+      "All of the above",
+      "Force callers to use interface reference"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "net-044",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "The 'dynamic' type in C# is resolved at compile time.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-045",
+    "category": ".NET",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What does boxing and unboxing do in .NET?",
+    "options": [
+      "Compress and decompress data",
+      "Handle thread synchronization",
+      "Convert value types to objects and vice versa",
+      "Manage memory allocation"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "net-046",
+    "category": ".NET",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is the purpose of the 'volatile' keyword in C#?",
+    "options": [
+      "Prevent garbage collection",
+      "Enable unsafe operations",
+      "Ensure visibility of changes to shared variables in multithreading",
+      "Make variables mutable"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "net-047",
+    "category": ".NET",
+    "difficulty": "extra-hard",
+    "type": "true-false",
+    "question": "Expression-bodied members in C# can only be used for properties.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-048",
+    "category": ".NET",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What does constraint propagation in generics ensure?",
+    "options": [
+      "Memory efficiency",
+      "Type safety at compile time",
+      "Backward compatibility",
+      "Runtime performance optimization"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-049",
+    "category": ".NET",
+    "difficulty": "extra-hard",
+    "type": "true-false",
+    "question": "Async void methods should be used for event handlers only.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "net-050",
+    "category": ".NET",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is the difference between lazy evaluation and eager evaluation in LINQ?",
+    "options": [
+      "Eager executes when query is defined; lazy executes when enumerated",
+      "Lazy executes immediately; eager executes on demand",
+      "Lazy is only for async operations",
+      "They are the same concept"
+    ],
+    "correctAnswer": 0
+  }
+]

@@ -1,0 +1,136 @@
+[
+  {
+    "id": "ts-001",
+    "category": "TypeScript",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "TypeScript is a superset of JavaScript.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ts-002",
+    "category": "TypeScript",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which TypeScript utility type makes all properties of a type optional?",
+    "options": [
+      "Partial<T>",
+      "Required<T>",
+      "Pick<T, K>",
+      "Readonly<T>"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ts-003",
+    "category": "TypeScript",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does the never type represent in TypeScript?",
+    "options": [
+      "Optional values",
+      "An empty object type",
+      "Unknown runtime values",
+      "Values that can never occur"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "ts-004",
+    "category": "TypeScript",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "TypeScript interfaces and type aliases are completely interchangeable in all cases.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ts-005",
+    "category": "TypeScript",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is a discriminated union in TypeScript?",
+    "options": [
+      "A union of exactly two primitive types",
+      "A mapped type",
+      "A union type with a common literal property used for narrowing",
+      "A type that excludes undefined"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "ts-006",
+    "category": "TypeScript",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "The as const assertion makes all object values deeply readonly literal types.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ts-007",
+    "category": "TypeScript",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What keyword is used for type assertion (casting) in TypeScript?",
+    "options": [
+      "as",
+      "cast",
+      "type",
+      "assert"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ts-008",
+    "category": "TypeScript",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does the infer keyword do in TypeScript conditional types?",
+    "options": [
+      "Extracts and captures a type within a conditional type",
+      "Forces a type to be a primitive",
+      "Removes null from a union",
+      "Transforms a union to an intersection"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ts-009",
+    "category": "TypeScript",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is declaration merging in TypeScript?",
+    "options": [
+      "Multiple interface declarations with the same name are automatically combined",
+      "Combining two modules into one namespace",
+      "Merging of type aliases at runtime",
+      "Automatic type widening for primitives"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ts-010",
+    "category": "TypeScript",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What does the satisfies operator do in TypeScript?",
+    "options": [
+      "Merges two interfaces together",
+      "Casts a type unsafely at runtime",
+      "Removes undefined from a union type",
+      "Validates an expression matches a type without changing the inferred type"
+    ],
+    "correctAnswer": 3
+  }
+]

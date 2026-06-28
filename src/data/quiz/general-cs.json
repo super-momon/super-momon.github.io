@@ -1,0 +1,136 @@
+[
+  {
+    "id": "cs-001",
+    "category": "General CS",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Binary uses base-2 numbering.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "cs-002",
+    "category": "General CS",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does CPU stand for?",
+    "options": [
+      "Computer Processing Unit",
+      "Core Program Utility",
+      "Central Program Unit",
+      "Central Processing Unit"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "cs-003",
+    "category": "General CS",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is Big O notation used for?",
+    "options": [
+      "Measuring CPU clock speed",
+      "Counting the number of software bugs",
+      "Describing the upper bound of an algorithm's time or space complexity",
+      "Defining code formatting standards"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "cs-004",
+    "category": "General CS",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "HTTP is a stateful protocol.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "cs-005",
+    "category": "General CS",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the difference between a process and a thread?",
+    "options": [
+      "A thread is a separate program; a process is a pool of threads",
+      "A process is always single-threaded by design",
+      "A process is an independent program with its own memory; a thread is a unit of execution within a process",
+      "They are the same concept with different names"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "cs-006",
+    "category": "General CS",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "REST APIs must always return data in JSON format.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "cs-007",
+    "category": "General CS",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What is an API?",
+    "options": [
+      "Application Programming Interface",
+      "Application Protocol Integration",
+      "Automated Program Instruction",
+      "Advanced Processing Interface"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "cs-008",
+    "category": "General CS",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the main purpose of a CDN?",
+    "options": [
+      "Distribute content geographically closer to users to reduce latency",
+      "Manage and resolve DNS records",
+      "Encrypt all web traffic between client and server",
+      "Store and manage database backups"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "cs-009",
+    "category": "General CS",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is memoization?",
+    "options": [
+      "A method for compressing large datasets in memory",
+      "Caching function results to avoid redundant computation for the same inputs",
+      "Freeing memory after function calls complete",
+      "A specific type of recursive algorithm pattern"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "cs-010",
+    "category": "General CS",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "According to the CAP theorem, what must a distributed system sacrifice during a network partition?",
+    "options": [
+      "Performance and throughput",
+      "Partition tolerance itself",
+      "Either consistency or availability, but not both simultaneously",
+      "Data replication across nodes"
+    ],
+    "correctAnswer": 2
+  }
+]

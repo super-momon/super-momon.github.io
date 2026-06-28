@@ -1,0 +1,136 @@
+[
+  {
+    "id": "css-001",
+    "category": "CSS / HTML",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "The <div> element is an inline-level element by default.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "css-002",
+    "category": "CSS / HTML",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which CSS property changes text color?",
+    "options": [
+      "text-color",
+      "color",
+      "foreground",
+      "font-color"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "css-003",
+    "category": "CSS / HTML",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which of these is NOT part of the CSS Box Model?",
+    "options": [
+      "padding",
+      "border",
+      "margin",
+      "outline"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "css-004",
+    "category": "CSS / HTML",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "CSS Grid and Flexbox cannot be used together in the same layout.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "css-005",
+    "category": "CSS / HTML",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the correct CSS specificity order from highest to lowest?",
+    "options": [
+      "Inline styles > Class > ID > Element",
+      "Inline styles > ID > Class/Pseudo-class > Element",
+      "ID > Class > Element > Inline styles",
+      "Element > Class > ID > Inline styles"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "css-006",
+    "category": "CSS / HTML",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "em units in CSS are always relative to the root element's font size.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "css-007",
+    "category": "CSS / HTML",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which HTML attribute provides alternative text for images?",
+    "options": [
+      "title",
+      "alt",
+      "label",
+      "src"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "css-008",
+    "category": "CSS / HTML",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does position: sticky do?",
+    "options": [
+      "Keeps an element visible within its parent's bounds as the user scrolls",
+      "Removes the element from the document flow",
+      "Fixes the element to the viewport at all times",
+      "Makes the element float alongside text"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "css-009",
+    "category": "CSS / HTML",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What does display: contents do?",
+    "options": [
+      "Hides the element and all its children",
+      "Creates a new block formatting context",
+      "Makes all children display inline",
+      "Removes the element's box while keeping its children in the flow"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": "css-010",
+    "category": "CSS / HTML",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is the CSS contain property used for?",
+    "options": [
+      "Enabling scroll-snapping behavior",
+      "Isolating a subtree from the rest of the document to improve rendering performance",
+      "Creating named CSS layers",
+      "Preventing content from overflowing its container"
+    ],
+    "correctAnswer": 1
+  }
+]

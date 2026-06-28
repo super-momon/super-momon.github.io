@@ -1,0 +1,136 @@
+[
+  {
+    "id": "react-001",
+    "category": "React",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "React components must return a single root element or Fragment.",
+    "options": [
+      "False",
+      "True"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "react-002",
+    "category": "React",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which hook manages local state in a functional component?",
+    "options": [
+      "useEffect",
+      "useRef",
+      "useState",
+      "useContext"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "react-003",
+    "category": "React",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the purpose of the key prop in React lists?",
+    "options": [
+      "Helps React identify which items changed, were added, or removed",
+      "Sets default prop values",
+      "Binds event handlers to list items",
+      "Adds CSS class names to list elements"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "react-004",
+    "category": "React",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "useEffect with an empty dependency array runs after every render.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "react-005",
+    "category": "React",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is React Fiber?",
+    "options": [
+      "React's internal reconciliation architecture enabling async rendering",
+      "A React state management library",
+      "A third-party animation library for React",
+      "React's virtual DOM implementation"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "react-006",
+    "category": "React",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "React's useState setter function updates state synchronously.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "react-007",
+    "category": "React",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does JSX stand for?",
+    "options": [
+      "JavaScript Extension",
+      "JavaScript XML",
+      "Java Syntax Extension",
+      "JavaScript Extra"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "react-008",
+    "category": "React",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which hook prevents a function from being recreated on every render?",
+    "options": [
+      "useMemo",
+      "useCallback",
+      "useState",
+      "useRef"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "react-009",
+    "category": "React",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the purpose of React.memo?",
+    "options": [
+      "Stores the previous state value",
+      "Caches API responses",
+      "Memoizes a component to prevent re-renders when props are unchanged",
+      "Prevents event bubbling"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": "react-010",
+    "category": "React",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "In React Concurrent Mode, what is 'tearing'?",
+    "options": [
+      "Effects running before paint",
+      "Refs being garbage collected prematurely",
+      "Components rendering in the wrong order",
+      "Different UI parts showing inconsistent snapshots of the same state"
+    ],
+    "correctAnswer": 3
+  }
+]
