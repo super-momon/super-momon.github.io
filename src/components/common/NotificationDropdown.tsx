@@ -26,6 +26,15 @@ interface Notification {
 
 const notifications: Notification[] = [
   {
+    id: 4,
+    text: "🎯 I built an interactive quiz app to sharpen and gauge my own programming skills — and for anyone else looking to do the same! Explore 12 topics: JavaScript, Python, AWS & more.",
+    icon: faChartLine,
+    timestamp: "June 29, 2026",
+    color: "text-blue-500",
+    link: "/games/quiz",
+    linkText: "Play Now",
+  },
+  {
     id: 3,
     text: "✨ Refreshed website design with smooth animations, enhanced mobile experience, and modern aesthetic",
     icon: faPalette,
