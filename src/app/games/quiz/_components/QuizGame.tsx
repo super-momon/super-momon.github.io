@@ -108,6 +108,16 @@ export function QuizGame({
                 </motion.span>
               ))}
             </div>
+          ) : mode === 'best-of-100' ? (
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--color-muted)' }}>
+                Progress
+              </span>
+              <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--color-foreground)' }}>
+                {questionNumber}{' '}
+                <span style={{ color: 'var(--color-muted)', fontWeight: 400 }}>/ 100</span>
+              </span>
+            </div>
           ) : (
             <span
               className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border"

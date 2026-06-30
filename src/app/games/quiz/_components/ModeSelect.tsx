@@ -36,6 +36,19 @@ const MODES = [
     bg: 'rgba(59,130,246,0.07)',
     orb: 'rgba(59,130,246,0.22)',
   },
+  {
+    id: 'best-of-100' as GameMode,
+    label: 'Best of 100',
+    tagline: 'Score as high as you can',
+    description:
+      'A fixed set of 100 questions — no sudden death, no lives. Answer every question and see how high you can score.',
+    icon: '💯',
+    accentClass: 'text-purple-500',
+    borderActive: 'border-purple-500/70',
+    glow: '0 0 32px rgba(168,85,247,0.25)',
+    bg: 'rgba(168,85,247,0.07)',
+    orb: 'rgba(168,85,247,0.22)',
+  },
 ] as const;
 
 const SCORING = [
@@ -66,7 +79,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard }: Props) {
         variants={container}
         initial="hidden"
         animate="show"
-        className="w-full max-w-xl flex flex-col items-center"
+        className="w-full max-w-2xl flex flex-col items-center"
       >
         {/* Eyebrow + Title */}
         <motion.div variants={item} className="text-center mb-12">
@@ -110,7 +123,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard }: Props) {
         {/* Mode Cards */}
         <motion.div
           variants={item}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-6"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mb-6"
         >
           {MODES.map((m) => {
             const isSelected = selected === m.id;
