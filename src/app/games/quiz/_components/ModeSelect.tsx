@@ -85,7 +85,10 @@ export function ModeSelect({ onStart }: Props) {
             />
             Programming Quiz
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-3 leading-tight">
+          <h1
+            className="font-bold tracking-tight text-foreground mb-3 leading-tight"
+            style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)' }}
+          >
             Choose your{' '}
             <span
               style={{
@@ -213,10 +216,10 @@ export function ModeSelect({ onStart }: Props) {
           <motion.button
             disabled={!selected}
             onClick={() => selected && onStart(selected)}
-            whileHover={selected ? { scale: 1.04, transition: { duration: 0.15 } } : undefined}
+            whileHover={selected ? { scale: 1.03, y: -1, transition: { duration: 0.15 } } : undefined}
             whileTap={selected ? { scale: 0.97 } : undefined}
             className={[
-              'px-12 py-4 rounded-xl font-bold text-base tracking-wide transition-all duration-200',
+              'relative px-14 py-4 rounded-xl font-bold text-base tracking-wide overflow-hidden transition-all duration-200',
               selected
                 ? 'cursor-pointer'
                 : 'bg-surface border border-border text-muted cursor-not-allowed',
@@ -226,12 +229,24 @@ export function ModeSelect({ onStart }: Props) {
                 ? {
                   background: 'var(--color-accent)',
                   color: 'var(--color-background)',
-                  boxShadow: '0 4px 28px rgba(0,199,88,0.38), inset 0 1px 0 rgba(255,255,255,0.12)',
+                  boxShadow: '0 4px 28px rgba(0,199,88,0.4), inset 0 1px 0 rgba(255,255,255,0.12)',
                 }
                 : undefined
             }
           >
-            {selected ? 'Begin Run →' : 'Select a Mode'}
+            {selected && (
+              <span
+                aria-hidden
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 2.4s ease-in-out infinite',
+                }}
+              />
+            )}
+            <span className="relative">{selected ? 'Begin Run →' : 'Select a Mode'}</span>
           </motion.button>
         </motion.div>
       </motion.div>
