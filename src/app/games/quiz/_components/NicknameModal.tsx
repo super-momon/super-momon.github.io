@@ -89,7 +89,7 @@ export function NicknameModal({
           Score:{' '}
           <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>{score}</span>
           {' · '}
-          <span style={{ fontWeight: 600 }}>{mode === 'survival' ? 'Survival' : '3 Lives'}</span>
+          <span style={{ fontWeight: 600 }}>{mode === 'survival' ? 'Survival' : mode === 'lives' ? '3 Lives' : 'Best of 100'}</span>
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">

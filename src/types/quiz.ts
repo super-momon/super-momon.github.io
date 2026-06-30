@@ -1,6 +1,6 @@
 export type QuestionDifficulty = 'easy' | 'medium' | 'hard' | 'extra-hard';
 export type QuestionType = 'multiple-choice' | 'true-false';
-export type GameMode = 'survival' | 'lives';
+export type GameMode = 'survival' | 'lives' | 'best-of-100';
 export type GamePhase = 'select' | 'playing' | 'result';
 export type AnswerState = 'unanswered' | 'correct' | 'incorrect';
 

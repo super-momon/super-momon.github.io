@@ -88,7 +88,8 @@ export function useQuizGame() {
       pendingAdvanceRef.current = setTimeout(() => {
         const gameOver =
           (modeRef.current === 'survival' && isWrong) ||
-          (modeRef.current === 'lives' && updatedLives <= 0);
+          (modeRef.current === 'lives' && updatedLives <= 0) ||
+          (modeRef.current === 'best-of-100' && currentIndexRef.current >= questionsRef.current.length - 1);
 
         if (gameOver) {
           setPhase('result');
@@ -170,16 +171,17 @@ export function useQuizGame() {
         : getAllQuestions();
 
       const shuffled = shuffle(questionsToUse as QuizQuestion[]);
+      const finalQuestions = selectedMode === 'best-of-100' ? shuffled.slice(0, 100) : shuffled;
 
       modeRef.current = selectedMode;
       livesRef.current = TOTAL_LIVES;
-      questionsRef.current = shuffled;
+      questionsRef.current = finalQuestions;
       currentIndexRef.current = 0;
       isProcessingRef.current = false;
 
       setMode(selectedMode);
       setPhase('playing');
-      setQuestions(shuffled);
+      setQuestions(finalQuestions);
       setCurrentIndex(0);
       setScore(0);
       setLives(TOTAL_LIVES);

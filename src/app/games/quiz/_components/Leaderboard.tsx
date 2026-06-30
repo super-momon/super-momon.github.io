@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'motion/react';
 import type { GameMode } from '@/types/quiz';
 import type { LeaderboardEntry } from '@/types/leaderboard';
@@ -9,24 +9,52 @@ import { fetchLeaderboard } from '@/lib/leaderboard';
 interface Props {
   initialMode: GameMode;
   highlightId?: string;
+  onClose?: () => void;
 }
 
 const MEDAL = ['🥇', '🥈', '🥉'];
+const ROW_COUNT = 10;
 
-export function Leaderboard({ initialMode, highlightId }: Props) {
+// Module-level cache — persists for the lifetime of the browser session (page load)
+const leaderboardCache = new Map<GameMode, LeaderboardEntry[]>();
+
+export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
   const [mode, setMode] = useState<GameMode>(initialMode);
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [entries, setEntries] = useState<LeaderboardEntry[]>(() => leaderboardCache.get(initialMode) ?? []);
+  const [loading, setLoading] = useState(!leaderboardCache.has(initialMode));
   const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = useCallback((currentMode: GameMode, force = false) => {
+    if (!force && leaderboardCache.has(currentMode)) {
+      setEntries(leaderboardCache.get(currentMode)!);
+      setLoading(false);
+      return () => { };
+    }
+    const controller = new AbortController();
+    if (force) setRefreshing(true); else setLoading(true);
+    setError(null);
+    fetchLeaderboard(currentMode, controller.signal)
+      .then((data) => {
+        if (!controller.signal.aborted) {
+          leaderboardCache.set(currentMode, data);
+          setEntries(data);
+        }
+      })
+      .catch(() => { if (!controller.signal.aborted) setError('Could not load leaderboard.'); })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+          setRefreshing(false);
+        }
+      });
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetchLeaderboard(mode)
-      .then(setEntries)
-      .catch(() => setError('Could not load leaderboard.'))
-      .finally(() => setLoading(false));
-  }, [mode]);
+    const cleanup = load(mode);
+    return cleanup;
+  }, [mode, load]);
 
   return (
     <div
@@ -39,10 +67,65 @@ export function Leaderboard({ initialMode, highlightId }: Props) {
       }}
     >
       {/* Header */}
-      <div className="flex items-center px-4 pt-4 pb-2">
+      <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <h3 className="text-sm font-bold" style={{ color: 'var(--color-foreground)' }}>
           Leaderboard
         </h3>
+        <div className="flex items-center gap-1">
+          {/* Refresh */}
+          <button
+            onClick={() => load(mode, true)}
+            disabled={loading || refreshing}
+            title="Refresh leaderboard"
+            className="flex items-center justify-center w-6 h-6 rounded-lg transition-opacity duration-200 cursor-pointer disabled:opacity-40"
+            style={{ color: 'var(--color-muted)' }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ transition: 'transform 0.4s', transform: refreshing ? 'rotate(360deg)' : 'none' }}
+            >
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+              <path d="M3 21v-5h5" />
+            </svg>
+          </button>
+
+          {/* Close — only shown when rendered inside a modal */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              aria-label="Close leaderboard"
+              className="flex items-center justify-center w-6 h-6 rounded-lg transition-all duration-150 cursor-pointer"
+              style={{
+                background: 'color-mix(in srgb, var(--color-border) 70%, transparent)',
+                border: '1px solid var(--color-border)',
+                color: 'var(--color-muted)',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-border)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-foreground)';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background =
+                  'color-mix(in srgb, var(--color-border) 70%, transparent)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-muted)';
+              }}
+            >
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden>
+                <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Mode toggle */}
@@ -50,7 +133,7 @@ export function Leaderboard({ initialMode, highlightId }: Props) {
         className="flex mx-4 mb-3 p-1 rounded-xl gap-1"
         style={{ background: 'color-mix(in srgb, var(--color-border) 60%, transparent)' }}
       >
-        {(['survival', 'lives'] as GameMode[]).map((m) => (
+        {(['survival', 'lives', 'best-of-100'] as GameMode[]).map((m) => (
           <button
             key={m}
             onClick={() => setMode(m)}
@@ -61,7 +144,7 @@ export function Leaderboard({ initialMode, highlightId }: Props) {
               boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
             }}
           >
-            {m === 'survival' ? 'Survival' : '3 Lives'}
+            {m === 'survival' ? 'Survival' : m === 'lives' ? '3 Lives' : 'Best of 100'}
           </button>
         ))}
       </div>
@@ -70,21 +153,17 @@ export function Leaderboard({ initialMode, highlightId }: Props) {
       <div className="px-4 pb-4">
         {loading ? (
           <div className="flex flex-col gap-2">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: ROW_COUNT }).map((_, i) => (
               <div
                 key={i}
                 className="h-9 rounded-xl animate-pulse"
-                style={{ background: 'var(--color-border)', opacity: 1 - i * 0.15 }}
+                style={{ background: 'var(--color-border)', opacity: 1 - i * 0.1 }}
               />
             ))}
           </div>
         ) : error ? (
           <p className="text-center text-sm py-5" style={{ color: '#ef4444' }}>
             {error}
-          </p>
-        ) : entries.length === 0 ? (
-          <p className="text-center text-sm py-5" style={{ color: 'var(--color-muted)' }}>
-            No scores yet — be the first!
           </p>
         ) : (
           <div className="flex flex-col gap-1">
@@ -103,7 +182,46 @@ export function Leaderboard({ initialMode, highlightId }: Props) {
               <span className="text-right">Avg</span>
             </div>
 
-            {entries.map((entry, idx) => {
+            {Array.from({ length: ROW_COUNT }).map((_, idx) => {
+              const entry = entries[idx] ?? null;
+
+              if (!entry) {
+                return (
+                  <motion.div
+                    key={`empty-${idx}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.25, delay: idx * 0.03 }}
+                    className="flex items-center px-3 rounded-xl"
+                    style={{
+                      height: '2.625rem',
+                      background: idx % 2 !== 0
+                        ? 'color-mix(in srgb, var(--color-border) 10%, transparent)'
+                        : 'transparent',
+                    }}
+                  >
+                    <span
+                      className="text-xs tabular-nums shrink-0"
+                      style={{
+                        width: '2rem',
+                        color: 'color-mix(in srgb, var(--color-muted) 22%, transparent)',
+                      }}
+                    >
+                      {idx + 1}
+                    </span>
+                    <div
+                      style={{
+                        flex: 1,
+                        height: '1px',
+                        background:
+                          'linear-gradient(90deg, color-mix(in srgb, var(--color-border) 55%, transparent) 0%, transparent 80%)',
+                        borderRadius: '1px',
+                      }}
+                    />
+                  </motion.div>
+                );
+              }
+
               const isHighlighted = entry.id === highlightId;
               const accuracy =
                 entry.total_answered > 0
@@ -163,8 +281,7 @@ export function Leaderboard({ initialMode, highlightId }: Props) {
                   <span
                     className="text-right tabular-nums text-xs"
                     style={{
-                      color:
-                        accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444',
+                      color: accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444',
                     }}
                   >
                     {accuracy}%

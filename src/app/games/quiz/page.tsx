@@ -1,13 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuizGame } from '@/hooks/useQuizGame';
 import { ModeSelect } from './_components/ModeSelect';
 import { QuizGame } from './_components/QuizGame';
 import { ResultScreen } from './_components/ResultScreen';
-import { Leaderboard } from './_components/Leaderboard';
+import { LeaderboardModal } from './_components/LeaderboardModal';
 
 export default function QuizPage() {
   const game = useQuizGame();
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
 
   return (
     <div className="relative">
@@ -72,22 +74,10 @@ export default function QuizPage() {
       {/* Content */}
       <div style={{ position: 'relative', zIndex: 1 }}>
         {game.phase === 'select' && (
-          <div
-            className="flex flex-col xl:flex-row"
-            style={{ maxWidth: '1440px', margin: '0 auto' }}
-          >
-            <div className="flex-1 min-w-0">
-              <ModeSelect onStart={game.startGame} />
-            </div>
-            <div
-              className="xl:sticky xl:top-0 xl:h-screen xl:overflow-y-auto shrink-0 xl:w-90 flex xl:items-center px-5 pb-12 xl:pb-0 xl:px-6"
-              style={{ borderLeft: '1px solid var(--color-border)' }}
-            >
-              <div className="w-full xl:py-10">
-                <Leaderboard initialMode="survival" />
-              </div>
-            </div>
-          </div>
+          <ModeSelect
+            onStart={game.startGame}
+            onOpenLeaderboard={() => setLeaderboardOpen(true)}
+          />
         )}
 
         {game.phase === 'playing' && game.currentQuestion && (
@@ -118,6 +108,11 @@ export default function QuizPage() {
           />
         )}
       </div>
+
+      <LeaderboardModal
+        open={leaderboardOpen}
+        onClose={() => setLeaderboardOpen(false)}
+      />
     </div>
   );
 }
