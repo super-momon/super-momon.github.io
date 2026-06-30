@@ -132,5 +132,543 @@
       "Effectiveness measures speed; efficiency measures error rate"
     ],
     "correctAnswer": 1
+  },
+  {
+    "id": "ux-011",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which term describes how easy text is to read in a design?",
+    "options": [
+      "Latency",
+      "Legibility",
+      "Parity",
+      "Saturation"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-012",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Whitespace in a layout can help improve readability and focus.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-013",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which color relationship generally provides the strongest text readability?",
+    "options": [
+      "Low contrast between text and background",
+      "High contrast between text and background",
+      "Using only saturated colors",
+      "Matching text and background hues closely"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-014",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What is the primary purpose of a wireframe?",
+    "options": [
+      "To define the basic structure and layout of an interface",
+      "To finalize brand photography",
+      "To test server performance",
+      "To export production-ready code"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-015",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "A consistent button style across a product helps users learn the interface faster.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-016",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which UI element is most commonly used to choose one option from a small list?",
+    "options": [
+      "Radio buttons",
+      "Progress bar",
+      "Tooltip",
+      "Carousel"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-017",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What does onboarding usually refer to in product design?",
+    "options": [
+      "Migrating a database schema",
+      "Helping new users understand and begin using a product",
+      "Running automated accessibility scans",
+      "Collecting end-of-project feedback"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-018",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "true-false",
+    "question": "Icons should ideally be understandable without forcing users to guess their meaning.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-019",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "Which of these is a common user feedback state?",
+    "options": [
+      "Loading",
+      "Inlining",
+      "Compiling",
+      "Refactoring"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-020",
+    "category": "UI / UX",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "question": "What is the main goal of a visual hierarchy?",
+    "options": [
+      "To reduce image file sizes",
+      "To guide attention by emphasizing the relative importance of elements",
+      "To make every element stand out equally",
+      "To prevent users from scrolling"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-021",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What does Fitts' Law primarily relate to?",
+    "options": [
+      "How quickly users can acquire a target based on size and distance",
+      "How users scan paragraphs of text",
+      "How much contrast is required for accessibility",
+      "How many choices users can hold in memory"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-022",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Placeholder text alone is usually a poor replacement for a persistent form label.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-023",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which research method is best suited to observing users completing realistic tasks in an interface?",
+    "options": [
+      "Usability testing",
+      "Logo brainstorming",
+      "Load testing",
+      "Color grading"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-024",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the purpose of an information architecture in UX?",
+    "options": [
+      "Defining how content and features are organized and labeled",
+      "Determining server rack placement",
+      "Styling components with gradients and shadows",
+      "Setting ad campaign budgets"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-025",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Recognition over recall generally means interfaces should make options visible rather than forcing users to remember them.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-026",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which practice is most aligned with accessible form design?",
+    "options": [
+      "Using color alone to indicate required fields",
+      "Providing clear labels and helpful error messages",
+      "Hiding field instructions until submission fails",
+      "Replacing all labels with icons"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-027",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is an empty state?",
+    "options": [
+      "A loading skeleton before data arrives",
+      "A screen shown when there is no content or no results yet",
+      "A page without CSS applied",
+      "A disabled application route"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-028",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "What is the main purpose of a design system?",
+    "options": [
+      "To replace all user research",
+      "To centralize reusable components, patterns, and guidelines",
+      "To eliminate the need for product requirements",
+      "To guarantee perfect visual creativity in every screen"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-029",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "question": "Which metric best describes how many users successfully complete a task?",
+    "options": [
+      "Task completion rate",
+      "Bounce rate",
+      "Frame rate",
+      "Average session bandwidth"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-030",
+    "category": "UI / UX",
+    "difficulty": "medium",
+    "type": "true-false",
+    "question": "Microcopy includes small pieces of interface text such as button labels, hints, and error messages.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-031",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "Which outcome best reflects Jakob's Law?",
+    "options": [
+      "Users prefer interfaces that work similarly to ones they already know",
+      "Users always want the fewest possible features",
+      "Users read all instructions carefully before acting",
+      "Users make decisions strictly based on aesthetics"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-032",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is a key benefit of conducting moderated usability tests?",
+    "options": [
+      "They guarantee statistically significant results with tiny samples",
+      "The facilitator can probe deeper when participants hesitate or misunderstand",
+      "They remove all observer bias automatically",
+      "They require no planning or task design"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-033",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "Dark patterns are interface choices that intentionally steer users toward outcomes they might not otherwise choose.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-034",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is cognitive load in UX?",
+    "options": [
+      "The amount of processing power the interface requires",
+      "The mental effort required to use and understand the interface",
+      "The number of images loaded above the fold",
+      "The speed at which users can type into a field"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-035",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "Why are heuristic evaluations often useful early in a design process?",
+    "options": [
+      "They replace the need for any user testing forever",
+      "Experts can quickly identify obvious usability issues before expensive implementation",
+      "They generate production-ready UI code automatically",
+      "They measure network latency across regions"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-036",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "Which method is specifically intended to evaluate the findability of labels and navigation structures?",
+    "options": [
+      "Card sorting only",
+      "Tree testing",
+      "A/B testing hero images",
+      "Heatmap recording"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-037",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "true-false",
+    "question": "A/B testing is best used to compare variations against a defined metric rather than to discover why users are confused in the first place.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-038",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What does 'error prevention' usually imply in interface design?",
+    "options": [
+      "Letting users make mistakes and only explaining them later",
+      "Designing flows and constraints that reduce the chance of mistakes occurring",
+      "Removing all validation to speed up interactions",
+      "Disabling undo to avoid accidental reversals"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-039",
+    "category": "UI / UX",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "question": "What is the main purpose of journey mapping?",
+    "options": [
+      "To document the user's end-to-end experience across steps and touchpoints",
+      "To minify CSS across pages",
+      "To rank typography pairings automatically",
+      "To measure GPU performance during animations"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-040",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What does signal detection theory help explain in UX research?",
+    "options": [
+      "How users balance hits, misses, false alarms, and correct rejections under uncertainty",
+      "How to compress icon sets for faster loading",
+      "How layouts adapt to CSS media queries",
+      "How to build design tokens for multi-brand systems"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-041",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "Which statement best describes ecological validity in usability studies?",
+    "options": [
+      "The degree to which study conditions reflect real-world usage contexts",
+      "The percentage of recyclable assets used in the interface",
+      "The extent to which typography follows grid baselines",
+      "The ratio of qualitative to quantitative data"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-042",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "true-false",
+    "question": "A within-subjects study design means the same participants experience multiple test conditions.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-043",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is the main purpose of counterbalancing in UX experiments?",
+    "options": [
+      "To reduce order effects when participants experience multiple conditions",
+      "To ensure all colors have equal saturation",
+      "To distribute assets evenly across a CDN",
+      "To keep layout spacing symmetrical"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-044",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What does a confidence interval around a usability metric help communicate?",
+    "options": [
+      "The exact true value with no uncertainty",
+      "A range of plausible values for the metric given the sample data",
+      "The number of interface states tested",
+      "Whether the design uses enough whitespace"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-045",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "Which concept best explains why a frequently exposed interface may feel easier to users over time even without functional changes?",
+    "options": [
+      "Mere-exposure effect",
+      "Change blindness",
+      "Zeigarnik effect",
+      "Serial position effect"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-046",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "true-false",
+    "question": "In mixed-methods UX research, qualitative and quantitative findings can be combined to explain both what happened and why it happened.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-047",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is a longitudinal UX study primarily designed to capture?",
+    "options": [
+      "One-time first impressions only",
+      "How user behavior and perception change over time",
+      "Only the fastest path through a task",
+      "GPU frame timing under animation stress"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": "ux-048",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "When interpreting eye-tracking data, why is caution necessary?",
+    "options": [
+      "Fixation alone does not always reveal comprehension, intent, or preference",
+      "Eye-tracking directly measures emotional satisfaction with no ambiguity",
+      "The data cannot be collected indoors",
+      "It only works on touch devices"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-049",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "multiple-choice",
+    "question": "What is construct validity in a UX measurement context?",
+    "options": [
+      "Whether the instrument actually measures the concept it claims to measure",
+      "Whether the prototype compiles without errors",
+      "Whether the UI matches the brand palette",
+      "Whether the sample size is an even number"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": "ux-050",
+    "category": "UI / UX",
+    "difficulty": "extra-hard",
+    "type": "true-false",
+    "question": "Survivorship bias can distort UX conclusions if feedback is gathered only from users who successfully stayed engaged with the product.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctAnswer": 0
   }
 ]
