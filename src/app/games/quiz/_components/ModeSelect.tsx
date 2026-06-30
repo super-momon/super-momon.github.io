@@ -6,6 +6,7 @@ import type { GameMode } from '@/types/quiz';
 
 interface Props {
   onStart: (mode: GameMode) => void;
+  onOpenLeaderboard: () => void;
 }
 
 const MODES = [
@@ -56,7 +57,7 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
 };
 
-export function ModeSelect({ onStart }: Props) {
+export function ModeSelect({ onStart, onOpenLeaderboard }: Props) {
   const [selected, setSelected] = useState<GameMode | null>(null);
 
   return (
@@ -212,7 +213,7 @@ export function ModeSelect({ onStart }: Props) {
         </motion.div>
 
         {/* CTA */}
-        <motion.div variants={item}>
+        <motion.div variants={item} className="flex flex-col items-center gap-3">
           <motion.button
             disabled={!selected}
             onClick={() => selected && onStart(selected)}
@@ -247,6 +248,37 @@ export function ModeSelect({ onStart }: Props) {
               />
             )}
             <span className="relative">{selected ? 'Begin Run →' : 'Select a Mode'}</span>
+          </motion.button>
+
+          {/* Leaderboard trigger */}
+          <motion.button
+            onClick={onOpenLeaderboard}
+            whileHover={{ scale: 1.03, y: -1, transition: { duration: 0.15 } }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-200"
+            style={{
+              border: '1px solid var(--color-border)',
+              color: 'var(--color-muted)',
+              background: 'color-mix(in srgb, var(--color-surface) 60%, transparent)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                'color-mix(in srgb, var(--color-accent) 40%, var(--color-border))';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-foreground)';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-border)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-muted)';
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden>
+              <rect x="1" y="6" width="3" height="7" rx="0.75" fill="currentColor" opacity="0.6" />
+              <rect x="5.5" y="3" width="3" height="10" rx="0.75" fill="currentColor" opacity="0.8" />
+              <rect x="10" y="1" width="3" height="12" rx="0.75" fill="currentColor" />
+            </svg>
+            Leaderboard
           </motion.button>
         </motion.div>
       </motion.div>
