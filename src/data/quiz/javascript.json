@@ -18,12 +18,12 @@
     "type": "multiple-choice",
     "question": "What does typeof null return in JavaScript?",
     "options": [
-      "\"number\"",
       "\"object\"",
-      "\"undefined\"",
-      "\"null\""
+      "\"number\"",
+      "\"null\"",
+      "\"undefined\""
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "js-003",
@@ -34,10 +34,10 @@
     "options": [
       "filter()",
       "forEach()",
-      "map()",
-      "reduce()"
+      "reduce()",
+      "map()"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "js-004",
@@ -46,10 +46,10 @@
     "type": "true-false",
     "question": "Arrow functions in JavaScript have their own 'this' binding.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "js-005",
@@ -58,10 +58,10 @@
     "type": "true-false",
     "question": "var declarations in JavaScript are block-scoped.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "js-006",
@@ -70,12 +70,12 @@
     "type": "multiple-choice",
     "question": "What is the result of evaluating 0.1 + 0.2 === 0.3 in JavaScript?",
     "options": [
-      "false",
-      "undefined",
       "TypeError",
-      "true"
+      "true",
+      "false",
+      "undefined"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "js-007",
@@ -84,12 +84,12 @@
     "type": "multiple-choice",
     "question": "Which keyword declares a block-scoped constant in JavaScript?",
     "options": [
-      "let",
       "var",
       "const",
+      "let",
       "def"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "js-008",
@@ -99,9 +99,9 @@
     "question": "What is the role of the JavaScript event loop?",
     "options": [
       "Execute async callbacks when the call stack is empty",
-      "Manage memory allocation",
       "Parse HTML documents",
-      "Compile JavaScript to bytecode"
+      "Compile JavaScript to bytecode",
+      "Manage memory allocation"
     ],
     "correctAnswer": 0
   },
@@ -112,12 +112,12 @@
     "type": "multiple-choice",
     "question": "What does Array.prototype.reduce() return when called on an empty array with no initial value?",
     "options": [
-      "Returns 0",
       "Returns undefined",
-      "Returns null",
-      "Throws a TypeError"
+      "Returns 0",
+      "Throws a TypeError",
+      "Returns null"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "js-010",
@@ -126,11 +126,11 @@
     "type": "multiple-choice",
     "question": "What is a WeakMap in JavaScript?",
     "options": [
-      "A read-only version of Map",
-      "A map that only accepts string keys",
       "A map limited to 1000 entries",
-      "A map holding weak references to object keys, allowing garbage collection"
+      "A map holding weak references to object keys, allowing garbage collection",
+      "A read-only version of Map",
+      "A map that only accepts string keys"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   }
 ]

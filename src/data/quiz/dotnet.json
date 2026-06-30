@@ -6,10 +6,10 @@
     "type": "true-false",
     "question": ".NET is a cross-platform, open-source framework.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "net-002",
@@ -18,12 +18,12 @@
     "type": "multiple-choice",
     "question": "What does CLR stand for in .NET?",
     "options": [
+      "Compilation Language Resolver",
       "Common Language Runtime",
-      "Core Language Repository",
       "Common Library Reference",
-      "Compilation Language Resolver"
+      "Core Language Repository"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "net-003",
@@ -32,10 +32,10 @@
     "type": "true-false",
     "question": "C# is the primary language for .NET development.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-004",
@@ -45,11 +45,11 @@
     "question": "Which keyword is used to create a class in C#?",
     "options": [
       "struct",
+      "interface",
       "Class",
-      "class",
-      "interface"
+      "class"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "net-005",
@@ -70,12 +70,12 @@
     "type": "multiple-choice",
     "question": "What is the purpose of the 'using' statement in C#?",
     "options": [
-      "Create disposal scope for resources",
       "Import namespaces",
-      "Both A and B",
-      "Define variable scope"
+      "Create disposal scope for resources",
+      "Define variable scope",
+      "Both A and B"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "net-007",
@@ -84,10 +84,10 @@
     "type": "true-false",
     "question": "Abstract classes can be instantiated in C#.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "net-008",
@@ -96,12 +96,12 @@
     "type": "multiple-choice",
     "question": "Which collection type maintains insertion order and allows duplicates in .NET?",
     "options": [
+      "List",
       "Queue",
       "HashSet",
-      "Dictionary",
-      "List"
+      "Dictionary"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 0
   },
   {
     "id": "net-009",
@@ -122,12 +122,12 @@
     "type": "multiple-choice",
     "question": "What does LINQ stand for?",
     "options": [
+      "Language Integrated Query",
       "Logic Integrated Query",
       "Language Interface Query",
-      "Linear Integrated Query",
-      "Language Integrated Query"
+      "Linear Integrated Query"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 0
   },
   {
     "id": "net-011",
@@ -136,10 +136,10 @@
     "type": "true-false",
     "question": "The 'async' keyword in C# automatically makes a method asynchronous.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-012",
@@ -148,12 +148,12 @@
     "type": "multiple-choice",
     "question": "Which access modifier restricts access to the same class only?",
     "options": [
-      "protected",
-      "internal",
       "private",
-      "public"
+      "public",
+      "internal",
+      "protected"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": "net-013",
@@ -162,10 +162,10 @@
     "type": "true-false",
     "question": "Value types in C# are allocated on the heap.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-014",
@@ -174,12 +174,12 @@
     "type": "multiple-choice",
     "question": "What is the base class for all types in .NET?",
     "options": [
-      "Object",
-      "Base",
       "Type",
-      "System"
+      "System",
+      "Base",
+      "Object"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 3
   },
   {
     "id": "net-015",
@@ -200,12 +200,12 @@
     "type": "multiple-choice",
     "question": "What is the purpose of Dependency Injection in .NET?",
     "options": [
-      "Improve testability",
-      "Reduce coupling between classes",
       "All of the above",
-      "Manage object lifecycles"
+      "Reduce coupling between classes",
+      "Manage object lifecycles",
+      "Improve testability"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": "net-017",
@@ -214,10 +214,10 @@
     "type": "true-false",
     "question": "Extension methods in C# must be defined in static classes.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-018",
@@ -227,8 +227,8 @@
     "question": "Which LINQ method returns a single element or throws an exception?",
     "options": [
       "Single",
-      "SingleOrDefault",
       "FirstOrDefault",
+      "SingleOrDefault",
       "First"
     ],
     "correctAnswer": 0
@@ -252,12 +252,12 @@
     "type": "multiple-choice",
     "question": "What does the 'where' keyword do in a generic constraint?",
     "options": [
-      "Filter LINQ results",
       "Add SQL WHERE clause",
+      "Restrict type parameters to specific types",
       "Define method parameters",
-      "Restrict type parameters to specific types"
+      "Filter LINQ results"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   },
   {
     "id": "net-021",
@@ -266,10 +266,10 @@
     "type": "true-false",
     "question": "Interface members in C# are abstract by default.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-022",
@@ -278,12 +278,12 @@
     "type": "multiple-choice",
     "question": "What is Entity Framework used for?",
     "options": [
-      "UI framework",
       "Object-Relational Mapping",
+      "Network communication",
       "Database query optimization",
-      "Network communication"
+      "UI framework"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-023",
@@ -304,12 +304,12 @@
     "type": "multiple-choice",
     "question": "What does 'async' and 'await' enable in C#?",
     "options": [
-      "Task scheduling",
+      "Asynchronous programming",
       "Multithreading",
-      "Parallel processing",
-      "Asynchronous programming"
+      "Task scheduling",
+      "Parallel processing"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 0
   },
   {
     "id": "net-025",
@@ -318,10 +318,10 @@
     "type": "true-false",
     "question": "Lambda expressions in C# require explicit parameter types.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "net-026",
@@ -330,12 +330,12 @@
     "type": "multiple-choice",
     "question": "What is the difference between 'ref' and 'out' parameters?",
     "options": [
-      "ref must be initialized; out must be assigned in method",
-      "ref returns a value; out passes by reference",
+      "They are identical",
       "out cannot be used in method parameters",
-      "They are identical"
+      "ref must be initialized; out must be assigned in method",
+      "ref returns a value; out passes by reference"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "net-027",
@@ -344,10 +344,10 @@
     "type": "true-false",
     "question": "Struct types in C# are reference types.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-028",
@@ -356,12 +356,12 @@
     "type": "multiple-choice",
     "question": "What is the purpose of the IEnumerable interface?",
     "options": [
-      "Add sorting capabilities",
       "Enable iteration over collections",
-      "Define collection size",
-      "Make objects countable"
+      "Add sorting capabilities",
+      "Make objects countable",
+      "Define collection size"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-029",
@@ -382,12 +382,12 @@
     "type": "multiple-choice",
     "question": "What does CRUD represent in .NET applications?",
     "options": [
-      "Create, Read, Update, Delete",
-      "Cache, Read, Update, Delete",
       "Core, Runtime, Utility, Data",
+      "Cache, Read, Update, Delete",
+      "Create, Read, Update, Delete",
       "Configure, Retrieve, Upgrade, Debug"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "net-031",
@@ -396,12 +396,12 @@
     "type": "multiple-choice",
     "question": "What is the difference between Task and Thread in .NET?",
     "options": [
-      "Threads are always faster than tasks",
       "Tasks run on threads; threads are OS-level",
       "Tasks can only run synchronously",
-      "They are identical concepts"
+      "They are identical concepts",
+      "Threads are always faster than tasks"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-032",
@@ -422,12 +422,12 @@
     "type": "multiple-choice",
     "question": "What does the '?.' operator do in C#?",
     "options": [
-      "Null coalescing operator",
-      "Ternary operator",
       "Safe cast operator",
-      "Conditional access operator"
+      "Conditional access operator",
+      "Ternary operator",
+      "Null coalescing operator"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   },
   {
     "id": "net-034",
@@ -448,9 +448,9 @@
     "type": "multiple-choice",
     "question": "What is the purpose of the lock statement in C#?",
     "options": [
-      "Encrypt data",
-      "Lock files from modification",
       "Secure database connections",
+      "Lock files from modification",
+      "Encrypt data",
       "Prevent concurrent access to shared resources"
     ],
     "correctAnswer": 3
@@ -462,10 +462,10 @@
     "type": "true-false",
     "question": "IDisposable pattern is used for managing unmanaged resources.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "net-037",
@@ -474,12 +474,12 @@
     "type": "multiple-choice",
     "question": "What does covariance enable in C# generics?",
     "options": [
-      "Use derived types where base types are expected",
-      "Mix different generic types",
       "Override generic constraints",
-      "Inherit from multiple generics"
+      "Mix different generic types",
+      "Inherit from multiple generics",
+      "Use derived types where base types are expected"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 3
   },
   {
     "id": "net-038",
@@ -488,10 +488,10 @@
     "type": "true-false",
     "question": "Attributes in C# provide metadata but do not affect code execution.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "net-039",
@@ -500,12 +500,12 @@
     "type": "multiple-choice",
     "question": "What is DbContext in Entity Framework?",
     "options": [
-      "Query builder",
-      "Data access layer",
       "Cache manager",
-      "Session to the database"
+      "Session to the database",
+      "Query builder",
+      "Data access layer"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   },
   {
     "id": "net-040",
@@ -514,10 +514,10 @@
     "type": "true-false",
     "question": "Yield keyword in C# enables lazy evaluation of collections.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-041",
@@ -526,12 +526,12 @@
     "type": "multiple-choice",
     "question": "What is a race condition in multithreaded .NET applications?",
     "options": [
-      "Threads completing faster than expected",
       "Unpredictable behavior when multiple threads access shared data",
-      "Memory leak in thread pool",
-      "Deadlock between threads"
+      "Deadlock between threads",
+      "Threads completing faster than expected",
+      "Memory leak in thread pool"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-042",
@@ -553,9 +553,9 @@
     "question": "What is an explicit interface implementation used for?",
     "options": [
       "Hide interface members from public API",
-      "Implement multiple interfaces with conflicting members",
+      "Force callers to use interface reference",
       "All of the above",
-      "Force callers to use interface reference"
+      "Implement multiple interfaces with conflicting members"
     ],
     "correctAnswer": 2
   },
@@ -578,12 +578,12 @@
     "type": "multiple-choice",
     "question": "What does boxing and unboxing do in .NET?",
     "options": [
-      "Compress and decompress data",
-      "Handle thread synchronization",
       "Convert value types to objects and vice versa",
-      "Manage memory allocation"
+      "Compress and decompress data",
+      "Manage memory allocation",
+      "Handle thread synchronization"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": "net-046",
@@ -592,10 +592,10 @@
     "type": "multiple-choice",
     "question": "What is the purpose of the 'volatile' keyword in C#?",
     "options": [
-      "Prevent garbage collection",
+      "Make variables mutable",
       "Enable unsafe operations",
       "Ensure visibility of changes to shared variables in multithreading",
-      "Make variables mutable"
+      "Prevent garbage collection"
     ],
     "correctAnswer": 2
   },
@@ -618,12 +618,12 @@
     "type": "multiple-choice",
     "question": "What does constraint propagation in generics ensure?",
     "options": [
-      "Memory efficiency",
       "Type safety at compile time",
       "Backward compatibility",
+      "Memory efficiency",
       "Runtime performance optimization"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "net-049",

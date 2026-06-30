@@ -18,12 +18,12 @@
     "type": "multiple-choice",
     "question": "Which of the following is a mutable data type in Python?",
     "options": [
-      "tuple",
-      "str",
+      "list",
       "int",
-      "list"
+      "str",
+      "tuple"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 0
   },
   {
     "id": "py-003",
@@ -32,12 +32,12 @@
     "type": "multiple-choice",
     "question": "What is a generator in Python?",
     "options": [
-      "A decorator for async functions",
-      "A function that always returns None",
       "A class that generates random numbers",
-      "A function using yield that returns values lazily"
+      "A function that always returns None",
+      "A function using yield that returns values lazily",
+      "A decorator for async functions"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "py-004",
@@ -46,10 +46,10 @@
     "type": "true-false",
     "question": "Python's is operator checks for value equality.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "py-005",
@@ -58,12 +58,12 @@
     "type": "multiple-choice",
     "question": "What is the GIL (Global Interpreter Lock) in CPython?",
     "options": [
-      "A mutex allowing only one thread to execute Python bytecode at a time",
       "A memory management module",
       "A module import lock",
-      "Python's garbage collector"
+      "Python's garbage collector",
+      "A mutex allowing only one thread to execute Python bytecode at a time"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 3
   },
   {
     "id": "py-006",
@@ -85,11 +85,11 @@
     "question": "What does len([]) return in Python?",
     "options": [
       "-1",
+      "1",
       "None",
-      "0",
-      "1"
+      "0"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "py-008",
@@ -99,11 +99,11 @@
     "question": "What does the @property decorator do in Python?",
     "options": [
       "Makes a method static",
-      "Creates a class method",
       "Allows a method to be accessed like an attribute",
-      "Prevents method overriding"
+      "Prevents method overriding",
+      "Creates a class method"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "py-009",
@@ -112,12 +112,12 @@
     "type": "multiple-choice",
     "question": "What is the average-case time complexity of Python dictionary lookup?",
     "options": [
+      "O(log n)",
       "O(n²)",
       "O(n)",
-      "O(1)",
-      "O(log n)"
+      "O(1)"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "py-010",
@@ -126,11 +126,11 @@
     "type": "multiple-choice",
     "question": "What does __slots__ do in a Python class?",
     "options": [
-      "Prevents subclassing",
       "Restricts instance attributes to a predefined set, reducing memory usage",
-      "Enables operator overloading",
-      "Enables multiple inheritance"
+      "Prevents subclassing",
+      "Enables multiple inheritance",
+      "Enables operator overloading"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   }
 ]

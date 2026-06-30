@@ -6,10 +6,10 @@
     "type": "true-false",
     "question": "git pull is equivalent to git fetch followed by git merge.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "git-002",
@@ -18,12 +18,12 @@
     "type": "multiple-choice",
     "question": "Which command stages all changes for the next commit?",
     "options": [
-      "git add .",
       "git commit",
+      "git push",
       "git status",
-      "git push"
+      "git add ."
     ],
-    "correctAnswer": 0
+    "correctAnswer": 3
   },
   {
     "id": "git-003",
@@ -32,12 +32,12 @@
     "type": "multiple-choice",
     "question": "What does git rebase do?",
     "options": [
-      "Moves or replays commits from one branch onto another, rewriting history",
       "Merges branches with a new merge commit",
-      "Reverts only the most recent commit",
-      "Permanently deletes a local branch"
+      "Permanently deletes a local branch",
+      "Moves or replays commits from one branch onto another, rewriting history",
+      "Reverts only the most recent commit"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "git-004",
@@ -84,12 +84,12 @@
     "type": "multiple-choice",
     "question": "Which command displays the commit history?",
     "options": [
-      "git show",
       "git status",
       "git history",
-      "git log"
+      "git log",
+      "git show"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "git-008",
@@ -98,12 +98,12 @@
     "type": "multiple-choice",
     "question": "What does git stash do?",
     "options": [
-      "Creates a new branch from current changes",
       "Commits changes without requiring a message",
+      "Temporarily saves uncommitted changes and reverts to HEAD",
       "Permanently deletes all uncommitted changes",
-      "Temporarily saves uncommitted changes and reverts to HEAD"
+      "Creates a new branch from current changes"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   },
   {
     "id": "git-009",
@@ -112,12 +112,12 @@
     "type": "multiple-choice",
     "question": "What is the key difference between git merge and git rebase?",
     "options": [
-      "Rebase creates a merge commit; merge moves commits",
-      "Merge is only for local branches; rebase only for remote",
+      "They produce identical repository histories",
       "Merge preserves branch history with a merge commit; rebase rewrites history into a linear sequence",
-      "They produce identical repository histories"
+      "Merge is only for local branches; rebase only for remote",
+      "Rebase creates a merge commit; merge moves commits"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "git-010",
@@ -126,11 +126,11 @@
     "type": "multiple-choice",
     "question": "What is the Git reflog?",
     "options": [
-      "A log of all changes pushed to remote repositories",
-      "A list of all Git configuration settings",
       "A local log of all HEAD reference changes, useful for recovering lost commits",
+      "A list of all Git configuration settings",
+      "A log of all changes pushed to remote repositories",
       "A backup system for deleted branches"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   }
 ]

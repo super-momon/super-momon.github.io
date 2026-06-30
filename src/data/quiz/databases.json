@@ -6,10 +6,10 @@
     "type": "true-false",
     "question": "SQL stands for Structured Query Language.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-002",
@@ -19,11 +19,11 @@
     "question": "Which SQL statement retrieves data from a table?",
     "options": [
       "DELETE",
-      "INSERT",
       "SELECT",
+      "INSERT",
       "UPDATE"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "db-003",
@@ -32,12 +32,12 @@
     "type": "multiple-choice",
     "question": "What is database normalization?",
     "options": [
+      "Backing up and encrypting the database",
       "Organizing data to reduce redundancy and improve integrity",
       "Compressing database files for storage efficiency",
-      "Backing up and encrypting the database",
       "Distributing a database across multiple servers"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "db-004",
@@ -46,10 +46,10 @@
     "type": "true-false",
     "question": "A primary key column can contain NULL values.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-005",
@@ -58,12 +58,12 @@
     "type": "multiple-choice",
     "question": "What does ACID stand for in database transactions?",
     "options": [
-      "Availability, Consistency, Integrity, Durability",
-      "Availability, Concurrency, Isolation, Durability",
       "Atomicity, Concurrency, Integrity, Dependency",
-      "Atomicity, Consistency, Isolation, Durability"
+      "Atomicity, Consistency, Isolation, Durability",
+      "Availability, Consistency, Integrity, Durability",
+      "Availability, Concurrency, Isolation, Durability"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   },
   {
     "id": "db-006",
@@ -84,12 +84,12 @@
     "type": "multiple-choice",
     "question": "What is a foreign key?",
     "options": [
-      "A composite primary key",
       "A column that references the primary key of another table",
       "A key used to encrypt sensitive data",
+      "A composite primary key",
       "Always the first column in a table"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-008",
@@ -98,12 +98,12 @@
     "type": "multiple-choice",
     "question": "What is the primary purpose of a database index?",
     "options": [
-      "Enforce referential integrity between tables",
       "Speed up data retrieval at the cost of additional storage",
+      "Automatically back up table rows",
       "Encrypt sensitive column data",
-      "Automatically back up table rows"
+      "Enforce referential integrity between tables"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-009",
@@ -112,12 +112,12 @@
     "type": "multiple-choice",
     "question": "What is the N+1 query problem?",
     "options": [
-      "A database running out of connections",
-      "A deadlock between two concurrent transactions",
+      "A type of SQL injection attack",
       "Fetching a list then issuing one additional query per record",
-      "A type of SQL injection attack"
+      "A deadlock between two concurrent transactions",
+      "A database running out of connections"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "db-010",
@@ -126,12 +126,12 @@
     "type": "multiple-choice",
     "question": "What is MVCC (Multi-Version Concurrency Control)?",
     "options": [
+      "A type of composite database index",
       "A schema migration and versioning strategy",
       "Maintaining multiple data versions to allow concurrent reads and writes without locking",
-      "A type of composite database index",
       "A strategy for replicating data across nodes"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-011",
@@ -140,12 +140,12 @@
     "type": "multiple-choice",
     "question": "Which SQL statement adds a new row to a table?",
     "options": [
-      "CREATE",
-      "INSERT",
+      "MERGE",
       "ALTER",
-      "MERGE"
+      "INSERT",
+      "CREATE"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-012",
@@ -166,10 +166,10 @@
     "type": "multiple-choice",
     "question": "Which SQL clause is used to filter rows returned by a query?",
     "options": [
+      "HAVING",
       "GROUP BY",
-      "ORDER BY",
       "WHERE",
-      "HAVING"
+      "ORDER BY"
     ],
     "correctAnswer": 2
   },
@@ -180,12 +180,12 @@
     "type": "multiple-choice",
     "question": "Which SQL statement removes rows from a table without deleting the table itself?",
     "options": [
+      "REMOVE",
       "DROP",
       "DELETE",
-      "ERASE",
-      "REMOVE"
+      "ERASE"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-015",
@@ -206,12 +206,12 @@
     "type": "multiple-choice",
     "question": "Which SQL keyword is used to sort query results?",
     "options": [
-      "ORDER BY",
+      "GROUP BY",
       "SORT",
-      "ARRANGE",
-      "GROUP BY"
+      "ORDER BY",
+      "ARRANGE"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "db-017",
@@ -220,10 +220,10 @@
     "type": "multiple-choice",
     "question": "What does NULL represent in a database column?",
     "options": [
-      "Zero",
       "An empty string",
+      "A duplicate value",
       "An unknown or missing value",
-      "A duplicate value"
+      "Zero"
     ],
     "correctAnswer": 2
   },
@@ -262,10 +262,10 @@
     "options": [
       "SUM",
       "TOTAL",
-      "COUNT",
-      "NUMBER"
+      "NUMBER",
+      "COUNT"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "db-021",
@@ -274,12 +274,12 @@
     "type": "multiple-choice",
     "question": "Which SQL join returns only rows with matching values in both tables?",
     "options": [
-      "LEFT JOIN",
       "RIGHT JOIN",
-      "INNER JOIN",
-      "FULL OUTER JOIN"
+      "FULL OUTER JOIN",
+      "LEFT JOIN",
+      "INNER JOIN"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "db-022",
@@ -300,12 +300,12 @@
     "type": "multiple-choice",
     "question": "What does the GROUP BY clause do?",
     "options": [
-      "Sorts rows alphabetically",
       "Combines rows into summary groups for aggregation",
+      "Removes duplicate rows automatically",
       "Joins multiple tables together",
-      "Removes duplicate rows automatically"
+      "Sorts rows alphabetically"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-024",
@@ -314,12 +314,12 @@
     "type": "multiple-choice",
     "question": "Which SQL clause filters grouped results after aggregation?",
     "options": [
-      "WHERE",
-      "FILTER",
       "HAVING",
-      "ORDER BY"
+      "ORDER BY",
+      "FILTER",
+      "WHERE"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": "db-025",
@@ -340,12 +340,12 @@
     "type": "multiple-choice",
     "question": "What is a common purpose of a transaction?",
     "options": [
+      "To compress a result set before returning it",
       "To permanently lock a table",
-      "To group operations so they succeed or fail as a unit",
       "To rename columns across multiple tables",
-      "To compress a result set before returning it"
+      "To group operations so they succeed or fail as a unit"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "db-027",
@@ -354,12 +354,12 @@
     "type": "multiple-choice",
     "question": "Which normal form aims to remove partial dependency on part of a composite key?",
     "options": [
-      "First Normal Form",
-      "Second Normal Form",
       "Third Normal Form",
-      "Boyce-Codd Normal Form"
+      "Boyce-Codd Normal Form",
+      "Second Normal Form",
+      "First Normal Form"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-028",
@@ -370,8 +370,8 @@
     "options": [
       "MATCHES",
       "LIKE",
-      "SIMILAR",
-      "SEARCH"
+      "SEARCH",
+      "SIMILAR"
     ],
     "correctAnswer": 1
   },
@@ -383,11 +383,11 @@
     "question": "What is a view in a relational database?",
     "options": [
       "A physical copy of a table",
+      "A special kind of index",
       "A saved query that presents data like a virtual table",
-      "A backup snapshot of the database",
-      "A special kind of index"
+      "A backup snapshot of the database"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-030",
@@ -396,10 +396,10 @@
     "type": "true-false",
     "question": "A LEFT JOIN returns all rows from the left table even when there is no match in the right table.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "db-031",
@@ -410,8 +410,8 @@
     "options": [
       "Rendering anomalies",
       "Insert, update, and delete anomalies",
-      "Network latency anomalies",
-      "Index rebuild anomalies"
+      "Index rebuild anomalies",
+      "Network latency anomalies"
     ],
     "correctAnswer": 1
   },
@@ -424,10 +424,10 @@
     "options": [
       "SERIALIZABLE",
       "REPEATABLE READ",
-      "READ COMMITTED",
-      "READ UNCOMMITTED"
+      "READ UNCOMMITTED",
+      "READ COMMITTED"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "db-033",
@@ -448,12 +448,12 @@
     "type": "multiple-choice",
     "question": "What is a deadlock in a database system?",
     "options": [
-      "When a query returns no rows",
-      "When two or more transactions wait indefinitely on each other’s locks",
       "When a table has no primary key",
-      "When an index consumes too much memory"
+      "When an index consumes too much memory",
+      "When two or more transactions wait indefinitely on each other’s locks",
+      "When a query returns no rows"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-035",
@@ -462,12 +462,12 @@
     "type": "multiple-choice",
     "question": "What is the main tradeoff of denormalization?",
     "options": [
-      "Simpler writes but slower reads",
       "Faster reads at the cost of more redundancy and harder consistency management",
+      "Guaranteed stronger transactions",
       "Less storage use but slower indexes",
-      "Guaranteed stronger transactions"
+      "Simpler writes but slower reads"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-036",
@@ -476,12 +476,12 @@
     "type": "multiple-choice",
     "question": "Which SQL feature assigns a rank or running total across a set of rows without collapsing them?",
     "options": [
-      "CHECK constraint",
       "Window functions",
       "Foreign keys",
+      "CHECK constraint",
       "Stored procedures"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-037",
@@ -490,10 +490,10 @@
     "type": "true-false",
     "question": "A composite index on columns (a, b) can often help queries filtering by a alone more than queries filtering by b alone.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "db-038",
@@ -502,12 +502,12 @@
     "type": "multiple-choice",
     "question": "What is the purpose of an execution plan?",
     "options": [
+      "To enforce user permissions",
       "To show the exact results a query will return",
       "To describe how the database intends to execute a query",
-      "To enforce user permissions",
       "To replicate data to a standby server"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-039",
@@ -516,12 +516,12 @@
     "type": "multiple-choice",
     "question": "Which statement about sharding is most accurate?",
     "options": [
-      "It stores all data in one larger table on a single server",
-      "It splits data across multiple databases or nodes, often by key range or hash",
       "It is another name for full database backup",
-      "It guarantees cross-shard joins are always fast"
+      "It guarantees cross-shard joins are always fast",
+      "It splits data across multiple databases or nodes, often by key range or hash",
+      "It stores all data in one larger table on a single server"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-040",
@@ -530,10 +530,10 @@
     "type": "multiple-choice",
     "question": "In distributed systems, what does eventual consistency mean?",
     "options": [
-      "All replicas are always identical at every moment",
+      "Transactions are always serializable across all nodes",
       "Reads are blocked until every replica is updated",
       "Replicas may be temporarily inconsistent but converge if no new updates occur",
-      "Transactions are always serializable across all nodes"
+      "All replicas are always identical at every moment"
     ],
     "correctAnswer": 2
   },
@@ -544,12 +544,12 @@
     "type": "multiple-choice",
     "question": "What is the write-ahead log (WAL) primarily for?",
     "options": [
-      "Storing user-facing query results permanently",
       "Recording changes before data pages are updated to support crash recovery and durability",
       "Keeping schema documentation in sync",
+      "Storing user-facing query results permanently",
       "Caching indexes in RAM"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "db-042",
@@ -558,10 +558,10 @@
     "type": "true-false",
     "question": "Snapshot isolation can still allow write skew anomalies in some cases.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "db-043",
@@ -570,10 +570,10 @@
     "type": "multiple-choice",
     "question": "What is a materialized view?",
     "options": [
-      "A temporary join held only in memory",
+      "A compressed version of a base table",
       "A stored result set that can be refreshed from its underlying query",
       "A permission rule for column access",
-      "A compressed version of a base table"
+      "A temporary join held only in memory"
     ],
     "correctAnswer": 1
   },
@@ -584,12 +584,12 @@
     "type": "multiple-choice",
     "question": "Which CAP theorem tradeoff is commonly associated with many partition-tolerant distributed databases?",
     "options": [
+      "They eliminate the need for replication",
       "They can choose both consistency and availability during a network partition without tradeoffs",
       "They must sacrifice either consistency or availability when a partition occurs",
-      "They eliminate the need for replication",
       "They guarantee serializable transactions across all regions by default"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-045",
@@ -599,11 +599,11 @@
     "question": "What is the main goal of database partition pruning?",
     "options": [
       "Deleting old partitions automatically",
-      "Avoiding scans of irrelevant partitions based on query predicates",
+      "Reducing network bandwidth by compressing rows",
       "Splitting a query into multiple transactions",
-      "Reducing network bandwidth by compressing rows"
+      "Avoiding scans of irrelevant partitions based on query predicates"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "db-046",
@@ -612,10 +612,10 @@
     "type": "true-false",
     "question": "A B-tree index is generally efficient for range queries, while a hash index is typically optimized for equality lookups.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "db-047",
@@ -625,11 +625,11 @@
     "question": "What problem does a two-phase commit protocol try to solve?",
     "options": [
       "Fast full-text search across large datasets",
+      "Choosing the best join order for a query",
       "Coordinating a distributed transaction so participants either all commit or all abort",
-      "Rebuilding fragmented indexes online",
-      "Choosing the best join order for a query"
+      "Rebuilding fragmented indexes online"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "db-048",
@@ -638,10 +638,10 @@
     "type": "multiple-choice",
     "question": "In OLAP workloads, columnar storage is often preferred because it: ",
     "options": [
-      "Optimizes row-by-row transactional updates above all else",
+      "Avoids the need for SQL parsing",
       "Can read only the needed columns and compress similar values effectively",
-      "Disables indexes to save storage",
-      "Avoids the need for SQL parsing"
+      "Optimizes row-by-row transactional updates above all else",
+      "Disables indexes to save storage"
     ],
     "correctAnswer": 1
   },
@@ -653,9 +653,9 @@
     "question": "What is the difference between logical replication and physical replication?",
     "options": [
       "Logical replication copies SQL-level changes, while physical replication copies lower-level storage changes",
-      "Logical replication is only for NoSQL databases, while physical replication is only for SQL databases",
       "Physical replication cannot create read replicas",
-      "There is no practical difference"
+      "There is no practical difference",
+      "Logical replication is only for NoSQL databases, while physical replication is only for SQL databases"
     ],
     "correctAnswer": 0
   },

@@ -19,11 +19,11 @@
     "question": "Which CSS property changes text color?",
     "options": [
       "text-color",
-      "color",
       "foreground",
-      "font-color"
+      "font-color",
+      "color"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "css-003",
@@ -34,10 +34,10 @@
     "options": [
       "padding",
       "border",
-      "margin",
-      "outline"
+      "outline",
+      "margin"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "css-004",
@@ -58,12 +58,12 @@
     "type": "multiple-choice",
     "question": "What is the correct CSS specificity order from highest to lowest?",
     "options": [
-      "Inline styles > Class > ID > Element",
       "Inline styles > ID > Class/Pseudo-class > Element",
+      "Inline styles > Class > ID > Element",
       "ID > Class > Element > Inline styles",
       "Element > Class > ID > Inline styles"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "css-006",
@@ -85,11 +85,11 @@
     "question": "Which HTML attribute provides alternative text for images?",
     "options": [
       "title",
-      "alt",
       "label",
+      "alt",
       "src"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "css-008",
@@ -98,12 +98,12 @@
     "type": "multiple-choice",
     "question": "What does position: sticky do?",
     "options": [
+      "Fixes the element to the viewport at all times",
       "Keeps an element visible within its parent's bounds as the user scrolls",
       "Removes the element from the document flow",
-      "Fixes the element to the viewport at all times",
       "Makes the element float alongside text"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "css-009",
@@ -112,12 +112,12 @@
     "type": "multiple-choice",
     "question": "What does display: contents do?",
     "options": [
-      "Hides the element and all its children",
+      "Removes the element's box while keeping its children in the flow",
       "Creates a new block formatting context",
       "Makes all children display inline",
-      "Removes the element's box while keeping its children in the flow"
+      "Hides the element and all its children"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 0
   },
   {
     "id": "css-010",
@@ -126,12 +126,12 @@
     "type": "multiple-choice",
     "question": "What is the CSS contain property used for?",
     "options": [
-      "Enabling scroll-snapping behavior",
-      "Isolating a subtree from the rest of the document to improve rendering performance",
       "Creating named CSS layers",
-      "Preventing content from overflowing its container"
+      "Preventing content from overflowing its container",
+      "Isolating a subtree from the rest of the document to improve rendering performance",
+      "Enabling scroll-snapping behavior"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "css-011",
@@ -140,12 +140,12 @@
     "type": "multiple-choice",
     "question": "Which HTML element is best suited for introductory content at the top of a page or section?",
     "options": [
-      "header",
+      "mark",
       "footer",
-      "aside",
-      "mark"
+      "header",
+      "aside"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "css-012",
@@ -166,12 +166,12 @@
     "type": "multiple-choice",
     "question": "Which CSS property controls the space between an element's content and its border?",
     "options": [
-      "margin",
       "padding",
+      "spacing",
       "gap",
-      "spacing"
+      "margin"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "css-014",
@@ -180,12 +180,12 @@
     "type": "multiple-choice",
     "question": "Which HTML element is used to create a hyperlink?",
     "options": [
-      "link",
-      "a",
       "href",
-      "nav"
+      "link",
+      "nav",
+      "a"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "css-015",
@@ -194,10 +194,10 @@
     "type": "true-false",
     "question": "The span element is inline by default.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "css-016",
@@ -206,12 +206,12 @@
     "type": "multiple-choice",
     "question": "Which selector targets an element with the class name card?",
     "options": [
+      "*card",
       "#card",
-      ".card",
       "card",
-      "*card"
+      ".card"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "css-017",
@@ -221,11 +221,11 @@
     "question": "Which HTML element inserts a line break?",
     "options": [
       "lb",
-      "break",
       "br",
-      "hr"
+      "hr",
+      "break"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "css-018",
@@ -234,10 +234,10 @@
     "type": "true-false",
     "question": "An id value should be unique within an HTML document.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "css-019",
@@ -246,12 +246,12 @@
     "type": "multiple-choice",
     "question": "Which CSS property is commonly used to make text bold?",
     "options": [
-      "font-style",
       "text-transform",
-      "font-weight",
-      "text-decoration"
+      "text-decoration",
+      "font-style",
+      "font-weight"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "css-020",
@@ -261,11 +261,11 @@
     "question": "Which CSS pseudo-class applies styles when the pointer is over an element?",
     "options": [
       ":focus",
-      ":active",
       ":visited",
-      ":hover"
+      ":hover",
+      ":active"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "css-021",
@@ -274,12 +274,12 @@
     "type": "multiple-choice",
     "question": "In CSS, rem units are relative to which font size?",
     "options": [
-      "The parent element's font size",
       "The root element's font size",
       "The current element's computed width",
-      "The browser zoom level"
+      "The browser zoom level",
+      "The parent element's font size"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "css-022",
@@ -300,10 +300,10 @@
     "type": "multiple-choice",
     "question": "Which HTML input type is used to mask entered characters?",
     "options": [
+      "private",
       "hidden",
-      "secure",
       "password",
-      "private"
+      "secure"
     ],
     "correctAnswer": 2
   },
@@ -314,12 +314,12 @@
     "type": "multiple-choice",
     "question": "Which CSS property must typically be set for a ::before pseudo-element to render generated content?",
     "options": [
+      "visibility",
       "display",
-      "content",
       "position",
-      "visibility"
+      "content"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "css-025",
@@ -340,9 +340,9 @@
     "type": "multiple-choice",
     "question": "Which value of object-fit scales an image to fill its box while preserving aspect ratio and possibly cropping it?",
     "options": [
+      "fill",
       "contain",
       "stretch",
-      "fill",
       "cover"
     ],
     "correctAnswer": 3
@@ -354,12 +354,12 @@
     "type": "multiple-choice",
     "question": "Which meta tag is essential for responsive layouts on mobile devices?",
     "options": [
-      "meta charset=\"utf-8\"",
-      "meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"",
       "meta name=\"robots\" content=\"index,follow\"",
-      "meta http-equiv=\"refresh\" content=\"5\""
+      "meta http-equiv=\"refresh\" content=\"5\"",
+      "meta charset=\"utf-8\"",
+      "meta name=\"viewport\" content=\"width=device-width, initial-scale=1\""
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "css-028",
@@ -368,10 +368,10 @@
     "type": "multiple-choice",
     "question": "Which selector matches checked checkbox inputs?",
     "options": [
-      "input:enabled[type=\"checkbox\"]",
-      "input[type=\"checkbox\"]:checked",
       "checkbox:checked",
-      "input[checked=\"true\"]"
+      "input[type=\"checkbox\"]:checked",
+      "input[checked=\"true\"]",
+      "input:enabled[type=\"checkbox\"]"
     ],
     "correctAnswer": 1
   },
@@ -383,11 +383,11 @@
     "question": "What is a key characteristic of display: inline-block?",
     "options": [
       "The element always starts on a new line",
-      "The element ignores width and height",
       "The element can sit inline while still accepting width and height",
+      "The element ignores width and height",
       "The element becomes a flex container"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "css-030",
@@ -408,12 +408,12 @@
     "type": "multiple-choice",
     "question": "Which selector has the highest specificity?",
     "options": [
-      "#main .card p",
       ".layout .card p",
       "article.card p",
+      "#main .card p",
       "p"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "css-032",
@@ -422,12 +422,12 @@
     "type": "multiple-choice",
     "question": "In CSS Grid, what does minmax(200px, 1fr) mean for a track?",
     "options": [
-      "The track is fixed at 200px",
-      "The track can shrink to 0 and grow to 200px",
       "The track is at least 200px wide and can grow to take a fractional share of free space",
+      "The track can shrink to 0 and grow to 200px",
+      "The track is fixed at 200px",
       "The track alternates between 200px and 1fr"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": "css-033",
@@ -436,10 +436,10 @@
     "type": "true-false",
     "question": "Setting visibility: hidden hides an element but still preserves its layout space.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "css-034",
@@ -448,12 +448,12 @@
     "type": "multiple-choice",
     "question": "Which selector targets anchor elements whose target attribute is set to _blank?",
     "options": [
-      "a[target=\"_blank\"]",
-      "a.target(_blank)",
       "a::target(_blank)",
-      "a[target*=\"blank\"] only"
+      "a.target(_blank)",
+      "a[target*=\"blank\"] only",
+      "a[target=\"_blank\"]"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 3
   },
   {
     "id": "css-035",
@@ -462,12 +462,12 @@
     "type": "multiple-choice",
     "question": "What is the purpose of the CSS aspect-ratio property?",
     "options": [
-      "It sets the monitor aspect ratio for media queries",
       "It defines a preferred width-to-height ratio for an element's box",
-      "It crops overflowing content to a given ratio",
-      "It scales font sizes proportionally to viewport height"
+      "It sets the monitor aspect ratio for media queries",
+      "It scales font sizes proportionally to viewport height",
+      "It crops overflowing content to a given ratio"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "css-036",
@@ -477,11 +477,11 @@
     "question": "What is the effect of box-sizing: border-box?",
     "options": [
       "Padding and border are added outside the declared width and height",
-      "Width and height include the content, padding, and border",
+      "The element becomes a border-only box",
       "Only border counts toward the declared width and height",
-      "The element becomes a border-only box"
+      "Width and height include the content, padding, and border"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "css-037",
@@ -490,8 +490,8 @@
     "type": "multiple-choice",
     "question": "If two CSS rules have the same specificity and importance, which one wins?",
     "options": [
-      "The one that appears first in the stylesheet",
       "The one with more declarations",
+      "The one that appears first in the stylesheet",
       "The one that appears later in the cascade order",
       "Neither; the browser merges them unpredictably"
     ],
@@ -517,11 +517,11 @@
     "question": "Which pseudo-element targets the first formatted line of a block of text?",
     "options": [
       "::first-letter",
-      "::first-line",
       "::line-start",
+      "::first-line",
       "::intro"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "css-040",
@@ -544,10 +544,10 @@
     "type": "multiple-choice",
     "question": "What is special about the specificity of selectors inside the CSS :where() pseudo-class?",
     "options": [
-      "They always gain ID-level specificity",
-      "They contribute zero specificity",
       "They are ignored unless paired with :is()",
-      "They only work in media queries"
+      "They contribute zero specificity",
+      "They only work in media queries",
+      "They always gain ID-level specificity"
     ],
     "correctAnswer": 1
   },
@@ -571,11 +571,11 @@
     "question": "When an img element uses srcset with x-descriptors like 1x and 2x, what is the browser primarily choosing for?",
     "options": [
       "The user's preferred color scheme",
+      "The number of images on the page",
       "The device pixel density",
-      "The current network protocol",
-      "The number of images on the page"
+      "The current network protocol"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "css-044",
@@ -598,12 +598,12 @@
     "type": "multiple-choice",
     "question": "Which selector allows styling a parent element when it contains a matching descendant?",
     "options": [
-      ":not()",
-      ":where()",
+      "::part()",
       ":has()",
-      "::part()"
+      ":where()",
+      ":not()"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "css-046",
@@ -624,12 +624,12 @@
     "type": "multiple-choice",
     "question": "What is the main purpose of content-visibility: auto?",
     "options": [
-      "To automatically hide offensive content",
       "To let the browser skip rendering work for off-screen content until needed",
-      "To force hidden elements to reserve no layout space",
-      "To create a new stacking context for media elements"
+      "To create a new stacking context for media elements",
+      "To automatically hide offensive content",
+      "To force hidden elements to reserve no layout space"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "css-048",
@@ -638,10 +638,10 @@
     "type": "multiple-choice",
     "question": "What is true about the HTML template element?",
     "options": [
-      "Its contents render immediately but stay non-interactive",
-      "Its contents are parsed but not rendered until instantiated or cloned",
       "It can only contain plain text",
-      "It automatically becomes a shadow DOM root"
+      "Its contents are parsed but not rendered until instantiated or cloned",
+      "It automatically becomes a shadow DOM root",
+      "Its contents render immediately but stay non-interactive"
     ],
     "correctAnswer": 1
   },
@@ -653,11 +653,11 @@
     "question": "What is rel=\"preload\" primarily used for?",
     "options": [
       "Delaying low-priority assets until after page load",
-      "Hinting that a critical resource should be fetched early",
       "Combining multiple stylesheets into one request",
+      "Hinting that a critical resource should be fetched early",
       "Preventing a resource from being cached"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "css-050",
@@ -666,9 +666,9 @@
     "type": "true-false",
     "question": "Using width: 100vw can sometimes cause horizontal overflow because the viewport width may include the vertical scrollbar.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   }
 ]

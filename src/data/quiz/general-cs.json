@@ -18,12 +18,12 @@
     "type": "multiple-choice",
     "question": "What does CPU stand for?",
     "options": [
-      "Computer Processing Unit",
-      "Core Program Utility",
       "Central Program Unit",
-      "Central Processing Unit"
+      "Core Program Utility",
+      "Central Processing Unit",
+      "Computer Processing Unit"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "cs-003",
@@ -33,9 +33,9 @@
     "question": "What is Big O notation used for?",
     "options": [
       "Measuring CPU clock speed",
-      "Counting the number of software bugs",
+      "Defining code formatting standards",
       "Describing the upper bound of an algorithm's time or space complexity",
-      "Defining code formatting standards"
+      "Counting the number of software bugs"
     ],
     "correctAnswer": 2
   },
@@ -46,10 +46,10 @@
     "type": "true-false",
     "question": "HTTP is a stateful protocol.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "cs-005",
@@ -58,12 +58,12 @@
     "type": "multiple-choice",
     "question": "What is the difference between a process and a thread?",
     "options": [
+      "They are the same concept with different names",
       "A thread is a separate program; a process is a pool of threads",
       "A process is always single-threaded by design",
-      "A process is an independent program with its own memory; a thread is a unit of execution within a process",
-      "They are the same concept with different names"
+      "A process is an independent program with its own memory; a thread is a unit of execution within a process"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "cs-006",
@@ -72,10 +72,10 @@
     "type": "true-false",
     "question": "REST APIs must always return data in JSON format.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "cs-007",
@@ -84,12 +84,12 @@
     "type": "multiple-choice",
     "question": "What is an API?",
     "options": [
-      "Application Programming Interface",
-      "Application Protocol Integration",
       "Automated Program Instruction",
+      "Application Protocol Integration",
+      "Application Programming Interface",
       "Advanced Processing Interface"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "cs-008",
@@ -99,8 +99,8 @@
     "question": "What is the main purpose of a CDN?",
     "options": [
       "Distribute content geographically closer to users to reduce latency",
-      "Manage and resolve DNS records",
       "Encrypt all web traffic between client and server",
+      "Manage and resolve DNS records",
       "Store and manage database backups"
     ],
     "correctAnswer": 0
@@ -112,12 +112,12 @@
     "type": "multiple-choice",
     "question": "What is memoization?",
     "options": [
-      "A method for compressing large datasets in memory",
       "Caching function results to avoid redundant computation for the same inputs",
-      "Freeing memory after function calls complete",
-      "A specific type of recursive algorithm pattern"
+      "A method for compressing large datasets in memory",
+      "A specific type of recursive algorithm pattern",
+      "Freeing memory after function calls complete"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "cs-010",
@@ -126,10 +126,10 @@
     "type": "multiple-choice",
     "question": "According to the CAP theorem, what must a distributed system sacrifice during a network partition?",
     "options": [
-      "Performance and throughput",
       "Partition tolerance itself",
+      "Data replication across nodes",
       "Either consistency or availability, but not both simultaneously",
-      "Data replication across nodes"
+      "Performance and throughput"
     ],
     "correctAnswer": 2
   }

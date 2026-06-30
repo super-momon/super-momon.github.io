@@ -20,8 +20,8 @@
     "options": [
       "EC2",
       "S3",
-      "RDS",
-      "Lambda"
+      "Lambda",
+      "RDS"
     ],
     "correctAnswer": 1
   },
@@ -32,10 +32,10 @@
     "type": "true-false",
     "question": "EC2 instances can be stopped and restarted without losing data in the root volume.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "aws-004",
@@ -44,12 +44,12 @@
     "type": "multiple-choice",
     "question": "What does IAM stand for in AWS?",
     "options": [
-      "Internet Access Module",
       "Identity and Access Management",
+      "Internet Access Module",
       "Infrastructure Authentication Manager",
       "Integrated Access Management"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-005",
@@ -71,11 +71,11 @@
     "question": "Which AWS service provides managed relational databases?",
     "options": [
       "Redshift",
-      "ElastiCache",
       "DynamoDB",
-      "RDS"
+      "RDS",
+      "ElastiCache"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": "aws-007",
@@ -123,11 +123,11 @@
     "question": "Which service helps with infrastructure as code in AWS?",
     "options": [
       "CodePipeline",
+      "CodeBuild",
       "CloudFormation",
-      "CodeDeploy",
-      "CodeBuild"
+      "CodeDeploy"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "aws-011",
@@ -136,10 +136,10 @@
     "type": "true-false",
     "question": "DynamoDB is a NoSQL database service.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-012",
@@ -148,12 +148,12 @@
     "type": "multiple-choice",
     "question": "What is SQS in AWS?",
     "options": [
+      "System Quality Service",
       "Simple Query Service",
       "Simple Queue Service",
-      "System Quality Service",
       "Secure Query System"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "aws-013",
@@ -176,8 +176,8 @@
     "options": [
       "Config",
       "Route 53",
-      "CloudWatch",
-      "DirectConnect"
+      "DirectConnect",
+      "CloudWatch"
     ],
     "correctAnswer": 1
   },
@@ -200,8 +200,8 @@
     "type": "multiple-choice",
     "question": "What is the default maximum timeout for Lambda functions?",
     "options": [
-      "5 minutes",
       "1 hour",
+      "5 minutes",
       "15 minutes",
       "30 seconds"
     ],
@@ -214,10 +214,10 @@
     "type": "true-false",
     "question": "RDS Multi-AZ deployment provides high availability but not read scaling.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-018",
@@ -226,12 +226,12 @@
     "type": "multiple-choice",
     "question": "Which AWS service is used for container orchestration?",
     "options": [
-      "OpsWorks",
       "AppSync",
       "ECS",
+      "OpsWorks",
       "Elastic Beanstalk"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "aws-019",
@@ -252,12 +252,12 @@
     "type": "multiple-choice",
     "question": "What does Elastic Beanstalk do?",
     "options": [
-      "Manages databases",
       "Monitors infrastructure",
-      "Deploys and manages web applications",
-      "Handles DNS resolution"
+      "Handles DNS resolution",
+      "Manages databases",
+      "Deploys and manages web applications"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "aws-021",
@@ -278,12 +278,12 @@
     "type": "multiple-choice",
     "question": "What is an AWS Security Group?",
     "options": [
-      "A virtual firewall controlling inbound/outbound traffic",
       "A group of IAM users",
-      "A database cluster configuration",
-      "A collection of S3 buckets"
+      "A collection of S3 buckets",
+      "A virtual firewall controlling inbound/outbound traffic",
+      "A database cluster configuration"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "aws-023",
@@ -292,10 +292,10 @@
     "type": "true-false",
     "question": "CloudWatch is used for monitoring and observability in AWS.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "aws-024",
@@ -305,11 +305,11 @@
     "question": "What does SNS stand for?",
     "options": [
       "Secure Name Service",
-      "System Notification System",
       "Simple Notification Service",
+      "System Notification System",
       "Simple Network Service"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "aws-025",
@@ -318,10 +318,10 @@
     "type": "true-false",
     "question": "AWS KMS is used for key management and encryption.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "aws-026",
@@ -330,12 +330,12 @@
     "type": "multiple-choice",
     "question": "Which service allows you to run Docker containers on AWS?",
     "options": [
-      "ECS or EKS",
       "Lambda",
-      "CloudFormation",
-      "EC2"
+      "ECS or EKS",
+      "EC2",
+      "CloudFormation"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "aws-027",
@@ -344,10 +344,10 @@
     "type": "true-false",
     "question": "Availability Zones in a region are connected with low-latency links.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-028",
@@ -356,12 +356,12 @@
     "type": "multiple-choice",
     "question": "What is AWS Systems Manager used for?",
     "options": [
-      "Database backups",
-      "DNS management",
       "Managing EC2 instances and on-premises servers",
-      "Load balancing"
+      "Database backups",
+      "Load balancing",
+      "DNS management"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": "aws-029",
@@ -383,11 +383,11 @@
     "question": "What does Auto Scaling do in AWS?",
     "options": [
       "Automatically updates security patches",
-      "Automatically increases/decreases EC2 instances based on demand",
       "Automatically configures networking",
-      "Automatically backs up data"
+      "Automatically backs up data",
+      "Automatically increases/decreases EC2 instances based on demand"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "aws-031",
@@ -397,11 +397,11 @@
     "question": "What is the purpose of AWS Organizations?",
     "options": [
       "Organize EC2 instances",
-      "Manage multiple AWS accounts centrally",
+      "Manage IAM groups",
       "Configure CloudFormation stacks",
-      "Manage IAM groups"
+      "Manage multiple AWS accounts centrally"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "aws-032",
@@ -422,12 +422,12 @@
     "type": "multiple-choice",
     "question": "What is the difference between RDS Read Replica and Multi-AZ?",
     "options": [
+      "Read Replica provides high availability; Multi-AZ provides read scaling",
       "They are the same",
       "Multi-AZ provides high availability; Read Replica provides read scaling",
-      "Read Replica provides high availability; Multi-AZ provides read scaling",
       "Read Replica is for backups only"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "aws-034",
@@ -448,10 +448,10 @@
     "type": "multiple-choice",
     "question": "What is VPC Flow Logs used for?",
     "options": [
-      "Managing EC2 instances",
+      "Storing application logs",
       "Capturing network traffic information",
       "Monitoring database performance",
-      "Storing application logs"
+      "Managing EC2 instances"
     ],
     "correctAnswer": 1
   },
@@ -474,12 +474,12 @@
     "type": "multiple-choice",
     "question": "What does VPC Peering enable?",
     "options": [
-      "Content distribution",
       "Communication between VPCs",
       "Direct internet access",
+      "Content distribution",
       "Database replication"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-038",
@@ -488,10 +488,10 @@
     "type": "true-false",
     "question": "DynamoDB uses eventual consistency by default for reads.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-039",
@@ -500,12 +500,12 @@
     "type": "multiple-choice",
     "question": "What is AWS Batch used for?",
     "options": [
+      "Running batch processing jobs at scale",
       "Managing batch size for S3 uploads",
       "Batch operations on EC2",
-      "Running batch processing jobs at scale",
       "Batch configuration for RDS"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": "aws-040",
@@ -526,12 +526,12 @@
     "type": "multiple-choice",
     "question": "What does AWS AppSync provide?",
     "options": [
-      "GraphQL API management",
-      "Database migrations",
+      "Container orchestration",
       "Load balancing",
-      "Container orchestration"
+      "GraphQL API management",
+      "Database migrations"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 2
   },
   {
     "id": "aws-042",
@@ -553,11 +553,11 @@
     "question": "What is AWS WAF used for?",
     "options": [
       "Database protection",
-      "Protecting web applications from attacks",
       "Virtual machine security",
-      "Storage encryption"
+      "Storage encryption",
+      "Protecting web applications from attacks"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "aws-044",
@@ -578,12 +578,12 @@
     "type": "multiple-choice",
     "question": "What does AWS Service Quotas help with?",
     "options": [
-      "Viewing and requesting service quota increases",
-      "Calculating AWS costs",
       "Monitoring application performance",
-      "Managing IAM policies"
+      "Managing IAM policies",
+      "Calculating AWS costs",
+      "Viewing and requesting service quota increases"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 3
   },
   {
     "id": "aws-046",
@@ -592,9 +592,9 @@
     "type": "multiple-choice",
     "question": "What is the purpose of AWS PrivateLink?",
     "options": [
-      "Configure private subnets",
       "Encrypt S3 data",
       "Manage private keys",
+      "Configure private subnets",
       "Create private connectivity between VPCs and services"
     ],
     "correctAnswer": 3
@@ -606,10 +606,10 @@
     "type": "true-false",
     "question": "DynamoDB global tables provide multi-master replication with eventual consistency.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-048",
@@ -618,12 +618,12 @@
     "type": "multiple-choice",
     "question": "What does AWS Control Tower help organizations achieve?",
     "options": [
-      "API rate limiting",
       "Database optimization",
       "Centralized multi-account governance",
-      "Container management"
+      "Container management",
+      "API rate limiting"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "aws-049",
@@ -632,10 +632,10 @@
     "type": "true-false",
     "question": "EBS volumes can be encrypted after creation.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "aws-050",
@@ -644,11 +644,11 @@
     "type": "multiple-choice",
     "question": "What is AWS Savings Plans primarily used for?",
     "options": [
-      "Tracking resource usage",
-      "Reducing compute costs with flexible pricing commitments",
       "Managing budget alerts",
-      "Storing cost reports"
+      "Tracking resource usage",
+      "Storing cost reports",
+      "Reducing compute costs with flexible pricing commitments"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   }
 ]

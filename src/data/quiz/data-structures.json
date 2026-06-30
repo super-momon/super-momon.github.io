@@ -6,10 +6,10 @@
     "type": "true-false",
     "question": "A stack follows FIFO (First In, First Out) ordering.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-002",
@@ -18,12 +18,12 @@
     "type": "multiple-choice",
     "question": "What is the time complexity of accessing an array element by index?",
     "options": [
-      "O(log n)",
-      "O(n)",
+      "O(n²)",
       "O(1)",
-      "O(n²)"
+      "O(log n)",
+      "O(n)"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "ds-003",
@@ -33,11 +33,11 @@
     "question": "Which data structure is best suited for implementing a priority queue?",
     "options": [
       "Linked List",
-      "Hash Table",
+      "Heap",
       "Stack",
-      "Heap"
+      "Hash Table"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   },
   {
     "id": "ds-004",
@@ -46,10 +46,10 @@
     "type": "true-false",
     "question": "A binary search tree guarantees O(log n) lookup time in all cases.",
     "options": [
-      "False",
-      "True"
+      "True",
+      "False"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-005",
@@ -58,10 +58,10 @@
     "type": "multiple-choice",
     "question": "What is the time complexity of inserting at the head of a singly linked list?",
     "options": [
+      "O(log n)",
       "O(n)",
-      "O(n log n)",
       "O(1)",
-      "O(log n)"
+      "O(n log n)"
     ],
     "correctAnswer": 2
   },
@@ -84,12 +84,12 @@
     "type": "multiple-choice",
     "question": "Which data structure uses FIFO ordering?",
     "options": [
+      "Queue",
       "Stack",
-      "Binary Tree",
       "Graph",
-      "Queue"
+      "Binary Tree"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 0
   },
   {
     "id": "ds-008",
@@ -98,12 +98,12 @@
     "type": "multiple-choice",
     "question": "What is the worst-case time complexity of quicksort?",
     "options": [
-      "O(log n)",
       "O(n²)",
       "O(n log n)",
-      "O(n)"
+      "O(n)",
+      "O(log n)"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-009",
@@ -112,12 +112,12 @@
     "type": "multiple-choice",
     "question": "What is a Red-Black tree?",
     "options": [
-      "A tree where all leaf nodes are colored red",
+      "A tree that only stores data in leaf nodes",
       "A B+ tree variant used in databases",
-      "A self-balancing BST using color properties to guarantee O(log n) operations",
-      "A tree that only stores data in leaf nodes"
+      "A tree where all leaf nodes are colored red",
+      "A self-balancing BST using color properties to guarantee O(log n) operations"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "ds-010",
@@ -126,9 +126,9 @@
     "type": "multiple-choice",
     "question": "What is the time complexity of BFS on a graph with V vertices and E edges?",
     "options": [
-      "O(E log V)",
-      "O(V + E)",
       "O(V log V)",
+      "O(V + E)",
+      "O(E log V)",
       "O(V²)"
     ],
     "correctAnswer": 1
@@ -140,12 +140,12 @@
     "type": "multiple-choice",
     "question": "Which data structure typically supports constant-time push and pop at one end?",
     "options": [
-      "Stack",
       "Binary Search Tree",
       "Graph",
-      "Hash Set"
+      "Hash Set",
+      "Stack"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 3
   },
   {
     "id": "ds-012",
@@ -154,10 +154,10 @@
     "type": "true-false",
     "question": "A linked list stores elements in non-contiguous nodes connected by references.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-013",
@@ -166,12 +166,12 @@
     "type": "multiple-choice",
     "question": "Which data structure is commonly used to represent key-value pairs?",
     "options": [
-      "Queue",
-      "Hash Table",
       "Stack",
-      "Heap"
+      "Queue",
+      "Heap",
+      "Hash Table"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "ds-014",
@@ -180,12 +180,12 @@
     "type": "multiple-choice",
     "question": "Which traversal visits the root before its subtrees in a binary tree?",
     "options": [
-      "Inorder",
+      "Level-order only",
       "Postorder",
-      "Preorder",
-      "Level-order only"
+      "Inorder",
+      "Preorder"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "ds-015",
@@ -194,10 +194,10 @@
     "type": "true-false",
     "question": "An empty queue cannot be dequeued safely without additional checks or defined behavior.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-016",
@@ -206,12 +206,12 @@
     "type": "multiple-choice",
     "question": "What does LIFO stand for?",
     "options": [
+      "Linked Items, Fixed Order",
       "Last In, First Out",
       "Last In, Final Order",
-      "Linear Input, Fast Output",
-      "Linked Items, Fixed Order"
+      "Linear Input, Fast Output"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-017",
@@ -220,12 +220,12 @@
     "type": "multiple-choice",
     "question": "Which structure is most suitable for storing hierarchical parent-child relationships?",
     "options": [
-      "Array",
-      "Tree",
       "Stack",
-      "Hash Map"
+      "Array",
+      "Hash Map",
+      "Tree"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": "ds-018",
@@ -246,12 +246,12 @@
     "type": "multiple-choice",
     "question": "What is the main advantage of an array over a linked list for indexed access?",
     "options": [
-      "Lower memory usage in every case",
       "Constant-time access by index",
+      "Lower memory usage in every case",
       "Automatic balancing",
       "Faster insertion at the front"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-020",
@@ -260,12 +260,12 @@
     "type": "multiple-choice",
     "question": "Which operation removes the top element from a stack?",
     "options": [
+      "extract-min",
       "enqueue",
       "append",
-      "pop",
-      "extract-min"
+      "pop"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "ds-021",
@@ -274,12 +274,12 @@
     "type": "multiple-choice",
     "question": "What is the average-case time complexity of lookup in a hash table with a good hash function?",
     "options": [
+      "O(n log n)",
       "O(1)",
       "O(log n)",
-      "O(n)",
-      "O(n log n)"
+      "O(n)"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-022",
@@ -288,10 +288,10 @@
     "type": "true-false",
     "question": "In a max-heap, the largest element is always at the root.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-023",
@@ -300,12 +300,12 @@
     "type": "multiple-choice",
     "question": "Which traversal of a binary search tree visits values in sorted order?",
     "options": [
-      "Preorder",
-      "Postorder",
+      "Level-order",
       "Inorder",
-      "Level-order"
+      "Preorder",
+      "Postorder"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": "ds-024",
@@ -315,9 +315,9 @@
     "question": "What is the worst-case time complexity to search an unsorted linked list?",
     "options": [
       "O(1)",
-      "O(log n)",
+      "O(n²)",
       "O(n)",
-      "O(n²)"
+      "O(log n)"
     ],
     "correctAnswer": 2
   },
@@ -328,10 +328,10 @@
     "type": "true-false",
     "question": "A deque supports insertion and deletion at both ends.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-026",
@@ -340,12 +340,12 @@
     "type": "multiple-choice",
     "question": "Which data structure is commonly used to implement recursion at runtime?",
     "options": [
-      "Queue",
       "Stack",
-      "Trie",
-      "Bloom filter"
+      "Bloom filter",
+      "Queue",
+      "Trie"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-027",
@@ -354,10 +354,10 @@
     "type": "multiple-choice",
     "question": "What is a trie primarily optimized for?",
     "options": [
-      "Numeric sorting only",
+      "Constant-time deletion in arrays",
       "Prefix-based string lookup",
-      "Shortest path calculations",
-      "Constant-time deletion in arrays"
+      "Numeric sorting only",
+      "Shortest path calculations"
     ],
     "correctAnswer": 1
   },
@@ -368,12 +368,12 @@
     "type": "multiple-choice",
     "question": "Which graph representation is often more space-efficient for sparse graphs?",
     "options": [
-      "Adjacency matrix",
-      "Adjacency list",
       "Full incidence cube",
-      "Binary heap"
+      "Binary heap",
+      "Adjacency list",
+      "Adjacency matrix"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "ds-029",
@@ -382,12 +382,12 @@
     "type": "multiple-choice",
     "question": "Which sorting algorithm is stable in its typical implementation?",
     "options": [
+      "Selection sort",
       "Heap sort",
       "Quicksort",
-      "Merge sort",
-      "Selection sort"
+      "Merge sort"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": "ds-030",
@@ -409,11 +409,11 @@
     "question": "What is the worst-case time complexity of searching in a balanced binary search tree?",
     "options": [
       "O(1)",
-      "O(log n)",
       "O(n)",
+      "O(log n)",
       "O(n log n)"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "ds-032",
@@ -422,10 +422,10 @@
     "type": "multiple-choice",
     "question": "Which data structure supports near-constant amortized time union and find operations?",
     "options": [
-      "Binary Indexed Tree",
+      "Deque",
       "Disjoint Set Union",
-      "AVL Tree",
-      "Deque"
+      "Binary Indexed Tree",
+      "AVL Tree"
     ],
     "correctAnswer": 1
   },
@@ -436,10 +436,10 @@
     "type": "true-false",
     "question": "An AVL tree maintains stricter balance conditions than a Red-Black tree.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-034",
@@ -462,12 +462,12 @@
     "type": "multiple-choice",
     "question": "What problem does topological sorting solve?",
     "options": [
-      "Finding the minimum spanning tree of any graph",
-      "Ordering vertices in a directed acyclic graph so dependencies come before dependents",
       "Balancing an unbalanced binary search tree",
-      "Detecting duplicate keys in a hash map"
+      "Detecting duplicate keys in a hash map",
+      "Ordering vertices in a directed acyclic graph so dependencies come before dependents",
+      "Finding the minimum spanning tree of any graph"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "ds-036",
@@ -476,12 +476,12 @@
     "type": "multiple-choice",
     "question": "Which structure is most commonly used to implement an LRU cache efficiently?",
     "options": [
-      "Array only",
       "Hash map plus doubly linked list",
+      "Binary heap only",
       "Queue plus adjacency matrix",
-      "Binary heap only"
+      "Array only"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-037",
@@ -490,10 +490,10 @@
     "type": "true-false",
     "question": "In a complete binary tree, every level except possibly the last is completely filled.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-038",
@@ -502,12 +502,12 @@
     "type": "multiple-choice",
     "question": "What is the main benefit of path compression in a union-find data structure?",
     "options": [
-      "It sorts sets by size automatically",
       "It flattens trees during find operations to speed up future queries",
+      "It sorts sets by size automatically",
       "It removes duplicate nodes permanently",
       "It guarantees O(1) worst-case insertion into arrays"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-039",
@@ -516,10 +516,10 @@
     "type": "multiple-choice",
     "question": "What is the worst-case time complexity of looking up a key in a hash table with severe collisions and chaining?",
     "options": [
-      "O(1)",
+      "O(n²)",
       "O(log n)",
       "O(n)",
-      "O(n²)"
+      "O(1)"
     ],
     "correctAnswer": 2
   },
@@ -530,12 +530,12 @@
     "type": "multiple-choice",
     "question": "What is the time complexity of DFS on a graph with V vertices and E edges using adjacency lists?",
     "options": [
-      "O(V + E)",
       "O(V log E)",
+      "O(V + E)",
       "O(E²)",
       "O(V²) always"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-041",
@@ -544,12 +544,12 @@
     "type": "multiple-choice",
     "question": "Which property distinguishes a B-tree from a simple binary search tree?",
     "options": [
-      "A B-tree stores exactly one key per node",
       "A B-tree can have many keys and children per node, making it suitable for disk-based systems",
       "A B-tree cannot rebalance itself",
+      "A B-tree stores exactly one key per node",
       "A B-tree only works for string keys"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-042",
@@ -570,12 +570,12 @@
     "type": "multiple-choice",
     "question": "What is a Fenwick tree primarily used for?",
     "options": [
+      "Implementing persistent hash maps",
       "Maintaining prefix sums with efficient updates and queries",
-      "Balancing a graph after each edge insertion",
       "Storing compressed strings for autocomplete",
-      "Implementing persistent hash maps"
+      "Balancing a graph after each edge insertion"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-044",
@@ -584,12 +584,12 @@
     "type": "multiple-choice",
     "question": "What is the main purpose of a segment tree?",
     "options": [
-      "To represent weighted graphs compactly",
       "To answer range queries and updates efficiently over an array",
+      "To keep heap insertions stable",
       "To ensure perfect hashing for any dataset",
-      "To keep heap insertions stable"
+      "To represent weighted graphs compactly"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-045",
@@ -598,12 +598,12 @@
     "type": "multiple-choice",
     "question": "Which statement about persistent data structures is most accurate?",
     "options": [
-      "Updates mutate all old versions in place",
       "They preserve previous versions after updates, often by sharing unchanged structure",
-      "They are only stored on disk and never in memory",
-      "They always require O(n) extra space per update"
+      "Updates mutate all old versions in place",
+      "They always require O(n) extra space per update",
+      "They are only stored on disk and never in memory"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-046",
@@ -612,10 +612,10 @@
     "type": "true-false",
     "question": "A skip list achieves expected logarithmic search time by maintaining multiple probabilistic levels of forward pointers.",
     "options": [
-      "True",
-      "False"
+      "False",
+      "True"
     ],
-    "correctAnswer": 0
+    "correctAnswer": 1
   },
   {
     "id": "ds-047",
@@ -624,12 +624,12 @@
     "type": "multiple-choice",
     "question": "What is the primary advantage of a suffix array or suffix tree?",
     "options": [
-      "They make integer multiplication constant time",
       "They support efficient substring and pattern-search operations",
-      "They replace hash tables for all key-value workloads",
-      "They guarantee optimal graph coloring"
+      "They guarantee optimal graph coloring",
+      "They make integer multiplication constant time",
+      "They replace hash tables for all key-value workloads"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-048",
@@ -638,12 +638,12 @@
     "type": "multiple-choice",
     "question": "What is a Bloom filter best suited for?",
     "options": [
+      "Sorting large datasets on disk",
       "Exact membership tests with no false positives",
       "Probabilistic membership checks with possible false positives but no false negatives",
-      "Sorting large datasets on disk",
       "Finding shortest paths in weighted graphs"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": "ds-049",
@@ -652,12 +652,12 @@
     "type": "multiple-choice",
     "question": "Why are adjacency matrices often less efficient than adjacency lists for sparse graphs?",
     "options": [
-      "They cannot represent directed edges",
       "They use O(V²) space even when few edges exist",
-      "They make edge existence checks impossible",
-      "They prevent breadth-first search"
+      "They prevent breadth-first search",
+      "They cannot represent directed edges",
+      "They make edge existence checks impossible"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 0
   },
   {
     "id": "ds-050",
