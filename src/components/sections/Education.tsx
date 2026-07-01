@@ -78,11 +78,10 @@ function EducationCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -4, transition: { type: "spring", stiffness: 300, damping: 22 } }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={onClick}
-      className="group relative flex flex-col min-h-56 p-7 rounded-2xl border bg-surface backdrop-blur-sm cursor-pointer will-change-transform"
+      className="group relative flex flex-col min-h-56 p-7 rounded-2xl border bg-surface backdrop-blur-sm cursor-pointer"
       style={{
         borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
         transition: "border-color 0.3s ease",
@@ -220,11 +219,11 @@ export default function Education() {
             initial={{ opacity: 0, y: 22 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
-            className="text-[clamp(2.25rem,5vw,3.5rem)] font-bold text-foreground tracking-tight leading-[1.1] mb-4"
+            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4"
           >
             Learning &amp;{" "}
             <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover"
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
               style={{ fontStyle: "italic" }}
             >
               Journey

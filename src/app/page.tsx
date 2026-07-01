@@ -5,7 +5,6 @@ import Projects from "@/components/sections/Projects";
 import Experience from "@/components/sections/Experience";
 import Education from "@/components/sections/Education";
 import Contact from "@/components/sections/Contact";
-import MarqueeBanner from "@/components/common/MarqueeBanner";
 import { ClientPageWrapper } from "@/components/ClientPageWrapper";
 
 export default function Home() {
@@ -13,19 +12,12 @@ export default function Home() {
     <ClientPageWrapper>
       <main>
         <Hero />
-
         <About />
-
         <Experience />
-
         <Projects />
-
         <Skills />
-
         <Education />
-
         <Contact />
-
       </main>
     </ClientPageWrapper>
   );

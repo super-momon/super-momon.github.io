@@ -102,49 +102,11 @@ export default function Hero() {
           }}
         />
 
-        {/* Floating code fragments - unique background element */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-10">
-          {[
-            { code: "const dev = 'awesome';", top: "15%", left: "10%", delay: 0 },
-            { code: "() => magic", top: "25%", right: "15%", delay: 1 },
-            { code: "{ code: true }", top: "65%", left: "8%", delay: 2 },
-            { code: "<Component />", top: "70%", right: "12%", delay: 1.5 },
-            { code: "async/await", top: "40%", left: "5%", delay: 2.5 },
-            { code: "git commit -m", top: "45%", right: "8%", delay: 0.5 },
-          ].map((item, i) => (
-            <m.div
-              key={i}
-              className="absolute font-mono text-xs md:text-sm text-accent"
-              style={{
-                top: item.top,
-                left: item.left,
-                right: item.right,
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{
-                opacity: [0, 0.6, 0.3, 0.6],
-                y: [20, 0, -10, 0],
-              }}
-              transition={{
-                duration: 8,
-                delay: item.delay,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-              }}
-            >
-              {item.code}
-            </m.div>
-          ))}
-        </div>
-
         <div className="relative z-10 max-w-5xl">
           <FadeIn delay={0.1}>
             <m.div
               className="inline-flex items-center gap-3 mb-6 px-4 py-2 rounded-full 
                          bg-surface/50 backdrop-blur-sm border border-border/50"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
             >
               <m.span
                 className="w-2 h-2 rounded-full bg-highlight-01 shadow-[0_0_10px_rgba(110,192,56,0.8)]"
@@ -167,19 +129,19 @@ export default function Hero() {
           {/* Main heading with character-by-character reveal */}
           <div className="mb-3">
             <m.h1
-              className="text-[clamp(3rem,12vw,8rem)] font-bold leading-[0.9] tracking-tight mb-2"
+              className="text-[clamp(2rem,7vw,4rem)] font-bold leading-none tracking-tight mb-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
               <span className="inline-block">
-                <HighlightText className="text-[clamp(3rem,12vw,8rem)] px-3 md:px-4">
+                <HighlightText className="text-[clamp(2rem,7vw,4rem)] px-3 md:px-4">
                   Ayade
                 </HighlightText>
               </span>
             </m.h1>
 
-            <div className="text-[clamp(1.5rem,5vw,3.5rem)] font-bold text-foreground/90 tracking-tight">
+            <div className="text-[clamp(1.2rem,3.5vw,2rem)] font-bold text-foreground/90 tracking-tight">
               {charAnimations &&
                 name.split("").map((char, i) => (
                   <m.span

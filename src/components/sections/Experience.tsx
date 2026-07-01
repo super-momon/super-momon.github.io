@@ -47,10 +47,9 @@ function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: num
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ x: 4, transition: { type: "spring", stiffness: 280, damping: 25 } }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="sm:pl-16 relative will-change-transform"
+      className="sm:pl-16 relative"
     >
       {/* Timeline dot */}
       <div className="hidden sm:block absolute top-3" style={{ left: "7px" }}>
@@ -170,11 +169,11 @@ export default function Experience() {
             initial={{ opacity: 0, y: 22 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
-            className="text-[clamp(2.25rem,5vw,3.5rem)] font-bold text-foreground tracking-tight leading-[1.1] mb-4"
+            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4"
           >
             Professional{" "}
             <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover"
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
               style={{ fontStyle: "italic" }}
             >
               Journey

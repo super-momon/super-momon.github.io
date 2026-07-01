@@ -144,7 +144,7 @@ export default function Contact() {
           {/* ── Left col: headline + copy + CTA ── */}
           <div>
             <FadeIn delay={0.05}>
-              <h2 className="text-[clamp(2.8rem,5.5vw,5rem)] font-bold text-foreground leading-[0.95] tracking-tight mb-6">
+              <h2 className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-bold text-foreground leading-tight tracking-tight mb-6">
                 Let&apos;s Build
                 <br />
                 <span
@@ -233,7 +233,7 @@ export default function Contact() {
                       event_label: method.label.toLowerCase(),
                     })
                   }
-                  className="group relative flex items-center gap-4 px-5 py-4 rounded-2xl border border-border bg-surface overflow-hidden transition-all duration-300 hover:border-accent hover:-translate-y-0.5"
+                  className="group relative flex items-center gap-4 px-5 py-4 rounded-2xl border border-border bg-surface overflow-hidden transition-all duration-300 hover:border-accent"
                   style={{
                     boxShadow: undefined,
                   }}

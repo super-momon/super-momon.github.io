@@ -61,7 +61,6 @@ function ExpertiseCard({ icon, title, description, index }: ExpertiseCardProps) 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3, transition: { type: "spring", stiffness: 300, damping: 22 } }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className="relative p-5 rounded-xl bg-surface/30 backdrop-blur-sm border will-change-transform"
@@ -166,11 +165,11 @@ export default function About() {
             initial={{ opacity: 0, y: 22 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
-            className="text-[clamp(2.25rem,5vw,3.5rem)] font-bold text-foreground tracking-tight leading-[1.1] mb-4"
+            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4"
           >
             About{" "}
             <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover"
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
               style={{ fontStyle: "italic" }}
             >
               Me
@@ -195,8 +194,7 @@ export default function About() {
           >
             <div className="sticky top-24">
               <motion.div
-                whileHover={{ scale: 1.02, transition: { type: "spring", stiffness: 200, damping: 20 } }}
-                className="relative rounded-2xl overflow-hidden border-2 border-border will-change-transform"
+                className="relative rounded-2xl overflow-hidden border-2 border-border"
                 style={{ aspectRatio: "1 / 1" }}
               >
                 <div className="absolute inset-0 bg-linear-to-br from-accent/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
@@ -274,7 +272,7 @@ export default function About() {
                 href="/workplace-insights.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative flex items-center gap-4 p-5 rounded-xl bg-linear-to-r from-[#002554] to-[#003570] border border-white/10 overflow-hidden will-change-transform transition-transform duration-300 group-hover:scale-[1.02]"
+                className="relative flex items-center gap-4 p-5 rounded-xl bg-linear-to-r from-[#002554] to-[#003570] border border-white/10 overflow-hidden transition-colors duration-300"
               >
                 <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/5 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
 
