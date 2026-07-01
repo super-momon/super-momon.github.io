@@ -10,10 +10,8 @@ import { faArrowDown, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
-  const [isHovering, setIsHovering] = useState<string | null>(null);
   const [charAnimations, setCharAnimations] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
-  const ctaRefs = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
 
   // Morphing gradient that follows cursor
   useEffect(() => {
@@ -29,34 +27,6 @@ export default function Hero() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
-
-  // Magnetic button effect
-  useEffect(() => {
-    const handleButtonMouseMove = (e: MouseEvent) => {
-      if (!isHovering || !ctaRefs.current[isHovering]) return;
-
-      const button = ctaRefs.current[isHovering];
-      if (!button) return;
-
-      const rect = button.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-
-      const distance = Math.sqrt(x * x + y * y);
-      const maxDistance = 80;
-
-      if (distance < maxDistance) {
-        const strength = 1 - distance / maxDistance;
-        button.style.transform = `translate(${x * strength * 0.4}px, ${y * strength * 0.4}px)`;
-      }
-    };
-
-    if (isHovering) {
-      window.addEventListener("mousemove", handleButtonMouseMove);
-    }
-
-    return () => window.removeEventListener("mousemove", handleButtonMouseMove);
-  }, [isHovering]);
 
   // Trigger character animations on mount
   useEffect(() => {
@@ -141,7 +111,7 @@ export default function Hero() {
               </span>
             </m.h1>
 
-            <div className="text-[clamp(1.2rem,3.5vw,2rem)] font-bold text-foreground/90 tracking-tight">
+            <div className="text-[clamp(1.5rem,4vw,2.5rem)] font-bold text-foreground/90 tracking-tight">
               {charAnimations &&
                 name.split("").map((char, i) => (
                   <m.span
@@ -201,32 +171,19 @@ export default function Hero() {
             </div>
           </FadeIn>
 
-          {/* Magnetic CTAs */}
+          {/* CTAs */}
           <FadeIn delay={1}>
-            <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
               <a
-                ref={(el) => {
-                  ctaRefs.current["projects"] = el;
-                }}
                 href="#projects"
-                onMouseEnter={() => setIsHovering("projects")}
-                onMouseLeave={() => {
-                  setIsHovering(null);
-                  if (ctaRefs.current["projects"]) {
-                    ctaRefs.current["projects"].style.transform = "translate(0, 0)";
-                  }
-                }}
-                className="group relative px-8 py-4 rounded-2xl bg-accent text-white font-semibold text-base
+                className="group relative px-6 py-3 rounded-xl bg-accent text-white font-semibold text-sm
                            overflow-hidden transition-all duration-300 ease-out
-                           hover:shadow-[0_0_40px_rgba(0,199,88,0.5)]
+                           hover:shadow-[0_0_30px_rgba(0,199,88,0.4)]
                            active:scale-95"
-                style={{
-                  transition: "transform 0.2s ease-out, box-shadow 0.3s",
-                }}
               >
                 <span className="relative z-10">View Projects</span>
                 <m.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
                   initial={{ x: "-100%" }}
                   whileHover={{ x: "100%" }}
                   transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -234,53 +191,27 @@ export default function Hero() {
               </a>
 
               <a
-                ref={(el) => {
-                  ctaRefs.current["contact"] = el;
-                }}
                 href="#contact"
-                onMouseEnter={() => setIsHovering("contact")}
-                onMouseLeave={() => {
-                  setIsHovering(null);
-                  if (ctaRefs.current["contact"]) {
-                    ctaRefs.current["contact"].style.transform = "translate(0, 0)";
-                  }
-                }}
-                className="group px-8 py-4 rounded-2xl border-2 border-border text-foreground font-semibold text-base
+                className="group px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm
                            transition-all duration-300 ease-out backdrop-blur-sm
-                           hover:border-accent hover:bg-surface/50 hover:shadow-lg
+                           hover:border-accent hover:bg-surface/50
                            active:scale-95"
-                style={{
-                  transition: "transform 0.2s ease-out, border-color 0.3s, background-color 0.3s",
-                }}
               >
-                <span className="relative z-10">Let&apos;s Talk</span>
+                Let&apos;s Talk
               </a>
 
               <a
-                ref={(el) => {
-                  ctaRefs.current["resume"] = el;
-                }}
                 href="/resume.pdf"
                 download="Mark_Raymond_Ayade_Resume.pdf"
                 onClick={() => trackEvent("resume_download", { method: "hero_button" })}
-                onMouseEnter={() => setIsHovering("resume")}
-                onMouseLeave={() => {
-                  setIsHovering(null);
-                  if (ctaRefs.current["resume"]) {
-                    ctaRefs.current["resume"].style.transform = "translate(0, 0)";
-                  }
-                }}
-                className="group px-8 py-4 rounded-2xl border-2 border-border text-foreground font-semibold text-base
+                className="group px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm
                            transition-all duration-300 ease-out backdrop-blur-sm
-                           hover:border-accent hover:bg-surface/50 hover:shadow-lg
+                           hover:border-accent hover:bg-surface/50
                            active:scale-95"
-                style={{
-                  transition: "transform 0.2s ease-out, border-color 0.3s, background-color 0.3s",
-                }}
               >
-                <span className="relative z-10 inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-2">
                   Resume
-                  <FontAwesomeIcon icon={faArrowDown} className="transition-transform group-hover:translate-y-1" />
+                  <FontAwesomeIcon icon={faArrowDown} className="transition-transform group-hover:translate-y-0.5" />
                 </span>
               </a>
             </div>

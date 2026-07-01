@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { AnimatePresence, motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndustry } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +11,7 @@ const experiences = [
     company: "Talleco.com Inc. | JobTarget PH",
     period: "Feb 2025 — Present",
     description:
-      "Architecting event-driven backend solutions using AWS services (Lambda, SQS, SNS, S3) to support scalable application workflows. Developing and enhancing features across client-facing and internal services while contributing to UI modernization initiatives. Diagnosing complex production issues and optimizing database operations across MS SQL Server, PostgreSQL, and MongoDB, working with diverse technology stacks and architectures.",
+      "Implemented event-driven backend solutions using AWS services including Lambda, SQS, SNS, and S3 to support scalable and reliable application workflows. Developed and enhanced application features across multiple client-facing and internal services, improving maintainability and operational efficiency. Contributed to modernization initiatives including UI redesigns and usability improvements for multiple client-facing applications. Diagnosed and resolved complex software and data-related issues affecting production workflows and internal applications. Optimized application data flow and database operations using MS SQL Server, PostgreSQL, and MongoDB. Worked across multiple services and applications utilizing different technology stacks and architectures.",
     tags: ["AWS", "Lambda", "SQS", "SNS", "S3", "MS SQL Server", "PostgreSQL", "MongoDB", "Event-Driven Architecture"],
     current: true,
     industry: "Human Capital Management - Recruitment Software",
@@ -38,86 +38,8 @@ const experiences = [
   },
 ];
 
-function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: number }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="sm:pl-16 relative"
-    >
-      {/* Timeline dot */}
-      <div className="hidden sm:block absolute top-3" style={{ left: "7px" }}>
-        <motion.div
-          animate={{ scale: exp.current || isHovered ? 1.3 : 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="relative w-5 h-5 rounded-full bg-accent flex items-center justify-center"
-        >
-          <motion.div
-            animate={{ opacity: exp.current || isHovered ? 0.6 : 0.2 }}
-            transition={{ duration: 0.3 }}
-            className="absolute w-5 h-5 rounded-full bg-accent blur-md"
-            style={{ transform: "scale(1.6)" }}
-          />
-          <div className="relative w-2 h-2 rounded-full bg-white" />
-        </motion.div>
-      </div>
-
-      {/* Card */}
-      <div
-        className="p-7 rounded-2xl border backdrop-blur-sm"
-        style={{
-          borderColor: exp.current || isHovered ? "var(--color-accent)" : "var(--color-border)",
-          transition: "border-color 0.3s ease",
-        }}
-      >
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-5">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 flex-wrap mb-1.5">
-              <h3 className="text-xl font-bold text-foreground tracking-tight">
-                {exp.role}
-              </h3>
-              {exp.current && (
-                <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-widest bg-accent text-white">
-                  Active
-                </span>
-              )}
-            </div>
-            <p className="text-accent text-base font-semibold mb-2">{exp.company}</p>
-            <p className="text-sm text-muted flex items-center gap-2">
-              <FontAwesomeIcon icon={faIndustry} className="text-accent text-xs" />
-              <span className="font-medium">Industry:</span>
-              <span>{exp.industry}</span>
-            </p>
-          </div>
-          <span className="text-sm text-muted shrink-0 font-mono tracking-tight lg:text-right">
-            {exp.period}
-          </span>
-        </div>
-
-        <p className="text-sm leading-relaxed text-muted mb-5">{exp.description}</p>
-
-        <div className="flex flex-wrap gap-2">
-          {exp.tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-2.5 py-1 rounded-md text-xs font-medium bg-surface border border-border text-muted"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function Experience() {
+  const [activeIndex, setActiveIndex] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
@@ -128,6 +50,8 @@ export default function Experience() {
 
   const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
+  const active = experiences[activeIndex];
 
   return (
     <section
@@ -155,7 +79,7 @@ export default function Experience() {
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Section header */}
-        <div className="mb-16 text-center">
+        <div className="mb-14 text-center">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -197,17 +121,136 @@ export default function Experience() {
           />
         </div>
 
-        {/* Timeline */}
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute top-2 bottom-0 w-px bg-linear-to-b from-accent/60 via-border to-transparent hidden sm:block" style={{ left: "17px" }} />
-
-          <div className="space-y-10">
+        {/* Split layout: role selector + detail panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+          className="flex flex-col lg:grid lg:grid-cols-[230px_1fr] gap-3 lg:gap-8 lg:items-start"
+        >
+          {/* Role selector — horizontal scroll on mobile, vertical stack on desktop */}
+          <div
+            style={{ scrollbarWidth: "none" }}
+            className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 -mx-2 px-2 lg:mx-0 lg:px-0 lg:sticky lg:top-24 [&::-webkit-scrollbar]:hidden"
+          >
             {experiences.map((exp, i) => (
-              <ExperienceCard key={exp.role + exp.company} exp={exp} index={i} />
+              <button
+                key={i}
+                onClick={() => setActiveIndex(i)}
+                className="relative shrink-0 lg:shrink lg:w-full text-left px-3.5 py-3 rounded-xl border transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent cursor-pointer"
+                style={{
+                  borderColor: activeIndex === i ? "var(--color-accent)" : "var(--color-border)",
+                }}
+              >
+                {/* Animated background highlight */}
+                {activeIndex === i && (
+                  <motion.div
+                    layoutId="roleHighlight"
+                    className="absolute inset-0 rounded-xl bg-accent/[0.07]"
+                    transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                  />
+                )}
+
+                <div className="relative flex items-start gap-2.5">
+                  {/* Status dot */}
+                  <motion.div
+                    animate={{
+                      backgroundColor:
+                        activeIndex === i || exp.current
+                          ? "var(--color-accent)"
+                          : "var(--color-border)",
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-1.75 w-1.5 h-1.5 rounded-full shrink-0"
+                  />
+
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className="text-xs font-semibold leading-snug whitespace-nowrap lg:whitespace-normal transition-colors duration-200"
+                      style={{
+                        color:
+                          activeIndex === i
+                            ? "var(--color-foreground)"
+                            : "var(--color-muted)",
+                      }}
+                    >
+                      {exp.role}
+                    </p>
+                    <p
+                      className="text-[11px] font-mono mt-0.5 whitespace-nowrap transition-opacity duration-200"
+                      style={{
+                        color: "var(--color-muted)",
+                        opacity: activeIndex === i ? 0.9 : 0.5,
+                      }}
+                    >
+                      {exp.period}
+                    </p>
+                  </div>
+
+                  {exp.current && (
+                    <span className="shrink-0 ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest bg-accent text-white self-center">
+                      Now
+                    </span>
+                  )}
+                </div>
+              </button>
             ))}
           </div>
-        </div>
+
+          {/* Detail panel — fixed height prevents layout shift on tab switch */}
+          <div className="relative h-110 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                className="p-6 rounded-2xl border border-accent/30 backdrop-blur-sm"
+              >
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+                  <div>
+                    <div className="flex items-center gap-2.5 flex-wrap mb-1">
+                      <h3 className="text-base font-bold text-foreground tracking-tight">
+                        {active.role}
+                      </h3>
+                      {active.current && (
+                        <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest bg-accent text-white">
+                          Active
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-accent text-sm font-semibold mb-1.5">{active.company}</p>
+                    <p className="text-xs text-muted flex items-center gap-1.5">
+                      <FontAwesomeIcon icon={faIndustry} className="text-accent text-[10px]" />
+                      {active.industry}
+                    </p>
+                  </div>
+
+                  <span className="shrink-0 self-start text-xs font-mono text-muted border border-border rounded-lg px-3 py-1.5 bg-surface/60">
+                    {active.period}
+                  </span>
+                </div>
+
+                <div className="h-px bg-border mb-4" />
+
+                <p className="text-sm leading-relaxed text-muted mb-5">{active.description}</p>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {active.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2.5 py-1 rounded-md text-xs font-medium bg-surface border border-border text-muted"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
