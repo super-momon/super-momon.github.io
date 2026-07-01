@@ -20,7 +20,8 @@ export interface NavLink {
   href: string;
 }
 
-export const NAV_LINKS: NavLink[] = [
+export const PORTFOLIO_LINKS: NavLink[] = [
+  { label: "Home", href: "/" },
   { label: "About", href: "/#about" },
   { label: "Experience", href: "/#experience" },
   { label: "Projects", href: "/#projects" },
@@ -28,6 +29,13 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Education", href: "/#education" },
   { label: "Contact", href: "/#contact" },
 ];
+
+export const GAME_LINKS: NavLink[] = [
+  { label: "Quiz", href: "/games/quiz" },
+];
+
+/** @deprecated use PORTFOLIO_LINKS + GAME_LINKS */
+export const NAV_LINKS: NavLink[] = PORTFOLIO_LINKS;
 
 // ─── Site ─────────────────────────────────────────────────────────────────────
 export const SITE_URL = "https://super-momon.github.io";
