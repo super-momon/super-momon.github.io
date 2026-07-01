@@ -24,15 +24,12 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
   const [loading, setLoading] = useState(!leaderboardCache.has(initialMode));
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const showAccuracy = mode === 'best-of-100';
+  const gridTemplateColumns = showAccuracy ? '2rem 1fr 3.5rem 3.5rem 3.5rem' : '2rem 1fr 3.5rem 3.5rem';
 
-  const load = useCallback((currentMode: GameMode, force = false) => {
-    if (!force && leaderboardCache.has(currentMode)) {
-      setEntries(leaderboardCache.get(currentMode)!);
-      setLoading(false);
-      return () => { };
-    }
+  const refreshMode = useCallback((currentMode: GameMode) => {
     const controller = new AbortController();
-    if (force) setRefreshing(true); else setLoading(true);
+    setRefreshing(true);
     setError(null);
     fetchLeaderboard(currentMode, controller.signal)
       .then((data) => {
@@ -44,7 +41,6 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
       .catch(() => { if (!controller.signal.aborted) setError('Could not load leaderboard.'); })
       .finally(() => {
         if (!controller.signal.aborted) {
-          setLoading(false);
           setRefreshing(false);
         }
       });
@@ -52,9 +48,45 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
   }, []);
 
   useEffect(() => {
-    const cleanup = load(mode);
-    return cleanup;
-  }, [mode, load]);
+    if (leaderboardCache.has(mode)) {
+      return;
+    }
+
+    const controller = new AbortController();
+    fetchLeaderboard(mode, controller.signal)
+      .then((data) => {
+        if (!controller.signal.aborted) {
+          leaderboardCache.set(mode, data);
+          setEntries(data);
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setError('Could not load leaderboard.');
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+
+    return () => controller.abort();
+  }, [mode]);
+
+  const handleModeChange = (nextMode: GameMode) => {
+    setMode(nextMode);
+    setError(null);
+
+    const cachedEntries = leaderboardCache.get(nextMode);
+    if (cachedEntries) {
+      setEntries(cachedEntries);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+  };
 
   return (
     <div
@@ -74,7 +106,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
         <div className="flex items-center gap-1">
           {/* Refresh */}
           <button
-            onClick={() => load(mode, true)}
+            onClick={() => refreshMode(mode)}
             disabled={loading || refreshing}
             title="Refresh leaderboard"
             className="flex items-center justify-center w-6 h-6 rounded-lg transition-opacity duration-200 cursor-pointer disabled:opacity-40"
@@ -136,7 +168,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
         {(['survival', 'lives', 'best-of-100'] as GameMode[]).map((m) => (
           <button
             key={m}
-            onClick={() => setMode(m)}
+            onClick={() => handleModeChange(m)}
             className="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer"
             style={{
               background: mode === m ? 'var(--color-surface)' : 'transparent',
@@ -172,13 +204,13 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
               className="grid text-[10px] uppercase tracking-widest font-semibold pb-2 px-3"
               style={{
                 color: 'var(--color-muted)',
-                gridTemplateColumns: '2rem 1fr 3.5rem 3.5rem 3.5rem',
+                gridTemplateColumns,
               }}
             >
               <span>#</span>
               <span>Player</span>
               <span className="text-right">Score</span>
-              <span className="text-right">Acc</span>
+              {showAccuracy && <span className="text-right">Acc</span>}
               <span className="text-right">Avg</span>
             </div>
 
@@ -236,7 +268,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
                   transition={{ duration: 0.2, delay: idx * 0.04 }}
                   className="grid items-center px-3 py-2.5 rounded-xl text-sm"
                   style={{
-                    gridTemplateColumns: '2rem 1fr 3.5rem 3.5rem 3.5rem',
+                    gridTemplateColumns,
                     background: isHighlighted
                       ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)'
                       : idx % 2 !== 0
@@ -277,15 +309,16 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
                     {entry.score}
                   </span>
 
-                  {/* Accuracy */}
-                  <span
-                    className="text-right tabular-nums text-xs"
-                    style={{
-                      color: accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444',
-                    }}
-                  >
-                    {accuracy}%
-                  </span>
+                  {showAccuracy && (
+                    <span
+                      className="text-right tabular-nums text-xs"
+                      style={{
+                        color: accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444',
+                      }}
+                    >
+                      {accuracy}%
+                    </span>
+                  )}
 
                   {/* Avg time */}
                   <span
