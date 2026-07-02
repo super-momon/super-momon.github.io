@@ -11,6 +11,7 @@ interface Props {
   score: number;
   totalAnswered: number;
   correctCount: number;
+  totalQuestions: number;
   avgSecondsPerQuestion: number;
   mode: GameMode;
   onPlayAgain: () => void;
@@ -64,6 +65,7 @@ export function ResultScreen({
   score,
   totalAnswered,
   correctCount,
+  totalQuestions,
   avgSecondsPerQuestion,
   mode,
   onPlayAgain,
@@ -73,12 +75,21 @@ export function ResultScreen({
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [submittedEntry, setSubmittedEntry] = useState<LeaderboardEntry | null>(null);
 
-  const accuracy = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
+  const accuracy = mode === 'best-of-100'
+    ? (totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0)
+    : (totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0);
   const rating = getRating(accuracy);
   const displayScore = useCountUp(score);
-
   const accuracyColor =
     accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444';
+
+  const showAccuracy = mode === 'best-of-100';
+  const stats = [
+    { value: totalAnswered, label: 'Answered', color: 'var(--color-foreground)' },
+    { value: correctCount, label: 'Correct', color: '#22c55e' },
+    ...(showAccuracy ? [{ value: `${accuracy}%`, label: 'Accuracy', color: accuracyColor }] : []),
+    { value: `${avgSecondsPerQuestion}s`, label: 'Avg / Question', color: '#60a5fa' },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20">
@@ -114,7 +125,7 @@ export function ResultScreen({
                     boxShadow: `0 0 24px ${rating.color}22`,
                   }}
                 >
-                  {rating.icon}
+                  <span aria-hidden="true">{rating.icon}</span>
                 </div>
               </div>
               <h1 className="text-3xl font-bold text-foreground mb-1">Run Complete</h1>
@@ -154,15 +165,10 @@ export function ResultScreen({
 
               {/* Stat row */}
               <div
-                className="grid grid-cols-2 gap-4 pt-6 border-t"
+                className={`grid gap-4 pt-6 border-t ${showAccuracy ? 'grid-cols-2' : 'grid-cols-3'}`}
                 style={{ borderColor: 'var(--color-border)' }}
               >
-                {[
-                  { value: totalAnswered, label: 'Answered', color: 'var(--color-foreground)' },
-                  { value: correctCount, label: 'Correct', color: '#22c55e' },
-                  { value: `${accuracy}%`, label: 'Accuracy', color: accuracyColor },
-                  { value: `${avgSecondsPerQuestion}s`, label: 'Avg / Question', color: '#60a5fa' },
-                ].map(({ value, label, color }) => (
+                {stats.map(({ value, label, color }) => (
                   <div key={label}>
                     <div
                       className="text-2xl font-bold tabular-nums"
@@ -178,23 +184,25 @@ export function ResultScreen({
               </div>
 
               {/* Accuracy bar */}
-              <div className="mt-5">
-                <div
-                  className="w-full h-1.5 rounded-full overflow-hidden"
-                  style={{ background: 'var(--color-border)' }}
-                >
-                  <motion.div
-                    className="h-full rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${accuracy}%` }}
-                    transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    style={{
-                      background: accuracyColor,
-                      boxShadow: `0 0 8px ${accuracyColor}80`,
-                    }}
-                  />
+              {showAccuracy && (
+                <div className="mt-5">
+                  <div
+                    className="w-full h-1.5 rounded-full overflow-hidden"
+                    style={{ background: 'var(--color-border)' }}
+                  >
+                    <motion.div
+                      className="h-full rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${accuracy}%` }}
+                      transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      style={{
+                        background: accuracyColor,
+                        boxShadow: `0 0 8px ${accuracyColor}80`,
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </motion.div>
 
             {/* Mode label */}
@@ -228,7 +236,7 @@ export function ResultScreen({
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setShowModal(true)}
-                    className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer transition-all"
+                    className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer transition-[background-color,border-color,color,box-shadow] outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
                     style={{
                       background: 'color-mix(in srgb, var(--color-accent) 12%, transparent)',
                       border: '1px solid color-mix(in srgb, var(--color-accent) 30%, transparent)',
@@ -242,7 +250,7 @@ export function ResultScreen({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setShowLeaderboard((v) => !v)}
-                  className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer transition-all"
+                  className="flex-1 py-3 rounded-xl text-sm font-bold cursor-pointer transition-[background-color,border-color,color] outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
                   style={{
                     background: showLeaderboard
                       ? 'color-mix(in srgb, var(--color-foreground) 10%, transparent)'
@@ -262,7 +270,7 @@ export function ResultScreen({
                 whileHover={{ scale: 1.04, transition: { duration: 0.15 } }}
                 whileTap={{ scale: 0.97 }}
                 onClick={onPlayAgain}
-                className="flex-1 py-4 rounded-xl font-bold text-base cursor-pointer"
+                className="flex-1 py-4 rounded-xl font-bold text-base cursor-pointer outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
                 style={{
                   background: 'var(--color-accent)',
                   color: 'var(--color-background)',
@@ -275,7 +283,7 @@ export function ResultScreen({
                 whileHover={{ scale: 1.03, transition: { duration: 0.15 } }}
                 whileTap={{ scale: 0.97 }}
                 onClick={onChangeMode}
-                className="flex-1 py-4 rounded-xl font-bold text-base border-2 cursor-pointer transition-colors duration-200"
+                className="flex-1 py-4 rounded-xl font-bold text-base border-2 cursor-pointer transition-[border-color,color,background-color] duration-200 outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
                 style={{
                   borderColor: 'var(--color-border)',
                   color: 'var(--color-foreground)',
@@ -304,7 +312,7 @@ export function ResultScreen({
             score={score}
             mode={mode}
             correctCount={correctCount}
-            totalAnswered={totalAnswered}
+            totalAnswered={mode === 'best-of-100' ? totalQuestions : totalAnswered}
             avgTimePerQuestion={avgSecondsPerQuestion}
             onSuccess={(entry) => {
               setSubmittedEntry(entry);

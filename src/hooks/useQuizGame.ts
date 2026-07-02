@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { QuizQuestion, GameMode, GamePhase, AnswerState } from '@/types/quiz';
+import type { QuizQuestion, GameMode, GamePhase, AnswerState, QuestionDifficulty } from '@/types/quiz';
 import { QUESTIONS_BY_CATEGORY, type CategoryKey, getAllQuestions } from '@/data/quiz';
 
 const TOTAL_LIVES = 3;
@@ -38,6 +38,8 @@ export function useQuizGame() {
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [totalTimeSpentMs, setTotalTimeSpentMs] = useState(0);
+  const [activeCategories, setActiveCategories] = useState<CategoryKey[]>([]);
+  const [activeDifficulties, setActiveDifficulties] = useState<QuestionDifficulty[]>([]);
 
   // Refs for use inside async callbacks (avoid stale closures)
   const modeRef = useRef<GameMode | null>(null);
@@ -48,6 +50,8 @@ export function useQuizGame() {
   const pendingAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const questionStartTimeRef = useRef<number>(0);
   const totalTimeSpentMsRef = useRef(0);
+  const activeCategoriesRef = useRef<CategoryKey[]>([]);
+  const activeDifficultiesRef = useRef<QuestionDifficulty[]>([]);
 
   const clearPendingAdvance = useCallback(() => {
     if (pendingAdvanceRef.current) {
@@ -55,6 +59,11 @@ export function useQuizGame() {
       pendingAdvanceRef.current = null;
     }
   }, []);
+
+  const forfeitGame = useCallback(() => {
+    clearPendingAdvance();
+    setPhase('result');
+  }, [clearPendingAdvance]);
 
   const advanceToNext = useCallback(() => {
     const nextIdx = currentIndexRef.current + 1;
@@ -163,14 +172,32 @@ export function useQuizGame() {
   );
 
   const startGame = useCallback(
-    (selectedMode: GameMode, category?: CategoryKey) => {
+    (selectedMode: GameMode, categories: CategoryKey[], difficulties: QuestionDifficulty[]) => {
       clearPendingAdvance();
 
-      const questionsToUse = category
-        ? QUESTIONS_BY_CATEGORY[category]
-        : getAllQuestions();
+      activeCategoriesRef.current = categories;
+      activeDifficultiesRef.current = difficulties;
+      setActiveCategories(categories);
+      setActiveDifficulties(difficulties);
 
-      const shuffled = shuffle(questionsToUse as QuizQuestion[]);
+      let questionsToUse: QuizQuestion[] = [];
+      if (categories.length > 0) {
+        categories.forEach((cat) => {
+          questionsToUse.push(...(QUESTIONS_BY_CATEGORY[cat] as QuizQuestion[]));
+        });
+      } else {
+        questionsToUse = getAllQuestions() as QuizQuestion[];
+      }
+
+      if (difficulties.length > 0) {
+        questionsToUse = questionsToUse.filter((q) => difficulties.includes(q.difficulty));
+      }
+
+      if (questionsToUse.length === 0) {
+        questionsToUse = getAllQuestions() as QuizQuestion[];
+      }
+
+      const shuffled = shuffle(questionsToUse);
       const finalQuestions = selectedMode === 'best-of-100' ? shuffled.slice(0, 100) : shuffled;
 
       modeRef.current = selectedMode;
@@ -204,6 +231,8 @@ export function useQuizGame() {
     questionsRef.current = [];
     currentIndexRef.current = 0;
     isProcessingRef.current = false;
+    activeCategoriesRef.current = [];
+    activeDifficultiesRef.current = [];
 
     setPhase('select');
     setMode(null);
@@ -219,6 +248,8 @@ export function useQuizGame() {
     setTotalTimeSpentMs(0);
     totalTimeSpentMsRef.current = 0;
     questionStartTimeRef.current = 0;
+    setActiveCategories([]);
+    setActiveDifficulties([]);
   }, [clearPendingAdvance]);
 
   // Cleanup on unmount
@@ -238,6 +269,7 @@ export function useQuizGame() {
     totalSeconds: TIMER_SECONDS,
     totalAnswered,
     correctCount,
+    totalQuestions: questions.length,
     avgSecondsPerQuestion:
       totalAnswered > 0
         ? Math.round((totalTimeSpentMs / totalAnswered / 1000) * 10) / 10
@@ -245,7 +277,8 @@ export function useQuizGame() {
     startGame,
     handleAnswer,
     resetGame,
-    playAgain: () => mode && startGame(mode),
+    forfeitGame,
+    playAgain: () => mode && startGame(mode, activeCategoriesRef.current, activeDifficultiesRef.current),
     availableCategories: Object.keys(QUESTIONS_BY_CATEGORY) as CategoryKey[],
   };
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import type { QuizQuestion, GameMode, AnswerState } from '@/types/quiz';
 import { QuestionCard } from './QuestionCard';
@@ -16,6 +17,7 @@ interface Props {
   timeLeft: number;
   totalSeconds: number;
   onAnswer: (index: number) => void;
+  onForfeit?: () => void;
 }
 
 export function QuizGame({
@@ -30,7 +32,9 @@ export function QuizGame({
   timeLeft,
   totalSeconds,
   onAnswer,
+  onForfeit,
 }: Props) {
+  const [confirmForfeit, setConfirmForfeit] = useState(false);
   const timerPercent = Math.max(0, (timeLeft / totalSeconds) * 100);
   const isUrgent = timeLeft <= 5;
   const isWarning = timeLeft <= 10 && timeLeft > 5;
@@ -42,7 +46,7 @@ export function QuizGame({
       : 'var(--color-accent)';
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-24 pb-16 px-4">
+    <div className="min-h-screen flex flex-col items-center pt-30 pb-16 px-4">
       {/* Header bar */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}
@@ -92,10 +96,15 @@ export function QuizGame({
 
           {/* Lives / Mode */}
           {mode === 'lives' ? (
-            <div className="flex items-center gap-1.5">
+            <div
+              className="flex items-center gap-1.5"
+              role="img"
+              aria-label={`${lives} of ${maxLives} lives remaining`}
+            >
               {Array.from({ length: maxLives }).map((_, i) => (
                 <motion.span
                   key={i}
+                  aria-hidden="true"
                   animate={{
                     scale: i < lives ? 1 : 0.7,
                     opacity: i < lives ? 1 : 0.18,
@@ -148,7 +157,73 @@ export function QuizGame({
               }}
             />
           </div>
-          <div className="flex justify-end mt-1">
+          <div className="flex justify-between items-center mt-1.5 min-h-[28px]">
+            {mode === 'best-of-100' && onForfeit ? (
+              <div className="flex items-center min-h-[32px]">
+                <AnimatePresence mode="wait">
+                  {!confirmForfeit ? (
+                    <motion.button
+                      key="forfeit-btn"
+                      type="button"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      onClick={() => setConfirmForfeit(true)}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border cursor-pointer outline-hidden transition-all focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      style={{
+                        color: 'var(--color-muted)',
+                        borderColor: 'var(--color-border)',
+                        background: 'color-mix(in srgb, var(--color-surface) 40%, transparent)',
+                      }}
+                      whileHover={{
+                        color: '#ef4444',
+                        borderColor: 'rgba(239, 68, 68, 0.3)',
+                        background: 'rgba(239, 68, 68, 0.08)',
+                        y: -0.5,
+                      }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a1.5 1.5 0 001.205-1.46V5.334a1.5 1.5 0 00-1.748-1.479l-2.77.693a9 9 0 01-6.208-.682l-.108-.054a9 9 0 00-6.086-.71L3 4.5m0 10.5V4.5" />
+                      </svg>
+                      Forfeit Run
+                    </motion.button>
+                  ) : (
+                    <motion.div
+                      key="confirm-box"
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -8 }}
+                      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      onMouseLeave={() => setConfirmForfeit(false)}
+                      className="flex items-center gap-2"
+                    >
+                      <span className="text-xs font-semibold text-red-500 mr-1">Forfeit round?</span>
+                      <button
+                        type="button"
+                        onClick={onForfeit}
+                        className="text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer transition-[background-color,transform] duration-150 text-white bg-red-500 hover:bg-red-650 shadow-xs hover:scale-[1.02] active:scale-[0.98] outline-hidden focus-visible:ring-2 focus-visible:ring-red-450 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      >
+                        Yes, forfeit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmForfeit(false)}
+                        className="text-xs font-semibold px-2.5 py-1.5 rounded-lg cursor-pointer transition-[background-color,transform] duration-150 border hover:bg-slate-105 dark:hover:bg-slate-800 text-foreground hover:scale-[1.02] active:scale-[0.98] outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        style={{
+                          borderColor: 'var(--color-border)',
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div />
+            )}
             <span
               className={`text-xs font-mono font-bold tabular-nums transition-colors duration-300 ${isUrgent ? 'animate-pulse' : ''
                 }`}

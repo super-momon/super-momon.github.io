@@ -21,7 +21,7 @@ const DIFFICULTY: Record<string, { label: string; color: string; bg: string; bor
 
 function CheckIcon() {
   return (
-    <svg className="w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none">
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -29,7 +29,7 @@ function CheckIcon() {
 
 function XIcon() {
   return (
-    <svg className="w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none">
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
@@ -108,7 +108,7 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
       </div>
 
       {/* Question text */}
-      <p className="text-xl md:text-2xl font-semibold leading-snug mb-8 text-foreground">
+      <p className="text-xl md:text-2xl font-semibold leading-snug mb-8 text-foreground text-pretty">
         {question.question}
       </p>
 
@@ -131,7 +131,7 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
               whileTap={!isAnswered ? { scale: 0.98 } : undefined}
               disabled={isAnswered}
               onClick={() => onAnswer(index)}
-              className="flex items-center gap-4 w-full p-4 rounded-xl border-2 text-left font-medium outline-none"
+              className="flex items-center gap-4 w-full p-4 rounded-xl border-2 text-left font-medium outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
               style={{
                 borderColor: styles.border,
                 background: styles.bg,

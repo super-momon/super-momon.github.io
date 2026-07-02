@@ -42,7 +42,7 @@ export function LeaderboardModal({ open, onClose, initialMode = 'survival', high
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
             onClick={onClose}
-            aria-hidden
+            aria-hidden="true"
             style={{
               position: 'fixed',
               inset: 0,

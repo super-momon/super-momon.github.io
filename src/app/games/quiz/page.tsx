@@ -15,7 +15,7 @@ export default function QuizPage() {
     <div className="relative">
       {/* Ambient background — fixed so it persists across all quiz screens */}
       <div
-        aria-hidden
+        aria-hidden="true"
         style={{
           position: 'fixed',
           inset: 0,
@@ -93,6 +93,7 @@ export default function QuizPage() {
             timeLeft={game.timeLeft}
             totalSeconds={game.totalSeconds}
             onAnswer={game.handleAnswer}
+            onForfeit={game.forfeitGame}
           />
         )}
 
@@ -101,6 +102,7 @@ export default function QuizPage() {
             score={game.score}
             totalAnswered={game.totalAnswered}
             correctCount={game.correctCount}
+            totalQuestions={game.totalQuestions}
             avgSecondsPerQuestion={game.avgSecondsPerQuestion}
             mode={game.mode!}
             onPlayAgain={game.playAgain}

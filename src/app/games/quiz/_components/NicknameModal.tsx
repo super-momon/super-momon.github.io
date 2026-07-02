@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { submitScore } from '@/lib/leaderboard';
 import type { GameMode } from '@/types/quiz';
@@ -29,6 +29,15 @@ export function NicknameModal({
   const [focused, setFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handle = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handle);
+    return () => window.removeEventListener('keydown', handle);
+  }, [onClose]);
 
   const trimmed = nickname.trim();
   const isValid = trimmed.length >= 1 && trimmed.length <= 20;
@@ -96,18 +105,22 @@ export function NicknameModal({
           <div className="relative">
             <input
               type="text"
-              placeholder="Enter a nickname"
+              name="nickname"
+              id="nickname-input"
+              aria-label="Enter your nickname for the leaderboard"
+              placeholder="Enter nickname (e.g. coder123)…"
               value={nickname}
               maxLength={20}
               autoFocus
               autoComplete="off"
+              spellCheck={false}
               onChange={(e) => {
                 setNickname(e.target.value);
                 setError(null);
               }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              className="w-full px-4 py-3 rounded-xl text-sm font-medium outline-none transition-colors duration-150"
+              className="w-full px-4 py-3 rounded-xl text-sm font-medium outline-hidden transition-colors duration-150"
               style={{
                 background: 'color-mix(in srgb, var(--color-border) 40%, transparent)',
                 border: `1px solid ${focused ? 'var(--color-accent)' : 'var(--color-border)'}`,
@@ -138,7 +151,7 @@ export function NicknameModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="flex-1 py-3 rounded-xl text-sm font-semibold border transition-colors duration-150 cursor-pointer"
+              className="flex-1 py-3 rounded-xl text-sm font-semibold border transition-colors duration-150 cursor-pointer outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
               style={{
                 borderColor: 'var(--color-border)',
                 color: 'var(--color-muted)',
@@ -150,7 +163,7 @@ export function NicknameModal({
             <button
               type="submit"
               disabled={!isValid || loading}
-              className="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-150"
+              className="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-150 outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
               style={{
                 background: isValid && !loading
                   ? 'var(--color-accent)'

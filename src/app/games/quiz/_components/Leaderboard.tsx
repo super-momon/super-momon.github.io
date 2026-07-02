@@ -109,7 +109,8 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
             onClick={() => refreshMode(mode)}
             disabled={loading || refreshing}
             title="Refresh leaderboard"
-            className="flex items-center justify-center w-6 h-6 rounded-lg transition-opacity duration-200 cursor-pointer disabled:opacity-40"
+            aria-label="Refresh leaderboard"
+            className="flex items-center justify-center w-6 h-6 rounded-lg transition-opacity duration-200 cursor-pointer disabled:opacity-40 outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             style={{ color: 'var(--color-muted)' }}
           >
             <svg
@@ -122,6 +123,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
+              aria-hidden="true"
               style={{ transition: 'transform 0.4s', transform: refreshing ? 'rotate(360deg)' : 'none' }}
             >
               <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
@@ -136,7 +138,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
             <button
               onClick={onClose}
               aria-label="Close leaderboard"
-              className="flex items-center justify-center w-6 h-6 rounded-lg transition-all duration-150 cursor-pointer"
+              className="flex items-center justify-center w-6 h-6 rounded-lg transition-[background-color,color,box-shadow] duration-150 cursor-pointer outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               style={{
                 background: 'color-mix(in srgb, var(--color-border) 70%, transparent)',
                 border: '1px solid var(--color-border)',
@@ -152,7 +154,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
                 (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-muted)';
               }}
             >
-              <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden>
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                 <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
             </button>
@@ -169,7 +171,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
           <button
             key={m}
             onClick={() => handleModeChange(m)}
-            className="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer"
+            className="flex-1 py-1.5 rounded-lg text-xs font-bold transition-[background-color,color,box-shadow] duration-200 cursor-pointer outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
             style={{
               background: mode === m ? 'var(--color-surface)' : 'transparent',
               color: mode === m ? 'var(--color-foreground)' : 'var(--color-muted)',
@@ -199,137 +201,132 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
           </p>
         ) : (
           <div className="flex flex-col gap-1">
-            {/* Column headers */}
-            <div
-              className="grid text-[10px] uppercase tracking-widest font-semibold pb-2 px-3"
-              style={{
-                color: 'var(--color-muted)',
-                gridTemplateColumns,
-              }}
-            >
-              <span>#</span>
-              <span>Player</span>
-              <span className="text-right">Score</span>
-              {showAccuracy && <span className="text-right">Acc</span>}
-              <span className="text-right">Avg</span>
-            </div>
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr
+                className="text-[10px] uppercase tracking-widest font-semibold border-b border-border/30"
+                style={{ color: 'var(--color-muted)' }}
+              >
+                <th className="pb-2 px-3 text-left font-semibold w-8">#</th>
+                <th className="pb-2 px-3 text-left font-semibold">Player</th>
+                <th className="pb-2 px-3 text-right font-semibold w-14">Score</th>
+                {showAccuracy && <th className="pb-2 px-3 text-right font-semibold w-14">Acc</th>}
+                <th className="pb-2 px-3 text-right font-semibold w-14">Avg</th>
+              </tr>
+            </thead>
+            <tbody className="before:block before:h-1.5">
+              {Array.from({ length: ROW_COUNT }).map((_, idx) => {
+                const entry = entries[idx] ?? null;
 
-            {Array.from({ length: ROW_COUNT }).map((_, idx) => {
-              const entry = entries[idx] ?? null;
-
-              if (!entry) {
-                return (
-                  <motion.div
-                    key={`empty-${idx}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, delay: idx * 0.03 }}
-                    className="flex items-center px-3 rounded-xl"
-                    style={{
-                      height: '2.625rem',
-                      background: idx % 2 !== 0
-                        ? 'color-mix(in srgb, var(--color-border) 10%, transparent)'
-                        : 'transparent',
-                    }}
-                  >
-                    <span
-                      className="text-xs tabular-nums shrink-0"
+                if (!entry) {
+                  return (
+                    <motion.tr
+                      key={`empty-${idx}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.25, delay: idx * 0.03 }}
                       style={{
-                        width: '2rem',
-                        color: 'color-mix(in srgb, var(--color-muted) 22%, transparent)',
+                        background: idx % 2 !== 0
+                          ? 'color-mix(in srgb, var(--color-border) 10%, transparent)'
+                          : 'transparent',
                       }}
+                      className="h-10 border-b border-border/10 last:border-b-0"
                     >
-                      {idx + 1}
-                    </span>
-                    <div
-                      style={{
-                        flex: 1,
-                        height: '1px',
-                        background:
-                          'linear-gradient(90deg, color-mix(in srgb, var(--color-border) 55%, transparent) 0%, transparent 80%)',
-                        borderRadius: '1px',
-                      }}
-                    />
-                  </motion.div>
-                );
-              }
-
-              const isHighlighted = entry.id === highlightId;
-              const accuracy =
-                entry.total_answered > 0
-                  ? Math.round((entry.correct_count / entry.total_answered) * 100)
-                  : 0;
-
-              return (
-                <motion.div
-                  key={entry.id}
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: idx * 0.04 }}
-                  className="grid items-center px-3 py-2.5 rounded-xl text-sm"
-                  style={{
-                    gridTemplateColumns,
-                    background: isHighlighted
-                      ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)'
-                      : idx % 2 !== 0
-                        ? 'color-mix(in srgb, var(--color-border) 25%, transparent)'
-                        : 'transparent',
-                    border: isHighlighted
-                      ? '1px solid color-mix(in srgb, var(--color-accent) 30%, transparent)'
-                      : '1px solid transparent',
-                  }}
-                >
-                  {/* Rank */}
-                  <span className="leading-none">
-                    {idx < 3 ? (
-                      <span className="text-base">{MEDAL[idx]}</span>
-                    ) : (
-                      <span className="text-xs tabular-nums" style={{ color: 'var(--color-muted)' }}>
+                      <td className="px-3 text-xs tabular-nums w-8" style={{ color: 'color-mix(in srgb, var(--color-muted) 22%, transparent)' }}>
                         {idx + 1}
-                      </span>
-                    )}
-                  </span>
+                      </td>
+                      <td className="px-3" colSpan={showAccuracy ? 4 : 3}>
+                        <div
+                          style={{
+                            height: '1px',
+                            background:
+                              'linear-gradient(90deg, color-mix(in srgb, var(--color-border) 55%, transparent) 0%, transparent 80%)',
+                            borderRadius: '1px',
+                            width: '50%',
+                          }}
+                        />
+                      </td>
+                    </motion.tr>
+                  );
+                }
 
-                  {/* Nickname */}
-                  <span
-                    className="font-semibold truncate pr-2"
+                const isHighlighted = entry.id === highlightId;
+                const accuracy =
+                  mode === 'best-of-100'
+                    ? Math.round(
+                        (entry.correct_count /
+                          (entry.total_answered < 100 && entry.correct_count < entry.total_answered
+                            ? 100
+                            : entry.total_answered)) *
+                          100
+                      )
+                    : entry.total_answered > 0
+                      ? Math.round((entry.correct_count / entry.total_answered) * 100)
+                      : 0;
+
+                return (
+                  <motion.tr
+                    key={entry.id}
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, delay: idx * 0.04 }}
+                    className="text-sm h-10 border-b border-border/10 last:border-b-0 transition-colors duration-150 hover:bg-border/20"
                     style={{
-                      color: isHighlighted ? 'var(--color-accent)' : 'var(--color-foreground)',
+                      background: isHighlighted
+                        ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)'
+                        : idx % 2 !== 0
+                          ? 'color-mix(in srgb, var(--color-border) 25%, transparent)'
+                          : 'transparent',
+                      outline: isHighlighted
+                        ? '1px solid color-mix(in srgb, var(--color-accent) 30%, transparent)'
+                        : 'none',
                     }}
-                    title={entry.nickname}
                   >
-                    {isHighlighted ? `${entry.nickname} ★` : entry.nickname}
-                  </span>
+                    {/* Rank */}
+                    <td className="px-3 font-medium w-8">
+                      {idx < 3 ? (
+                        <span role="img" aria-label={`Rank ${idx + 1}`} className="text-base">{MEDAL[idx]}</span>
+                      ) : (
+                        <span className="text-xs tabular-nums text-muted">{idx + 1}</span>
+                      )}
+                    </td>
 
-                  {/* Score */}
-                  <span
-                    className="text-right font-bold tabular-nums"
-                    style={{ color: 'var(--color-accent)' }}
-                  >
-                    {entry.score}
-                  </span>
-
-                  {showAccuracy && (
-                    <span
-                      className="text-right tabular-nums text-xs"
+                    {/* Nickname */}
+                    <td
+                      className="px-3 font-semibold truncate max-w-[140px] sm:max-w-none"
                       style={{
-                        color: accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444',
+                        color: isHighlighted ? 'var(--color-accent)' : 'var(--color-foreground)',
                       }}
+                      title={entry.nickname}
                     >
-                      {accuracy}%
-                    </span>
-                  )}
+                      {isHighlighted ? `${entry.nickname} ★` : entry.nickname}
+                    </td>
 
-                  {/* Avg time */}
-                  <span
-                    className="text-right tabular-nums text-xs"
-                    style={{ color: 'var(--color-muted)' }}
-                  >
-                    {Number(entry.avg_time_per_question).toFixed(1)}s
-                  </span>
-                </motion.div>
-              );
-            })}
+                    {/* Score */}
+                    <td className="px-3 text-right font-bold tabular-nums text-accent w-14">
+                      {entry.score}
+                    </td>
+
+                    {showAccuracy && (
+                      <td
+                        className="px-3 text-right tabular-nums text-xs font-semibold w-14"
+                        style={{
+                          color: accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444',
+                        }}
+                      >
+                        {accuracy}%
+                      </td>
+                    )}
+
+                    {/* Avg time */}
+                    <td className="px-3 text-right tabular-nums text-xs text-muted w-14">
+                      {Number(entry.avg_time_per_question).toFixed(1)}s
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </tbody>
+          </table>
           </div>
         )}
       </div>
