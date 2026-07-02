@@ -4,7 +4,8 @@ import { FadeIn } from "@/components/FadeIn";
 import { trackEvent } from "@/lib/analytics";
 import { EMAIL, GITHUB_URL, GITHUB_USERNAME, LINKEDIN_URL, LINKEDIN_USERNAME } from "@/lib/constants";
 import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faArrowRight, faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
@@ -38,18 +39,7 @@ export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  const skipParallax = isMobile || !!prefersReducedMotion;
+  const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,

@@ -2,6 +2,7 @@
 
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState, useEffect } from "react";
+import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandSparkles } from "@fortawesome/free-solid-svg-icons";
 
@@ -64,7 +65,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
     >
       {/* Card body */}
       <div
-        className="relative h-full flex flex-col p-7 rounded-2xl border bg-surface/60 backdrop-blur-sm overflow-hidden"
+        className="relative h-full flex flex-col p-7 rounded-2xl border bg-surface/90 md:bg-surface/60 md:backdrop-blur-sm overflow-hidden"
         style={{
           borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
           transition: "border-color 0.3s ease",
@@ -182,6 +183,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -199,12 +201,12 @@ export default function Projects() {
     >
       {/* Ambient orbs */}
       <motion.div
-        style={{ y: orb1Y }}
-        className="absolute top-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb1Y }}
+        className="absolute top-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
       <motion.div
-        style={{ y: orb2Y }}
-        className="absolute bottom-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb2Y }}
+        className="absolute bottom-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
 
       {/* Grain texture */}

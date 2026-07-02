@@ -53,7 +53,7 @@ export default function Hero() {
           <FadeIn delay={0.1}>
             <m.div
               className="inline-flex items-center gap-3 mb-6 px-4 py-2 rounded-full 
-                         bg-surface/40 backdrop-blur-md border border-white/10 shadow-xl shadow-black/5"
+                         bg-surface/90 md:bg-surface/40 md:backdrop-blur-md border border-white/10 shadow-xl shadow-black/5"
             >
               <m.span
                 className="w-2 h-2 rounded-full bg-highlight-01 shadow-[0_0_10px_rgba(110,192,56,0.8)]"
@@ -170,7 +170,7 @@ export default function Hero() {
               <a
                 href="#contact"
                 className="group px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm
-                           transition-all duration-300 ease-out backdrop-blur-md bg-surface/30
+                           transition-all duration-300 ease-out bg-surface/90 md:bg-surface/30 md:backdrop-blur-md
                            hover:border-accent hover:bg-surface/60 hover:shadow-lg hover:shadow-accent/5
                            active:scale-95"
               >
@@ -182,7 +182,7 @@ export default function Hero() {
                 download="Mark_Raymond_Ayade_Resume.pdf"
                 onClick={() => trackEvent("resume_download", { method: "hero_button" })}
                 className="group px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm
-                           transition-all duration-300 ease-out backdrop-blur-md bg-surface/30
+                           transition-all duration-300 ease-out bg-surface/90 md:bg-surface/30 md:backdrop-blur-md
                            hover:border-accent hover:bg-surface/60 hover:shadow-lg hover:shadow-accent/5
                            active:scale-95"
               >

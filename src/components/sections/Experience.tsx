@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
+import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndustry } from "@fortawesome/free-solid-svg-icons";
 
@@ -56,6 +57,7 @@ export default function Experience() {
   const [activeIndex, setActiveIndex] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -75,12 +77,12 @@ export default function Experience() {
     >
       {/* Ambient orbs */}
       <motion.div
-        style={{ y: orb1Y }}
-        className="absolute top-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb1Y }}
+        className="absolute top-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
       <motion.div
-        style={{ y: orb2Y }}
-        className="absolute bottom-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb2Y }}
+        className="absolute bottom-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
 
       {/* Grain texture */}
@@ -220,7 +222,7 @@ export default function Experience() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                className="p-6 rounded-2xl border border-accent/30 backdrop-blur-sm"
+                className="p-6 rounded-2xl border border-accent/30 bg-surface/90 md:bg-surface/30 md:backdrop-blur-sm"
               >
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">

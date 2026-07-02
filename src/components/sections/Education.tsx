@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "motion/react";
 import { useState, useRef } from "react";
+import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap, faArrowUpRightFromSquare, faXmark, faAward } from "@fortawesome/free-solid-svg-icons";
 import { faAws, faLinkedin, faFreeCodeCamp } from "@fortawesome/free-brands-svg-icons";
@@ -81,7 +82,7 @@ function EducationCard({
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={onClick}
-      className="group relative flex flex-col min-h-56 p-7 rounded-2xl border bg-surface backdrop-blur-sm cursor-pointer"
+      className="group relative flex flex-col min-h-56 p-7 rounded-2xl border bg-surface/90 md:bg-surface/60 md:backdrop-blur-sm cursor-pointer"
       style={{
         borderColor: isHovered ? "var(--color-muted)" : "var(--color-border)",
         transition: "border-color 0.3s ease",
@@ -166,6 +167,7 @@ export default function Education() {
   const [selectedItem, setSelectedItem] = useState<EducationItem | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -183,12 +185,12 @@ export default function Education() {
     >
       {/* Ambient orbs */}
       <motion.div
-        style={{ y: orb1Y }}
-        className="absolute top-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb1Y }}
+        className="absolute top-1/4 right-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
       <motion.div
-        style={{ y: orb2Y }}
-        className="absolute bottom-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb2Y }}
+        className="absolute bottom-1/4 left-[5%] w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
 
       {/* Grain texture */}

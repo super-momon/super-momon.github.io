@@ -2,6 +2,7 @@
 
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
+import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLayerGroup,
@@ -24,7 +25,7 @@ function InfoCard({ icon, label, value }: InfoCardProps) {
   return (
     <motion.div
       whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 22 } }}
-      className="group flex items-center gap-4 p-3 md:p-4 rounded-2xl bg-surface/30 hover:bg-surface/50 backdrop-blur-md border border-border/40 transition-all duration-300"
+      className="group flex items-center gap-4 p-3 md:p-4 rounded-2xl bg-surface/90 hover:bg-surface/95 md:bg-surface/30 md:hover:bg-surface/50 md:backdrop-blur-md border border-border/40 transition-all duration-300"
     >
       <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-xl bg-background/50 shadow-xs border border-border/50 shrink-0 group-hover:bg-background/80 transition-colors duration-300">
         <FontAwesomeIcon icon={icon} className="text-foreground/70 text-lg md:text-xl group-hover:text-foreground transition-colors duration-300" />
@@ -51,7 +52,7 @@ function ExpertiseCard({ icon, title, description, index }: ExpertiseCardProps) 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative p-5 md:p-7 rounded-2xl bg-surface/30 hover:bg-surface/50 backdrop-blur-md border border-border/40 transition-all duration-300 flex flex-col h-full"
+      className="group relative p-5 md:p-7 rounded-2xl bg-surface/90 hover:bg-surface/95 md:bg-surface/30 md:hover:bg-surface/50 md:backdrop-blur-md border border-border/40 transition-all duration-300 flex flex-col h-full"
     >
       <div className="relative z-10 flex-1">
         <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-xl bg-background/50 shadow-xs border border-border/50 mb-6 group-hover:bg-background/80 group-hover:scale-105 transition-all duration-300">
@@ -72,6 +73,7 @@ function ExpertiseCard({ icon, title, description, index }: ExpertiseCardProps) 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -106,12 +108,12 @@ export default function About() {
       className="relative py-24 md:py-32 px-6 bg-background overflow-hidden"
     >
       <motion.div
-        style={{ y: orb1Y }}
-        className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-foreground/5 blur-3xl pointer-events-none opacity-40"
+        style={skipParallax ? undefined : { y: orb1Y }}
+        className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-foreground/5 blur-3xl pointer-events-none opacity-40 will-change-transform"
       />
       <motion.div
-        style={{ y: orb2Y }}
-        className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-foreground/5 blur-3xl pointer-events-none opacity-30"
+        style={skipParallax ? undefined : { y: orb2Y }}
+        className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-foreground/5 blur-3xl pointer-events-none opacity-30 will-change-transform"
       />
 
       <div
@@ -185,7 +187,7 @@ export default function About() {
                   <motion.div
                     key={stat.label}
                     whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 22 } }}
-                    className="p-5 rounded-2xl bg-surface/30 backdrop-blur-md border border-border/40 text-center will-change-transform flex flex-col justify-center min-h-[100px]"
+                    className="p-5 rounded-2xl bg-surface/90 md:bg-surface/30 md:backdrop-blur-md border border-border/40 text-center will-change-transform flex flex-col justify-center min-h-[100px]"
                   >
                     <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
                     <div className="text-[10px] text-muted font-semibold uppercase tracking-widest">{stat.label}</div>
@@ -243,7 +245,7 @@ export default function About() {
                 href="/workplace-insights.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative flex flex-col sm:flex-row items-center gap-5 p-5 rounded-2xl bg-surface/40 hover:bg-surface/60 backdrop-blur-md border border-border/40 transition-all duration-300 overflow-hidden"
+                className="relative flex flex-col sm:flex-row items-center gap-5 p-5 rounded-2xl bg-surface/90 hover:bg-surface/95 md:bg-surface/40 md:hover:bg-surface/60 md:backdrop-blur-md border border-border/40 transition-all duration-300 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -213,20 +213,27 @@ export default function Navbar() {
   const gameTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setScrolled(currentScrollY > 20);
-      if (currentScrollY < 100) {
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current) {
-        setIsVisible(false);
-        setIsMenuOpen(false);
-        setPortfolioOpen(false);
-        setGameOpen(false);
-      } else {
-        setIsVisible(true);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          setScrolled(currentScrollY > 20);
+          if (currentScrollY < 100) {
+            setIsVisible(true);
+          } else if (currentScrollY > lastScrollY.current) {
+            setIsVisible(false);
+            setIsMenuOpen(false);
+            setPortfolioOpen(false);
+            setGameOpen(false);
+          } else {
+            setIsVisible(true);
+          }
+          lastScrollY.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
       }
-      lastScrollY.current = currentScrollY;
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -239,7 +246,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${isVisible ? "translate-y-0" : "-translate-y-full"
         } ${scrolled
-          ? "bg-[var(--color-background)]/80 backdrop-blur-2xl border-b border-[var(--color-border)]/50 shadow-lg shadow-black/5"
+          ? "bg-[var(--color-background)]/95 md:bg-[var(--color-background)]/80 md:backdrop-blur-2xl border-b border-[var(--color-border)]/50 shadow-lg shadow-black/5"
           : "bg-transparent"
         }`}
       style={{ willChange: "transform" }}
@@ -309,7 +316,7 @@ export default function Navbar() {
             onClick={() => setIsMenuOpen((prev) => !prev)}
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
-            className="md:hidden w-10 h-10 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/50 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 backdrop-blur-sm transition-all duration-300 will-change-transform"
+            className="md:hidden w-10 h-10 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/90 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 transition-all duration-300"
             style={{ transitionProperty: "color, background-color, border-color" }}
           >
             <div className="relative w-[18px] h-[18px]">
@@ -330,7 +337,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div
-          className="md:hidden bg-[var(--color-background)]/95 backdrop-blur-2xl border-b border-[var(--color-border)]/50 px-6 pb-4 overflow-hidden"
+          className="md:hidden bg-[var(--color-background)] border-b border-[var(--color-border)]/50 px-6 pb-4 overflow-hidden"
           style={{ animation: "mobileMenuSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)]/30 to-transparent pointer-events-none" />

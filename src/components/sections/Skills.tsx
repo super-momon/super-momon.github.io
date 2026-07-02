@@ -2,6 +2,7 @@
 
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
+import { useSkipParallax } from "@/hooks/useSkipParallax";
 
 const skills = [
 
@@ -124,7 +125,7 @@ function SkillPill({ skill, index }: { skill: typeof skills[0]; index: number })
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl
-                 bg-background/70 backdrop-blur-sm
+                 bg-background/90 md:bg-background/70 md:backdrop-blur-sm
                  border cursor-default select-none will-change-transform"
       style={{
         borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
@@ -161,6 +162,7 @@ function SkillPill({ skill, index }: { skill: typeof skills[0]; index: number })
 export default function Skills() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -178,12 +180,12 @@ export default function Skills() {
     >
       {/* Ambient background orbs */}
       <motion.div
-        style={{ y: orb1Y }}
-        className="absolute top-[5%] left-[8%] w-72 h-72 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb1Y }}
+        className="absolute top-[5%] left-[8%] w-72 h-72 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
       <motion.div
-        style={{ y: orb2Y }}
-        className="absolute bottom-[5%] right-[8%] w-72 h-72 rounded-full bg-accent/6 blur-3xl pointer-events-none"
+        style={skipParallax ? undefined : { y: orb2Y }}
+        className="absolute bottom-[5%] right-[8%] w-72 h-72 rounded-full bg-accent/6 blur-3xl pointer-events-none will-change-transform"
       />
 
       {/* Grain texture */}
