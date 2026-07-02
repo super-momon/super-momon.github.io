@@ -203,7 +203,7 @@ export default function About() {
             className="lg:col-span-7 xl:col-span-8 space-y-12"
           >
             <div className="space-y-6">
-              <p className="text-muted/90 leading-relaxed text-sm font-light">
+              <p className="text-muted/90 leading-relaxed text-base font-light">
                 Full Stack Software Developer with{" "}
                 <span className="text-foreground font-semibold">4+ years</span> of experience designing,
                 developing, and maintaining scalable web applications, internal platforms,
@@ -213,7 +213,7 @@ export default function About() {
                 </span>{" "}
                 and <span className="text-foreground font-medium">AWS cloud services</span>.
               </p>
-              <p className="text-muted/90 leading-relaxed text-sm font-light">
+              <p className="text-muted/90 leading-relaxed text-base font-light">
                 Specialized in backend development, third-party integrations, event-driven architectures,
                 and performance optimization. Committed to software engineering best practices,
                 system reliability, and delivering maintainable, production-ready code.

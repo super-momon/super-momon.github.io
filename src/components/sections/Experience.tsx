@@ -211,8 +211,8 @@ export default function Experience() {
             ))}
           </div>
 
-          {/* Detail panel — fixed height prevents layout shift on tab switch */}
-          <div className="relative h-110 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+          {/* Detail panel — dynamic height prevents content overflow and nested scrollbar */}
+          <div className="relative min-h-[320px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}
