@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "motion/react";
 import { useState, useRef } from "react";
@@ -83,7 +83,7 @@ function EducationCard({
       onClick={onClick}
       className="group relative flex flex-col min-h-56 p-7 rounded-2xl border bg-surface backdrop-blur-sm cursor-pointer"
       style={{
-        borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
+        borderColor: isHovered ? "var(--color-muted)" : "var(--color-border)",
         transition: "border-color 0.3s ease",
       }}
     >
@@ -92,7 +92,7 @@ function EducationCard({
         initial={false}
         animate={{ opacity: isHovered ? 1 : 0 }}
         transition={{ duration: 0.25 }}
-        className="absolute inset-0 rounded-2xl bg-accent/5 pointer-events-none"
+        className="absolute inset-0 rounded-2xl bg-foreground/[0.03] pointer-events-none"
       />
 
       {/* Grain texture */}
@@ -107,33 +107,29 @@ function EducationCard({
         {/* Header row */}
         <div className="flex gap-4 mb-5">
           <div className="shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-background/50 border border-border flex items-center justify-center transition-colors duration-300"
+              style={{
+                borderColor: isHovered ? "var(--color-muted)" : "var(--color-border)",
+              }}>
               <FontAwesomeIcon
                 icon={item.icon}
-                className="text-accent text-lg"
+                className="text-foreground text-lg opacity-70 transition-opacity duration-300"
                 style={{
-                  filter: isHovered ? "drop-shadow(0 0 5px var(--color-accent))" : "none",
-                  transition: "filter 0.25s ease",
+                  opacity: isHovered ? 1 : 0.7,
                 }}
               />
             </div>
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-1">
-              <h3
-                className="font-bold text-lg leading-snug"
-                style={{
-                  color: isHovered ? "var(--color-accent)" : "var(--color-foreground)",
-                  transition: "color 0.25s ease",
-                }}
-              >
+              <h3 className="font-bold text-lg leading-snug text-foreground transition-colors duration-250">
                 {item.topic}
               </h3>
               <span className="text-xs text-muted shrink-0 font-mono tracking-tight">
                 {item.period}
               </span>
             </div>
-            <p className="text-accent text-sm font-semibold">{item.institution}</p>
+            <p className="text-foreground/80 text-sm font-medium">{item.institution}</p>
           </div>
         </div>
 
@@ -157,7 +153,7 @@ function EducationCard({
       <motion.div
         animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 4 }}
         transition={{ duration: 0.2 }}
-        className="absolute bottom-5 right-5 text-accent text-xs flex items-center gap-1.5 font-medium"
+        className="absolute bottom-5 right-5 text-foreground/60 text-xs flex items-center gap-1.5 font-medium"
       >
         <span>Details</span>
         <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-[10px]" />
@@ -279,15 +275,15 @@ export default function Education() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.96, opacity: 0, y: 12 }}
               transition={{ type: "spring", stiffness: 320, damping: 28 }}
-              className="bg-surface rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-accent/20"
+              className="bg-surface rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border/60"
               style={{ boxShadow: "0 25px 60px rgba(0,0,0,0.5)" }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-8">
                 {/* Modal header */}
                 <div className="flex gap-5 mb-7">
-                  <div className="w-14 h-14 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
-                    <FontAwesomeIcon icon={selectedItem.icon} className="text-accent text-xl" />
+                  <div className="w-14 h-14 rounded-xl bg-background/50 border border-border flex items-center justify-center shrink-0">
+                    <FontAwesomeIcon icon={selectedItem.icon} className="text-foreground/80 text-xl" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4 mb-2">
@@ -296,13 +292,13 @@ export default function Education() {
                       </h3>
                       <button
                         onClick={() => setSelectedItem(null)}
-                        className="w-9 h-9 rounded-lg hover:bg-accent/10 flex items-center justify-center transition-colors duration-200 shrink-0"
+                        className="w-9 h-9 rounded-lg hover:bg-muted/10 flex items-center justify-center transition-colors duration-200 shrink-0"
                         aria-label="Close"
                       >
                         <FontAwesomeIcon icon={faXmark} className="text-muted text-base" />
                       </button>
                     </div>
-                    <p className="text-accent text-base font-semibold mb-1">
+                    <p className="text-foreground/80 text-base font-medium mb-1">
                       {selectedItem.institution}
                     </p>
                     <p className="text-xs text-muted font-mono tracking-wider">
@@ -317,7 +313,7 @@ export default function Education() {
                 <div className="space-y-7">
                   {/* Overview */}
                   <div>
-                    <h4 className="text-xs font-semibold text-accent mb-3 uppercase tracking-widest">
+                    <h4 className="text-xs font-semibold text-foreground/60 mb-3 uppercase tracking-widest">
                       Overview
                     </h4>
                     <p className="text-base text-foreground leading-relaxed">
@@ -327,14 +323,14 @@ export default function Education() {
 
                   {/* Skills */}
                   <div>
-                    <h4 className="text-xs font-semibold text-accent mb-3 uppercase tracking-widest">
+                    <h4 className="text-xs font-semibold text-foreground/60 mb-3 uppercase tracking-widest">
                       Skills &amp; Technologies
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedItem.skills.map((skill) => (
                         <span
                           key={skill}
-                          className="text-sm text-foreground bg-accent/8 border border-accent/25 rounded-lg px-4 py-2 font-medium"
+                          className="text-sm text-foreground/80 bg-background/50 border border-border/60 rounded-lg px-4 py-2 font-medium"
                         >
                           {skill}
                         </span>
@@ -345,7 +341,7 @@ export default function Education() {
                   {/* Certifications */}
                   {selectedItem.certifications.length > 0 && (
                     <div>
-                      <h4 className="text-xs font-semibold text-accent mb-3 uppercase tracking-widest">
+                      <h4 className="text-xs font-semibold text-foreground/60 mb-3 uppercase tracking-widest">
                         Certifications
                       </h4>
                       <div className="space-y-2.5">
@@ -365,12 +361,12 @@ export default function Education() {
                               href={cert}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-3 p-3.5 rounded-xl bg-accent/5 border border-accent/20 hover:bg-accent/10 hover:border-accent/40 transition-colors duration-200 group/cert"
+                              className="flex items-center gap-3 p-3.5 rounded-xl bg-background/30 border border-border/60 hover:bg-background hover:border-border transition-colors duration-200 group/cert"
                             >
-                              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0">
+                              <div className="w-8 h-8 rounded-lg bg-surface border border-border/60 flex items-center justify-center shrink-0">
                                 <FontAwesomeIcon
                                   icon={faAward}
-                                  className="text-accent text-sm"
+                                  className="text-foreground/70 text-sm"
                                 />
                               </div>
                               <div className="flex-1 min-w-0">
@@ -381,7 +377,7 @@ export default function Education() {
                               </div>
                               <FontAwesomeIcon
                                 icon={faArrowUpRightFromSquare}
-                                className="text-accent text-xs opacity-60 group-hover/cert:opacity-100 transition-opacity shrink-0"
+                                className="text-foreground/40 text-xs opacity-60 group-hover/cert:opacity-100 transition-opacity shrink-0"
                               />
                             </a>
                           );

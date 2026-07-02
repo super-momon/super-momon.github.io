@@ -10,8 +10,14 @@ const experiences = [
     role: "Full Stack Software Developer",
     company: "Talleco.com Inc. | JobTarget PH",
     period: "Feb 2025 — Present",
-    description:
-      "Implemented event-driven backend solutions using AWS services including Lambda, SQS, SNS, and S3 to support scalable and reliable application workflows. Developed and enhanced application features across multiple client-facing and internal services, improving maintainability and operational efficiency. Contributed to modernization initiatives including UI redesigns and usability improvements for multiple client-facing applications. Diagnosed and resolved complex software and data-related issues affecting production workflows and internal applications. Optimized application data flow and database operations using MS SQL Server, PostgreSQL, and MongoDB. Worked across multiple services and applications utilizing different technology stacks and architectures.",
+    description: [
+      "Implemented event-driven backend solutions using AWS services including Lambda, SQS, SNS, and S3 to support scalable and reliable application workflows.",
+      "Developed and enhanced application features across multiple client-facing and internal services, improving maintainability and operational efficiency.",
+      "Contributed to modernization initiatives including UI redesigns and usability improvements for multiple client-facing applications.",
+      "Diagnosed and resolved complex software and data-related issues affecting production workflows and internal applications.",
+      "Optimized application data flow and database operations using MS SQL Server, PostgreSQL, and MongoDB.",
+      "Worked across multiple services and applications utilizing different technology stacks and architectures.",
+    ],
     tags: ["AWS", "Lambda", "SQS", "SNS", "S3", "MS SQL Server", "PostgreSQL", "MongoDB", "Event-Driven Architecture"],
     current: true,
     industry: "Human Capital Management - Recruitment Software",
@@ -20,8 +26,13 @@ const experiences = [
     role: "Software Developer (Mid-Level)",
     company: "Talleco.com Inc. | JobTarget PH",
     period: "Mar 2024 — Jan 2025",
-    description:
-      "Developed and maintained web application features with third-party system integrations. Implemented secure client profile management workflows supporting data retrieval, updates, and access control. Optimized data retrieval and reporting processes for improved performance and accuracy. Configured and maintained data integrations from multiple sources including XML, RSS, and API feeds, while investigating and resolving data issues using SQL and scripting.",
+    description: [
+      "Developed and maintained web application features with third-party system integrations.",
+      "Implemented secure client profile management workflows supporting data retrieval, updates, and access control.",
+      "Optimized data retrieval and reporting processes for improved performance and accuracy.",
+      "Configured and maintained data integrations from multiple sources including XML, RSS, and API feeds.",
+      "Investigated and resolved data issues using SQL and scripting.",
+    ],
     tags: ["Web Development", "API Integration", "SQL", "Data Management", "Security", "XML", "RSS"],
     current: false,
     industry: "Human Capital Management - Recruitment Software",
@@ -30,8 +41,11 @@ const experiences = [
     role: "Software Developer (Junior)",
     company: "Talleco.com Inc. | JobTarget PH",
     period: "Jul 2022 — Feb 2024",
-    description:
-      "Developed and maintained web application features with third-party system integrations into company platforms and internal tools. Configured data integrations from multiple sources and investigated data issues using SQL and scripting for reporting and operational support. Contributed to client profile management workflows and data retrieval processes.",
+    description: [
+      "Developed and maintained web application features with third-party system integrations into company platforms and internal tools.",
+      "Configured data integrations from multiple sources and investigated data issues using SQL and scripting for reporting and operational support.",
+      "Contributed to client profile management workflows and data retrieval processes.",
+    ],
     tags: ["JavaScript", "SQL", "API Integration", "Web Development", "Data Integration"],
     current: false,
     industry: "Human Capital Management - Recruitment Software",
@@ -235,7 +249,14 @@ export default function Experience() {
 
                 <div className="h-px bg-border mb-4" />
 
-                <p className="text-sm leading-relaxed text-muted mb-5">{active.description}</p>
+                <ul className="space-y-2.5 mb-5">
+                  {active.description.map((point, i) => (
+                    <li key={i} className="flex gap-3 text-sm leading-relaxed text-muted">
+                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent/60 shrink-0" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
 
                 <div className="flex flex-wrap gap-1.5">
                   {active.tags.map((tag) => (
