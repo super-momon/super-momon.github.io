@@ -1,0 +1,335 @@
+/* ─── Chain Reaction Game Custom CSS Styles ─── */
+
+:root {
+  --cell-empty-bg: rgba(15, 23, 42, 0.04);
+  --cell-empty-border: rgba(15, 23, 42, 0.16);
+}
+.dark {
+  --cell-empty-bg: rgba(255, 255, 255, 0.03);
+  --cell-empty-border: rgba(255, 255, 255, 0.18);
+}
+
+.game-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 6rem 1rem 3rem 1rem;
+}
+
+/* Simple Flat Glowing Orb */
+.orb-simple {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--orb-color);
+  box-shadow: 
+    0 0 10px var(--orb-glow),
+    inset 0 0 3px rgba(255, 255, 255, 0.4);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: orb-appear 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes orb-appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Static layout arrangements for cells containing 1-4 orbs */
+.orb-layout-1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.orb-layout-2 {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  animation: spin-slow 12s linear infinite;
+}
+
+.orb-layout-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  height: 100%;
+  animation: spin-normal 5s linear infinite;
+}
+
+.orb-layout-3 > .orb-simple {
+  animation: wobble-top 1.2s ease-in-out infinite alternate;
+}
+
+.orb-layout-3-row {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  animation: wobble-bottom 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-normal {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wobble-top {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(1px, -0.5px);
+  }
+}
+
+@keyframes wobble-bottom {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-1px, 0.5px);
+  }
+}
+
+.orb-layout-4 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  justify-items: center;
+  align-items: center;
+  width: auto;
+  height: auto;
+}
+
+/* Zoom Sizing Definitions & Variables (Responsive configurations) */
+.zoom-sm {
+  --cell-size: 28px;
+}
+@media (min-width: 640px) {
+  .zoom-sm { --cell-size: 32px; }
+}
+
+.zoom-md {
+  --cell-size: 36px;
+}
+@media (min-width: 640px) {
+  .zoom-md { --cell-size: 40px; }
+}
+
+.zoom-lg {
+  --cell-size: 48px;
+}
+@media (min-width: 640px) {
+  .zoom-lg { --cell-size: 56px; }
+}
+
+/* Zoom adjustments to scale down orbs and gaps for different cell sizes */
+.zoom-sm .orb-simple {
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 6px var(--orb-glow);
+}
+.zoom-sm .orb-layout-2 { gap: 2px; }
+.zoom-sm .orb-layout-3 { gap: 1px; }
+.zoom-sm .orb-layout-3-row { gap: 2px; }
+.zoom-sm .orb-layout-4 { gap: 2px; }
+
+.zoom-md .orb-simple {
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 10px var(--orb-glow);
+}
+.zoom-md .orb-layout-2 { gap: 5px; }
+.zoom-md .orb-layout-3 { gap: 3px; }
+.zoom-md .orb-layout-3-row { gap: 5px; }
+.zoom-md .orb-layout-4 { gap: 4px; }
+
+.zoom-lg .orb-simple {
+  width: 18px;
+  height: 18px;
+  box-shadow: 0 0 14px var(--orb-glow);
+}
+.zoom-lg .orb-layout-2 { gap: 8px; }
+.zoom-lg .orb-layout-3 { gap: 4px; }
+.zoom-lg .orb-layout-3-row { gap: 8px; }
+.zoom-lg .orb-layout-4 { gap: 6px; }
+
+/* Grid & Cell styling */
+.game-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cell-empty-border);
+  background-color: var(--cell-empty-bg);
+  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.game-cell.owned {
+  background-color: var(--owner-bg);
+  border-color: var(--owner-color);
+  box-shadow: inset 0 0 10px var(--owner-bg-glow);
+}
+
+.game-cell:hover:not(.disabled) {
+  background-color: rgba(15, 23, 42, 0.09);
+  border-color: rgba(15, 23, 42, 0.35);
+}
+
+.dark .game-cell:hover:not(.disabled) {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+.game-cell.owned:hover:not(.disabled) {
+  background-color: var(--owner-bg-glow);
+}
+
+/* Exploding and pulsing states */
+.cell-explode {
+  animation: explode-pulse 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes explode-pulse {
+  0% {
+    transform: scale(1);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 20px var(--glow-color);
+  }
+  50% {
+    transform: scale(1.12);
+    background-color: var(--glow-color);
+    box-shadow: 0 0 35px var(--glow-color);
+  }
+  100% {
+    transform: scale(1);
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* Board shake effect when an explosion happens */
+.board-shake {
+  animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* Ambient glow on cell based on owner */
+.cell-glow {
+  box-shadow: inset 0 0 10px var(--glow-color);
+  border-color: var(--border-color);
+}
+
+/* Glowing neon details */
+.text-neon {
+  text-shadow: 0 0 8px var(--neon-glow);
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Grid & Cell Sizing from variables */
+
+/* Explosion Particles */
+.explosion-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 0 8px currentColor;
+  z-index: 10;
+}
+
+/* Scaled particle sizes for smaller cell zoom */
+.zoom-sm .explosion-particle {
+  width: 6px;
+  height: 6px;
+}
+.zoom-md .explosion-particle {
+  width: 10px;
+  height: 10px;
+}
+.zoom-lg .explosion-particle {
+  width: 14px;
+  height: 14px;
+}
+
+.particle-t {
+  animation: shoot-top 0.3s cubic-bezier(0.12, 0.8, 0.33, 1) forwards;
+}
+.particle-r {
+  animation: shoot-right 0.3s cubic-bezier(0.12, 0.8, 0.33, 1) forwards;
+}
+.particle-b {
+  animation: shoot-bottom 0.3s cubic-bezier(0.12, 0.8, 0.33, 1) forwards;
+}
+.particle-l {
+  animation: shoot-left 0.3s cubic-bezier(0.12, 0.8, 0.33, 1) forwards;
+}
+
+@keyframes shoot-top {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(calc(-1 * var(--cell-size, 36px))) scale(0.5); opacity: 0; }
+}
+@keyframes shoot-right {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(var(--cell-size, 36px)) scale(0.5); opacity: 0; }
+}
+@keyframes shoot-bottom {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(var(--cell-size, 36px)) scale(0.5); opacity: 0; }
+}
+@keyframes shoot-left {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(calc(-1 * var(--cell-size, 36px))) scale(0.5); opacity: 0; }
+}

@@ -89,6 +89,14 @@ const LINK_METADATA: Record<
     detailDescription: "Challenge yourself with interactive dev questions! Compete for the high score and test your frontend mastery.",
     detailCta: "Play Game",
     tag: "Interactive"
+  },
+  "/games/chain-reaction": {
+    title: "Chain Reaction",
+    subtitle: "Eliminate opponents' orbs",
+    detailTitle: "Tactical Cascade Game",
+    detailDescription: "Take control of the grid by placing orbs, causing chain reaction explosions, and eliminating opponents in an interactive pass-and-play match.",
+    detailCta: "Start Reacting",
+    tag: "New Game"
   }
 };
 

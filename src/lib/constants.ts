@@ -32,6 +32,7 @@ export const PORTFOLIO_LINKS: NavLink[] = [
 
 export const GAME_LINKS: NavLink[] = [
   { label: "Quiz", href: "/games/quiz" },
+  { label: "Chain Reaction", href: "/games/chain-reaction" },
 ];
 
 /** @deprecated use PORTFOLIO_LINKS + GAME_LINKS */

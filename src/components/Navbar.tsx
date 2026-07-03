@@ -12,6 +12,7 @@ import {
   faEnvelope,
   faGamepad,
   faStar,
+  faAtom,
 } from "@fortawesome/free-solid-svg-icons";
 import MarqueeBanner from "./common/MarqueeBanner";
 import NotificationDropdown from "./common/NotificationDropdown";
@@ -35,6 +36,7 @@ const PORTFOLIO_ICONS: Record<string, IconDefinition> = {
 
 const GAME_ICONS: Record<string, IconDefinition> = {
   "/games/quiz": faGamepad,
+  "/games/chain-reaction": faAtom,
 };
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
