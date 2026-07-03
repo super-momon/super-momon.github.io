@@ -4,11 +4,12 @@ import { motion, AnimatePresence, useInView, useScroll, useTransform } from "mot
 import { useState, useRef } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap, faArrowUpRightFromSquare, faXmark, faAward } from "@fortawesome/free-solid-svg-icons";
+import { faGraduationCap, faArrowUpRightFromSquare, faAward, faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import { faAws, faLinkedin, faFreeCodeCamp } from "@fortawesome/free-brands-svg-icons";
 
 const education = [
   {
+    id: "aws-services",
     icon: faAws,
     topic: "AWS Services",
     institution: "AWS Skill Builder",
@@ -19,6 +20,7 @@ const education = [
     certifications: [],
   },
   {
+    id: "linkedin-learning",
     icon: faLinkedin,
     topic: "Various Programming Courses",
     institution: "LinkedIn Learning",
@@ -29,6 +31,7 @@ const education = [
     certifications: [],
   },
   {
+    id: "freecodecamp",
     icon: faFreeCodeCamp,
     topic: "Programming Bootcamp",
     institution: "Freecodecamp",
@@ -42,6 +45,7 @@ const education = [
     ],
   },
   {
+    id: "university",
     icon: faGraduationCap,
     topic: "B.S. in Information Technology",
     institution: "University of Cebu - Lapulapu and Mandaue",
@@ -53,118 +57,8 @@ const education = [
   },
 ];
 
-const PREVIEW_LENGTH = 130;
-
-type EducationItem = typeof education[0];
-
-function EducationCard({
-  item,
-  index,
-  onClick,
-}: {
-  item: EducationItem;
-  index: number;
-  onClick: () => void;
-}) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const preview =
-    item.details.length > PREVIEW_LENGTH
-      ? item.details.slice(0, PREVIEW_LENGTH).trimEnd() + "…"
-      : item.details;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      onClick={onClick}
-      className="group relative flex flex-col min-h-56 p-7 rounded-2xl border bg-surface/90 md:bg-surface/60 md:backdrop-blur-sm cursor-pointer"
-      style={{
-        borderColor: isHovered ? "var(--color-muted)" : "var(--color-border)",
-        transition: "border-color 0.3s ease",
-      }}
-    >
-      {/* Hover fill */}
-      <motion.div
-        initial={false}
-        animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.25 }}
-        className="absolute inset-0 rounded-2xl bg-foreground/[0.03] pointer-events-none"
-      />
-
-      {/* Grain texture */}
-      <div
-        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none rounded-2xl"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      <div className="relative z-10 flex flex-col flex-1">
-        {/* Header row */}
-        <div className="flex gap-4 mb-5">
-          <div className="shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-background/50 border border-border flex items-center justify-center transition-colors duration-300"
-              style={{
-                borderColor: isHovered ? "var(--color-muted)" : "var(--color-border)",
-              }}>
-              <FontAwesomeIcon
-                icon={item.icon}
-                className="text-foreground text-lg opacity-70 transition-opacity duration-300"
-                style={{
-                  opacity: isHovered ? 1 : 0.7,
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-1">
-              <h3 className="font-bold text-lg leading-snug text-foreground transition-colors duration-250">
-                {item.topic}
-              </h3>
-              <span className="text-xs text-muted shrink-0 font-mono tracking-tight">
-                {item.period}
-              </span>
-            </div>
-            <p className="text-foreground/80 text-sm font-medium">{item.institution}</p>
-          </div>
-        </div>
-
-        {/* Description preview */}
-        <p className="text-sm text-muted leading-relaxed flex-1 mb-4">{preview}</p>
-
-        {/* Skill tags */}
-        <div className="flex flex-wrap gap-1.5 mt-auto">
-          {item.skills.map((skill) => (
-            <span
-              key={skill}
-              className="text-xs text-muted bg-background/70 border border-border rounded-md px-2.5 py-1"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* View indicator */}
-      <motion.div
-        animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 4 }}
-        transition={{ duration: 0.2 }}
-        className="absolute bottom-5 right-5 text-foreground/60 text-xs flex items-center gap-1.5 font-medium"
-      >
-        <span>Details</span>
-        <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-[10px]" />
-      </motion.div>
-    </motion.div>
-  );
-}
-
 export default function Education() {
-  const [selectedItem, setSelectedItem] = useState<EducationItem | null>(null);
+  const [activeTopicId, setActiveTopicId] = useState("aws-services");
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
@@ -176,6 +70,8 @@ export default function Education() {
 
   const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
+  const active = education.find((item) => item.id === activeTopicId) || education[0];
 
   return (
     <section
@@ -201,7 +97,7 @@ export default function Education() {
         }}
       />
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Section header */}
         <div className="text-center mb-14">
           <motion.span
@@ -232,7 +128,7 @@ export default function Education() {
             initial={{ opacity: 0, y: 14 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
-            className="text-muted text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+            className="text-foreground/80 text-base md:text-lg max-w-xl mx-auto leading-relaxed"
           >
             Formal education, certifications, and self-directed learning that shape my engineering perspective.
           </motion.p>
@@ -245,154 +141,212 @@ export default function Education() {
           />
         </div>
 
-        {/* Cards */}
-        <div className="grid lg:grid-cols-2 gap-5">
-          {education.map((item, i) => (
-            <EducationCard
-              key={item.topic}
-              item={item}
-              index={i}
-              onClick={() => setSelectedItem(item)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Detail modal */}
-      <AnimatePresence>
-        {selectedItem && (
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ backgroundColor: "rgba(0,0,0,0.72)", backdropFilter: "blur(12px)" }}
-            onClick={() => setSelectedItem(null)}
-          >
-            <motion.div
-              key="panel"
-              initial={{ scale: 0.96, opacity: 0, y: 12 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.96, opacity: 0, y: 12 }}
-              transition={{ type: "spring", stiffness: 320, damping: 28 }}
-              className="bg-surface rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border/60"
-              style={{ boxShadow: "0 25px 60px rgba(0,0,0,0.5)" }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-8">
-                {/* Modal header */}
-                <div className="flex gap-5 mb-7">
-                  <div className="w-14 h-14 rounded-xl bg-background/50 border border-border flex items-center justify-center shrink-0">
-                    <FontAwesomeIcon icon={selectedItem.icon} className="text-foreground/80 text-xl" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <h3 className="font-bold text-foreground text-2xl leading-tight">
-                        {selectedItem.topic}
-                      </h3>
-                      <button
-                        onClick={() => setSelectedItem(null)}
-                        className="w-9 h-9 rounded-lg hover:bg-muted/10 flex items-center justify-center transition-colors duration-200 shrink-0"
-                        aria-label="Close"
-                      >
-                        <FontAwesomeIcon icon={faXmark} className="text-muted text-base" />
-                      </button>
-                    </div>
-                    <p className="text-foreground/80 text-base font-medium mb-1">
-                      {selectedItem.institution}
-                    </p>
-                    <p className="text-xs text-muted font-mono tracking-wider">
-                      {selectedItem.period}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-linear-to-r from-transparent via-border to-transparent mb-7" />
-
-                <div className="space-y-7">
-                  {/* Overview */}
-                  <div>
-                    <h4 className="text-xs font-semibold text-foreground/60 mb-3 uppercase tracking-widest">
-                      Overview
-                    </h4>
-                    <p className="text-base text-foreground leading-relaxed">
-                      {selectedItem.details}
-                    </p>
-                  </div>
-
-                  {/* Skills */}
-                  <div>
-                    <h4 className="text-xs font-semibold text-foreground/60 mb-3 uppercase tracking-widest">
-                      Skills &amp; Technologies
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedItem.skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className="text-sm text-foreground/80 bg-background/50 border border-border/60 rounded-lg px-4 py-2 font-medium"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Certifications */}
-                  {selectedItem.certifications.length > 0 && (
-                    <div>
-                      <h4 className="text-xs font-semibold text-foreground/60 mb-3 uppercase tracking-widest">
-                        Certifications
-                      </h4>
-                      <div className="space-y-2.5">
-                        {selectedItem.certifications.map((cert, i) => {
-                          let platformName = "Certificate";
-                          try {
-                            const url = new URL(cert);
-                            const part = url.hostname.replace("www.", "").split(".")[0];
-                            platformName =
-                              part.charAt(0).toUpperCase() + part.slice(1) + " Certification";
-                          } catch {
-                            // keep default
-                          }
-                          return (
-                            <a
-                              key={i}
-                              href={cert}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-3 p-3.5 rounded-xl bg-background/30 border border-border/60 hover:bg-background hover:border-border transition-colors duration-200 group/cert"
-                            >
-                              <div className="w-8 h-8 rounded-lg bg-surface border border-border/60 flex items-center justify-center shrink-0">
-                                <FontAwesomeIcon
-                                  icon={faAward}
-                                  className="text-foreground/70 text-sm"
-                                />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-foreground group-hover/cert:text-accent transition-colors duration-200">
-                                  {platformName}
-                                </p>
-                                <p className="text-xs text-muted truncate">{cert}</p>
-                              </div>
-                              <FontAwesomeIcon
-                                icon={faArrowUpRightFromSquare}
-                                className="text-foreground/40 text-xs opacity-60 group-hover/cert:opacity-100 transition-opacity shrink-0"
-                              />
-                            </a>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
+        {/* Split layout: dashboard explorer */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"
+        >
+          {/* Left Column: Selector */}
+          <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 lg:sticky lg:top-24">
+            
+            {/* Learning Hub Header Card */}
+            <div className="relative p-5 rounded-3xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30 flex flex-col gap-4 items-center text-center">
+              <div className="relative w-16 h-16 rounded-2xl bg-accent/15 border border-accent/25 flex items-center justify-center shrink-0">
+                <FontAwesomeIcon icon={faBookOpen} className="text-accent text-2xl" />
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div className="space-y-1.5">
+                <h3 className="text-lg font-bold text-foreground tracking-tight">Credentials Hub</h3>
+                <p className="text-xs text-foreground/75 font-mono font-medium tracking-wide">Academics &amp; Certs</p>
+              </div>
+            </div>
+
+            {/* Interactive Tabs list */}
+            <div className="flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
+              
+              {/* Mobile tabs row */}
+              <div 
+                style={{ scrollbarWidth: "none" }}
+                className="flex flex-row lg:hidden gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
+              >
+                {education.map((item) => {
+                  const isActive = activeTopicId === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTopicId(item.id)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
+                          : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
+                      }`}
+                    >
+                      <FontAwesomeIcon icon={item.icon} className={`text-xs ${isActive ? "text-accent" : "text-foreground/50"}`} />
+                      <span className="text-[10px] font-semibold tracking-tight">{item.topic.split(" ").pop()}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Desktop vertical tabs */}
+              <div className="hidden lg:flex flex-col gap-1.5">
+                {education.map((item) => {
+                  const isActive = activeTopicId === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTopicId(item.id)}
+                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+                        isActive
+                          ? "bg-background/80 shadow-xs border border-border/50"
+                          : "hover:bg-background/30 border border-transparent"
+                      }`}
+                    >
+                      {/* Active Indicator on Left */}
+                      <span
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${
+                          isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
+                        }`}
+                      />
+
+                      {/* Icon block */}
+                      <span
+                        className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${
+                          isActive
+                            ? "bg-accent/15 text-accent shadow-xs"
+                            : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
+                        }`}
+                      >
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          className="text-xs transition-transform duration-300 group-hover:scale-110"
+                          aria-hidden="true"
+                        />
+                      </span>
+
+                      {/* Text Content */}
+                      <div className="flex flex-col text-left min-w-0">
+                        <span
+                          className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
+                            isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
+                          }`}
+                        >
+                          {item.topic}
+                        </span>
+                        <span className="text-[10px] text-foreground/60 font-normal leading-normal mt-0.5 max-w-[200px] truncate group-hover:text-foreground/85 transition-colors duration-300">
+                          {item.institution}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Detail Panel */}
+          <div className="lg:col-span-7 xl:col-span-8 flex flex-col">
+            <div className="relative min-h-[320px] h-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTopicId}
+                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="p-6 md:p-8 rounded-2xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/35 h-full flex flex-col justify-between"
+                >
+                  <div className="space-y-6">
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4 pb-4 border-b border-border/30">
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground tracking-tight leading-tight mb-1">
+                          {active.topic}
+                        </h3>
+                        <p className="text-accent text-sm font-semibold mb-1.5">{active.institution}</p>
+                      </div>
+                      <span className="shrink-0 self-start text-xs font-mono text-foreground/80 border border-border/80 rounded-lg px-3 py-1.5 bg-surface/90 shadow-xs">
+                        {active.period}
+                      </span>
+                    </div>
+
+                    {/* Details Description */}
+                    <div>
+                      <h4 className="text-[10px] font-bold text-foreground/60 mb-2 uppercase tracking-widest">
+                        Overview &amp; Experience
+                      </h4>
+                      <p className="text-sm text-foreground/85 leading-relaxed font-normal">
+                        {active.details}
+                      </p>
+                    </div>
+
+                    {/* Certifications (if any) */}
+                    {active.certifications.length > 0 && (
+                      <div className="pt-2">
+                        <h4 className="text-[10px] font-bold text-foreground/60 mb-3 uppercase tracking-widest">
+                          Certifications Links
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {active.certifications.map((cert, i) => {
+                            let platformName = "Certificate";
+                            try {
+                              const url = new URL(cert);
+                              const part = url.hostname.replace("www.", "").split(".")[0];
+                              platformName =
+                                part.charAt(0).toUpperCase() + part.slice(1) + " Certification";
+                            } catch {
+                              // keep default
+                            }
+                            return (
+                              <a
+                                key={i}
+                                href={cert}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 p-3 rounded-xl bg-background/50 border border-border/80 hover:bg-background hover:border-accent transition-all duration-300 group/cert cursor-pointer"
+                              >
+                                <div className="w-8 h-8 rounded-lg bg-surface border border-border/60 flex items-center justify-center shrink-0">
+                                  <FontAwesomeIcon
+                                    icon={faAward}
+                                    className="text-foreground/75 text-sm group-hover/cert:text-accent transition-colors"
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-semibold text-foreground group-hover/cert:text-accent transition-colors duration-200 truncate">
+                                    {platformName}
+                                  </p>
+                                  <p className="text-[10px] text-foreground/50 truncate">{cert.replace("https://", "")}</p>
+                                </div>
+                                <FontAwesomeIcon
+                                  icon={faArrowUpRightFromSquare}
+                                  className="text-foreground/50 text-[10px] group-hover/cert:text-accent transition-colors shrink-0"
+                                />
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Skills tags */}
+                  <div className="flex flex-wrap gap-1.5 pt-6 mt-6 border-t border-border/30">
+                    {active.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="text-xs text-foreground/80 bg-background border border-border/80 rounded-md px-2.5 py-1 font-semibold"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 }

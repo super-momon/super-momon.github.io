@@ -125,11 +125,11 @@ function SkillPill({ skill, index }: { skill: typeof skills[0]; index: number })
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl
-                 bg-background/90 md:bg-background/70 md:backdrop-blur-sm
-                 border cursor-default select-none will-change-transform"
+                 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl
+                 border cursor-default select-none will-change-transform shadow-xs shadow-black/5"
       style={{
         borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
-        transition: "border-color 0.2s ease",
+        transition: "all 0.3s ease",
       }}
     >
       {/* Hover background fill */}
@@ -228,7 +228,7 @@ export default function Skills() {
             initial={{ opacity: 0, y: 14 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
-            className="text-muted text-base md:text-lg max-w-xl mx-auto leading-relaxed"
+            className="text-foreground/80 text-base md:text-lg max-w-xl mx-auto leading-relaxed"
           >
             Technologies I work with and have hands-on experience in.
             I&apos;m always eager to learn new tools and frameworks.
