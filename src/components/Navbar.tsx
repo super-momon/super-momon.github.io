@@ -14,6 +14,7 @@ import {
   faEnvelope,
   faGamepad,
   faStar,
+  faCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import MarqueeBanner from "./common/MarqueeBanner";
 import NotificationDropdown from "./common/NotificationDropdown";
@@ -29,6 +30,7 @@ const PORTFOLIO_ICONS: Record<string, IconDefinition> = {
   "/#projects": faCode,
   "/#skills": faWrench,
   "/#education": faGraduationCap,
+  "/gallery": faCamera,
   "/#contact": faEnvelope,
 };
 
@@ -286,6 +288,19 @@ export default function Navbar() {
             />
           </NavTrigger>
 
+          {/* Gallery standalone link */}
+          <li className="relative">
+            <a
+              href="/gallery"
+              className="relative px-4 py-2 rounded-xl text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-all duration-300 group overflow-hidden flex items-center gap-1.5"
+            >
+              <span className="absolute inset-0 bg-[var(--color-surface)]/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-xl" />
+              <span className="absolute inset-0 rounded-xl border border-[var(--color-border)]/0 group-hover:border-[var(--color-border)]/50 transition-all duration-300" />
+              <span className="relative z-10">Gallery</span>
+              <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[var(--color-accent)] group-hover:w-8 transition-all duration-300" />
+            </a>
+          </li>
+
           {/* Game */}
           <NavTrigger
             label="Games"
@@ -353,6 +368,20 @@ export default function Navbar() {
               onLinkClick={() => { setIsMenuOpen(false); setMobilePortfolioOpen(false); }}
               slideDelay="0s"
             />
+
+            {/* Standalone mobile Gallery Link */}
+            <li style={{ animation: "mobileMenuItemSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.03s backwards" }}>
+              <a
+                href="/gallery"
+                onClick={() => setIsMenuOpen(false)}
+                className="relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-all duration-300 group overflow-hidden"
+              >
+                <span className="absolute inset-0 bg-[var(--color-surface)]/50 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 rounded-xl" />
+                <span className="absolute inset-0 rounded-xl border border-[var(--color-border)]/0 group-hover:border-[var(--color-border)]/50 transition-all duration-300" />
+                <span className="relative z-10 font-medium">Gallery</span>
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-0 bg-[var(--color-accent)] group-hover:h-8 transition-all duration-300" />
+              </a>
+            </li>
 
             <MobileNavSection
               label="Game"
