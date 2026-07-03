@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotateRight, faSliders, faArrowLeft, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { getThemeColor, useIsDark } from './colors';
 
 interface WinnerScreenProps {
   winnerName: string;
@@ -24,6 +25,8 @@ export default function WinnerScreen({
   isOnline = false,
   isHost = false,
 }: WinnerScreenProps) {
+  const isDark = useIsDark();
+  const themeWinnerColor = getThemeColor(winnerColor, isDark);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Confetti Particle System
@@ -44,7 +47,7 @@ export default function WinnerScreen({
     };
     window.addEventListener('resize', handleResize);
 
-    const colors = [winnerColor, '#ffffff', '#ffd700', '#ff4b4b', '#00d4ff', '#d946ef'];
+    const colors = [themeWinnerColor, '#ffffff', '#ffd700', '#ff4b4b', '#00d4ff', '#d946ef'];
     const particles: Particle[] = [];
 
     class Particle {
@@ -128,7 +131,7 @@ export default function WinnerScreen({
       <div
         className="absolute w-[50%] aspect-ratio-1 rounded-full blur-3xl pointer-events-none opacity-20 z-0"
         style={{
-          background: `radial-gradient(circle, ${winnerColor} 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${themeWinnerColor} 0%, transparent 70%)`,
         }}
       />
 
@@ -145,10 +148,10 @@ export default function WinnerScreen({
           transition={{ repeat: Infinity, repeatDelay: 4, duration: 0.8 }}
           className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full shadow-lg"
           style={{
-            backgroundColor: `${winnerColor}15`,
-            color: winnerColor,
-            border: `2px solid ${winnerColor}30`,
-            boxShadow: `0 0 25px ${winnerColor}30`,
+            backgroundColor: `${themeWinnerColor}15`,
+            color: themeWinnerColor,
+            border: `2px solid ${themeWinnerColor}30`,
+            boxShadow: `0 0 25px ${themeWinnerColor}30`,
           }}
         >
           <FontAwesomeIcon icon={faTrophy} className="text-4xl" />
@@ -161,8 +164,8 @@ export default function WinnerScreen({
         <h2 
           className="text-4xl font-extrabold tracking-tight mb-4 text-neon"
           style={{ 
-            color: winnerColor,
-            '--neon-glow': `${winnerColor}40`,
+            color: themeWinnerColor,
+            '--neon-glow': `${themeWinnerColor}40`,
           } as React.CSSProperties}
         >
           {winnerName} Wins!

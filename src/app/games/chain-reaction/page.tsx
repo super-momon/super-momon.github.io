@@ -7,6 +7,7 @@ import WinnerScreen from './_components/WinnerScreen';
 import OnlineLobby from './_components/OnlineLobby';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import { PRESET_COLORS } from './_components/colors';
 
 type GamePhase = 'setup' | 'lobby' | 'playing' | 'winner';
 
@@ -18,13 +19,6 @@ export interface LobbyPresenceUser {
   joinedAt: number;
 }
 
-const PRESET_COLORS = [
-  '#08ca5f', // Emerald Green
-  '#ff4b4b', // Coral Red
-  '#00d4ff', // Cyan / Neon Blue
-  '#d946ef', // Neon Pink / Magenta
-  '#f97316', // Gold / Orange
-];
 
 const generateRoomCode = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

@@ -14,6 +14,7 @@ import {
   faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { LobbyPresenceUser } from '../page';
+import { PRESET_COLORS, getThemeColor, useIsDark } from './colors';
 
 interface OnlineLobbyProps {
   roomCode: string;
@@ -31,14 +32,6 @@ interface OnlineLobbyProps {
   onStartGame: () => void;
 }
 
-const PRESET_COLORS = [
-  '#08ca5f', // Emerald Green
-  '#ff4b4b', // Coral Red
-  '#00d4ff', // Cyan / Neon Blue
-  '#d946ef', // Neon Pink / Magenta
-  '#f97316', // Gold / Orange
-];
-
 export default function OnlineLobby({
   roomCode,
   playerName,
@@ -54,6 +47,7 @@ export default function OnlineLobby({
   onLeave,
   onStartGame,
 }: OnlineLobbyProps) {
+  const isDark = useIsDark();
   const [copied, setCopied] = useState(false);
 
   // Clipboard copy helper
@@ -167,7 +161,7 @@ export default function OnlineLobby({
                               ? 'opacity-20 cursor-not-allowed scale-90' 
                               : 'border-transparent hover:scale-105 hover:border-[var(--color-border)]'
                         }`}
-                        style={{ backgroundColor: color }}
+                        style={{ backgroundColor: getThemeColor(color, isDark) }}
                         title={isOccupied ? 'Color chosen by another player' : ''}
                       >
                         {isSelected && (
@@ -246,8 +240,8 @@ export default function OnlineLobby({
                       <span
                         className="w-4 h-4 rounded-full border border-black/10 flex-shrink-0 flex items-center justify-center"
                         style={{
-                          backgroundColor: player.color,
-                          boxShadow: `0 0 8px ${player.color}40`,
+                          backgroundColor: getThemeColor(player.color, isDark),
+                          boxShadow: `0 0 8px ${getThemeColor(player.color, isDark)}40`,
                         }}
                       />
                       <span className="text-sm font-semibold text-[var(--color-foreground)] truncate max-w-[140px]">

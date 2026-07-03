@@ -15,6 +15,7 @@ import {
   faPlus, 
   faSignInAlt 
 } from '@fortawesome/free-solid-svg-icons';
+import { PRESET_COLORS, getThemeColor, useIsDark } from './colors';
 
 export interface PlayerSetup {
   id: number;
@@ -28,17 +29,10 @@ interface SetupScreenProps {
   onStartOnline: (mode: 'host' | 'join', name: string, color: string, code: string) => void;
 }
 
-const PRESET_COLORS = [
-  '#08ca5f', // Emerald Green
-  '#ff4b4b', // Coral Red
-  '#00d4ff', // Cyan / Neon Blue
-  '#d946ef', // Neon Pink / Magenta
-  '#f97316', // Gold / Orange
-];
-
 const DEFAULT_NAMES = ['Player One', 'Player Two', 'Player Three', 'Player Four', 'Player Five'];
 
 export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenProps) {
+  const isDark = useIsDark();
   // Main Play mode: 'local' or 'online'
   const [playMode, setPlayMode] = useState<'local' | 'online'>('local');
   
@@ -219,8 +213,8 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
                         <span
                           className="w-5 h-5 rounded-full border border-black/10 flex-shrink-0"
                           style={{
-                            backgroundColor: players[i].color,
-                            boxShadow: `0 0 10px ${players[i].color}40`,
+                            backgroundColor: getThemeColor(players[i].color, isDark),
+                            boxShadow: `0 0 10px ${getThemeColor(players[i].color, isDark)}40`,
                           }}
                         />
                         <span className="text-xs font-bold text-[var(--color-muted)] whitespace-nowrap min-w-16">
@@ -247,7 +241,7 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
                             className={`w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center ${
                               players[i].color === color ? 'border-[var(--color-foreground)] scale-110 shadow-sm' : 'border-transparent hover:scale-105'
                             }`}
-                            style={{ backgroundColor: color }}
+                            style={{ backgroundColor: getThemeColor(color, isDark) }}
                           />
                         ))}
                       </div>
@@ -387,7 +381,7 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
                           className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center ${
                             onlineColor === color ? 'border-[var(--color-foreground)] scale-110 shadow-sm' : 'border-transparent hover:scale-105'
                           }`}
-                          style={{ backgroundColor: color }}
+                          style={{ backgroundColor: getThemeColor(color, isDark) }}
                         >
                           {onlineColor === color && (
                             <span className="w-2.5 h-2.5 rounded-full bg-white shadow-sm" />

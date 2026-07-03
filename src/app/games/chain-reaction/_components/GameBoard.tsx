@@ -13,6 +13,7 @@ import { PlayerSetup } from './SetupScreen';
 import { audioSynth } from './AudioSynth';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import { getThemeColor, useIsDark } from './colors';
 import '../chain-reaction.css';
 
 interface GameBoardProps {
@@ -66,6 +67,7 @@ export default function GameBoard({
   isHost = false,
   onGoToLobby,
 }: GameBoardProps) {
+  const isDark = useIsDark();
   // Setup local state
   const [board, setBoard] = useState<Cell[][]>(() =>
     Array.from({ length: rows }, () =>
@@ -484,7 +486,11 @@ export default function GameBoard({
   };
 
   const activePlayer = players[currentPlayerIndex] || { name: '', color: '#08ca5f' };
+  const activePlayerThemeColor = getThemeColor(activePlayer.color, isDark);
   const isMyTurn = isOnline ? (activePlayer.clientId === myClientId) : true;
+
+  const myPlayer = players.find((p) => p.clientId === myClientId);
+  const myPlayerColor = myPlayer ? getThemeColor(myPlayer.color, isDark) : 'transparent';
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 pb-12 flex flex-col items-center">
@@ -526,15 +532,15 @@ export default function GameBoard({
             <div
               className="px-4 py-1.5 rounded-full border text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
               style={{
-                borderColor: activePlayer.color,
-                backgroundColor: `${activePlayer.color}15`,
-                color: activePlayer.color,
-                boxShadow: `0 0 10px ${activePlayer.color}25`,
+                borderColor: activePlayerThemeColor,
+                backgroundColor: `${activePlayerThemeColor}15`,
+                color: activePlayerThemeColor,
+                boxShadow: `0 0 10px ${activePlayerThemeColor}25`,
               }}
             >
               <span
                 className="w-2.5 h-2.5 rounded-full animate-ping"
-                style={{ backgroundColor: activePlayer.color }}
+                style={{ backgroundColor: activePlayerThemeColor }}
               />
               {activePlayer.name}
               {isOnline && isMyTurn && (
@@ -559,11 +565,11 @@ export default function GameBoard({
               <span
                 className="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0"
                 style={{
-                  backgroundColor: players.find((p) => p.clientId === myClientId)?.color || 'transparent',
+                  backgroundColor: myPlayerColor,
                 }}
               />
               <span className="text-[var(--color-foreground)] truncate max-w-[80px]">
-                {players.find((p) => p.clientId === myClientId)?.name}
+                {myPlayer?.name}
               </span>
             </div>
           )}
@@ -599,6 +605,7 @@ export default function GameBoard({
           const isCurrent = idx === currentPlayerIndex && p.active && !isAnimating;
           const totalOrbs = countPlayerOrbs(board, p.id);
           const isLocalPlayer = isOnline && p.clientId === myClientId;
+          const playerThemeColor = getThemeColor(p.color, isDark);
           return (
             <div
               key={p.id}
@@ -608,19 +615,19 @@ export default function GameBoard({
                   : 'bg-[var(--color-surface)]/20 hover:bg-[var(--color-surface)]/30'
               } ${!p.active ? 'opacity-40 grayscale line-through' : ''}`}
               style={{
-                borderColor: isCurrent ? p.color : 'var(--color-border)',
-                boxShadow: isCurrent ? `0 0 15px ${p.color}20, inset 0 0 8px ${p.color}05` : 'none',
+                borderColor: isCurrent ? playerThemeColor : 'var(--color-border)',
+                boxShadow: isCurrent ? `0 0 15px ${playerThemeColor}20, inset 0 0 8px ${playerThemeColor}05` : 'none',
               }}
             >
               {/* Top border colored bar */}
               <div 
                 className="absolute top-0 left-0 right-0 h-1" 
-                style={{ backgroundColor: p.color }}
+                style={{ backgroundColor: playerThemeColor }}
               />
 
               <div className="flex flex-col gap-1 mt-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold truncate max-w-[90px]" style={{ color: p.color }}>
+                  <span className="text-xs font-bold truncate max-w-[90px]" style={{ color: playerThemeColor }}>
                     {p.name}
                     {isLocalPlayer && (
                       <span className="text-[8px] font-normal text-[var(--color-muted)] ml-0.5">(You)</span>
@@ -661,7 +668,8 @@ export default function GameBoard({
           >
             {board.map((row, r) =>
               row.map((cell, c) => {
-                const ownerColor = cell.ownerId !== null ? players.find((p) => p.id === cell.ownerId)?.color : null;
+                const rawOwnerColor = cell.ownerId !== null ? players.find((p) => p.id === cell.ownerId)?.color : null;
+                const ownerColor = rawOwnerColor ? getThemeColor(rawOwnerColor, isDark) : null;
                 const isExploding = explodingCells[`${r},${c}`];
                 
                 // Disable input if board is animating, or cell is owned by another, or if online and not our turn
@@ -693,7 +701,7 @@ export default function GameBoard({
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
                         <span 
                           className="w-1.5 h-1.5 rounded-full" 
-                          style={{ backgroundColor: players[currentPlayerIndex]?.color }} 
+                          style={{ backgroundColor: getThemeColor(players[currentPlayerIndex]?.color, isDark) }} 
                         />
                       </div>
                     )}
