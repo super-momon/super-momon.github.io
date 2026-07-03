@@ -11,6 +11,8 @@ interface WinnerScreenProps {
   totalOrbs: number;
   onPlayAgain: () => void;
   onBackToSetup: () => void;
+  isOnline?: boolean;
+  isHost?: boolean;
 }
 
 export default function WinnerScreen({
@@ -19,6 +21,8 @@ export default function WinnerScreen({
   totalOrbs,
   onPlayAgain,
   onBackToSetup,
+  isOnline = false,
+  isHost = false,
 }: WinnerScreenProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -174,32 +178,49 @@ export default function WinnerScreen({
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-3">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onPlayAgain}
-            className="w-full py-3.5 px-6 rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition cursor-pointer"
-          >
-            <FontAwesomeIcon icon={faRotateRight} />
-            Play Again (Same Settings)
-          </motion.button>
+          {isOnline && !isHost ? (
+            <div className="text-center py-3.5 px-6 rounded-xl bg-[var(--color-surface)]/40 border border-[var(--color-border)]/40 text-[var(--color-muted)] text-xs font-bold animate-pulse">
+              Waiting for Host to return to lobby...
+            </div>
+          ) : (
+            <>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onPlayAgain}
+                className="w-full py-3.5 px-6 rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition cursor-pointer"
+              >
+                <FontAwesomeIcon icon={faRotateRight} />
+                {isOnline ? 'Return Lobby (Same Settings)' : 'Play Again (Same Settings)'}
+              </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onBackToSetup}
-            className="w-full py-3.5 px-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-foreground)] hover:bg-[var(--color-surface)]/80 font-bold text-sm flex items-center justify-center gap-2 transition cursor-pointer"
-          >
-            <FontAwesomeIcon icon={faSliders} />
-            Change Game Settings
-          </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onBackToSetup}
+                className="w-full py-3.5 px-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-foreground)] hover:bg-[var(--color-surface)]/80 font-bold text-sm flex items-center justify-center gap-2 transition cursor-pointer"
+              >
+                <FontAwesomeIcon icon={faSliders} />
+                {isOnline ? 'Disconnect & Setup' : 'Change Game Settings'}
+              </motion.button>
+            </>
+          )}
 
-          <button
-            onClick={() => window.location.href = '/'}
-            className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center gap-1.5 justify-center mt-3 transition hover:underline"
-          >
-            <FontAwesomeIcon icon={faArrowLeft} /> Exit to Homepage
-          </button>
+          {isOnline ? (
+            <button
+              onClick={onBackToSetup}
+              className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center gap-1.5 justify-center mt-3 transition hover:underline"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} /> Leave Online Room
+            </button>
+          ) : (
+            <button
+              onClick={() => window.location.href = '/'}
+              className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center gap-1.5 justify-center mt-3 transition hover:underline"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} /> Exit to Homepage
+            </button>
+          )}
         </div>
       </motion.div>
     </div>

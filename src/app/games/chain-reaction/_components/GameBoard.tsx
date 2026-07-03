@@ -6,10 +6,13 @@ import {
   faArrowLeft, 
   faRotateRight, 
   faVolumeUp, 
-  faVolumeMute
+  faVolumeMute,
+  faCircleInfo
 } from '@fortawesome/free-solid-svg-icons';
 import { PlayerSetup } from './SetupScreen';
 import { audioSynth } from './AudioSynth';
+import { RealtimeChannel } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import '../chain-reaction.css';
 
 interface GameBoardProps {
@@ -19,6 +22,12 @@ interface GameBoardProps {
   soundEnabled: boolean;
   onQuit: () => void;
   onGameFinished: (winnerName: string, winnerColor: string, totalOrbs: number) => void;
+  // Online Multiplayer Props
+  isOnline?: boolean;
+  myClientId?: string;
+  roomCode?: string;
+  isHost?: boolean;
+  onGoToLobby?: () => void;
 }
 
 interface Cell {
@@ -28,6 +37,7 @@ interface Cell {
 
 interface Player {
   id: number;
+  clientId?: string;
   name: string;
   color: string;
   active: boolean;
@@ -50,6 +60,11 @@ export default function GameBoard({
   soundEnabled: initialSound,
   onQuit,
   onGameFinished,
+  isOnline = false,
+  myClientId = '',
+  roomCode = '',
+  isHost = false,
+  onGoToLobby,
 }: GameBoardProps) {
   // Setup local state
   const [board, setBoard] = useState<Cell[][]>(() =>
@@ -71,15 +86,162 @@ export default function GameBoard({
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
   const [shakeBoard, setShakeBoard] = useState<boolean>(false);
 
+  // Temporary notification toast for player disconnects
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
   const isAnimatingRef = useRef(isAnimating);
   useEffect(() => {
     isAnimatingRef.current = isAnimating;
   }, [isAnimating]);
 
+  // Refs to avoid stale closures in event listeners
+  const boardRef = useRef(board);
+  const playersRef = useRef(players);
+  const currentPlayerIndexRef = useRef(currentPlayerIndex);
+
+  useEffect(() => {
+    boardRef.current = board;
+    playersRef.current = players;
+    currentPlayerIndexRef.current = currentPlayerIndex;
+  }, [board, players, currentPlayerIndex]);
+
+  console.log('ChainReaction Debug:', {
+    myClientId,
+    currentPlayerIndex,
+    isOnline,
+    playersCount: players.length,
+    activePlayerClientId: players[currentPlayerIndex]?.clientId,
+    isMyTurn: isOnline ? (players[currentPlayerIndex]?.clientId === myClientId) : true,
+    playersList: players.map(p => ({ name: p.name, clientId: p.clientId }))
+  });
+
+  const channelRef = useRef<RealtimeChannel | null>(null);
+
   // Lazy audio synth configuration
   useEffect(() => {
     audioSynth.toggle(soundEnabled);
   }, [soundEnabled]);
+
+  // Online game subscription listeners
+  useEffect(() => {
+    if (!isOnline || !roomCode) return;
+
+    const channelName = `chain-reaction-game:${roomCode.toUpperCase()}`;
+    const gameChannel = supabase.channel(channelName, {
+      config: {
+        broadcast: { self: false },
+        presence: { key: myClientId },
+      },
+    });
+
+    channelRef.current = gameChannel;
+
+    const handleMoveBroadcast = (payload: any) => {
+      const { r, c, playerIdx } = payload.payload;
+      if (playerIdx === currentPlayerIndexRef.current) {
+        executeMove(r, c, playerIdx);
+      }
+    };
+
+    const handleSyncStateBroadcast = (payload: any) => {
+      const { board: syncedBoard, players: syncedPlayers, currentPlayerIndex: syncedCurrentPlayerIndex } = payload.payload;
+      setBoard(syncedBoard);
+      setPlayers(syncedPlayers);
+      setCurrentPlayerIndex(syncedCurrentPlayerIndex);
+    };
+
+    const handleResetGameBroadcast = () => {
+      initializeGame();
+    };
+
+    const handleGoToLobbyBroadcast = () => {
+      if (onGoToLobby) onGoToLobby();
+    };
+
+    const handleQuitGameBroadcast = () => {
+      onQuit();
+    };
+
+    gameChannel
+      .on('broadcast', { event: 'move' }, handleMoveBroadcast)
+      .on('broadcast', { event: 'sync-state' }, handleSyncStateBroadcast)
+      .on('broadcast', { event: 'reset-game' }, handleResetGameBroadcast)
+      .on('broadcast', { event: 'go-to-lobby' }, handleGoToLobbyBroadcast)
+      .on('broadcast', { event: 'quit-game' }, handleQuitGameBroadcast)
+      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
+        const leftClientIds = leftPresences.map((p: any) => p.clientId);
+
+        setPlayers((prevPlayers) => {
+          let changed = false;
+          const updated = prevPlayers.map((p) => {
+            if (p.clientId && leftClientIds.includes(p.clientId) && p.active) {
+              changed = true;
+              setToastMessage(`${p.name} disconnected!`);
+              setTimeout(() => setToastMessage(null), 3000);
+              return { ...p, active: false };
+            }
+            return p;
+          });
+
+          if (changed) {
+            audioSynth.playEliminated();
+          }
+          return updated;
+        });
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          const me = playersRef.current.find((p) => p.clientId === myClientId);
+          if (me) {
+            await gameChannel.track({
+              clientId: myClientId,
+              name: me.name,
+              color: me.color,
+              isHost,
+            });
+          }
+        }
+      });
+
+    return () => {
+      gameChannel.unsubscribe();
+      supabase.removeChannel(gameChannel);
+      channelRef.current = null;
+    };
+  }, [isOnline, roomCode, myClientId, isHost]);
+
+  // Gracefully skip disconnected players' turns
+  useEffect(() => {
+    if (!isOnline || players.length === 0) return;
+
+    const currentPlayer = players[currentPlayerIndex];
+    if (currentPlayer && !currentPlayer.active) {
+      // Find next active player
+      let nextIdx = (currentPlayerIndex + 1) % players.length;
+      let found = false;
+      for (let i = 0; i < players.length; i++) {
+        if (players[nextIdx].active) {
+          setCurrentPlayerIndex(nextIdx);
+          found = true;
+          break;
+        }
+        nextIdx = (nextIdx + 1) % players.length;
+      }
+
+      // If we are the host, sync this advanced turn state immediately
+      if (isHost && found && channelRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'sync-state',
+          payload: {
+            board,
+            players,
+            currentPlayerIndex: nextIdx,
+          },
+        });
+      }
+    }
+  }, [players, currentPlayerIndex, isOnline, isHost, board]);
 
   // Initialize Board and Players
   const initializeGame = () => {
@@ -114,7 +276,6 @@ export default function GameBoard({
   };
 
   const getCellCriticalMass = (r: number, c: number) => {
-    // Critical mass is equal to the number of surrounding neighbor cells
     let count = 0;
     if (r > 0) count++;
     if (r < rows - 1) count++;
@@ -137,7 +298,6 @@ export default function GameBoard({
     let hasExplodedInWave = true;
 
     while (hasExplodedInWave) {
-      // Find all cells exceeding their critical mass
       const unstableCells: { r: number; c: number; limit: number; owner: number }[] = [];
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
@@ -159,11 +319,8 @@ export default function GameBoard({
       }
 
       hasExplodedInWave = true;
-
-      // Play explosion sound
       audioSynth.playExplosion();
 
-      // Trigger board shaking & flash unstable cells
       setShakeBoard(true);
       const waveExploding: Record<string, boolean> = {};
       unstableCells.forEach((cell) => {
@@ -171,7 +328,6 @@ export default function GameBoard({
       });
       setExplodingCells(waveExploding);
 
-      // Perform explosions simultaneously in this wave
       const nextBoard = currentBoard.map((row) => row.map((cell) => ({ ...cell })));
 
       unstableCells.forEach((cell) => {
@@ -191,11 +347,9 @@ export default function GameBoard({
       currentBoard = nextBoard;
       setBoard(currentBoard);
 
-      // Update player states and check for eliminations
       let newlyEliminated = false;
       tempPlayers = tempPlayers.map((p) => {
         if (!p.active) return p;
-        // Count orbs in new board
         const orbs = countPlayerOrbs(currentBoard, p.id);
         if (p.hasMoved && orbs === 0) {
           newlyEliminated = true;
@@ -209,7 +363,6 @@ export default function GameBoard({
       }
       setPlayers(tempPlayers);
 
-      // Check win condition: only one active player is left AND they have moved
       const activePlayers = tempPlayers.filter((p) => p.active);
       const movedPlayers = tempPlayers.filter((p) => p.hasMoved);
 
@@ -222,24 +375,37 @@ export default function GameBoard({
         return;
       }
 
-      // Reset animation visuals shortly after
       await sleep(150);
       setShakeBoard(false);
       setExplodingCells({});
-      await sleep(150); // Pause before next cascade wave starts
+      await sleep(150);
     }
 
-    // Done with animations. Pass turn to next player
     setIsAnimating(false);
     
     // Find next active player
     let nextIdx = (placerId + 1) % tempPlayers.length;
+    let foundNext = false;
     for (let i = 0; i < tempPlayers.length; i++) {
       if (tempPlayers[nextIdx].active) {
         setCurrentPlayerIndex(nextIdx);
+        foundNext = true;
         break;
       }
       nextIdx = (nextIdx + 1) % tempPlayers.length;
+    }
+
+    // Sync definitive board state from the active player's client to guests
+    if (isOnline && tempPlayers[placerId]?.clientId === myClientId && channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'sync-state',
+        payload: {
+          board: currentBoard,
+          players: tempPlayers,
+          currentPlayerIndex: foundNext ? nextIdx : placerId,
+        },
+      });
     }
   };
 
@@ -247,54 +413,107 @@ export default function GameBoard({
     if (isAnimatingRef.current) return;
 
     const cell = board[r][c];
-    // Rule: Cell must be empty or owned by current player
     if (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) {
       return; // Invalid move
     }
 
+    if (isOnline) {
+      const activePlayer = players[currentPlayerIndex];
+      // Lock click input if it isn't our turn
+      if (activePlayer.clientId !== myClientId) {
+        return;
+      }
+
+      if (channelRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'move',
+          payload: { r, c, playerIdx: currentPlayerIndex },
+        });
+      }
+    }
+
+    executeMove(r, c, currentPlayerIndex);
+  };
+
+  const executeMove = (r: number, c: number, playerIdx: number) => {
     audioSynth.playPlace();
 
-    // Clone grid
-    const updatedBoard = board.map((row) => row.map((cell) => ({ ...cell })));
-    updatedBoard[r][c].orbs += 1;
-    updatedBoard[r][c].ownerId = players[currentPlayerIndex].id;
+    const currentBoard = boardRef.current;
+    const currentPlayers = playersRef.current;
 
-    // Mark current player as having moved
-    const updatedPlayers = players.map((p, idx) =>
-      idx === currentPlayerIndex ? { ...p, hasMoved: true } : p
+    const updatedBoard = currentBoard.map((row) => row.map((cell) => ({ ...cell })));
+    updatedBoard[r][c].orbs += 1;
+    updatedBoard[r][c].ownerId = currentPlayers[playerIdx].id;
+
+    const updatedPlayers = currentPlayers.map((p, idx) =>
+      idx === playerIdx ? { ...p, hasMoved: true } : p
     );
 
     setBoard(updatedBoard);
     setPlayers(updatedPlayers);
 
-    // Resolve cascades
-    runChainReaction(updatedBoard, updatedPlayers, currentPlayerIndex);
+    runChainReaction(updatedBoard, updatedPlayers, playerIdx);
   };
 
+  const handleResetClick = () => {
+    if (isOnline) {
+      if (isHost && channelRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'reset-game',
+        });
+      } else {
+        return; // Only host resets online game
+      }
+    }
+    initializeGame();
+  };
 
+  const handleQuitClick = () => {
+    if (isOnline && isHost && channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'quit-game',
+      });
+    }
+    onQuit();
+  };
 
   const activePlayer = players[currentPlayerIndex] || { name: '', color: '#08ca5f' };
+  const isMyTurn = isOnline ? (activePlayer.clientId === myClientId) : true;
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 pb-12 flex flex-col items-center">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-red-600/90 text-white px-4 py-2.5 rounded-xl border border-red-500/40 shadow-xl flex items-center gap-2 text-xs font-bold animate-bounce">
+          <FontAwesomeIcon icon={faCircleInfo} />
+          {toastMessage}
+        </div>
+      )}
+
       {/* Control / Info Bar */}
       <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-between mb-6 bg-[var(--color-surface)]/40 border border-[var(--color-border)]/40 p-4 rounded-2xl glass-panel">
         <div className="flex gap-2 items-center">
           <button
-            onClick={onQuit}
-            aria-label="Quit game and return to player setup"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus:outline-none"
+            onClick={handleQuitClick}
+            aria-label="Quit game and return to setup"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition"
           >
-            <FontAwesomeIcon icon={faArrowLeft} /> Quit Setup
+            <FontAwesomeIcon icon={faArrowLeft} /> {isOnline ? 'Leave Room' : 'Quit Setup'}
           </button>
-          <button
-            onClick={initializeGame}
-            disabled={isAnimating}
-            aria-label="Reset board to restart game"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus:outline-none"
-          >
-            <FontAwesomeIcon icon={faRotateRight} /> Reset
-          </button>
+          
+          {(!isOnline || isHost) && (
+            <button
+              onClick={handleResetClick}
+              disabled={isAnimating}
+              aria-label="Reset board to restart game"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition disabled:opacity-50"
+            >
+              <FontAwesomeIcon icon={faRotateRight} /> Reset
+            </button>
+          )}
         </div>
 
         {/* Turn Indicator */}
@@ -310,48 +529,54 @@ export default function GameBoard({
             }}
           >
             <span
-              className="w-2 h-2 rounded-full animate-ping"
+              className="w-2.5 h-2.5 rounded-full animate-ping"
               style={{ backgroundColor: activePlayer.color }}
             />
             {activePlayer.name}
+            {isOnline && isMyTurn && (
+              <span className="text-[10px] text-green-500 font-extrabold ml-1 bg-green-500/10 px-1.5 py-0.5 rounded-md border border-green-500/20">
+                (You)
+              </span>
+            )}
           </div>
         </div>
 
         {/* Board Zoom & Sound Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {isOnline && (
+            <div className="flex items-center gap-2 text-xs font-bold bg-[var(--color-surface)] px-3 py-1.5 rounded-xl border border-[var(--color-border)]/80">
+              <span className="text-[var(--color-muted)]">You:</span>
+              <span
+                className="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0"
+                style={{
+                  backgroundColor: players.find((p) => p.clientId === myClientId)?.color || 'transparent',
+                }}
+              />
+              <span className="text-[var(--color-foreground)] truncate max-w-[80px]">
+                {players.find((p) => p.clientId === myClientId)?.name}
+              </span>
+            </div>
+          )}
+
           {/* Zoom Buttons */}
           <div className="flex bg-[var(--color-surface)] rounded-lg p-0.5 border border-[var(--color-border)]/80">
-            <button
-              onClick={() => setZoomLevel('sm')}
-              aria-label="Set grid cell size to small"
-              className={`p-1.5 px-2.5 text-xs font-bold rounded-md transition focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus:outline-none ${zoomLevel === 'sm' ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'}`}
-              title="Small Cells"
-            >
-              S
-            </button>
-            <button
-              onClick={() => setZoomLevel('md')}
-              aria-label="Set grid cell size to medium"
-              className={`p-1.5 px-2.5 text-xs font-bold rounded-md transition focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus:outline-none ${zoomLevel === 'md' ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'}`}
-              title="Medium Cells"
-            >
-              M
-            </button>
-            <button
-              onClick={() => setZoomLevel('lg')}
-              aria-label="Set grid cell size to large"
-              className={`p-1.5 px-2.5 text-xs font-bold rounded-md transition focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus:outline-none ${zoomLevel === 'lg' ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'}`}
-              title="Large Cells"
-            >
-              L
-            </button>
+            {['sm', 'md', 'lg'].map((lvl) => (
+              <button
+                key={lvl}
+                onClick={() => setZoomLevel(lvl as 'sm' | 'md' | 'lg')}
+                aria-label={`Set cell size to ${lvl}`}
+                className={`p-1.5 px-2.5 text-xs font-bold rounded-md transition ${zoomLevel === lvl ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'}`}
+              >
+                {lvl.toUpperCase()}
+              </button>
+            ))}
           </div>
 
           {/* Sound Toggle */}
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
             aria-label={soundEnabled ? "Mute game sounds" : "Unmute game sounds"}
-            className="w-8 h-8 rounded-lg border border-[var(--color-border)]/60 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus:outline-none"
+            className="w-8 h-8 rounded-lg border border-[var(--color-border)]/60 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition"
           >
             <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} />
           </button>
@@ -363,6 +588,7 @@ export default function GameBoard({
         {players.map((p, idx) => {
           const isCurrent = idx === currentPlayerIndex && p.active && !isAnimating;
           const totalOrbs = countPlayerOrbs(board, p.id);
+          const isLocalPlayer = isOnline && p.clientId === myClientId;
           return (
             <div
               key={p.id}
@@ -384,8 +610,11 @@ export default function GameBoard({
 
               <div className="flex flex-col gap-1 mt-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold truncate max-w-[85px] text-[var(--color-foreground)]" style={{ color: p.color }}>
+                  <span className="text-xs font-bold truncate max-w-[90px]" style={{ color: p.color }}>
                     {p.name}
+                    {isLocalPlayer && (
+                      <span className="text-[8px] font-normal text-[var(--color-muted)] ml-0.5">(You)</span>
+                    )}
                   </span>
                   {!p.active && (
                     <span className="text-[9px] font-bold text-red-500 uppercase tracking-widest">OUT</span>
@@ -406,7 +635,7 @@ export default function GameBoard({
         })}
       </div>
 
-      {/* Grid Canvas Wrapper with responsive scroll overflow */}
+      {/* Grid Canvas Wrapper */}
       <div 
         className="w-full bg-[var(--color-surface)]/20 border border-[var(--color-border)]/50 rounded-3xl p-4 sm:p-6 overflow-hidden glass-panel"
       >
@@ -424,9 +653,13 @@ export default function GameBoard({
               row.map((cell, c) => {
                 const ownerColor = cell.ownerId !== null ? players.find((p) => p.id === cell.ownerId)?.color : null;
                 const isExploding = explodingCells[`${r},${c}`];
+                
+                // Disable input if board is animating, or cell is owned by another, or if online and not our turn
                 const isCellDisabled = 
                   isAnimating || 
-                  (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id);
+                  (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) ||
+                  (isOnline && !isMyTurn);
+
                 const isOwned = cell.ownerId !== null;
                 const limit = getCellCriticalMass(r, c);
 
@@ -437,7 +670,7 @@ export default function GameBoard({
                     className={`game-cell rounded-[6px] border ${
                       isOwned ? 'owned' : ''
                     } ${isExploding ? 'cell-explode' : ''} ${
-                      isCellDisabled ? 'disabled cursor-not-allowed' : ''
+                      isCellDisabled ? 'disabled cursor-not-allowed' : 'hover:scale-102 hover:shadow-sm'
                     }`}
                     style={{
                       '--owner-color': ownerColor || 'transparent',
@@ -445,8 +678,8 @@ export default function GameBoard({
                       '--owner-bg-glow': ownerColor ? `${ownerColor}35` : 'transparent',
                     } as React.CSSProperties}
                   >
-                    {/* Corner/Edge Indicator Dots - Tiny preview dots of player owner if empty */}
-                    {cell.orbs === 0 && (
+                    {/* Corner/Edge Indicator Dots */}
+                    {cell.orbs === 0 && !isCellDisabled && (
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
                         <span 
                           className="w-1.5 h-1.5 rounded-full" 
