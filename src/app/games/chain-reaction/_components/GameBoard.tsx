@@ -86,6 +86,17 @@ export default function GameBoard({
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
   const [shakeBoard, setShakeBoard] = useState<boolean>(false);
 
+  // Calculate total orbs in the session
+  const totalOrbsCount = (() => {
+    let count = 0;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        count += board[r][c].orbs;
+      }
+    }
+    return count;
+  })();
+
   // Temporary notification toast for player disconnects
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -516,28 +527,35 @@ export default function GameBoard({
           )}
         </div>
 
-        {/* Turn Indicator */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase">Turn</span>
-          <div
-            className="px-4 py-1.5 rounded-full border text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
-            style={{
-              borderColor: activePlayer.color,
-              backgroundColor: `${activePlayer.color}15`,
-              color: activePlayer.color,
-              boxShadow: `0 0 10px ${activePlayer.color}25`,
-            }}
-          >
-            <span
-              className="w-2.5 h-2.5 rounded-full animate-ping"
-              style={{ backgroundColor: activePlayer.color }}
-            />
-            {activePlayer.name}
-            {isOnline && isMyTurn && (
-              <span className="text-[10px] text-green-500 font-extrabold ml-1 bg-green-500/10 px-1.5 py-0.5 rounded-md border border-green-500/20">
-                (You)
-              </span>
-            )}
+        {/* Turn & Session Stats Indicator */}
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase">Turn</span>
+            <div
+              className="px-4 py-1.5 rounded-full border text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
+              style={{
+                borderColor: activePlayer.color,
+                backgroundColor: `${activePlayer.color}15`,
+                color: activePlayer.color,
+                boxShadow: `0 0 10px ${activePlayer.color}25`,
+              }}
+            >
+              <span
+                className="w-2.5 h-2.5 rounded-full animate-ping"
+                style={{ backgroundColor: activePlayer.color }}
+              />
+              {activePlayer.name}
+              {isOnline && isMyTurn && (
+                <span className="text-[10px] text-green-500 font-extrabold ml-1 bg-green-500/10 px-1.5 py-0.5 rounded-md border border-green-500/20">
+                  (You)
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <span className="text-[var(--color-muted)]">Total Orbs:</span>
+            <span className="text-[var(--color-foreground)]">{totalOrbsCount}</span>
           </div>
         </div>
 
@@ -786,10 +804,31 @@ export default function GameBoard({
         </div>
       </div>
 
-      {/* Rules overlay / info */}
-      <div className="mt-6 text-center text-xs text-[var(--color-muted)] max-w-lg">
-        <p>
-          <strong className="text-[var(--color-foreground)]">Rules:</strong> Place orbs on empty cells or cells you own. When a cell reaches critical mass (dots = adjacent cells), it explodes, distributing orbs to neighbors and claiming them.
+      {/* Gameplay & Critical Mass Guide */}
+      <div className="mt-8 w-full max-w-lg bg-[var(--color-surface)]/30 border border-[var(--color-border)]/40 p-5 rounded-2xl glass-panel text-xs text-[var(--color-muted)]">
+        <h4 className="text-[var(--color-foreground)] font-bold mb-3 flex items-center gap-1.5">
+          <FontAwesomeIcon icon={faCircleInfo} className="text-[var(--color-accent)] text-sm" />
+          Critical Mass Explosion Guide
+        </h4>
+        <div className="grid grid-cols-3 gap-3 text-center mb-4">
+          <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
+            <span className="text-[var(--color-foreground)] font-extrabold">Corners</span>
+            <span className="text-[10px] text-yellow-500 font-bold bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20">2 Orbs</span>
+            <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 2 neighbors</span>
+          </div>
+          <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
+            <span className="text-[var(--color-foreground)] font-extrabold">Edges</span>
+            <span className="text-[10px] text-orange-500 font-bold bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">3 Orbs</span>
+            <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 3 neighbors</span>
+          </div>
+          <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
+            <span className="text-[var(--color-foreground)] font-extrabold">Inner Cells</span>
+            <span className="text-[10px] text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">4 Orbs</span>
+            <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 4 neighbors</span>
+          </div>
+        </div>
+        <p className="leading-relaxed text-center border-t border-[var(--color-border)]/30 pt-3">
+          <strong className="text-[var(--color-foreground)]">How to win:</strong> Place orbs on empty or owned cells. When a cell reaches critical mass (orbs = adjacent neighbors), it explodes, claiming and distributing orbs to neighbors. Eliminate all other players to dominate!
         </p>
       </div>
     </div>
