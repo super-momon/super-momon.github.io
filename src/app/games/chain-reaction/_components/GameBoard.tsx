@@ -116,16 +116,6 @@ export default function GameBoard({
     currentPlayerIndexRef.current = currentPlayerIndex;
   }, [board, players, currentPlayerIndex]);
 
-  console.log('ChainReaction Debug:', {
-    myClientId,
-    currentPlayerIndex,
-    isOnline,
-    playersCount: players.length,
-    activePlayerClientId: players[currentPlayerIndex]?.clientId,
-    isMyTurn: isOnline ? (players[currentPlayerIndex]?.clientId === myClientId) : true,
-    playersList: players.map(p => ({ name: p.name, clientId: p.clientId }))
-  });
-
   const channelRef = useRef<RealtimeChannel | null>(null);
 
   // Lazy audio synth configuration
@@ -391,6 +381,8 @@ export default function GameBoard({
       setExplodingCells({});
       await sleep(150);
     }
+    // Add a short pause after explosions complete before allowing the next player to place their orb
+    await sleep(500);
 
     setIsAnimating(false);
     
