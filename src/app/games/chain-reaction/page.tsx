@@ -18,6 +18,14 @@ export interface LobbyPresenceUser {
   joinedAt: number;
 }
 
+const PRESET_COLORS = [
+  '#08ca5f', // Emerald Green
+  '#ff4b4b', // Coral Red
+  '#00d4ff', // Cyan / Neon Blue
+  '#d946ef', // Neon Pink / Magenta
+  '#f97316', // Gold / Orange
+];
+
 const generateRoomCode = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
@@ -90,13 +98,33 @@ export default function ChainReactionPage() {
         console.error('Error tracking lobby presence:', err);
       }
     };
-
     channel
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
         const presences = Object.values(state)
           .flatMap((p) => p) as unknown as LobbyPresenceUser[];
-        const sorted = [...presences].sort((a, b) => a.joinedAt - b.joinedAt);
+        
+        // Deduplicate presences by clientId to prevent duplication on color/name updates
+        const uniquePresencesMap: Record<string, LobbyPresenceUser> = {};
+        presences.forEach((p) => {
+          if (p.clientId) {
+            // If duplicate exists, keep the latest one based on joinedAt, or simply overwrite
+            uniquePresencesMap[p.clientId] = p;
+          }
+        });
+
+        const uniquePresences = Object.values(uniquePresencesMap);
+        const sorted = uniquePresences.sort((a, b) => a.joinedAt - b.joinedAt);
+
+        // Enforce 5-player limit
+        const myIndex = sorted.findIndex((p) => p.clientId === myClientId);
+        if (myIndex >= 5) {
+          alert('This lobby is full (maximum 5 players).');
+          cleanupOnlineSession();
+          setPhase('setup');
+          return;
+        }
+
         setLobbyPlayers(sorted);
       })
       .on('broadcast', { event: 'settings-change' }, (payload) => {
@@ -146,6 +174,27 @@ export default function ChainReactionPage() {
       });
     }
   }, [initialOnlineName, initialOnlineColor, connectionStatus, isHost, myClientId]);
+
+  // Automatically reconcile color conflicts in the lobby
+  useEffect(() => {
+    if (!isOnline || lobbyPlayers.length === 0) return;
+
+    // Verify if our current color is already taken by someone else
+    const myIndex = lobbyPlayers.findIndex((p) => p.clientId === myClientId);
+    if (myIndex === -1) return;
+
+    const occupiedColors = lobbyPlayers
+      .filter((p) => p.clientId !== myClientId)
+      .map((p) => p.color);
+
+    if (occupiedColors.includes(initialOnlineColor)) {
+      // Find first color from presets that is not occupied
+      const availableColor = PRESET_COLORS.find((c) => !occupiedColors.includes(c));
+      if (availableColor) {
+        setInitialOnlineColor(availableColor);
+      }
+    }
+  }, [lobbyPlayers, isOnline, myClientId, initialOnlineColor]);
 
   const handleStartGame = (
     setupPlayers: PlayerSetup[],

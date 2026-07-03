@@ -226,9 +226,9 @@ export default function OnlineLobby({
           {/* Right Column: Connected Players */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-sm font-bold text-[var(--color-foreground)]/80">Players ({lobbyPlayers.length})</h3>
+              <h3 className="text-sm font-bold text-[var(--color-foreground)]/80">Players ({lobbyPlayers.length}/5)</h3>
               <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-muted)] bg-[var(--color-surface)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
-                Min 2 required
+                Max 5 players
               </span>
             </div>
 
