@@ -54,91 +54,80 @@ export function QuizGame({
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-2xl mb-4"
       >
-        <div
-          className="flex items-center justify-between px-5 py-3 rounded-2xl border mb-3"
-          style={{
-            background: 'color-mix(in srgb, var(--color-surface) 72%, transparent)',
-            backdropFilter: 'blur(14px)',
-            WebkitBackdropFilter: 'blur(14px)',
-            borderColor: 'var(--color-border)',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
-          }}
-        >
-          {/* Score */}
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase tracking-widest font-semibold text-muted">
-              Score
-            </span>
-            <AnimatePresence mode="popLayout">
-              <motion.span
-                key={score}
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 6 }}
-                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="text-2xl font-bold tabular-nums text-accent"
-                style={{ textShadow: '0 0 16px rgba(0,199,88,0.45)' }}
-              >
-                {score}
-              </motion.span>
-            </AnimatePresence>
-          </div>
+        <div className="relative bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 rounded-3xl p-4 md:px-6 md:py-4 flex items-center justify-between mb-4 shadow-lg shadow-black/5 dark:shadow-black/30 overflow-hidden">
+          {/* Subtle reflection overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 dark:from-white/5 to-transparent pointer-events-none rounded-3xl" />
 
-          {/* Question number */}
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] uppercase tracking-widest font-semibold text-muted">
-              Question
-            </span>
-            <span className="text-base font-bold tabular-nums text-foreground">
-              #{questionNumber}
-            </span>
-          </div>
-
-          {/* Lives / Mode */}
-          {mode === 'lives' ? (
-            <div
-              className="flex items-center gap-1.5"
-              role="img"
-              aria-label={`${lives} of ${maxLives} lives remaining`}
-            >
-              {Array.from({ length: maxLives }).map((_, i) => (
+          <div className="relative z-10 flex items-center justify-between w-full">
+            {/* Score */}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-widest font-semibold text-muted">
+                Score
+              </span>
+              <AnimatePresence mode="popLayout">
                 <motion.span
-                  key={i}
-                  aria-hidden="true"
-                  animate={{
-                    scale: i < lives ? 1 : 0.7,
-                    opacity: i < lives ? 1 : 0.18,
-                    filter: i < lives ? 'drop-shadow(0 0 4px rgba(239,68,68,0.55))' : 'none',
-                  }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  className="text-lg"
+                  key={score}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-2xl font-bold tabular-nums text-accent"
+                  style={{ textShadow: '0 0 16px rgba(0,199,88,0.45)' }}
                 >
-                  ❤️
+                  {score}
                 </motion.span>
-              ))}
+              </AnimatePresence>
             </div>
-          ) : mode === 'best-of-100' ? (
+
+            {/* Question number */}
             <div className="flex flex-col items-center">
-              <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--color-muted)' }}>
-                Progress
+              <span className="text-[10px] uppercase tracking-widest font-semibold text-muted">
+                Question
               </span>
-              <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--color-foreground)' }}>
-                {questionNumber}{' '}
-                <span style={{ color: 'var(--color-muted)', fontWeight: 400 }}>/ 100</span>
+              <span className="text-base font-bold tabular-nums text-foreground">
+                #{questionNumber}
               </span>
             </div>
-          ) : (
-            <span
-              className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border"
-              style={{
-                color: '#f97316',
-                borderColor: 'rgba(249,115,22,0.4)',
-                background: 'rgba(249,115,22,0.08)',
-              }}
-            >
-              Survival
-            </span>
-          )}
+
+            {/* Lives / Mode */}
+            {mode === 'lives' ? (
+              <div
+                className="flex items-center gap-1.5"
+                role="img"
+                aria-label={`${lives} of ${maxLives} lives remaining`}
+              >
+                {Array.from({ length: maxLives }).map((_, i) => (
+                  <motion.span
+                    key={i}
+                    aria-hidden="true"
+                    animate={{
+                      scale: i < lives ? 1 : 0.7,
+                      opacity: i < lives ? 1 : 0.18,
+                      filter: i < lives ? 'drop-shadow(0 0 4px rgba(239,68,68,0.55))' : 'none',
+                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="text-lg"
+                  >
+                    ❤️
+                  </motion.span>
+                ))}
+              </div>
+            ) : mode === 'best-of-100' ? (
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] uppercase tracking-widest font-semibold text-muted">
+                  Progress
+                </span>
+                <span className="text-sm font-bold tabular-nums text-foreground">
+                  {questionNumber}{' '}
+                  <span className="text-muted font-normal">/ 100</span>
+                </span>
+              </div>
+            ) : (
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-lg border border-orange-500/20 bg-orange-500/10 text-orange-500">
+                Survival
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Timer bar */}
@@ -170,18 +159,8 @@ export function QuizGame({
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
                       onClick={() => setConfirmForfeit(true)}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border cursor-pointer outline-hidden transition-all focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      style={{
-                        color: 'var(--color-muted)',
-                        borderColor: 'var(--color-border)',
-                        background: 'color-mix(in srgb, var(--color-surface) 40%, transparent)',
-                      }}
-                      whileHover={{
-                        color: '#ef4444',
-                        borderColor: 'rgba(239, 68, 68, 0.3)',
-                        background: 'rgba(239, 68, 68, 0.08)',
-                        y: -0.5,
-                      }}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-border bg-surface/40 cursor-pointer outline-hidden transition-all hover:text-red-500 hover:border-red-500/30 hover:bg-red-500/8 active:scale-95 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      whileHover={{ y: -0.5 }}
                       whileTap={{ scale: 0.97 }}
                     >
                       <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -245,22 +224,18 @@ export function QuizGame({
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div
-              className="rounded-2xl border p-6 md:p-8"
-              style={{
-                background: 'color-mix(in srgb, var(--color-surface) 72%, transparent)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                borderColor: 'var(--color-border)',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.04)',
-              }}
-            >
-              <QuestionCard
-                question={question}
-                answerState={answerState}
-                selectedAnswer={selectedAnswer}
-                onAnswer={onAnswer}
-              />
+            <div className="relative bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 rounded-3xl p-6 md:p-8 shadow-lg shadow-black/5 dark:shadow-black/35 overflow-hidden">
+              {/* Subtle glass reflection overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-white/10 dark:from-white/5 to-transparent pointer-events-none rounded-3xl" />
+
+              <div className="relative z-10">
+                <QuestionCard
+                  question={question}
+                  answerState={answerState}
+                  selectedAnswer={selectedAnswer}
+                  onAnswer={onAnswer}
+                />
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>

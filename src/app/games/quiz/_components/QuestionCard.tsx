@@ -86,21 +86,19 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
       {/* Metadata badges */}
       <div className="flex flex-wrap items-center gap-2 mb-5">
         <span
-          className="text-xs font-medium px-3 py-1 rounded-full border"
-          style={{ color: 'var(--color-muted)', background: 'var(--color-background)', borderColor: 'var(--color-border)' }}
+          className="inline-flex items-center px-2.5 py-1 rounded-lg bg-foreground/5 border border-border/85 text-[10px] font-bold uppercase tracking-wider text-foreground/80"
         >
           {question.category}
         </span>
         <span
-          className="text-xs font-semibold px-3 py-1 rounded-full border"
+          className="inline-flex items-center px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider"
           style={{ color: diff.color, background: diff.bg, borderColor: diff.border }}
         >
           {diff.label}
         </span>
         {question.type === 'true-false' && (
           <span
-            className="text-xs font-medium px-3 py-1 rounded-full border"
-            style={{ color: '#a78bfa', background: 'rgba(167,139,250,0.1)', borderColor: 'rgba(167,139,250,0.3)' }}
+            className="inline-flex items-center px-2.5 py-1 rounded-lg border border-purple-500/20 bg-purple-500/10 text-[10px] font-bold uppercase tracking-wider text-purple-500 dark:text-purple-400"
           >
             True / False
           </span>
@@ -108,12 +106,12 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
       </div>
 
       {/* Question text */}
-      <p className="text-xl md:text-2xl font-semibold leading-snug mb-8 text-foreground text-pretty">
+      <p className="text-xl md:text-2xl font-extrabold leading-snug tracking-tight mb-8 text-foreground text-pretty">
         {question.question}
       </p>
 
       {/* Options */}
-      <div className={`grid gap-3 ${question.type === 'true-false' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+      <div className={`grid gap-3.5 ${question.type === 'true-false' ? 'grid-cols-2' : 'grid-cols-1'}`}>
         {question.options.map((option, index) => {
           const state = getOptionState(index);
           const styles = optionStyles[state];
@@ -127,52 +125,64 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
                 x: 0,
                 transition: { duration: 0.3, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] },
               }}
-              whileHover={!isAnswered ? { x: 4, boxShadow: '0 0 0 1px rgba(0,199,88,0.28)', transition: { duration: 0.15 } } : undefined}
-              whileTap={!isAnswered ? { scale: 0.98 } : undefined}
+              whileHover={!isAnswered ? { x: 4, transition: { duration: 0.15 } } : undefined}
+              whileTap={!isAnswered ? { scale: 0.995 } : undefined}
               disabled={isAnswered}
               onClick={() => onAnswer(index)}
-              className="flex items-center gap-4 w-full p-4 rounded-xl border-2 text-left font-medium outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
+              className={[
+                'group relative flex items-center gap-4 w-full p-4 rounded-xl border-2 text-left font-medium transition-[border-color,background-color,box-shadow,opacity] duration-300 outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background overflow-hidden select-none',
+                state === 'idle'
+                  ? 'border-border/80 bg-surface/50 dark:bg-surface/30 hover:border-accent/40 shadow-2xs'
+                  : state === 'correct'
+                    ? 'border-green-500 bg-green-500/8 dark:bg-green-500/12'
+                    : state === 'wrong'
+                      ? 'border-red-500 bg-red-500/8 dark:bg-red-500/12'
+                      : 'border-border/30 bg-transparent text-muted opacity-30 cursor-default'
+              ].join(' ')}
               style={{
-                borderColor: styles.border,
-                background: styles.bg,
-                color: styles.text,
-                cursor: isAnswered ? 'default' : 'pointer',
                 boxShadow: styles.glow,
-                transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
+                cursor: isAnswered ? 'default' : 'pointer',
               }}
             >
+              {/* Hover highlight background overlay (only for idle option before answering) */}
+              {state === 'idle' && !isAnswered && (
+                <span className="absolute inset-0 bg-accent/6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+              )}
+
               {/* Letter label */}
               <span
-                className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-200"
+                className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-200 border border-border/10 font-mono"
                 style={{ background: styles.labelBg, color: styles.labelText }}
               >
                 {OPTION_LABELS[index]}
               </span>
 
               {/* Option text */}
-              <span className="text-sm md:text-base flex-1">{option}</span>
+              <span className="text-sm md:text-base flex-1 pr-2 leading-relaxed">{option}</span>
 
-              {/* Feedback icon */}
-              {isAnswered && state === 'correct' && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
-                  style={{ color: '#22c55e' }}
-                >
-                  <CheckIcon />
-                </motion.span>
-              )}
-              {isAnswered && state === 'wrong' && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
-                  style={{ color: '#ef4444' }}
-                >
-                  <XIcon />
-                </motion.span>
-              )}
+              {/* Fixed Feedback Icon Placeholder Wrapper to prevent text wrapping/layout shift */}
+              <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                {isAnswered && state === 'correct' && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
+                    style={{ color: '#22c55e' }}
+                  >
+                    <CheckIcon />
+                  </motion.span>
+                )}
+                {isAnswered && state === 'wrong' && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
+                    style={{ color: '#ef4444' }}
+                  >
+                    <XIcon />
+                  </motion.span>
+                )}
+              </div>
             </motion.button>
           );
         })}

@@ -126,17 +126,17 @@ export function ModeSelect({ onStart, onOpenLeaderboard }: Props) {
   // Step heading component for cleaner visuals and structural modularity
   function StepHeading({ number, title, subtitle }: { number: string; title: string; subtitle?: string }) {
     return (
-      <div className="flex flex-col mb-4 w-full">
-        <div className="flex items-center gap-2">
-          <span className="flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-extrabold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
+      <div className="flex flex-col mb-2 w-full">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold font-mono bg-accent/15 border border-accent/25 text-accent shrink-0">
             {number}
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300">
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-foreground">
             {title}
           </h2>
         </div>
         {subtitle && (
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 pl-7">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 pl-9 leading-relaxed">
             {subtitle}
           </p>
         )}
@@ -145,377 +145,389 @@ export function ModeSelect({ onStart, onOpenLeaderboard }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 lg:py-14 select-none">
+    <div className="min-h-screen flex flex-col items-center justify-start pt-24 md:pt-32 pb-16 px-4 select-none">
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
         className="w-full max-w-5xl flex flex-col items-center"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-start">
-          {/* Left Column: Title, Leaderboard Button, and Game Modes */}
-          <div className="lg:col-span-5 flex flex-col gap-6 w-full">
-            {/* Eyebrow + Title */}
-            <motion.div variants={item} className="text-center lg:text-left">
-              <div
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-[10px] uppercase tracking-widest font-semibold mb-6"
-                style={{
-                  borderColor: 'rgba(0,199,88,0.22)',
-                  background: 'rgba(0,199,88,0.06)',
-                  color: 'var(--color-muted)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                }}
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full inline-block animate-pulse"
-                  style={{ background: 'var(--color-accent)', boxShadow: '0 0 8px rgba(0,199,88,0.9)' }}
-                />
-                Programming Quiz
-              </div>
-              <h1
-                className="font-extrabold tracking-tight text-foreground mb-3 leading-tight text-balance"
-                style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)' }}
-              >
-                Choose your <span style={{ color: 'var(--color-accent)' }}>challenge</span>
-              </h1>
-              <p className="text-slate-500 dark:text-slate-400 text-sm max-w-sm mx-auto lg:mx-0 leading-relaxed">
-                Customize parameters or jump straight into the endless questions.
-              </p>
-            </motion.div>
-
-            {/* Secondary Action: Leaderboard Trigger */}
-            <motion.div variants={item} className="w-full flex justify-center lg:justify-start">
-              <motion.button
-                onClick={onOpenLeaderboard}
-                whileHover={{ scale: 1.02, y: -0.5 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer border transition-all duration-200 outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                style={{
-                  borderColor: 'var(--color-border)',
-                  color: 'var(--color-muted)',
-                  background: 'color-mix(in srgb, var(--color-surface) 60%, transparent)',
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
-                }}
-                onMouseEnter={(e) => {
-                  const btn = e.currentTarget as HTMLButtonElement;
-                  btn.style.borderColor = 'color-mix(in srgb, var(--color-accent) 30%, var(--color-border))';
-                  btn.style.color = 'var(--color-foreground)';
-                }}
-                onMouseLeave={(e) => {
-                  const btn = e.currentTarget as HTMLButtonElement;
-                  btn.style.borderColor = 'var(--color-border)';
-                  btn.style.color = 'var(--color-muted)';
-                }}
-              >
-                <svg aria-hidden="true" className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 group-hover:text-foreground shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-                </svg>
-                Leaderboard
-              </motion.button>
-            </motion.div>
-
-            {/* Step 1: Mode Selection */}
-            <motion.div variants={item} className="w-full">
-              <StepHeading
-                number="1"
-                title="Select Game Mode"
-                subtitle="Choose a challenge format that suits your style."
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-4 w-full mt-2">
-                {MODES_LIST.map((m) => {
-                  const isSelected = selected === m.id;
-                  return (
-                    <motion.button
-                      key={m.id}
-                      whileHover={{ y: -1, transition: { duration: 0.15 } }}
-                      whileTap={{ scale: 0.99 }}
-                      onClick={() => setSelected(m.id)}
-                      className={[
-                        'group relative p-4 rounded-xl border text-left cursor-pointer overflow-hidden transition-[border-color,background-color,box-shadow] duration-300 outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                        isSelected
-                          ? `${m.activeBorder} shadow-sm`
-                          : 'border-border bg-surface/40 hover:border-slate-350 dark:hover:border-slate-700 shadow-2xs',
-                      ].join(' ')}
-                      style={{
-                        background: isSelected ? m.bg : 'var(--color-surface)',
-                        backdropFilter: 'blur(8px)',
-                        WebkitBackdropFilter: 'blur(8px)',
-                        boxShadow: isSelected ? `0 8px 30px ${m.glowColor}` : undefined,
-                      }}
-                    >
-                      {/* Selected checkmark indicator */}
-                      <AnimatePresence>
-                        {isSelected && (
-                          <motion.span
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            transition={{ type: 'spring', stiffness: 350, damping: 18 }}
-                            className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center"
-                            style={{ background: 'var(--color-accent)' }}
-                          >
-                            <svg aria-hidden="true" className="w-3 h-3" style={{ color: 'var(--color-background)' }} viewBox="0 0 12 12" fill="none">
-                              <path d="M2.5 6l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-
-                      <div className="flex flex-row sm:flex-col lg:flex-row gap-4 items-start pr-6 sm:pr-0 lg:pr-6">
-                        {/* Icon Container */}
-                        <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300"
-                          style={{
-                            background: isSelected ? 'var(--color-background)' : 'rgba(100, 116, 139, 0.06)',
-                            border: isSelected ? `1px solid ${m.color}` : '1px solid var(--color-border)',
-                            color: isSelected ? m.color : 'var(--color-muted)',
-                            boxShadow: isSelected ? `0 0 12px ${m.glowColor}` : undefined,
-                          }}
-                        >
-                          {m.icon}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex flex-col xl:flex-row xl:items-baseline gap-0.5 xl:gap-2 mb-1">
-                            <span className="font-bold text-sm text-foreground group-hover:text-foreground/90 transition-colors duration-200">
-                              {m.label}
-                            </span>
-                            <span className={`text-[9px] font-semibold tracking-wide uppercase shrink-0 ${m.accentClass}`}>
-                              {m.tagline}
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                            {m.description}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.button>
-                  );
-                })}
-              </div>
-            </motion.div>
+        {/* Header Section */}
+        <motion.div variants={item} className="text-center mb-12 flex flex-col items-center">
+          <div
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-[10px] uppercase tracking-widest font-semibold mb-6"
+            style={{
+              borderColor: 'rgba(0,199,88,0.22)',
+              background: 'rgba(0,199,88,0.06)',
+              color: 'var(--color-muted)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full inline-block animate-pulse"
+              style={{ background: 'var(--color-accent)', boxShadow: '0 0 8px rgba(0,199,88,0.9)' }}
+            />
+            Programming Quiz
           </div>
+          <h1
+            className="font-extrabold tracking-tight text-foreground mb-4 leading-tight text-balance animate-none"
+            style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)' }}
+          >
+            Choose your{' '}
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block italic">
+              challenge
+            </span>
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md leading-relaxed mb-6">
+            Customize parameters or jump straight into the endless questions.
+          </p>
+
+          {/* Secondary Action: Leaderboard Trigger */}
+          <motion.button
+            onClick={onOpenLeaderboard}
+            whileHover={{ scale: 1.02, y: -0.5 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer border border-border bg-surface/80 dark:bg-surface/30 hover:border-accent/40 text-muted hover:text-foreground transition-all duration-300 backdrop-blur-md shadow-xs"
+          >
+            <svg
+              aria-hidden="true"
+              className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0 group-hover:text-foreground"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+              />
+            </svg>
+            Leaderboard
+          </motion.button>
+          <div className="w-14 h-px mx-auto mt-8 bg-linear-to-r from-transparent via-accent to-transparent" />
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-stretch">
+          {/* Left Column: Mode Selection Card */}
+          <motion.div
+            variants={item}
+            className="lg:col-span-5 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 rounded-3xl p-6 md:p-8 flex flex-col justify-between shadow-lg shadow-black/5 dark:shadow-black/35 relative h-full overflow-hidden"
+          >
+            {/* Subtle glass reflection overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/10 dark:from-white/5 to-transparent pointer-events-none rounded-3xl" />
+            
+            <div className="relative z-10 flex flex-col h-full justify-between gap-6">
+              <div>
+                <StepHeading
+                  number="1"
+                  title="Select Game Mode"
+                  subtitle="Choose a challenge format that suits your style."
+                />
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-4 w-full mt-4">
+                  {MODES_LIST.map((m) => {
+                    const isSelected = selected === m.id;
+                    return (
+                      <motion.button
+                        key={m.id}
+                        whileHover={{ y: -2, transition: { duration: 0.15 } }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => setSelected(m.id)}
+                        className={[
+                          'group relative p-5 rounded-2xl border text-left cursor-pointer overflow-hidden transition-[border-color,background-color,box-shadow] duration-300 outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                          isSelected
+                            ? `${m.activeBorder} shadow-md`
+                            : 'border-border bg-surface/50 dark:bg-surface/30 hover:border-slate-350 dark:hover:border-slate-700 shadow-2xs',
+                        ].join(' ')}
+                        style={{
+                          background: isSelected ? m.bg : 'var(--color-surface)',
+                          backdropFilter: 'blur(8px)',
+                          WebkitBackdropFilter: 'blur(8px)',
+                          boxShadow: isSelected ? `0 8px 30px ${m.glowColor}` : undefined,
+                        }}
+                      >
+                        {/* Hover overlay fill */}
+                        {!isSelected && (
+                          <span className="absolute inset-0 bg-accent/6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+                        )}
+
+                        {/* Selected checkmark indicator */}
+                        <AnimatePresence>
+                          {isSelected && (
+                            <motion.span
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              exit={{ scale: 0, opacity: 0 }}
+                              transition={{ type: 'spring', stiffness: 350, damping: 18 }}
+                              className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center animate-none"
+                              style={{ background: 'var(--color-accent)' }}
+                            >
+                              <svg aria-hidden="true" className="w-3 h-3" style={{ color: 'var(--color-background)' }} viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 6l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+
+                        <div className="flex flex-row sm:flex-col lg:flex-row gap-4 items-start pr-6 sm:pr-0 lg:pr-6">
+                          {/* Icon Container */}
+                          <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300"
+                            style={{
+                              background: isSelected ? 'var(--color-background)' : 'rgba(100, 116, 139, 0.06)',
+                              border: isSelected ? `1px solid ${m.color}` : '1px solid var(--color-border)',
+                              color: isSelected ? m.color : 'var(--color-muted)',
+                              boxShadow: isSelected ? `0 0 12px ${m.glowColor}` : undefined,
+                            }}
+                          >
+                            {m.icon}
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col xl:flex-row xl:items-baseline gap-0.5 xl:gap-2 mb-1.5">
+                              <span className="font-bold text-sm text-foreground group-hover:text-foreground/90 transition-colors duration-200">
+                                {m.label}
+                              </span>
+                              <span className={`text-[9px] font-bold tracking-wider uppercase shrink-0 ${m.accentClass}`}>
+                                {m.tagline}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                              {m.description}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Right Column: Customizations (Steps 2 & 3) and CTA */}
-          <div className="lg:col-span-7 flex flex-col gap-6 w-full">
-            {/* Step 2: Customizations - Categories */}
-            <div
-              className="w-full rounded-2xl border p-6"
-              style={{
-                background: 'var(--color-surface)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                borderColor: 'var(--color-border)',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.01)',
-              }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <StepHeading
-                  number="2"
-                  title="Filter Categories"
-                  subtitle="Include or exclude topics as you prefer."
-                />
+          <motion.div
+            variants={item}
+            className="lg:col-span-7 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 rounded-3xl p-6 md:p-8 flex flex-col justify-between shadow-lg shadow-black/5 dark:shadow-black/35 relative h-full overflow-hidden"
+          >
+            {/* Subtle glass reflection overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/10 dark:from-white/5 to-transparent pointer-events-none rounded-3xl" />
 
-                <div className="flex items-center gap-2 shrink-0 self-start mt-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCats(Object.keys(CATEGORY_LABELS) as CategoryKey[])}
-                    className="text-[10px] uppercase font-bold text-slate-500 hover:text-slate-750 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer transition-colors outline-hidden focus-visible:ring-1 focus-visible:ring-slate-400"
-                  >
-                    All
-                  </button>
-                  <span className="text-[10px] text-slate-300 dark:text-slate-700">|</span>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCats([])}
-                    className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 hover:text-slate-650 dark:hover:text-slate-350 cursor-pointer transition-colors outline-hidden focus-visible:ring-1 focus-visible:ring-slate-400"
-                  >
-                    None
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 mt-2">
-                {(Object.keys(CATEGORY_LABELS) as CategoryKey[]).map((cat) => {
-                  const active = selectedCats.includes(cat);
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => {
-                        if (active) {
-                          setSelectedCats(selectedCats.filter((c) => c !== cat));
-                        } else {
-                          setSelectedCats([...selectedCats, cat]);
-                        }
-                      }}
-                      className={[
-                        'relative px-6 py-2 rounded-xl text-[11px] font-semibold cursor-pointer border text-center transition-all duration-200 hover:-translate-y-[1px] outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                        active
-                          ? 'border-slate-400 dark:border-slate-600 text-foreground font-bold shadow-2xs'
-                          : 'border-border/60 text-slate-500 hover:border-slate-300 hover:text-slate-800 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200 bg-surface/30 hover:bg-surface/80 dark:bg-surface/20 dark:hover:bg-surface/60',
-                      ].join(' ')}
-                      style={{
-                        background: active ? 'color-mix(in srgb, var(--color-foreground) 4%, var(--color-surface))' : undefined,
-                      }}
-                    >
-                      {active && (
-                        <svg aria-hidden="true" className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-foreground/80 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                      )}
-                      <span className="block text-center">{CATEGORY_LABELS[cat]}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Step 3: Customizations - Difficulty */}
-            <div
-              className="w-full rounded-2xl border p-6 mb-4"
-              style={{
-                background: 'var(--color-surface)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                borderColor: 'var(--color-border)',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.01)',
-              }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <StepHeading
-                  number="3"
-                  title="Filter Difficulties & Scoring"
-                  subtitle="Configure the difficulty tier pool and point multipliers."
-                />
-
-                <div className="flex items-center gap-2 shrink-0 self-start mt-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedDiffs(['easy', 'medium', 'hard', 'extra-hard'])}
-                    className="text-[10px] uppercase font-bold text-slate-500 hover:text-slate-750 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer transition-colors outline-hidden focus-visible:ring-1 focus-visible:ring-slate-400"
-                  >
-                    All
-                  </button>
-                  <span className="text-[10px] text-slate-300 dark:text-slate-700">|</span>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedDiffs([])}
-                    className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 hover:text-slate-650 dark:hover:text-slate-350 cursor-pointer transition-colors outline-hidden focus-visible:ring-1 focus-visible:ring-slate-400"
-                  >
-                    None
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                {SCORING.map(({ id, label, pts, color }) => {
-                  const active = selectedDiffs.includes(id);
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => {
-                        if (active) {
-                          setSelectedDiffs(selectedDiffs.filter((d) => d !== id));
-                        } else {
-                          setSelectedDiffs([...selectedDiffs, id]);
-                        }
-                      }}
-                      className={[
-                        'group/diff relative p-3 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:-translate-y-[1px] outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                        active
-                          ? 'border-slate-400 dark:border-slate-600 text-foreground font-black shadow-2xs'
-                          : 'border-border/60 text-slate-500 hover:border-slate-300 dark:text-slate-400 dark:hover:border-slate-700 bg-surface/30 hover:bg-surface/80 dark:bg-surface/20 dark:hover:bg-surface/60',
-                      ].join(' ')}
-                      style={{
-                        background: active ? 'color-mix(in srgb, var(--color-foreground) 4%, var(--color-surface))' : undefined,
-                      }}
-                    >
-                      {/* Points Indicator Badge */}
-                      <div
-                        className={[
-                          'absolute top-2 right-2 px-1.5 py-0.5 rounded-md text-[8px] font-extrabold tracking-wide transition-all duration-200',
-                          active
-                            ? 'bg-foreground/5 text-foreground'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400',
-                        ].join(' ')}
-                      >
-                        {pts} PTS
-                      </div>
-
-                      <div className="flex flex-col items-center pt-2.5">
-                        {/* Signal Level Graphic */}
-                        {renderDifficultySignal(id, active, color)}
-
-                        <span className={`text-[11px] font-extrabold tracking-wide uppercase ${active ? 'text-foreground font-black' : 'text-slate-500/80'}`}>
-                          {label}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* CTA & Actions */}
-            <motion.div variants={item} className="flex flex-col items-center lg:items-end gap-3.5 mt-2">
-              <motion.button
-                disabled={!canStart}
-                onClick={() => canStart && onStart(selected, selectedCats, selectedDiffs)}
-                whileHover={canStart ? { scale: 1.02, y: -1 } : undefined}
-                whileTap={canStart ? { scale: 0.98 } : undefined}
-                className={[
-                  'group/btn relative px-16 py-4 rounded-xl font-extrabold text-sm uppercase tracking-widest overflow-hidden transition-all duration-300 outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                  canStart
-                    ? 'cursor-pointer'
-                    : 'bg-surface border border-border text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-40',
-                ].join(' ')}
-                style={
-                  canStart
-                    ? {
-                      background: 'var(--color-accent)',
-                      color: 'var(--color-background)',
-                      boxShadow: '0 8px 30px rgba(0, 199, 88, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
-                    }
-                    : undefined
-                }
-              >
-                {/* Glossy gradient animate shimmer */}
-                {canStart && (
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)',
-                      backgroundSize: '200% 100%',
-                      animation: 'shimmer 2.4s ease-in-out infinite',
-                    }}
+            <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+              {/* Step 2: Customizations - Categories */}
+              <div className="w-full flex flex-col">
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <StepHeading
+                    number="2"
+                    title="Filter Categories"
+                    subtitle="Include or exclude topics as you prefer."
                   />
-                )}
-                <span className="relative flex items-center justify-center gap-2">
-                  <span>
-                    {!selected
-                      ? 'Select a Mode'
-                      : selectedCats.length === 0
-                        ? 'Choose Category'
-                        : selectedDiffs.length === 0
-                          ? 'Choose Difficulty'
-                          : 'Begin Run'}
-                  </span>
+
+                  <div className="flex items-center gap-2 shrink-0 pl-9 mt-0.5 sm:pl-0">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCats(Object.keys(CATEGORY_LABELS) as CategoryKey[])}
+                      className="text-[10px] uppercase font-extrabold tracking-wider text-slate-500 hover:text-accent dark:text-slate-400 dark:hover:text-accent cursor-pointer transition-colors outline-hidden"
+                    >
+                      All
+                    </button>
+                    <span className="text-[10px] text-slate-350 dark:text-slate-700">|</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCats([])}
+                      className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400 dark:text-slate-500 hover:text-accent dark:hover:text-accent cursor-pointer transition-colors outline-hidden"
+                    >
+                      None
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 mt-2">
+                  {(Object.keys(CATEGORY_LABELS) as CategoryKey[]).map((cat) => {
+                    const active = selectedCats.includes(cat);
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          if (active) {
+                            setSelectedCats(selectedCats.filter((c) => c !== cat));
+                          } else {
+                            setSelectedCats([...selectedCats, cat]);
+                          }
+                        }}
+                        className={[
+                          'relative px-3 py-2.5 rounded-xl text-[11px] font-semibold cursor-pointer border text-center transition-all duration-300 hover:-translate-y-[1px] outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background group overflow-hidden',
+                          active
+                            ? 'border-accent text-foreground font-bold shadow-xs shadow-accent/5'
+                            : 'border-border/60 text-slate-500 hover:border-slate-300 hover:text-slate-800 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-slate-200 bg-surface/30 hover:bg-surface/80 dark:bg-surface/20 dark:hover:bg-surface/60',
+                        ].join(' ')}
+                        style={{
+                          background: active ? 'rgba(0, 199, 88, 0.08)' : undefined,
+                        }}
+                      >
+                        {/* Hover background fill */}
+                        {!active && (
+                          <span className="absolute inset-0 bg-accent/6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+                        )}
+                        
+                        <span className="relative flex items-center justify-center gap-1.5 w-full">
+                          {active && (
+                            <motion.span
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              className="w-1.5 h-1.5 rounded-full bg-accent inline-block shrink-0"
+                            />
+                          )}
+                          <span className="block text-center truncate">{CATEGORY_LABELS[cat]}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 3: Customizations - Difficulty */}
+              <div className="w-full flex flex-col">
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <StepHeading
+                    number="3"
+                    title="Filter Difficulties & Scoring"
+                    subtitle="Configure the difficulty tier pool and point multipliers."
+                  />
+
+                  <div className="flex items-center gap-2 shrink-0 pl-9 mt-0.5 sm:pl-0">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDiffs(['easy', 'medium', 'hard', 'extra-hard'])}
+                      className="text-[10px] uppercase font-extrabold tracking-wider text-slate-500 hover:text-accent dark:text-slate-400 dark:hover:text-accent cursor-pointer transition-colors outline-hidden"
+                    >
+                      All
+                    </button>
+                    <span className="text-[10px] text-slate-350 dark:text-slate-700">|</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDiffs([])}
+                      className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400 dark:text-slate-500 hover:text-accent dark:hover:text-accent cursor-pointer transition-colors outline-hidden"
+                    >
+                      None
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
+                  {SCORING.map(({ id, label, pts, color }) => {
+                    const active = selectedDiffs.includes(id);
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => {
+                          if (active) {
+                            setSelectedDiffs(selectedDiffs.filter((d) => d !== id));
+                          } else {
+                            setSelectedDiffs([...selectedDiffs, id]);
+                          }
+                        }}
+                        className={[
+                          'group/diff relative p-4 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:-translate-y-[1px] outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background overflow-hidden',
+                          active
+                            ? 'border-accent text-foreground font-black shadow-xs shadow-accent/5'
+                            : 'border-border/60 text-slate-500 hover:border-slate-300 dark:text-slate-400 dark:hover:border-slate-700 bg-surface/30 hover:bg-surface/80 dark:bg-surface/20 dark:hover:bg-surface/60',
+                        ].join(' ')}
+                        style={{
+                          background: active ? 'rgba(0, 199, 88, 0.08)' : undefined,
+                        }}
+                      >
+                        {/* Hover background fill */}
+                        {!active && (
+                          <span className="absolute inset-0 bg-accent/6 opacity-0 group-hover/diff:opacity-100 transition-opacity duration-200 pointer-events-none" />
+                        )}
+
+                        {/* Points Indicator Badge */}
+                        <div
+                          className={[
+                            'absolute top-2 right-2 px-1.5 py-0.5 rounded-md text-[8px] font-extrabold tracking-wide transition-all duration-200',
+                            active
+                              ? 'bg-accent/15 text-accent'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400',
+                          ].join(' ')}
+                        >
+                          {pts} PTS
+                        </div>
+
+                        <div className="flex flex-col items-center pt-3.5">
+                          {/* Signal Level Graphic */}
+                          {renderDifficultySignal(id, active, color)}
+
+                          <span className={`text-[10px] font-extrabold tracking-wider uppercase mt-1 ${active ? 'text-foreground font-black' : 'text-slate-500/80'}`}>
+                            {label}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* CTA & Actions */}
+              <div className="flex flex-col items-center lg:items-end gap-3.5 mt-4">
+                <motion.button
+                  disabled={!canStart}
+                  onClick={() => canStart && onStart(selected, selectedCats, selectedDiffs)}
+                  whileHover={canStart ? { scale: 1.02, y: -1 } : undefined}
+                  whileTap={canStart ? { scale: 0.98 } : undefined}
+                  className={[
+                    'group/btn relative px-16 py-4 rounded-xl font-extrabold text-sm uppercase tracking-widest overflow-hidden transition-all duration-300 outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto',
+                    canStart
+                      ? 'cursor-pointer'
+                      : 'bg-surface border border-border text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-40',
+                  ].join(' ')}
+                  style={
+                    canStart
+                      ? {
+                        background: 'var(--color-accent)',
+                        color: 'var(--color-background)',
+                        boxShadow: '0 8px 30px rgba(0, 199, 88, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                      }
+                      : undefined
+                  }
+                >
+                  {/* Glossy gradient animate shimmer */}
                   {canStart && (
-                    <svg aria-hidden="true" className="w-4 h-4 transition-transform duration-250 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)',
+                        backgroundSize: '200% 100%',
+                        animation: 'shimmer 2.4s ease-in-out infinite',
+                      }}
+                    />
                   )}
-                </span>
-              </motion.button>
-            </motion.div>
-          </div>
+                  <span className="relative flex items-center justify-center gap-2">
+                    <span>
+                      {!selected
+                        ? 'Select a Mode'
+                        : selectedCats.length === 0
+                          ? 'Choose Category'
+                          : selectedDiffs.length === 0
+                            ? 'Choose Difficulty'
+                            : 'Begin Run'}
+                    </span>
+                    {canStart && (
+                      <svg aria-hidden="true" className="w-4 h-4 transition-transform duration-250 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    )}
+                  </span>
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </motion.div>
     </div>
