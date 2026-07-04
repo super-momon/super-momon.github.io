@@ -11,7 +11,7 @@ export interface MobileNavSectionProps {
   icons: Record<string, IconDefinition>;
   isOpen: boolean;
   onToggle: () => void;
-  onLinkClick: () => void;
+  onLinkClick: (link: NavLink) => void;
   slideDelay?: string;
 }
 
@@ -46,7 +46,7 @@ export default function MobileNavSection({
             <li key={link.href}>
               <a
                 href={link.href}
-                onClick={onLinkClick}
+                onClick={() => onLinkClick(link)}
                 className="relative flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-all duration-200 group/sub overflow-hidden"
                 style={{ transitionDelay: `${i * 20}ms` }}
               >

@@ -13,6 +13,7 @@ export interface NavPanelProps {
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   onClose: () => void;
+  onLinkClick?: (link: NavLink) => void;
 }
 
 const LINK_METADATA: Record<
@@ -100,7 +101,7 @@ const LINK_METADATA: Record<
   }
 };
 
-export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLeave, onClose }: NavPanelProps) {
+export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLeave, onClose, onLinkClick }: NavPanelProps) {
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
 
@@ -152,7 +153,10 @@ export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLe
                 key={link.href}
                 href={link.href}
                 role="menuitem"
-                onClick={onClose}
+                onClick={() => {
+                  if (onLinkClick) onLinkClick(link);
+                  onClose();
+                }}
                 onMouseEnter={() => setHoveredHref(link.href)}
                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group/link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${
                   isHovered

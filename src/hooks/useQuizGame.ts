@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { QuizQuestion, GameMode, GamePhase, AnswerState, QuestionDifficulty } from '@/types/quiz';
 import { QUESTIONS_BY_CATEGORY, type CategoryKey, getAllQuestions } from '@/data/quiz';
+import { trackEvent } from '@/lib/analytics';
 
 const TOTAL_LIVES = 3;
 const TIMER_SECONDS = 15;
@@ -174,6 +175,13 @@ export function useQuizGame() {
   const startGame = useCallback(
     (selectedMode: GameMode, categories: CategoryKey[], difficulties: QuestionDifficulty[]) => {
       clearPendingAdvance();
+
+      trackEvent('game_play', {
+        game_name: 'quiz',
+        mode: selectedMode,
+        categories: categories.join(',') || 'all',
+        difficulties: difficulties.join(',') || 'all',
+      });
 
       activeCategoriesRef.current = categories;
       activeDifficultiesRef.current = difficulties;

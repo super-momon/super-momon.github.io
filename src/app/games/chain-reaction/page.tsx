@@ -8,6 +8,7 @@ import OnlineLobby from './_components/OnlineLobby';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import { PRESET_COLORS } from './_components/colors';
+import { trackEvent } from '@/lib/analytics';
 
 type GamePhase = 'setup' | 'lobby' | 'playing' | 'winner';
 
@@ -189,6 +190,24 @@ export default function ChainReactionPage() {
       }
     }
   }, [lobbyPlayers, isOnline, myClientId, initialOnlineColor]);
+
+  // Track page visit
+  useEffect(() => {
+    trackEvent('game_visit', { game_name: 'chain-reaction' });
+  }, []);
+
+  // Track game play when phase transitions to 'playing'
+  useEffect(() => {
+    if (phase === 'playing') {
+      trackEvent('game_play', {
+        game_name: 'chain-reaction',
+        mode: isOnline ? 'online' : 'local',
+        rows,
+        cols,
+        player_count: players.length,
+      });
+    }
+  }, [phase, isOnline, rows, cols, players.length]);
 
   const handleStartGame = (
     setupPlayers: PlayerSetup[],

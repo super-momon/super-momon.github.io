@@ -22,6 +22,7 @@ import { PORTFOLIO_LINKS, GAME_LINKS } from "@/lib/constants";
 import NavPanel from "./navbar/NavPanel";
 import NavTrigger from "./navbar/NavTrigger";
 import MobileNavSection from "./navbar/MobileNavSection";
+import { trackEvent } from "@/lib/analytics";
 
 // ─── Icon maps ────────────────────────────────────────────────────────────────
 const PORTFOLIO_ICONS: Record<string, IconDefinition> = {
@@ -157,6 +158,14 @@ export default function Navbar() {
               onMouseEnter={gameHandlers.onEnter}
               onMouseLeave={gameHandlers.onLeave}
               onClose={() => setGameOpen(false)}
+              onLinkClick={(link) => {
+                const gameName = link.href.includes("quiz") ? "quiz" : "chain-reaction";
+                trackEvent("game_nav_click", {
+                  game_name: gameName,
+                  device: "desktop",
+                  destination: link.href,
+                });
+              }}
             />
           </NavTrigger>
         </ul>
@@ -216,7 +225,16 @@ export default function Navbar() {
               icons={GAME_ICONS}
               isOpen={mobileGameOpen}
               onToggle={() => setMobileGameOpen((p) => !p)}
-              onLinkClick={() => { setIsMenuOpen(false); setMobileGameOpen(false); }}
+              onLinkClick={(link) => {
+                setIsMenuOpen(false);
+                setMobileGameOpen(false);
+                const gameName = link?.href.includes("quiz") ? "quiz" : "chain-reaction";
+                trackEvent("game_nav_click", {
+                  game_name: gameName,
+                  device: "mobile",
+                  destination: link?.href,
+                });
+              }}
               slideDelay="0.05s"
             />
           </ul>

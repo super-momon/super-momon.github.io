@@ -1,15 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuizGame } from '@/hooks/useQuizGame';
 import { ModeSelect } from './_components/ModeSelect';
 import { QuizGame } from './_components/QuizGame';
 import { ResultScreen } from './_components/ResultScreen';
 import { LeaderboardModal } from './_components/LeaderboardModal';
+import { trackEvent } from '@/lib/analytics';
 
 export default function QuizPage() {
   const game = useQuizGame();
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+
+  useEffect(() => {
+    trackEvent('game_visit', { game_name: 'quiz' });
+  }, []);
 
   return (
     <div className="relative">
