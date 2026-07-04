@@ -102,15 +102,17 @@ export default function GameBoard({
   // Temporary notification toast for player disconnects
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const isAnimatingRef = useRef(isAnimating);
-  useEffect(() => {
-    isAnimatingRef.current = isAnimating;
-  }, [isAnimating]);
+  const isAnimatingRef = useRef(false);
 
   // Refs to avoid stale closures in event listeners
   const boardRef = useRef(board);
   const playersRef = useRef(players);
   const currentPlayerIndexRef = useRef(currentPlayerIndex);
+  const pendingSyncStateRef = useRef<{
+    board: Cell[][];
+    players: Player[];
+    currentPlayerIndex: number;
+  } | null>(null);
 
   useEffect(() => {
     boardRef.current = board;
@@ -141,16 +143,28 @@ export default function GameBoard({
 
     const handleMoveBroadcast = (payload: any) => {
       const { r, c, playerIdx } = payload.payload;
-      if (playerIdx === currentPlayerIndexRef.current) {
+      if (isOnline) {
+        if (playerIdx !== currentPlayerIndexRef.current) {
+          console.warn(`Desync detected: received move for player ${playerIdx} but local currentPlayerIndex is ${currentPlayerIndexRef.current}. Aligning.`);
+          setCurrentPlayerIndex(playerIdx);
+        }
         executeMove(r, c, playerIdx);
       }
     };
 
     const handleSyncStateBroadcast = (payload: any) => {
       const { board: syncedBoard, players: syncedPlayers, currentPlayerIndex: syncedCurrentPlayerIndex } = payload.payload;
-      setBoard(syncedBoard);
-      setPlayers(syncedPlayers);
-      setCurrentPlayerIndex(syncedCurrentPlayerIndex);
+      if (isAnimatingRef.current) {
+        pendingSyncStateRef.current = {
+          board: syncedBoard,
+          players: syncedPlayers,
+          currentPlayerIndex: syncedCurrentPlayerIndex,
+        };
+      } else {
+        setBoard(syncedBoard);
+        setPlayers(syncedPlayers);
+        setCurrentPlayerIndex(syncedCurrentPlayerIndex);
+      }
     };
 
     const handleResetGameBroadcast = () => {
@@ -215,7 +229,7 @@ export default function GameBoard({
 
   // Gracefully skip disconnected players' turns
   useEffect(() => {
-    if (!isOnline || players.length === 0) return;
+    if (!isOnline || players.length === 0 || isAnimating) return;
 
     const currentPlayer = players[currentPlayerIndex];
     if (currentPlayer && !currentPlayer.active) {
@@ -244,7 +258,7 @@ export default function GameBoard({
         });
       }
     }
-  }, [players, currentPlayerIndex, isOnline, isHost, board]);
+  }, [players, currentPlayerIndex, isOnline, isHost, board, isAnimating]);
 
   // Initialize Board and Players
   const initializeGame = () => {
@@ -262,6 +276,7 @@ export default function GameBoard({
     setPlayers(freshPlayers);
     setCurrentPlayerIndex(0);
     setIsAnimating(false);
+    isAnimatingRef.current = false;
     setExplodingCells({});
     setShakeBoard(false);
   };
@@ -294,6 +309,7 @@ export default function GameBoard({
     placerId: number
   ) => {
     setIsAnimating(true);
+    isAnimatingRef.current = true;
     let currentBoard = startBoard.map((row) => row.map((cell) => ({ ...cell })));
     let tempPlayers = currentPlayers.map((p) => ({ ...p }));
 
@@ -373,6 +389,7 @@ export default function GameBoard({
         const winner = activePlayers[0];
         const winnerOrbs = countPlayerOrbs(currentBoard, winner.id);
         setIsAnimating(false);
+        isAnimatingRef.current = false;
         audioSynth.playVictory();
         onGameFinished(winner.name, winner.color, winnerOrbs);
         return;
@@ -387,30 +404,56 @@ export default function GameBoard({
     await sleep(500);
 
     setIsAnimating(false);
+    isAnimatingRef.current = false;
     
-    // Find next active player
-    let nextIdx = (placerId + 1) % tempPlayers.length;
-    let foundNext = false;
-    for (let i = 0; i < tempPlayers.length; i++) {
-      if (tempPlayers[nextIdx].active) {
-        setCurrentPlayerIndex(nextIdx);
-        foundNext = true;
-        break;
-      }
-      nextIdx = (nextIdx + 1) % tempPlayers.length;
-    }
+    if (isOnline) {
+      const isPlacer = tempPlayers[placerId]?.clientId === myClientId;
+      if (isPlacer) {
+        // Find next active player
+        let nextIdx = (placerId + 1) % tempPlayers.length;
+        let foundNext = false;
+        for (let i = 0; i < tempPlayers.length; i++) {
+          if (tempPlayers[nextIdx].active) {
+            setCurrentPlayerIndex(nextIdx);
+            foundNext = true;
+            break;
+          }
+          nextIdx = (nextIdx + 1) % tempPlayers.length;
+        }
 
-    // Sync definitive board state from the active player's client to guests
-    if (isOnline && tempPlayers[placerId]?.clientId === myClientId && channelRef.current) {
-      channelRef.current.send({
-        type: 'broadcast',
-        event: 'sync-state',
-        payload: {
-          board: currentBoard,
-          players: tempPlayers,
-          currentPlayerIndex: foundNext ? nextIdx : placerId,
-        },
-      });
+        if (channelRef.current) {
+          channelRef.current.send({
+            type: 'broadcast',
+            event: 'sync-state',
+            payload: {
+              board: currentBoard,
+              players: tempPlayers,
+              currentPlayerIndex: foundNext ? nextIdx : placerId,
+            },
+          });
+        }
+      } else {
+        // Guest client: check for deferred sync state
+        if (pendingSyncStateRef.current) {
+          const pending = pendingSyncStateRef.current;
+          setBoard(pending.board);
+          setPlayers(pending.players);
+          setCurrentPlayerIndex(pending.currentPlayerIndex);
+          pendingSyncStateRef.current = null;
+        }
+      }
+    } else {
+      // Offline local game: advance turn index normally
+      let nextIdx = (placerId + 1) % tempPlayers.length;
+      let foundNext = false;
+      for (let i = 0; i < tempPlayers.length; i++) {
+        if (tempPlayers[nextIdx].active) {
+          setCurrentPlayerIndex(nextIdx);
+          foundNext = true;
+          break;
+        }
+        nextIdx = (nextIdx + 1) % tempPlayers.length;
+      }
     }
   };
 
@@ -680,6 +723,7 @@ export default function GameBoard({
 
                 const isOwned = cell.ownerId !== null;
                 const limit = getCellCriticalMass(r, c);
+                const isCritical = cell.orbs > 0 && cell.orbs === limit - 1;
 
                 return (
                   <div
@@ -688,6 +732,8 @@ export default function GameBoard({
                     className={`game-cell rounded-[6px] border ${
                       isOwned ? 'owned' : ''
                     } ${isExploding ? 'cell-explode' : ''} ${
+                      isCritical ? 'critical-cell' : ''
+                    } ${
                       isCellDisabled ? 'disabled cursor-not-allowed' : 'hover:scale-102 hover:shadow-sm'
                     }`}
                     style={{

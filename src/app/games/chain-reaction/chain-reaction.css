@@ -29,6 +29,7 @@
     inset 0 0 3px rgba(255, 255, 255, 0.4);
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   animation: orb-appear 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  border: var(--orb-border, 1px) solid var(--color-background, #0f172a);
 }
 
 @keyframes orb-appear {
@@ -54,12 +55,15 @@
 .orb-layout-2 {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 0px;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
   animation: spin-slow 12s linear infinite;
+}
+.orb-layout-2 > .orb-simple {
+  margin: 0 var(--orb-overlap, -2px);
 }
 
 .orb-layout-3 {
@@ -67,21 +71,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 0px;
   width: 100%;
   height: 100%;
   animation: spin-normal 5s linear infinite;
 }
 
 .orb-layout-3 > .orb-simple {
+  margin-bottom: calc(var(--orb-overlap, -2px) * 1.4);
   animation: wobble-top 1.2s ease-in-out infinite alternate;
 }
 
 .orb-layout-3-row {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 0px;
   animation: wobble-bottom 1.2s ease-in-out infinite alternate;
+}
+.orb-layout-3-row > .orb-simple {
+  margin: 0 var(--orb-overlap, -2px);
 }
 
 @keyframes spin-slow {
@@ -123,16 +131,23 @@
 .orb-layout-4 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
+  gap: 0px;
   justify-items: center;
   align-items: center;
   width: auto;
   height: auto;
+  animation: spin-slow 18s linear infinite;
 }
+.orb-layout-4 > .orb-simple {
+  margin: var(--orb-overlap, -2px);
+}
+
 
 /* Zoom Sizing Definitions & Variables (Responsive configurations) */
 .zoom-sm {
   --cell-size: 28px;
+  --orb-overlap: -1.2px;
+  --orb-border: 0.6px;
 }
 @media (min-width: 640px) {
   .zoom-sm { --cell-size: 32px; }
@@ -140,6 +155,8 @@
 
 .zoom-md {
   --cell-size: 36px;
+  --orb-overlap: -2.2px;
+  --orb-border: 1px;
 }
 @media (min-width: 640px) {
   .zoom-md { --cell-size: 40px; }
@@ -147,41 +164,31 @@
 
 .zoom-lg {
   --cell-size: 48px;
+  --orb-overlap: -3.8px;
+  --orb-border: 1.5px;
 }
 @media (min-width: 640px) {
   .zoom-lg { --cell-size: 56px; }
 }
 
-/* Zoom adjustments to scale down orbs and gaps for different cell sizes */
+/* Zoom adjustments to scale down orbs for different cell sizes */
 .zoom-sm .orb-simple {
   width: 8px;
   height: 8px;
   box-shadow: 0 0 6px var(--orb-glow);
 }
-.zoom-sm .orb-layout-2 { gap: 2px; }
-.zoom-sm .orb-layout-3 { gap: 1px; }
-.zoom-sm .orb-layout-3-row { gap: 2px; }
-.zoom-sm .orb-layout-4 { gap: 2px; }
 
 .zoom-md .orb-simple {
   width: 12px;
   height: 12px;
   box-shadow: 0 0 10px var(--orb-glow);
 }
-.zoom-md .orb-layout-2 { gap: 5px; }
-.zoom-md .orb-layout-3 { gap: 3px; }
-.zoom-md .orb-layout-3-row { gap: 5px; }
-.zoom-md .orb-layout-4 { gap: 4px; }
 
 .zoom-lg .orb-simple {
   width: 18px;
   height: 18px;
   box-shadow: 0 0 14px var(--orb-glow);
 }
-.zoom-lg .orb-layout-2 { gap: 8px; }
-.zoom-lg .orb-layout-3 { gap: 4px; }
-.zoom-lg .orb-layout-3-row { gap: 8px; }
-.zoom-lg .orb-layout-4 { gap: 6px; }
 
 /* Grid & Cell styling */
 .game-cell {
@@ -332,4 +339,18 @@
 @keyframes shoot-left {
   0% { transform: translateX(0) scale(1); opacity: 1; }
   100% { transform: translateX(calc(-1 * var(--cell-size, 36px))) scale(0.5); opacity: 0; }
+}
+
+/* Critical mass unstable state shaking */
+.critical-cell .orb-simple {
+  animation: orb-critical-shake 0.22s ease-in-out infinite alternate;
+}
+
+@keyframes orb-critical-shake {
+  0% {
+    transform: translate(0.3px, 0.3px) scale(1.01);
+  }
+  100% {
+    transform: translate(-0.3px, -0.3px) scale(0.99);
+  }
 }
