@@ -13,7 +13,7 @@ import {
   faSpinner, 
   faUser
 } from '@fortawesome/free-solid-svg-icons';
-import { LobbyPresenceUser } from '../page';
+import { LobbyPresenceUser } from '../ChainReactionGame';
 import { PRESET_COLORS, getThemeColor, useIsDark } from './colors';
 
 interface OnlineLobbyProps {
