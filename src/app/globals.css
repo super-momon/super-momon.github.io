@@ -100,6 +100,24 @@ a {
   }
 }
 
+@keyframes scroll-right {
+  from {
+    transform: translateX(calc(-100% - 1rem));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 1rem));
+  }
+}
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -216,4 +234,12 @@ a {
 
 .animate-marquee {
   animation: scroll 30s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: scroll-right 30s linear infinite;
+}
+
+.animate-marquee-left {
+  animation: scroll-left 30s linear infinite;
 }
