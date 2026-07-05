@@ -221,11 +221,10 @@ export default function About() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 border text-center cursor-pointer ${
-                        isActive
-                          ? "bg-background/85 shadow-xs border-border/50 text-foreground font-bold"
-                          : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
-                      }`}
+                      className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 border text-center cursor-pointer ${isActive
+                        ? "bg-background/85 shadow-xs border-border/50 text-foreground font-bold"
+                        : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
+                        }`}
                     >
                       <FontAwesomeIcon icon={tab.icon} className={`text-sm mb-1.5 ${isActive ? "text-accent" : "text-foreground/60"}`} />
                       <span className="text-[10px] font-semibold tracking-tight leading-none">{tab.label.split(" ").pop()}</span>
@@ -242,26 +241,23 @@ export default function About() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
-                        isActive
-                          ? "bg-background/80 shadow-xs border border-border/50"
-                          : "hover:bg-background/30 border border-transparent"
-                      }`}
+                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
+                        ? "bg-background/80 shadow-xs border border-border/50"
+                        : "hover:bg-background/30 border border-transparent"
+                        }`}
                     >
                       {/* Active Indicator on Left */}
                       <span
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${
-                          isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
-                        }`}
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
+                          }`}
                       />
 
                       {/* Icon block */}
                       <span
-                        className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${
-                          isActive
-                            ? "bg-accent/15 text-accent shadow-xs"
-                            : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
-                        }`}
+                        className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${isActive
+                          ? "bg-accent/15 text-accent shadow-xs"
+                          : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
+                          }`}
                       >
                         <FontAwesomeIcon
                           icon={tab.icon}
@@ -273,9 +269,8 @@ export default function About() {
                       {/* Text Content */}
                       <div className="flex flex-col text-left min-w-0">
                         <span
-                          className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
-                            isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
-                          }`}
+                          className={`text-xs font-semibold leading-tight transition-colors duration-300 ${isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
+                            }`}
                         >
                           {tab.label}
                         </span>

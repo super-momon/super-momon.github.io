@@ -13,6 +13,7 @@ import {
   faTv, 
   faGlobe, 
   faPlus, 
+  faMinus, 
   faSignInAlt 
 } from '@fortawesome/free-solid-svg-icons';
 import { PRESET_COLORS, getThemeColor, useIsDark } from './colors';
@@ -44,9 +45,37 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
 
   // Local-specific states
   const [playerCount, setPlayerCount] = useState<number>(2);
-  const [rows, setRows] = useState<number>(15);
-  const [cols, setCols] = useState<number>(20);
+  const [rows, setRows] = useState<number | ''>(15);
+  const [cols, setCols] = useState<number | ''>(20);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+
+  const decrementRows = () => {
+    setRows((prev) => {
+      const val = prev === '' ? 15 : prev;
+      return Math.max(6, val - 1);
+    });
+  };
+
+  const incrementRows = () => {
+    setRows((prev) => {
+      const val = prev === '' ? 15 : prev;
+      return Math.min(20, val + 1);
+    });
+  };
+
+  const decrementCols = () => {
+    setCols((prev) => {
+      const val = prev === '' ? 20 : prev;
+      return Math.max(6, val - 1);
+    });
+  };
+
+  const incrementCols = () => {
+    setCols((prev) => {
+      const val = prev === '' ? 20 : prev;
+      return Math.min(25, val + 1);
+    });
+  };
 
   // Initialize local players config
   const [players, setPlayers] = useState<PlayerSetup[]>(
@@ -71,8 +100,12 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
 
   const handleLocalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const finalRows = Math.max(6, Math.min(20, Number(rows) || 15));
+    const finalCols = Math.max(6, Math.min(25, Number(cols) || 20));
+    setRows(finalRows);
+    setCols(finalCols);
     const activePlayers = players.slice(0, playerCount);
-    onStartGame(activePlayers, rows, cols, soundEnabled);
+    onStartGame(activePlayers, finalRows, finalCols, soundEnabled);
   };
 
   const handleOnlineSubmit = (e: React.FormEvent) => {
@@ -258,28 +291,92 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
                     Grid Board Dimensions
                   </label>
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <span className="text-xs text-[var(--color-muted)] block mb-1">Rows (6 - 20)</span>
-                      <input
-                        type="number"
-                        min={6}
-                        max={20}
-                        value={rows}
-                        onChange={(e) => setRows(Math.max(6, Math.min(20, parseInt(e.target.value) || 15)))}
-                        className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm font-bold text-center focus:outline-none focus:border-[var(--color-accent)]"
-                      />
+                      <span className="text-xs text-[var(--color-muted)] block mb-1.5">Rows (6 - 20)</span>
+                      <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                        <button
+                          key="rows-dec"
+                          type="button"
+                          onClick={decrementRows}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                        <input
+                          type="number"
+                          min={6}
+                          max={20}
+                          value={rows}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '') {
+                              setRows('');
+                            } else {
+                              const parsed = parseInt(val, 10);
+                              if (!isNaN(parsed)) setRows(parsed);
+                            }
+                          }}
+                          onBlur={() => {
+                            const num = Number(rows);
+                            if (isNaN(num) || num < 6) setRows(6);
+                            else if (num > 20) setRows(20);
+                            else setRows(num);
+                          }}
+                          className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <button
+                          key="rows-inc"
+                          type="button"
+                          onClick={incrementRows}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                      </div>
                     </div>
                     <div>
-                      <span className="text-xs text-[var(--color-muted)] block mb-1">Columns (6 - 25)</span>
-                      <input
-                        type="number"
-                        min={6}
-                        max={25}
-                        value={cols}
-                        onChange={(e) => setCols(Math.max(6, Math.min(25, parseInt(e.target.value) || 20)))}
-                        className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm font-bold text-center focus:outline-none focus:border-[var(--color-accent)]"
-                      />
+                      <span className="text-xs text-[var(--color-muted)] block mb-1.5">Columns (6 - 25)</span>
+                      <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                        <button
+                          key="cols-dec"
+                          type="button"
+                          onClick={decrementCols}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                        <input
+                          type="number"
+                          min={6}
+                          max={25}
+                          value={cols}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '') {
+                              setCols('');
+                            } else {
+                              const parsed = parseInt(val, 10);
+                              if (!isNaN(parsed)) setCols(parsed);
+                            }
+                          }}
+                          onBlur={() => {
+                            const num = Number(cols);
+                            if (isNaN(num) || num < 6) setCols(6);
+                            else if (num > 25) setCols(25);
+                            else setCols(num);
+                          }}
+                          className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <button
+                          key="cols-inc"
+                          type="button"
+                          onClick={incrementCols}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
