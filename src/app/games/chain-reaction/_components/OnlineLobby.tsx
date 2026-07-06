@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -11,7 +11,9 @@ import {
   faPlay, 
   faBorderAll, 
   faSpinner, 
-  faUser
+  faUser,
+  faMinus,
+  faPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { LobbyPresenceUser } from '../ChainReactionGame';
 import { PRESET_COLORS, getThemeColor, useIsDark } from './colors';
@@ -51,12 +53,61 @@ export default function OnlineLobby({
 }: OnlineLobbyProps) {
   const isDark = useIsDark();
   const [copied, setCopied] = useState(false);
+  const [localName, setLocalName] = useState(playerName);
+  const [localRows, setLocalRows] = useState<string>(rows.toString());
+  const [localCols, setLocalCols] = useState<string>(cols.toString());
+
+  // Sync localName if playerName prop changes from parent
+  useEffect(() => {
+    setLocalName(playerName);
+  }, [playerName]);
+
+  // Sync localRows/localCols if props change
+  useEffect(() => {
+    setLocalRows(rows.toString());
+  }, [rows]);
+
+  useEffect(() => {
+    setLocalCols(cols.toString());
+  }, [cols]);
 
   // Clipboard copy helper
   const copyRoomCode = () => {
     navigator.clipboard.writeText(roomCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDecrementRows = () => {
+    const val = parseInt(localRows, 10);
+    const newVal = isNaN(val) ? 15 : val;
+    const finalRows = Math.max(6, newVal - 1);
+    setLocalRows(finalRows.toString());
+    onSettingsChange(finalRows, cols);
+  };
+
+  const handleIncrementRows = () => {
+    const val = parseInt(localRows, 10);
+    const newVal = isNaN(val) ? 15 : val;
+    const finalRows = Math.min(20, newVal + 1);
+    setLocalRows(finalRows.toString());
+    onSettingsChange(finalRows, cols);
+  };
+
+  const handleDecrementCols = () => {
+    const val = parseInt(localCols, 10);
+    const newVal = isNaN(val) ? 20 : val;
+    const finalCols = Math.max(6, newVal - 1);
+    setLocalCols(finalCols.toString());
+    onSettingsChange(rows, finalCols);
+  };
+
+  const handleIncrementCols = () => {
+    const val = parseInt(localCols, 10);
+    const newVal = isNaN(val) ? 20 : val;
+    const finalCols = Math.min(25, newVal + 1);
+    setLocalCols(finalCols.toString());
+    onSettingsChange(rows, finalCols);
   };
 
   // Find which colors are already occupied by other players
@@ -134,11 +185,13 @@ export default function OnlineLobby({
                 <input
                   type="text"
                   maxLength={15}
-                  value={playerName}
-                  onChange={(e) => setPlayerName(e.target.value)}
+                  value={localName}
+                  onChange={(e) => setLocalName(e.target.value)}
                   onBlur={(e) => {
                     const trimmed = e.target.value.trim();
-                    setPlayerName(trimmed || 'Player');
+                    const finalName = trimmed || 'Player';
+                    setLocalName(finalName);
+                    setPlayerName(finalName);
                   }}
                   className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[var(--color-accent)] transition"
                   placeholder="Your Name"
@@ -181,32 +234,98 @@ export default function OnlineLobby({
             <div className="bg-[var(--color-background)]/60 border border-[var(--color-border)]/50 rounded-2xl p-4 space-y-3">
               <label className="text-xs text-[var(--color-muted)] font-bold flex items-center gap-1.5">
                 <FontAwesomeIcon icon={faBorderAll} className="text-[var(--color-accent)]" />
-                Grid Board Sizing
+                Grid Board Dimensions
               </label>
 
               {isHost ? (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-0.5">Rows (6 - 20)</span>
-                    <input
-                      type="number"
-                      min={6}
-                      max={20}
-                      value={rows}
-                      onChange={(e) => onSettingsChange(Math.max(6, Math.min(20, parseInt(e.target.value) || 15)), cols)}
-                      className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-2 py-1.5 text-xs font-bold text-center focus:outline-none focus:border-[var(--color-accent)]"
-                    />
+                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5">Rows (6 - 20)</span>
+                    <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                      <button
+                        type="button"
+                        onClick={handleDecrementRows}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faMinus} />
+                      </button>
+                      <input
+                        type="number"
+                        min={6}
+                        max={20}
+                        value={localRows}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalRows(val);
+                          if (val !== '') {
+                            const parsed = parseInt(val, 10);
+                            if (!isNaN(parsed)) {
+                              onSettingsChange(Math.max(6, Math.min(20, parsed)), cols);
+                            }
+                          }
+                        }}
+                        onBlur={() => {
+                          const num = parseInt(localRows, 10);
+                          let finalRows = num;
+                          if (isNaN(num) || num < 6) finalRows = 6;
+                          else if (num > 20) finalRows = 20;
+                          setLocalRows(finalRows.toString());
+                          onSettingsChange(finalRows, cols);
+                        }}
+                        className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleIncrementRows}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </button>
+                    </div>
                   </div>
                   <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-0.5">Cols (6 - 25)</span>
-                    <input
-                      type="number"
-                      min={6}
-                      max={25}
-                      value={cols}
-                      onChange={(e) => onSettingsChange(rows, Math.max(6, Math.min(25, parseInt(e.target.value) || 20)))}
-                      className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-2 py-1.5 text-xs font-bold text-center focus:outline-none focus:border-[var(--color-accent)]"
-                    />
+                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5">Columns (6 - 25)</span>
+                    <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                      <button
+                        type="button"
+                        onClick={handleDecrementCols}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faMinus} />
+                      </button>
+                      <input
+                        type="number"
+                        min={6}
+                        max={25}
+                        value={localCols}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalCols(val);
+                          if (val !== '') {
+                            const parsed = parseInt(val, 10);
+                            if (!isNaN(parsed)) {
+                              onSettingsChange(rows, Math.max(6, Math.min(25, parsed)));
+                            }
+                          }
+                        }}
+                        onBlur={() => {
+                          const num = parseInt(localCols, 10);
+                          let finalCols = num;
+                          if (isNaN(num) || num < 6) finalCols = 6;
+                          else if (num > 25) finalCols = 25;
+                          setLocalCols(finalCols.toString());
+                          onSettingsChange(rows, finalCols);
+                        }}
+                        className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleIncrementCols}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
