@@ -31,6 +31,9 @@ interface GameBoardProps {
   roomCode?: string;
   isHost?: boolean;
   onGoToLobby?: () => void;
+  // True when this board was restored from a persisted session after a page
+  // reload, so it should immediately pull the current state from peers.
+  resumed?: boolean;
 }
 
 interface Cell {
@@ -45,6 +48,10 @@ interface Player {
   color: string;
   active: boolean;
   hasMoved: boolean;
+  // Whether this player's client is currently connected to the realtime
+  // channel. Distinct from `active` (which tracks elimination) so that a
+  // player who drops offline can rejoin and resume instead of being removed.
+  connected: boolean;
 }
 
 interface ChatMessage {
@@ -77,6 +84,7 @@ export default function GameBoard({
   roomCode = '',
   isHost = false,
   onGoToLobby,
+  resumed = false,
 }: GameBoardProps) {
   const isDark = useIsDark();
   // Setup local state
@@ -90,6 +98,7 @@ export default function GameBoard({
       ...p,
       active: true,
       hasMoved: false,
+      connected: true,
     }))
   );
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
@@ -159,6 +168,16 @@ export default function GameBoard({
   }, [board, players, currentPlayerIndex]);
 
   const channelRef = useRef<RealtimeChannel | null>(null);
+  // Tracks whether we've completed an initial channel subscription, so a
+  // subsequent SUBSCRIBED (from Supabase auto-reconnect) can be treated as a
+  // reconnection and trigger a state resync.
+  const hasSubscribedRef = useRef<boolean>(false);
+  // Kept in a ref so the (async) subscribe callback can read the latest value
+  // without adding it to the channel effect deps and forcing a resubscribe.
+  const resumedRef = useRef<boolean>(resumed);
+  useEffect(() => {
+    resumedRef.current = resumed;
+  }, [resumed]);
 
   // Lazy audio synth configuration
   useEffect(() => {
@@ -227,6 +246,32 @@ export default function GameBoard({
       onQuit();
     };
 
+    // A reconnecting client asks its peers for the current game state. To
+    // avoid a flood of conflicting replies, exactly one peer answers: the
+    // connected player with the lowest id (a deterministic choice all clients
+    // agree on). This also covers the host reconnecting, since another
+    // connected player will respond in its place.
+    const handleRequestSyncBroadcast = (payload: { payload?: { clientId?: string } }) => {
+      const requesterId = payload?.payload?.clientId;
+      if (!requesterId || requesterId === myClientId) return;
+      if (isAnimatingRef.current) return;
+
+      const responder = playersRef.current
+        .filter((p) => p.connected && p.clientId && p.clientId !== requesterId)
+        .sort((a, b) => a.id - b.id)[0];
+      if (!responder || responder.clientId !== myClientId) return;
+
+      channelRef.current?.send({
+        type: 'broadcast',
+        event: 'sync-state',
+        payload: {
+          board: boardRef.current,
+          players: playersRef.current,
+          currentPlayerIndex: currentPlayerIndexRef.current,
+        },
+      });
+    };
+
     gameChannel
       .on('broadcast', { event: 'move' }, handleMoveBroadcast)
       .on('broadcast', { event: 'sync-state' }, handleSyncStateBroadcast)
@@ -234,24 +279,38 @@ export default function GameBoard({
       .on('broadcast', { event: 'chat' }, handleChatBroadcast)
       .on('broadcast', { event: 'go-to-lobby' }, handleGoToLobbyBroadcast)
       .on('broadcast', { event: 'quit-game' }, handleQuitGameBroadcast)
+      .on('broadcast', { event: 'request-sync' }, handleRequestSyncBroadcast)
+      .on('presence', { event: 'join' }, ({ newPresences }) => {
+        const joinedClientIds = newPresences.map((p) => (p as { clientId?: string }).clientId);
+
+        setPlayers((prevPlayers) =>
+          prevPlayers.map((p) => {
+            // Flip a previously-dropped player back to connected so their
+            // turns are no longer skipped and they can keep playing. The
+            // reconnecting client pulls fresh state via `request-sync`.
+            if (p.clientId && joinedClientIds.includes(p.clientId) && !p.connected) {
+              setToastMessage(`${p.name} reconnected!`);
+              setTimeout(() => setToastMessage(null), 3000);
+              return { ...p, connected: true };
+            }
+            return p;
+          })
+        );
+      })
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {
         const leftClientIds = leftPresences.map((p: any) => p.clientId);
 
         setPlayers((prevPlayers) => {
-          let changed = false;
+          // Mark the player as disconnected rather than eliminated so they
+          // keep their board position and can reconnect to continue.
           const updated = prevPlayers.map((p) => {
-            if (p.clientId && leftClientIds.includes(p.clientId) && p.active) {
-              changed = true;
-              setToastMessage(`${p.name} disconnected!`);
+            if (p.clientId && leftClientIds.includes(p.clientId) && p.connected) {
+              setToastMessage(`${p.name} disconnected. Waiting for them to reconnect…`);
               setTimeout(() => setToastMessage(null), 3000);
-              return { ...p, active: false };
+              return { ...p, connected: false };
             }
             return p;
           });
-
-          if (changed) {
-            audioSynth.playEliminated();
-          }
           return updated;
         });
       })
@@ -266,6 +325,18 @@ export default function GameBoard({
               isHost,
             });
           }
+
+          if (hasSubscribedRef.current || resumedRef.current) {
+            // Either Supabase auto-reconnect fired SUBSCRIBED again, or this
+            // board was restored after a reload: pull the latest authoritative
+            // state so we resume exactly where play stands.
+            gameChannel.send({
+              type: 'broadcast',
+              event: 'request-sync',
+              payload: { clientId: myClientId },
+            });
+          }
+          hasSubscribedRef.current = true;
         }
       });
 
@@ -273,6 +344,7 @@ export default function GameBoard({
       gameChannel.unsubscribe();
       supabase.removeChannel(gameChannel);
       channelRef.current = null;
+      hasSubscribedRef.current = false;
     };
   }, [isOnline, roomCode, myClientId, isHost]);
 
@@ -281,12 +353,12 @@ export default function GameBoard({
     if (!isOnline || players.length === 0 || isAnimating) return;
 
     const currentPlayer = players[currentPlayerIndex];
-    if (currentPlayer && !currentPlayer.active) {
-      // Find next active player
+    if (currentPlayer && (!currentPlayer.active || !currentPlayer.connected)) {
+      // Find next active, connected player
       let nextIdx = (currentPlayerIndex + 1) % players.length;
       let found = false;
       for (let i = 0; i < players.length; i++) {
-        if (players[nextIdx].active) {
+        if (players[nextIdx].active && players[nextIdx].connected) {
           setCurrentPlayerIndex(nextIdx);
           found = true;
           break;
@@ -319,6 +391,7 @@ export default function GameBoard({
       ...p,
       active: true,
       hasMoved: false,
+      connected: true,
     }));
 
     setBoard(freshBoard);
@@ -459,7 +532,7 @@ export default function GameBoard({
         let nextIdx = (placerId + 1) % tempPlayers.length;
         let foundNext = false;
         for (let i = 0; i < tempPlayers.length; i++) {
-          if (tempPlayers[nextIdx].active) {
+          if (tempPlayers[nextIdx].active && tempPlayers[nextIdx].connected) {
             setCurrentPlayerIndex(nextIdx);
             foundNext = true;
             break;

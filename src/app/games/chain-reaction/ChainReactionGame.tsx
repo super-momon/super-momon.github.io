@@ -20,6 +20,23 @@ export interface LobbyPresenceUser {
   joinedAt: number;
 }
 
+// Key + shape for the online session persisted to sessionStorage so a full
+// page reload can transparently rejoin the same room and resume play.
+const ONLINE_SESSION_KEY = 'chain-reaction:online-session';
+
+interface PersistedOnlineSession {
+  clientId: string;
+  roomCode: string;
+  isHost: boolean;
+  name: string;
+  color: string;
+  phase: GamePhase;
+  rows: number;
+  cols: number;
+  players: PlayerSetup[];
+  joinedAt: number;
+}
+
 
 const generateRoomCode = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -49,6 +66,10 @@ export default function ChainReactionPage() {
   const [lobbyPlayers, setLobbyPlayers] = useState<LobbyPresenceUser[]>([]);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
 
+  // True only for a session restored from storage after a reload, so the
+  // resumed game board knows to pull fresh state from peers on first connect.
+  const [resumed, setResumed] = useState<boolean>(false);
+
   // Initial name/color used to prefill lobby input
   const [initialOnlineName, setInitialOnlineName] = useState<string>('Player');
   const [initialOnlineColor, setInitialOnlineColor] = useState<string>('#08ca5f');
@@ -56,7 +77,18 @@ export default function ChainReactionPage() {
   // Refs for tracking
   const myClientIdRef = useRef<string>('');
   if (!myClientIdRef.current) {
-    myClientIdRef.current = 'client_' + Math.random().toString(36).substr(2, 9);
+    // Reuse the persisted client id after a reload so presence and player
+    // slots line up; otherwise mint a fresh one.
+    let persistedId = '';
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = window.sessionStorage.getItem(ONLINE_SESSION_KEY);
+        if (raw) persistedId = (JSON.parse(raw) as PersistedOnlineSession).clientId || '';
+      } catch {
+        persistedId = '';
+      }
+    }
+    myClientIdRef.current = persistedId || 'client_' + Math.random().toString(36).substr(2, 9);
   }
   const myClientId = myClientIdRef.current;
   
@@ -160,6 +192,7 @@ export default function ChainReactionPage() {
           setPlayers(finalPlayers);
           setRows(finalRows);
           setCols(finalCols);
+          setResumed(false);
           setPhase('playing');
         }
       })
@@ -232,6 +265,76 @@ export default function ChainReactionPage() {
     trackEvent('game_visit', { game_name: 'chain-reaction' });
   }, []);
 
+  // Restore an in-progress online session after a full page reload so the
+  // player rejoins the same room and resumes play instead of losing their seat.
+  useEffect(() => {
+    let saved: PersistedOnlineSession | null = null;
+    try {
+      const raw = window.sessionStorage.getItem(ONLINE_SESSION_KEY);
+      if (raw) saved = JSON.parse(raw) as PersistedOnlineSession;
+    } catch {
+      saved = null;
+    }
+
+    if (!saved || !saved.roomCode) return;
+    if (saved.phase !== 'lobby' && saved.phase !== 'playing') return;
+
+    myClientIdRef.current = saved.clientId || myClientIdRef.current;
+    joinedAtRef.current = saved.joinedAt || Date.now();
+
+    setInitialOnlineName(saved.name);
+    setInitialOnlineColor(saved.color);
+    setRoomCode(saved.roomCode);
+    setIsHost(saved.isHost);
+    setRows(saved.rows);
+    setCols(saved.cols);
+    if (saved.players && saved.players.length > 0) {
+      setPlayers(saved.players);
+    }
+    setIsOnline(true);
+    setResumed(true);
+    setPhase(saved.phase);
+  }, []);
+
+  // Persist the active online session (or clear it when we leave) so a reload
+  // can restore it via the effect above.
+  useEffect(() => {
+    const isActiveOnline =
+      isOnline && !!roomCode && (phase === 'lobby' || phase === 'playing');
+    try {
+      if (isActiveOnline) {
+        const session: PersistedOnlineSession = {
+          clientId: myClientId,
+          roomCode,
+          isHost,
+          name: initialOnlineName,
+          color: initialOnlineColor,
+          phase,
+          rows,
+          cols,
+          players,
+          joinedAt: joinedAtRef.current,
+        };
+        window.sessionStorage.setItem(ONLINE_SESSION_KEY, JSON.stringify(session));
+      } else {
+        window.sessionStorage.removeItem(ONLINE_SESSION_KEY);
+      }
+    } catch {
+      /* sessionStorage unavailable — ignore */
+    }
+  }, [
+    isOnline,
+    roomCode,
+    isHost,
+    initialOnlineName,
+    initialOnlineColor,
+    phase,
+    rows,
+    cols,
+    players,
+    myClientId,
+  ]);
+
   // Track game play when phase transitions to 'playing'
   useEffect(() => {
     if (phase === 'playing') {
@@ -268,6 +371,7 @@ export default function ChainReactionPage() {
     setInitialOnlineName(name);
     setInitialOnlineColor(color);
     setIsOnline(true);
+    setResumed(false);
     joinedAtRef.current = Date.now();
 
     if (mode === 'host') {
@@ -304,6 +408,7 @@ export default function ChainReactionPage() {
       },
     }).then(() => {
       setPlayers(finalPlayers);
+      setResumed(false);
       setPhase('playing');
     }).catch((err) => {
       console.error('Error broadcasting start-game:', err);
@@ -361,6 +466,12 @@ export default function ChainReactionPage() {
     setIsOnline(false);
     setIsHost(false);
     setLobbyPlayers([]);
+    setResumed(false);
+    try {
+      window.sessionStorage.removeItem(ONLINE_SESSION_KEY);
+    } catch {
+      /* sessionStorage unavailable — ignore */
+    }
   };
 
   return (
@@ -465,6 +576,7 @@ export default function ChainReactionPage() {
             roomCode={roomCode}
             isHost={isHost}
             onGoToLobby={handleGoToLobby}
+            resumed={resumed}
           />
         )}
 
