@@ -62,6 +62,9 @@ export default function ChainReactionPage() {
   
   const lobbyChannelRef = useRef<RealtimeChannel | null>(null);
   const joinedAtRef = useRef<number>(Date.now());
+  // Timers used to re-reconcile the presence snapshot after subscribing, to
+  // guard against missed/partial initial sync events on slower connections.
+  const resyncTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   // Lobby channel lifecycle
   useEffect(() => {
@@ -93,35 +96,57 @@ export default function ChainReactionPage() {
         console.error('Error tracking lobby presence:', err);
       }
     };
-    channel
-      .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState();
-        const presences = Object.values(state)
-          .flatMap((p) => p) as unknown as LobbyPresenceUser[];
-        
-        // Deduplicate presences by clientId to prevent duplication on color/name updates
-        const uniquePresencesMap: Record<string, LobbyPresenceUser> = {};
-        presences.forEach((p) => {
-          if (p.clientId) {
-            // If duplicate exists, keep the latest one based on joinedAt, or simply overwrite
-            uniquePresencesMap[p.clientId] = p;
-          }
-        });
+    // Shared helper: rebuild the sorted, deduplicated player list from the
+    // current presence state and push it into React state.
+    const syncLobbyPlayers = () => {
+      const state = channel.presenceState();
+      const presences = Object.values(state)
+        .flatMap((p) => p) as unknown as LobbyPresenceUser[];
 
-        const uniquePresences = Object.values(uniquePresencesMap);
-        const sorted = uniquePresences.sort((a, b) => a.joinedAt - b.joinedAt);
-
-        // Enforce 5-player limit
-        const myIndex = sorted.findIndex((p) => p.clientId === myClientId);
-        if (myIndex >= 5) {
-          alert('This lobby is full (maximum 5 players).');
-          cleanupOnlineSession();
-          setPhase('setup');
-          return;
+      // Deduplicate by clientId (keeps latest on re-track / color update)
+      const uniquePresencesMap: Record<string, LobbyPresenceUser> = {};
+      presences.forEach((p) => {
+        if (p.clientId) {
+          uniquePresencesMap[p.clientId] = p;
         }
+      });
 
-        setLobbyPlayers(sorted);
-      })
+      // Guarantee our own entry is always present. On join, the server can
+      // echo the presence snapshot back before it has merged our own `track`,
+      // which would otherwise render a list that is missing the local player.
+      if (!uniquePresencesMap[myClientId]) {
+        uniquePresencesMap[myClientId] = {
+          clientId: myClientId,
+          name: initialOnlineName,
+          color: initialOnlineColor,
+          isHost,
+          joinedAt: joinedAtRef.current,
+        };
+      }
+
+      const sorted = Object.values(uniquePresencesMap).sort(
+        (a, b) => a.joinedAt - b.joinedAt
+      );
+
+      // Enforce 5-player limit
+      const myIndex = sorted.findIndex((p) => p.clientId === myClientId);
+      if (myIndex >= 5) {
+        alert('This lobby is full (maximum 5 players).');
+        cleanupOnlineSession();
+        setPhase('setup');
+        return;
+      }
+
+      setLobbyPlayers(sorted);
+    };
+
+    channel
+      // sync  – fires on initial state snapshot and after each diff
+      .on('presence', { event: 'sync' }, syncLobbyPlayers)
+      // join  – fires when a new peer tracks their presence; sync may not fire
+      .on('presence', { event: 'join' }, syncLobbyPlayers)
+      // leave – fires when a peer disconnects or untracks
+      .on('presence', { event: 'leave' }, syncLobbyPlayers)
       .on('broadcast', { event: 'settings-change' }, (payload) => {
         if (!isHost) {
           const { rows: newRows, cols: newCols } = payload.payload;
@@ -145,12 +170,23 @@ export default function ChainReactionPage() {
         if (status === 'SUBSCRIBED') {
           setConnectionStatus('connected');
           await trackPresence();
+          // Immediately reconcile, then retry a few times. The very first
+          // `sync` after subscribing can arrive before the server has merged
+          // the full presence snapshot, and no further event fires while the
+          // lobby is idle — leaving guests with an empty/partial player list.
+          syncLobbyPlayers();
+          resyncTimersRef.current.forEach(clearTimeout);
+          resyncTimersRef.current = [250, 750, 1500, 3000].map((delay) =>
+            setTimeout(syncLobbyPlayers, delay)
+          );
         } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
           setConnectionStatus('error');
         }
       });
 
     return () => {
+      resyncTimersRef.current.forEach(clearTimeout);
+      resyncTimersRef.current = [];
       channel.unsubscribe();
       supabase.removeChannel(channel);
       lobbyChannelRef.current = null;

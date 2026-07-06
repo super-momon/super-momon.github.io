@@ -350,43 +350,62 @@ export default function OnlineLobby({
 
             <div className="bg-[var(--color-background)]/60 border border-[var(--color-border)]/50 rounded-2xl p-4 min-h-[190px] max-h-[220px] overflow-y-auto custom-scrollbar space-y-2">
               <AnimatePresence initial={false}>
-                {lobbyPlayers.map((player) => (
+                {lobbyPlayers.length === 0 ? (
                   <motion.div
-                    key={player.clientId}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-3"
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col items-center justify-center h-[150px] gap-2 text-[var(--color-muted)]"
                   >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="w-4 h-4 rounded-full border border-black/10 flex-shrink-0 flex items-center justify-center"
-                        style={{
-                          backgroundColor: getThemeColor(player.color, isDark),
-                          boxShadow: `0 0 8px ${getThemeColor(player.color, isDark)}40`,
-                        }}
-                      />
-                      <span className="text-sm font-semibold text-[var(--color-foreground)] truncate max-w-[140px]">
-                        {player.name}
-                        {player.clientId === myClientId && (
-                          <span className="text-[10px] text-[var(--color-muted)] font-normal ml-1">(You)</span>
-                        )}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {player.isHost ? (
-                        <span className="text-[10px] text-yellow-500 font-extrabold flex items-center gap-1 bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded-full">
-                          <FontAwesomeIcon icon={faCrown} /> Host
-                        </span>
-                      ) : (
-                        <span className="text-[10px] text-[var(--color-muted)] font-bold flex items-center gap-1 bg-[var(--color-background)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
-                          <FontAwesomeIcon icon={faUser} /> Guest
-                        </span>
-                      )}
-                    </div>
+                    <FontAwesomeIcon icon={faSpinner} className="animate-spin text-lg" />
+                    <span className="text-xs font-semibold">Waiting for players...</span>
                   </motion.div>
-                ))}
+                ) : (
+                  lobbyPlayers.map((player) => {
+                    const isMe = player.clientId === myClientId;
+                    // Use live local props for own entry to avoid stale presence data
+                    const displayName = isMe ? playerName : player.name;
+                    const displayColor = isMe ? playerColor : player.color;
+                    return (
+                      <motion.div
+                        key={player.clientId}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 10 }}
+                        className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="w-4 h-4 rounded-full border border-black/10 flex-shrink-0"
+                            style={{
+                              backgroundColor: getThemeColor(displayColor, isDark),
+                              boxShadow: `0 0 8px ${getThemeColor(displayColor, isDark)}40`,
+                            }}
+                          />
+                          <span className="text-sm font-semibold text-[var(--color-foreground)] truncate max-w-[140px]">
+                            {displayName}
+                            {isMe && (
+                              <span className="text-[10px] text-[var(--color-muted)] font-normal ml-1">(You)</span>
+                            )}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {player.isHost ? (
+                            <span className="text-[10px] text-yellow-500 font-extrabold flex items-center gap-1 bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded-full">
+                              <FontAwesomeIcon icon={faCrown} /> Host
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-[var(--color-muted)] font-bold flex items-center gap-1 bg-[var(--color-background)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
+                              <FontAwesomeIcon icon={faUser} /> Guest
+                            </span>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })
+                )}
               </AnimatePresence>
             </div>
           </div>
