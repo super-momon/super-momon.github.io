@@ -7,7 +7,9 @@ import {
   faRotateRight, 
   faVolumeUp, 
   faVolumeMute,
-  faCircleInfo
+  faCircleInfo,
+  faComments,
+  faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
 import { PlayerSetup } from './SetupScreen';
 import { audioSynth } from './AudioSynth';
@@ -43,6 +45,15 @@ interface Player {
   color: string;
   active: boolean;
   hasMoved: boolean;
+}
+
+interface ChatMessage {
+  id: string;
+  clientId: string;
+  senderName: string;
+  senderColor: string;
+  text: string;
+  timestamp: number;
 }
 
 const getNeighbors = (r: number, c: number, rows: number, cols: number) => {
@@ -86,6 +97,18 @@ export default function GameBoard({
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [zoomLevel, setZoomLevel] = useState<'sm' | 'md' | 'lg'>('md');
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
+
+  // Session Chat State
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputText, setInputText] = useState<string>('');
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll chat to bottom when new messages arrive
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   // Calculate total orbs in the session
   const totalOrbsCount = (() => {
@@ -170,6 +193,11 @@ export default function GameBoard({
       initializeGame();
     };
 
+    const handleChatBroadcast = (payload: any) => {
+      const { message } = payload.payload;
+      setMessages((prev) => [...prev, message]);
+    };
+
     const handleGoToLobbyBroadcast = () => {
       if (onGoToLobby) onGoToLobby();
     };
@@ -182,6 +210,7 @@ export default function GameBoard({
       .on('broadcast', { event: 'move' }, handleMoveBroadcast)
       .on('broadcast', { event: 'sync-state' }, handleSyncStateBroadcast)
       .on('broadcast', { event: 'reset-game' }, handleResetGameBroadcast)
+      .on('broadcast', { event: 'chat' }, handleChatBroadcast)
       .on('broadcast', { event: 'go-to-lobby' }, handleGoToLobbyBroadcast)
       .on('broadcast', { event: 'quit-game' }, handleQuitGameBroadcast)
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {
@@ -524,6 +553,32 @@ export default function GameBoard({
     onQuit();
   };
 
+  const sendChatMessage = (text: string) => {
+    if (!text.trim() || !channelRef.current) return;
+    
+    const me = players.find((p) => p.clientId === myClientId);
+    if (!me) return;
+
+    const chatMsg: ChatMessage = {
+      id: Math.random().toString(36).substr(2, 9),
+      clientId: myClientId,
+      senderName: me.name,
+      senderColor: me.color,
+      text: text.trim(),
+      timestamp: Date.now(),
+    };
+
+    channelRef.current.send({
+      type: 'broadcast',
+      event: 'chat',
+      payload: { message: chatMsg },
+    }).then(() => {
+      setMessages((prev) => [...prev, chatMsg]);
+    }).catch((err) => {
+      console.error('Error broadcasting chat:', err);
+    });
+  };
+
   const activePlayer = players[currentPlayerIndex] || { name: '', color: '#08ca5f' };
   const activePlayerThemeColor = getThemeColor(activePlayer.color, isDark);
   const isMyTurn = isOnline ? (activePlayer.clientId === myClientId) : true;
@@ -691,113 +746,89 @@ export default function GameBoard({
         })}
       </div>
 
-      {/* Grid Canvas Wrapper */}
-      <div 
-        className="w-full bg-[var(--color-surface)]/20 border border-[var(--color-border)]/50 rounded-3xl p-4 sm:p-6 overflow-hidden glass-panel"
-      >
-        <div className="w-full overflow-auto max-h-[85vh] lg:max-h-none custom-scrollbar p-1 sm:p-2">
-          <div
-            className={`grid gap-[2px] p-2 bg-[var(--color-background)]/60 rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel}`}
-            style={{
-              gridTemplateColumns: `repeat(${cols}, var(--cell-size))`,
-              width: 'max-content',
-            }}
-          >
-            {board.map((row, r) =>
-              row.map((cell, c) => {
-                const rawOwnerColor = cell.ownerId !== null ? players.find((p) => p.id === cell.ownerId)?.color : null;
-                const ownerColor = rawOwnerColor ? getThemeColor(rawOwnerColor, isDark) : null;
-                const isExploding = explodingCells[`${r},${c}`];
-                
-                // Disable input if board is animating, or cell is owned by another, or if online and not our turn
-                const isCellDisabled = 
-                  isAnimating || 
-                  (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) ||
-                  (isOnline && !isMyTurn);
+      {/* Board & Chat Responsive Layout Grid */}
+      <div className={`w-full grid gap-6 ${isOnline ? 'grid-cols-1 lg:grid-cols-[1fr_350px]' : 'grid-cols-1'}`}>
+        {/* Grid Canvas Wrapper */}
+        <div 
+          className="bg-[var(--color-surface)]/20 border border-[var(--color-border)]/50 rounded-3xl p-4 sm:p-6 overflow-hidden glass-panel flex items-center justify-center"
+        >
+          <div className="w-full overflow-auto max-h-[85vh] lg:max-h-none custom-scrollbar p-1 sm:p-2">
+            <div
+              className={`grid gap-[2px] p-2 bg-[var(--color-background)]/60 rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel}`}
+              style={{
+                gridTemplateColumns: `repeat(${cols}, var(--cell-size))`,
+                width: 'max-content',
+              }}
+            >
+              {board.map((row, r) =>
+                row.map((cell, c) => {
+                  const rawOwnerColor = cell.ownerId !== null ? players.find((p) => p.id === cell.ownerId)?.color : null;
+                  const ownerColor = rawOwnerColor ? getThemeColor(rawOwnerColor, isDark) : null;
+                  const isExploding = explodingCells[`${r},${c}`];
+                  
+                  // Disable input if board is animating, or cell is owned by another, or if online and not our turn
+                  const isCellDisabled = 
+                    isAnimating || 
+                    (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) ||
+                    (isOnline && !isMyTurn);
 
-                const isOwned = cell.ownerId !== null;
-                const limit = getCellCriticalMass(r, c);
-                const isCritical = cell.orbs > 0 && cell.orbs === limit - 1;
+                  const isOwned = cell.ownerId !== null;
+                  const limit = getCellCriticalMass(r, c);
+                  const isCritical = cell.orbs > 0 && cell.orbs === limit - 1;
 
-                return (
-                  <div
-                    key={`${r}-${c}`}
-                    onClick={() => handleCellClick(r, c)}
-                    className={`game-cell rounded-[6px] border ${
-                      isOwned ? 'owned' : ''
-                    } ${isExploding ? 'cell-explode' : ''} ${
-                      isCritical ? 'critical-cell' : ''
-                    } ${
-                      isCellDisabled ? 'disabled cursor-not-allowed' : 'hover:scale-102 hover:shadow-sm'
-                    }`}
-                    style={{
-                      '--owner-color': ownerColor || 'transparent',
-                      '--owner-bg': ownerColor ? `${ownerColor}15` : 'transparent',
-                      '--owner-bg-glow': ownerColor ? `${ownerColor}35` : 'transparent',
-                    } as React.CSSProperties}
-                  >
-                    {/* Corner/Edge Indicator Dots */}
-                    {cell.orbs === 0 && !isCellDisabled && (
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
-                        <span 
-                          className="w-1.5 h-1.5 rounded-full" 
-                          style={{ backgroundColor: getThemeColor(players[currentPlayerIndex]?.color, isDark) }} 
-                        />
-                      </div>
-                    )}
+                  return (
+                    <div
+                      key={`${r}-${c}`}
+                      onClick={() => handleCellClick(r, c)}
+                      className={`game-cell rounded-[6px] border ${
+                        isOwned ? 'owned' : ''
+                      } ${isExploding ? 'cell-explode' : ''} ${
+                        isCritical ? 'critical-cell' : ''
+                      } ${
+                        isCellDisabled ? 'disabled cursor-not-allowed' : 'hover:scale-102 hover:shadow-sm'
+                      }`}
+                      style={{
+                        '--owner-color': ownerColor || 'transparent',
+                        '--owner-bg': ownerColor ? `${ownerColor}15` : 'transparent',
+                        '--owner-bg-glow': ownerColor ? `${ownerColor}35` : 'transparent',
+                      } as React.CSSProperties}
+                    >
+                      {/* Corner/Edge Indicator Dots */}
+                      {cell.orbs === 0 && !isCellDisabled && (
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
+                          <span 
+                            className="w-1.5 h-1.5 rounded-full" 
+                            style={{ backgroundColor: getThemeColor(players[currentPlayerIndex]?.color, isDark) }} 
+                          />
+                        </div>
+                      )}
 
-                    {/* Explosion Particles */}
-                    {isExploding && ownerColor && (
-                      <div className="absolute inset-0 pointer-events-none overflow-visible flex items-center justify-center z-20">
-                        <div className="explosion-particle particle-t" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
-                        <div className="explosion-particle particle-r" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
-                        <div className="explosion-particle particle-b" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
-                        <div className="explosion-particle particle-l" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
-                      </div>
-                    )}
+                      {/* Explosion Particles */}
+                      {isExploding && ownerColor && (
+                        <div className="absolute inset-0 pointer-events-none overflow-visible flex items-center justify-center z-20">
+                          <div className="explosion-particle particle-t" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
+                          <div className="explosion-particle particle-r" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
+                          <div className="explosion-particle particle-b" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
+                          <div className="explosion-particle particle-l" style={{ backgroundColor: ownerColor, color: ownerColor } as React.CSSProperties} />
+                        </div>
+                      )}
 
-                    {/* Orb layout depending on orb count */}
-                    {cell.orbs > 0 && ownerColor && (
-                      <div className="w-full h-full flex items-center justify-center">
-                        {cell.orbs === 1 && (
-                          <div className="orb-layout-1">
-                            <div
-                              className="orb-simple"
-                              style={{
-                                '--orb-color': ownerColor,
-                                '--orb-glow': ownerColor,
-                              } as React.CSSProperties}
-                            />
-                          </div>
-                        )}
-                        {cell.orbs === 2 && (
-                          <div className="orb-layout-2">
-                            <div
-                              className="orb-simple"
-                              style={{
-                                '--orb-color': ownerColor,
-                                '--orb-glow': ownerColor,
-                              } as React.CSSProperties}
-                            />
-                            <div
-                              className="orb-simple"
-                              style={{
-                                '--orb-color': ownerColor,
-                                '--orb-glow': ownerColor,
-                              } as React.CSSProperties}
-                            />
-                          </div>
-                        )}
-                        {cell.orbs === 3 && (
-                          <div className="orb-layout-3">
-                            <div
-                              className="orb-simple"
-                              style={{
-                                '--orb-color': ownerColor,
-                                '--orb-glow': ownerColor,
-                              } as React.CSSProperties}
-                            />
-                            <div className="orb-layout-3-row">
+                      {/* Orb layout depending on orb count */}
+                      {cell.orbs > 0 && ownerColor && (
+                        <div className="w-full h-full flex items-center justify-center">
+                          {cell.orbs === 1 && (
+                            <div className="orb-layout-1">
+                              <div
+                                className="orb-simple"
+                                style={{
+                                  '--orb-color': ownerColor,
+                                  '--orb-glow': ownerColor,
+                                } as React.CSSProperties}
+                              />
+                            </div>
+                          )}
+                          {cell.orbs === 2 && (
+                            <div className="orb-layout-2">
                               <div
                                 className="orb-simple"
                                 style={{
@@ -813,35 +844,155 @@ export default function GameBoard({
                                 } as React.CSSProperties}
                               />
                             </div>
-                          </div>
-                        )}
-                        {cell.orbs >= 4 && (
-                          <div className="orb-layout-4">
-                            {Array.from({ length: Math.min(cell.orbs, 4) }).map((_, oIdx) => (
+                          )}
+                          {cell.orbs === 3 && (
+                            <div className="orb-layout-3">
                               <div
-                                key={oIdx}
                                 className="orb-simple"
                                 style={{
                                   '--orb-color': ownerColor,
                                   '--orb-glow': ownerColor,
                                 } as React.CSSProperties}
                               />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
+                              <div className="orb-layout-3-row">
+                                <div
+                                  className="orb-simple"
+                                  style={{
+                                    '--orb-color': ownerColor,
+                                    '--orb-glow': ownerColor,
+                                  } as React.CSSProperties}
+                                />
+                                <div
+                                  className="orb-simple"
+                                  style={{
+                                    '--orb-color': ownerColor,
+                                    '--orb-glow': ownerColor,
+                                  } as React.CSSProperties}
+                                />
+                              </div>
+                            </div>
+                          )}
+                          {cell.orbs >= 4 && (
+                            <div className="orb-layout-4">
+                              {Array.from({ length: Math.min(cell.orbs, 4) }).map((_, oIdx) => (
+                                <div
+                                  key={oIdx}
+                                  className="orb-simple"
+                                  style={{
+                                    '--orb-color': ownerColor,
+                                    '--orb-glow': ownerColor,
+                                  } as React.CSSProperties}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-                    {/* Critical mass hover threshold hint */}
-                    <div className="absolute top-0.5 right-0.5 text-[8px] text-[var(--color-muted)] opacity-0 hover:opacity-100 select-none pointer-events-none font-bold">
-                      {cell.orbs}/{limit}
+                      {/* Critical mass hover threshold hint */}
+                      <div className="absolute top-0.5 right-0.5 text-[8px] text-[var(--color-muted)] opacity-0 hover:opacity-100 select-none pointer-events-none font-bold">
+                        {cell.orbs}/{limit}
+                      </div>
                     </div>
-                  </div>
-                );
-              })
-            )}
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Online Chat Room */}
+        {isOnline && (
+          <div className="flex flex-col bg-[var(--color-surface)]/20 border border-[var(--color-border)]/50 rounded-3xl h-[450px] lg:h-auto lg:min-h-[500px] max-h-[600px] overflow-hidden glass-panel">
+            {/* Chat Header */}
+            <div className="flex items-center gap-2.5 p-4 border-b border-[var(--color-border)]/40 bg-[var(--color-background)]/40">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <div className="flex-1">
+                <h3 className="text-xs font-extrabold text-[var(--color-foreground)] tracking-wide">Session Chat</h3>
+                <p className="text-[9px] text-[var(--color-muted)] font-bold uppercase tracking-wider">Room Code: {roomCode}</p>
+              </div>
+              <span className="text-[9px] font-bold text-[var(--color-muted)] bg-[var(--color-surface)] px-2 py-0.5 rounded-full border border-[var(--color-border)]/50">
+                {messages.length} messages
+              </span>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar" ref={chatContainerRef}>
+              {messages.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center p-4">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)]/50 flex items-center justify-center text-[var(--color-muted)] mb-3">
+                    <FontAwesomeIcon icon={faComments} className="text-sm opacity-60" />
+                  </div>
+                  <p className="text-xs font-bold text-[var(--color-foreground)]/80 mb-1">No messages yet</p>
+                  <p className="text-[10px] text-[var(--color-muted)] max-w-[200px] leading-relaxed">Send a message to coordinate strategy with other players.</p>
+                </div>
+              ) : (
+                messages.map((msg) => {
+                  const isMe = msg.clientId === myClientId;
+                  const senderThemeColor = getThemeColor(msg.senderColor, isDark);
+                  return (
+                    <div
+                      key={msg.id}
+                      className={`flex flex-col max-w-[85%] ${isMe ? 'ml-auto items-end' : 'mr-auto items-start'}`}
+                    >
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full animate-pulse"
+                          style={{ backgroundColor: senderThemeColor }}
+                        />
+                        <span className="text-[9px] font-extrabold text-[var(--color-muted)] truncate max-w-[100px]">
+                          {msg.senderName} {isMe && '(You)'}
+                        </span>
+                        <span className="text-[8px] text-[var(--color-muted)]/60 font-medium">
+                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <div
+                        className={`rounded-2xl px-3 py-1.5 text-xs font-semibold break-words w-full shadow-sm border transition-all`}
+                        style={{
+                          backgroundColor: isMe ? `${senderThemeColor}10` : 'var(--color-surface)',
+                          borderColor: isMe ? `${senderThemeColor}30` : 'var(--color-border)',
+                          color: isMe ? senderThemeColor : 'var(--color-foreground)',
+                          boxShadow: isMe ? `0 2px 10px ${senderThemeColor}05` : 'none',
+                        }}
+                      >
+                        {msg.text}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Chat Input */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (inputText.trim()) {
+                  sendChatMessage(inputText);
+                  setInputText('');
+                }
+              }}
+              className="p-3 border-t border-[var(--color-border)]/40 bg-[var(--color-background)]/30 flex gap-2"
+            >
+              <input
+                type="text"
+                maxLength={100}
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder="Type your message..."
+                className="flex-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[var(--color-accent)] transition placeholder:text-[var(--color-muted)]"
+              />
+              <button
+                type="submit"
+                disabled={!inputText.trim()}
+                className="w-8 h-8 rounded-xl bg-[var(--color-accent)] text-white flex items-center justify-center hover:scale-105 active:scale-95 transition disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed cursor-pointer"
+              >
+                <FontAwesomeIcon icon={faPaperPlane} className="text-[10px]" />
+              </button>
+            </form>
+          </div>
+        )}
       </div>
 
       {/* Gameplay & Critical Mass Guide */}
