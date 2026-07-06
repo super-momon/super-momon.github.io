@@ -253,7 +253,7 @@ export default function ChainReactionPage() {
     const finalPlayers: PlayerSetup[] = lobbyPlayers.map((p, index) => ({
       id: index,
       clientId: p.clientId,
-      name: p.name,
+      name: p.name.trim() || `Player ${index + 1}`,
       color: p.color,
     }));
 

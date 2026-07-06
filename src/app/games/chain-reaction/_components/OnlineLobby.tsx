@@ -136,7 +136,11 @@ export default function OnlineLobby({
                   type="text"
                   maxLength={15}
                   value={playerName}
-                  onChange={(e) => setPlayerName(e.target.value.trim() || 'Player')}
+                  onChange={(e) => setPlayerName(e.target.value)}
+                  onBlur={(e) => {
+                    const trimmed = e.target.value.trim();
+                    setPlayerName(trimmed || 'Player');
+                  }}
                   className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[var(--color-accent)] transition"
                   placeholder="Your Name"
                 />
