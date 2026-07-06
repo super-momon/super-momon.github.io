@@ -30,6 +30,7 @@ interface OnlineLobbyProps {
   onSettingsChange: (rows: number, cols: number) => void;
   onLeave: () => void;
   onStartGame: () => void;
+  myClientId: string;
 }
 
 export default function OnlineLobby({
@@ -46,6 +47,7 @@ export default function OnlineLobby({
   onSettingsChange,
   onLeave,
   onStartGame,
+  myClientId,
 }: OnlineLobbyProps) {
   const isDark = useIsDark();
   const [copied, setCopied] = useState(false);
@@ -58,9 +60,6 @@ export default function OnlineLobby({
   };
 
   // Find which colors are already occupied by other players
-  const myPlayer = lobbyPlayers.find((p) => p.name === playerName);
-  const myClientId = myPlayer?.clientId || '';
-  
   const occupiedColors = lobbyPlayers
     .filter((p) => p.clientId !== myClientId)
     .map((p) => p.color);

@@ -411,6 +411,7 @@ export default function ChainReactionPage() {
             onSettingsChange={handleSettingsChange}
             onLeave={handleBackToSetup}
             onStartGame={handleStartOnlineGame}
+            myClientId={myClientId}
           />
         )}
 
