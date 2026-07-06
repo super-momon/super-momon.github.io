@@ -86,7 +86,6 @@ export default function GameBoard({
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [zoomLevel, setZoomLevel] = useState<'sm' | 'md' | 'lg'>('md');
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
-  const [shakeBoard, setShakeBoard] = useState<boolean>(false);
 
   // Calculate total orbs in the session
   const totalOrbsCount = (() => {
@@ -278,7 +277,6 @@ export default function GameBoard({
     setIsAnimating(false);
     isAnimatingRef.current = false;
     setExplodingCells({});
-    setShakeBoard(false);
   };
 
   const countPlayerOrbs = (boardState: Cell[][], playerId: number) => {
@@ -340,7 +338,6 @@ export default function GameBoard({
       hasExplodedInWave = true;
       audioSynth.playExplosion();
 
-      setShakeBoard(true);
       const waveExploding: Record<string, boolean> = {};
       unstableCells.forEach((cell) => {
         waveExploding[`${cell.r},${cell.c}`] = true;
@@ -396,7 +393,6 @@ export default function GameBoard({
       }
 
       await sleep(150);
-      setShakeBoard(false);
       setExplodingCells({});
       await sleep(150);
     }
@@ -701,9 +697,7 @@ export default function GameBoard({
       >
         <div className="w-full overflow-auto max-h-[85vh] lg:max-h-none custom-scrollbar p-1 sm:p-2">
           <div
-            className={`grid gap-[2px] p-2 bg-[var(--color-background)]/60 rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel} ${
-              shakeBoard ? 'board-shake' : ''
-            }`}
+            className={`grid gap-[2px] p-2 bg-[var(--color-background)]/60 rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel}`}
             style={{
               gridTemplateColumns: `repeat(${cols}, var(--cell-size))`,
               width: 'max-content',
