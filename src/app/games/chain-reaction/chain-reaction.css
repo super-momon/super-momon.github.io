@@ -359,3 +359,164 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* ─── Shout Alert & Emoticon Custom CSS ─── */
+
+/* Shout Shake Animation */
+.shout-shake {
+  animation: board-shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes board-shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, -1px, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 2px, 0); }
+  40%, 60% { transform: translate3d(4px, -2px, 0); }
+}
+
+/* Shout Alert Overlay Banner */
+.shout-banner-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(1px);
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+.shout-banner {
+  background: linear-gradient(135deg, #131b2e 0%, #0c0f1d 100%);
+  border: 3px solid var(--shout-color, var(--color-accent));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px var(--shout-glow);
+  transform: rotate(-1.5deg);
+  max-width: 90%;
+  width: 480px;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shout comic-book accent lines */
+.shout-banner::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.02) 10px,
+    rgba(255, 255, 255, 0.02) 20px
+  );
+  pointer-events: none;
+}
+
+.animate-shout-banner {
+  animation: shout-slide-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-shout-banner-out {
+  animation: shout-slide-out 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+}
+
+@keyframes shout-slide-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-12deg) translateY(-30px);
+  }
+  70% {
+    transform: scale(1.1) rotate(2deg) translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-1.5deg) translateY(0);
+  }
+}
+
+@keyframes shout-slide-out {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(-1.5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-8deg) translateY(50px);
+  }
+}
+
+/* Shout Text & Typography */
+.shout-title {
+  font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--shout-color);
+  text-shadow: 0 0 10px var(--shout-glow);
+}
+
+.shout-message {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  line-height: 1.25;
+  color: #ffffff;
+  word-wrap: break-word;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: shout-text-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both;
+}
+
+@keyframes shout-text-pop {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Custom Scrollbar for Emoji grid */
+.emoji-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.emoji-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.emoji-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+.emoji-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* Pulse animation for Shout Mode Megaphone button */
+.shout-pulse-active {
+  animation: megaphone-pulse 1.5s infinite alternate ease-in-out;
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%) !important;
+  color: white !important;
+  border-color: #f97316 !important;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.5) !important;
+}
+
+@keyframes megaphone-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); }
+  100% { transform: scale(1.1); box-shadow: 0 0 16px rgba(249, 115, 22, 0.8); }
+}
+
+.shout-input-active {
+  border-color: rgba(249, 115, 22, 0.6) !important;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.15) !important;
+  background-color: rgba(249, 115, 22, 0.03) !important;
+}
+

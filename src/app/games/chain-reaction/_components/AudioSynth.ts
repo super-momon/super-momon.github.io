@@ -145,6 +145,36 @@ class AudioSynth {
     playTone(392.00, now + 0.16, 0.18); // G4
     playTone(523.25, now + 0.24, 0.5);  // C5
   }
+
+  playAlert() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+
+    const now = this.ctx.currentTime;
+    const playTone = (freq: number, start: number, duration: number, type: OscillatorType = 'sine') => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, start);
+
+      gain.gain.setValueAtTime(0.08, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+
+      osc.start(start);
+      osc.stop(start + duration);
+    };
+
+    playTone(587.33, now, 0.12, 'square');        // D5
+    playTone(698.46, now + 0.1, 0.25, 'square');  // F5
+  }
 }
 
 export const audioSynth = new AudioSynth();
