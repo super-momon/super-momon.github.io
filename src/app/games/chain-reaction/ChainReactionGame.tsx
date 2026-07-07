@@ -143,6 +143,16 @@ export default function ChainReactionPage() {
   // guard against missed/partial initial sync events on slower connections.
   const resyncTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
+  // Refs to break stale closures in Supabase Realtime event handlers.
+  // The channel subscribes once and its callbacks capture the closure at that
+  // time — these refs ensure the handlers always access current values.
+  const onlineNameRef = useRef(initialOnlineName);
+  const onlineColorRef = useRef(initialOnlineColor);
+  const isHostRef = useRef(isHost);
+  useEffect(() => { onlineNameRef.current = initialOnlineName; }, [initialOnlineName]);
+  useEffect(() => { onlineColorRef.current = initialOnlineColor; }, [initialOnlineColor]);
+  useEffect(() => { isHostRef.current = isHost; }, [isHost]);
+
   // Lobby channel lifecycle
   useEffect(() => {
     if (!isOnline || !roomCode) {
@@ -164,9 +174,9 @@ export default function ChainReactionPage() {
       try {
         await channel.track({
           clientId: myClientId,
-          name: initialOnlineName,
-          color: initialOnlineColor,
-          isHost,
+          name: onlineNameRef.current,
+          color: onlineColorRef.current,
+          isHost: isHostRef.current,
           joinedAt: joinedAtRef.current,
         });
       } catch (err) {
@@ -194,9 +204,9 @@ export default function ChainReactionPage() {
       if (!uniquePresencesMap[myClientId]) {
         uniquePresencesMap[myClientId] = {
           clientId: myClientId,
-          name: initialOnlineName,
-          color: initialOnlineColor,
-          isHost,
+          name: onlineNameRef.current,
+          color: onlineColorRef.current,
+          isHost: isHostRef.current,
           joinedAt: joinedAtRef.current,
         };
       }
@@ -225,14 +235,14 @@ export default function ChainReactionPage() {
       // leave – fires when a peer disconnects or untracks
       .on('presence', { event: 'leave' }, syncLobbyPlayers)
       .on('broadcast', { event: 'settings-change' }, (payload) => {
-        if (!isHost) {
+        if (!isHostRef.current) {
           const { rows: newRows, cols: newCols } = payload.payload;
           if (newRows) setRows(newRows);
           if (newCols) setCols(newCols);
         }
       })
       .on('broadcast', { event: 'start-game' }, (payload) => {
-        if (!isHost) {
+        if (!isHostRef.current) {
           const { players: finalPlayers, rows: finalRows, cols: finalCols } = payload.payload;
           setPlayers(finalPlayers);
           setRows(finalRows);
@@ -269,7 +279,8 @@ export default function ChainReactionPage() {
       supabase.removeChannel(channel);
       lobbyChannelRef.current = null;
     };
-  }, [isOnline, roomCode, isHost]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOnline, roomCode]);
 
   // Update presence whenever player name or color changes
   useEffect(() => {
@@ -278,7 +289,7 @@ export default function ChainReactionPage() {
         clientId: myClientId,
         name: initialOnlineName,
         color: initialOnlineColor,
-        isHost,
+        isHost: isHostRef.current,
         joinedAt: joinedAtRef.current,
       });
     }
