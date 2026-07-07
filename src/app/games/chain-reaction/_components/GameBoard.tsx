@@ -118,8 +118,18 @@ export default function GameBoard({
 
   // Shout Alerts & Board Shake State
   const [activeAlert, setActiveAlert] = useState<ChatMessage | null>(null);
+  const [isAlertExiting, setIsAlertExiting] = useState<boolean>(false);
   const [isShoutShaking, setIsShoutShaking] = useState<boolean>(false);
   const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const exitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (alertTimeoutRef.current) clearTimeout(alertTimeoutRef.current);
+      if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     isChatOpenRef.current = isChatOpen;
@@ -176,8 +186,13 @@ export default function GameBoard({
       audioSynth.playAlert();
     }
 
-    // Set active alert
+    // Clear existing timeouts
+    if (alertTimeoutRef.current) clearTimeout(alertTimeoutRef.current);
+    if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+
+    // Set active alert and reset exit state
     setActiveAlert(message);
+    setIsAlertExiting(false);
 
     // Trigger board shake
     setIsShoutShaking(true);
@@ -185,16 +200,18 @@ export default function GameBoard({
       setIsShoutShaking(false);
     }, 450);
 
-    // Clear existing timeout
-    if (alertTimeoutRef.current) {
-      clearTimeout(alertTimeoutRef.current);
-    }
-
-    // Auto-hide alert after 3.5 seconds
+    // After 3.2 seconds, start the exit animation (takes 300ms)
     alertTimeoutRef.current = setTimeout(() => {
-      setActiveAlert(null);
+      setIsAlertExiting(true);
+      
+      exitTimeoutRef.current = setTimeout(() => {
+        setActiveAlert(null);
+        setIsAlertExiting(false);
+        exitTimeoutRef.current = null;
+      }, 300); // matches the css exit animation duration
+
       alertTimeoutRef.current = null;
-    }, 3500);
+    }, 3200);
   };
 
   const isAnimatingRef = useRef(false);
@@ -925,20 +942,46 @@ export default function GameBoard({
       <div className="w-full relative">
         {/* Shout Alert Overlay Banner */}
         {activeAlert && (
-          <div className="shout-banner-overlay">
+          <div 
+            className={`shout-banner-overlay ${isAlertExiting ? 'opacity-0' : ''}`}
+            onClick={() => {
+              setIsAlertExiting(true);
+              if (alertTimeoutRef.current) clearTimeout(alertTimeoutRef.current);
+              if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+              
+              exitTimeoutRef.current = setTimeout(() => {
+                setActiveAlert(null);
+                setIsAlertExiting(false);
+                exitTimeoutRef.current = null;
+              }, 300);
+            }}
+          >
             <div 
-              className="shout-banner animate-shout-banner"
+              className={`shout-banner ${isAlertExiting ? 'animate-shout-banner-out' : 'animate-shout-banner'}`}
               style={{
                 '--shout-color': getThemeColor(activeAlert.senderColor, isDark),
                 '--shout-glow': `${getThemeColor(activeAlert.senderColor, isDark)}40`,
+                '--shout-glow-strong': `${getThemeColor(activeAlert.senderColor, isDark)}80`,
+                '--shout-bg': isDark ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.92)',
+                '--shout-border-color': isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(15, 23, 42, 0.1)',
+                '--shout-title-bg': `${getThemeColor(activeAlert.senderColor, isDark)}20`,
+                '--shout-title-border': `${getThemeColor(activeAlert.senderColor, isDark)}40`,
+                '--shout-text-color': isDark ? '#ffffff' : '#0f172a',
               } as any}
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="shout-title">
-                <FontAwesomeIcon icon={faBullhorn} className="text-sm" />
-                {activeAlert.senderName} Shouts
+              <div className="shout-header-container">
+                <div className="shout-title">
+                  <FontAwesomeIcon icon={faBullhorn} className="text-[11px] animate-bullhorn" />
+                  <span>{activeAlert.senderName}</span>
+                </div>
+                <span className="shout-pill">Shouts</span>
               </div>
               <div className="shout-message">
                 {activeAlert.text}
+              </div>
+              <div className="shout-dismiss-hint">
+                Click outside to dismiss
               </div>
             </div>
           </div>

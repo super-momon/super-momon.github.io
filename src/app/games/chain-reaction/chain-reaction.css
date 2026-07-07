@@ -381,61 +381,90 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 30;
-  pointer-events: none;
-  background-color: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(1px);
+  z-index: 50;
+  pointer-events: auto;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 1.5rem;
   overflow: hidden;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 
 .shout-banner {
-  background: linear-gradient(135deg, #131b2e 0%, #0c0f1d 100%);
-  border: 3px solid var(--shout-color, var(--color-accent));
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px var(--shout-glow);
+  background: var(--shout-bg, rgba(15, 23, 42, 0.75));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--shout-border-color, rgba(255, 255, 255, 0.08));
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.5), 
+    0 0 30px var(--shout-glow),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
   transform: rotate(-1.5deg);
-  max-width: 90%;
+  max-width: 92%;
   width: 480px;
-  border-radius: 1.25rem;
-  padding: 1.5rem;
+  border-radius: 1.5rem;
+  padding: 2rem 2.25rem;
   pointer-events: auto;
   position: relative;
   overflow: hidden;
+  animation: shout-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, shout-pulse-glow 2s infinite alternate ease-in-out 0.4s;
+  cursor: default;
 }
 
-/* Shout comic-book accent lines */
+/* Pulsing neon border glow animation */
+@keyframes shout-pulse-glow {
+  0% {
+    box-shadow: 
+      0 25px 60px -15px rgba(0, 0, 0, 0.5), 
+      0 0 20px var(--shout-glow),
+      inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    border-color: var(--shout-border-color, rgba(255, 255, 255, 0.08));
+  }
+  100% {
+    box-shadow: 
+      0 25px 60px -15px rgba(0, 0, 0, 0.5), 
+      0 0 45px var(--shout-glow-strong, var(--shout-glow)),
+      inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    border-color: var(--shout-color);
+  }
+}
+
+/* Subtle graphic background pattern: clean dot grid */
 .shout-banner::before {
   content: "";
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(255, 255, 255, 0.02) 10px,
-    rgba(255, 255, 255, 0.02) 20px
-  );
+  inset: 0;
+  background-image: radial-gradient(var(--shout-color) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+  opacity: 0.08;
   pointer-events: none;
 }
 
+/* Styled neon side indicator bar */
+.shout-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--shout-color), transparent);
+}
+
 .animate-shout-banner {
-  animation: shout-slide-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: shout-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .animate-shout-banner-out {
-  animation: shout-slide-out 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+  animation: shout-slide-out 0.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
 }
 
 @keyframes shout-slide-in {
   0% {
     opacity: 0;
-    transform: scale(0.6) rotate(-12deg) translateY(-30px);
-  }
-  70% {
-    transform: scale(1.1) rotate(2deg) translateY(5px);
+    transform: scale(0.85) rotate(-5deg) translateY(-20px);
   }
   100% {
     opacity: 1;
@@ -446,42 +475,101 @@
 @keyframes shout-slide-out {
   0% {
     opacity: 1;
-    transform: scale(1) rotate(-1.5deg);
+    transform: scale(1) rotate(-1.5deg) translateY(0);
   }
   100% {
     opacity: 0;
-    transform: scale(0.8) rotate(-8deg) translateY(50px);
+    transform: scale(0.9) rotate(2deg) translateY(30px);
   }
 }
 
+/* Megaphone swing animation */
+@keyframes bullhorn-swing {
+  0% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-12deg) scale(1.15); }
+  40% { transform: rotate(14deg) scale(1.15); }
+  60% { transform: rotate(-8deg) scale(1.05); }
+  80% { transform: rotate(6deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.animate-bullhorn {
+  display: inline-block;
+  animation: bullhorn-swing 1.5s infinite ease-in-out;
+  transform-origin: bottom left;
+}
+
 /* Shout Text & Typography */
+.shout-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
 .shout-title {
   font-family: 'Outfit', sans-serif;
   text-transform: uppercase;
-  font-weight: 900;
-  letter-spacing: 0.15em;
-  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
   color: var(--shout-color);
-  text-shadow: 0 0 10px var(--shout-glow);
+  background: var(--shout-title-bg);
+  border: 1px solid var(--shout-title-border);
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  text-shadow: 0 0 8px var(--shout-glow);
+}
+
+.shout-pill {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.2rem 0.5rem;
+  background: var(--shout-color);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+  opacity: 0.9;
 }
 
 .shout-message {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   line-height: 1.25;
-  color: #ffffff;
+  color: var(--shout-text-color, #ffffff);
   word-wrap: break-word;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  animation: shout-text-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  padding-left: 0.5rem;
+  margin-top: 0.5rem;
+  animation: shout-text-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
+}
+
+.shout-dismiss-hint {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+  opacity: 0.4;
+  text-align: center;
+  margin-top: 1.25rem;
+  transition: opacity 0.2s ease;
+}
+
+.shout-banner-overlay:hover .shout-dismiss-hint {
+  opacity: 0.7;
 }
 
 @keyframes shout-text-pop {
-  0% { transform: scale(0.9); opacity: 0; }
+  0% { transform: scale(0.95); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
