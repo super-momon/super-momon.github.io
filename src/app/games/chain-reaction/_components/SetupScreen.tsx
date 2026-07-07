@@ -28,20 +28,29 @@ export interface PlayerSetup {
 interface SetupScreenProps {
   onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean) => void;
   onStartOnline: (mode: 'host' | 'join', name: string, color: string, code: string) => void;
+  initialPlayMode?: 'local' | 'online';
+  initialOnlineMode?: 'host' | 'join';
+  initialRoomCode?: string;
 }
 
-const DEFAULT_NAMES = ['Player One', 'Player Two', 'Player Three', 'Player Four', 'Player Five'];
+const DEFAULT_NAMES = ['Player One', 'Player Two', 'Player Three', 'Player Four', 'Player Five', 'Player Six'];
 
-export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenProps) {
+export default function SetupScreen({
+  onStartGame,
+  onStartOnline,
+  initialPlayMode,
+  initialOnlineMode,
+  initialRoomCode,
+}: SetupScreenProps) {
   const isDark = useIsDark();
   // Main Play mode: 'local' or 'online'
-  const [playMode, setPlayMode] = useState<'local' | 'online'>('local');
+  const [playMode, setPlayMode] = useState<'local' | 'online'>(initialPlayMode || 'local');
   
   // Online-specific states
-  const [onlineMode, setOnlineMode] = useState<'host' | 'join'>('host');
+  const [onlineMode, setOnlineMode] = useState<'host' | 'join'>(initialOnlineMode || 'host');
   const [onlineName, setOnlineName] = useState<string>('Player');
   const [onlineColor, setOnlineColor] = useState<string>(PRESET_COLORS[0]);
-  const [roomCode, setRoomCode] = useState<string>('');
+  const [roomCode, setRoomCode] = useState<string>(initialRoomCode || '');
 
   // Local-specific states
   const [playerCount, setPlayerCount] = useState<number>(2);
@@ -79,10 +88,10 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
 
   // Initialize local players config
   const [players, setPlayers] = useState<PlayerSetup[]>(
-    Array.from({ length: 5 }, (_, i) => ({
+    Array.from({ length: 6 }, (_, i) => ({
       id: i,
-      name: DEFAULT_NAMES[i],
-      color: PRESET_COLORS[i],
+      name: DEFAULT_NAMES[i] || `Player ${i + 1}`,
+      color: PRESET_COLORS[i] || PRESET_COLORS[0],
     }))
   );
 
@@ -207,10 +216,10 @@ export default function SetupScreen({ onStartGame, onStartOnline }: SetupScreenP
               <div>
                 <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-3">
                   <FontAwesomeIcon icon={faUsers} className="text-[var(--color-accent)]" />
-                  Number of Players (2 - 5)
+                  Number of Players (2 - 6)
                 </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {[2, 3, 4, 5].map((num) => (
+                <div className="grid grid-cols-5 gap-2">
+                  {[2, 3, 4, 5, 6].map((num) => (
                     <button
                       key={num}
                       type="button"

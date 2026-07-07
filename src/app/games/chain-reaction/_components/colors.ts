@@ -2,15 +2,33 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 export const PRESET_COLORS = [
-  '#08ca5f', // Emerald Green
-  '#ff4b4b', // Coral Red
-  '#00d4ff', // Cyan / Neon Blue
-  '#d946ef', // Neon Pink / Magenta
-  '#eab308', // Gold / Yellow
+  '#10b981', // Emerald Green
+  '#ef4444', // Coral Red
+  '#3b82f6', // Royal Blue
+  '#06b6d4', // Sky Cyan
+  '#f59e0b', // Amber / Yellow
+  '#8b5cf6', // Violet Purple
 ];
 
 export const getThemeColor = (color: string, isDark: boolean) => {
-  switch (color) {
+  switch (color.toLowerCase()) {
+    // New Presets
+    case '#10b981':
+      return isDark ? '#10b981' : '#16a34a';
+    case '#ef4444':
+      return isDark ? '#ef4444' : '#dc2626';
+    case '#3b82f6':
+      return isDark ? '#3b82f6' : '#2563eb';
+    case '#06b6d4':
+      return isDark ? '#06b6d4' : '#0891b2';
+    case '#f59e0b':
+      return isDark ? '#f59e0b' : '#d97706';
+    case '#8b5cf6':
+      return isDark ? '#8b5cf6' : '#7c3aed';
+
+    // Backward Compatibility for old presets
+    case '#ec4899':
+      return isDark ? '#ec4899' : '#9d174d';
     case '#08ca5f':
       return isDark ? '#08ca5f' : '#15803d';
     case '#ff4b4b':
@@ -21,8 +39,9 @@ export const getThemeColor = (color: string, isDark: boolean) => {
       return isDark ? '#d946ef' : '#a21caf';
     case '#eab308':
       return isDark ? '#eab308' : '#a16207';
-    case '#f97316': // Keep support for old Gold / Orange preset if saved/loaded in network sessions
+    case '#f97316':
       return isDark ? '#f97316' : '#c2410c';
+
     default:
       return color;
   }

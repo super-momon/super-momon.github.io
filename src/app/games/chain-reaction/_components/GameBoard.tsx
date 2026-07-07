@@ -146,8 +146,26 @@ export default function GameBoard({
     return count;
   })();
 
-  // Temporary notification toast for player disconnects
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  // Temporary notification toast for player disconnects and reconnects
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  // Match Duration Timer State
+  const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+
+  // Timer Effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecondsElapsed((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const isAnimatingRef = useRef(false);
 
@@ -289,8 +307,8 @@ export default function GameBoard({
             // turns are no longer skipped and they can keep playing. The
             // reconnecting client pulls fresh state via `request-sync`.
             if (p.clientId && joinedClientIds.includes(p.clientId) && !p.connected) {
-              setToastMessage(`${p.name} reconnected!`);
-              setTimeout(() => setToastMessage(null), 3000);
+              setToast({ message: `${p.name} reconnected!`, type: 'success' });
+              setTimeout(() => setToast(null), 3000);
               return { ...p, connected: true };
             }
             return p;
@@ -305,8 +323,8 @@ export default function GameBoard({
           // keep their board position and can reconnect to continue.
           const updated = prevPlayers.map((p) => {
             if (p.clientId && leftClientIds.includes(p.clientId) && p.connected) {
-              setToastMessage(`${p.name} disconnected. Waiting for them to reconnect…`);
-              setTimeout(() => setToastMessage(null), 3000);
+              setToast({ message: `${p.name} disconnected. Waiting for them to reconnect…`, type: 'error' });
+              setTimeout(() => setToast(null), 3000);
               return { ...p, connected: false };
             }
             return p;
@@ -400,6 +418,7 @@ export default function GameBoard({
     setIsAnimating(false);
     isAnimatingRef.current = false;
     setExplodingCells({});
+    setSecondsElapsed(0);
   };
 
   const countPlayerOrbs = (boardState: Cell[][], playerId: number) => {
@@ -683,15 +702,23 @@ export default function GameBoard({
   return (
     <div className="w-full max-w-7xl mx-auto px-4 pb-12 flex flex-col items-center">
       {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 left-6 z-50 bg-red-600/90 text-white px-4 py-2.5 rounded-xl border border-red-500/40 shadow-xl flex items-center gap-2 text-xs font-bold animate-bounce">
+      {toast && (
+        <div 
+          className={`fixed bottom-6 left-6 z-50 px-4 py-2.5 rounded-xl border shadow-xl flex items-center gap-2 text-xs font-bold animate-bounce text-white ${
+            toast.type === 'success' 
+              ? 'bg-green-600/90 border-green-500/40 shadow-green-500/10' 
+              : toast.type === 'error' 
+                ? 'bg-red-600/90 border-red-500/40 shadow-red-500/10' 
+                : 'bg-indigo-600/90 border-indigo-500/40 shadow-indigo-500/10'
+          }`}
+        >
           <FontAwesomeIcon icon={faCircleInfo} />
-          {toastMessage}
+          {toast.message}
         </div>
       )}
 
       {/* Control / Info Bar */}
-      <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-between mb-6 bg-[var(--color-surface)]/40 border border-[var(--color-border)]/40 p-4 rounded-2xl glass-panel">
+      <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-between mb-6 bg-[var(--color-surface)]/90 border border-[var(--color-border)] p-4 rounded-2xl shadow-sm backdrop-blur-md">
         <div className="flex gap-2 items-center">
           <button
             onClick={handleQuitClick}
@@ -711,6 +738,14 @@ export default function GameBoard({
               <FontAwesomeIcon icon={faRotateRight} /> Reset
             </button>
           )}
+
+          <button
+            onClick={() => setIsInfoOpen(true)}
+            aria-label="Show gameplay rules"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition cursor-pointer"
+          >
+            <FontAwesomeIcon icon={faCircleInfo} /> Guide
+          </button>
         </div>
 
         {/* Turn & Session Stats Indicator */}
@@ -742,6 +777,11 @@ export default function GameBoard({
           <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
             <span className="text-[var(--color-muted)]">Total Orbs:</span>
             <span className="text-[var(--color-foreground)]">{totalOrbsCount}</span>
+          </div>
+
+          <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <span className="text-[var(--color-muted)]">Duration:</span>
+            <span className="text-[var(--color-foreground)]">{formatTime(secondsElapsed)}</span>
           </div>
         </div>
 
@@ -788,7 +828,7 @@ export default function GameBoard({
       </div>
 
       {/* Players Standings / Leaderboard Header */}
-      <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6">
+      <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-6">
         {players.map((p, idx) => {
           const isCurrent = idx === currentPlayerIndex && p.active && !isAnimating;
           const totalOrbs = countPlayerOrbs(board, p.id);
@@ -799,12 +839,12 @@ export default function GameBoard({
               key={p.id}
               className={`relative overflow-hidden p-3.5 rounded-2xl border transition-all duration-300 ${
                 isCurrent 
-                  ? 'scale-103 bg-[var(--color-surface)]/80 z-10 shadow-lg shadow-black/5' 
-                  : 'bg-[var(--color-surface)]/20 hover:bg-[var(--color-surface)]/30'
-              } ${!p.active ? 'opacity-40 grayscale line-through' : ''}`}
+                  ? 'scale-103 bg-[var(--color-surface)] z-10 shadow-md shadow-black/5' 
+                  : 'bg-[var(--color-surface)]/80 hover:bg-[var(--color-surface)] shadow-sm'
+              } ${!p.active ? 'opacity-40 grayscale line-through' : ''} ${isOnline && !p.connected ? 'border-dashed opacity-65' : ''}`}
               style={{
                 borderColor: isCurrent ? playerThemeColor : 'var(--color-border)',
-                boxShadow: isCurrent ? `0 0 15px ${playerThemeColor}20, inset 0 0 8px ${playerThemeColor}05` : 'none',
+                boxShadow: isCurrent ? `0 4px 15px ${playerThemeColor}15, inset 0 0 0 1px ${playerThemeColor}15` : 'none',
               }}
             >
               {/* Top border colored bar */}
@@ -824,7 +864,10 @@ export default function GameBoard({
                   {!p.active && (
                     <span className="text-[9px] font-bold text-red-500 uppercase tracking-widest">OUT</span>
                   )}
-                  {isCurrent && (
+                  {isOnline && !p.connected && (
+                    <span className="text-[8px] font-extrabold text-red-500 bg-red-500/10 border border-red-500/25 px-1 py-0.5 rounded uppercase tracking-wider scale-90">OFFLINE</span>
+                  )}
+                  {isCurrent && p.connected && (
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                   )}
                 </div>
@@ -1114,33 +1157,57 @@ export default function GameBoard({
         )}
       </div>
 
-      {/* Gameplay & Critical Mass Guide */}
-      <div className="mt-8 w-full max-w-lg bg-[var(--color-surface)]/30 border border-[var(--color-border)]/40 p-5 rounded-2xl glass-panel text-xs text-[var(--color-muted)]">
-        <h4 className="text-[var(--color-foreground)] font-bold mb-3 flex items-center gap-1.5">
-          <FontAwesomeIcon icon={faCircleInfo} className="text-[var(--color-accent)] text-sm" />
-          Critical Mass Explosion Guide
-        </h4>
-        <div className="grid grid-cols-3 gap-3 text-center mb-4">
-          <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
-            <span className="text-[var(--color-foreground)] font-extrabold">Corners</span>
-            <span className="text-[10px] text-yellow-500 font-bold bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20">2 Orbs</span>
-            <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 2 neighbors</span>
-          </div>
-          <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
-            <span className="text-[var(--color-foreground)] font-extrabold">Edges</span>
-            <span className="text-[10px] text-orange-500 font-bold bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">3 Orbs</span>
-            <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 3 neighbors</span>
-          </div>
-          <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
-            <span className="text-[var(--color-foreground)] font-extrabold">Inner Cells</span>
-            <span className="text-[10px] text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">4 Orbs</span>
-            <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 4 neighbors</span>
+      {/* Gameplay & Critical Mass Guide (Modal overlay) */}
+      {isInfoOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            onClick={() => setIsInfoOpen(false)}
+            className="absolute inset-0 bg-black/65 backdrop-blur-sm transition-opacity" 
+          />
+          
+          <div className="relative w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-3xl p-6 shadow-2xl overflow-hidden glass-panel text-xs text-[var(--color-muted)] z-10 animate-in fade-in zoom-in duration-200">
+            {/* Glow Accent */}
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-accent)]/10 rounded-full blur-2xl pointer-events-none" />
+
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/30 pb-3">
+              <h4 className="text-[var(--color-foreground)] font-bold text-sm flex items-center gap-1.5">
+                <FontAwesomeIcon icon={faCircleInfo} className="text-[var(--color-accent)] text-base" />
+                Critical Mass Explosion Guide
+              </h4>
+              <button
+                onClick={() => setIsInfoOpen(false)}
+                className="w-8 h-8 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-muted)]/50 flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] transition cursor-pointer font-bold text-xs"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Guide Grid */}
+            <div className="grid grid-cols-3 gap-3 text-center mb-4">
+              <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
+                <span className="text-[var(--color-foreground)] font-extrabold">Corners</span>
+                <span className="text-[10px] text-yellow-500 font-bold bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20">2 Orbs</span>
+                <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 2 neighbors</span>
+              </div>
+              <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
+                <span className="text-[var(--color-foreground)] font-extrabold">Edges</span>
+                <span className="text-[10px] text-orange-500 font-bold bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">3 Orbs</span>
+                <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 3 neighbors</span>
+              </div>
+              <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
+                <span className="text-[var(--color-foreground)] font-extrabold">Inner Cells</span>
+                <span className="text-[10px] text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">4 Orbs</span>
+                <span className="text-[9px] text-[var(--color-muted)] leading-tight mt-0.5">Explodes to 4 neighbors</span>
+              </div>
+            </div>
+
+            <p className="leading-relaxed text-center border-t border-[var(--color-border)]/30 pt-3">
+              <strong className="text-[var(--color-foreground)]">How to win:</strong> Place orbs on empty or owned cells. When a cell reaches critical mass (orbs = adjacent neighbors), it explodes, claiming and distributing orbs to neighbors. Eliminate all other players to dominate!
+            </p>
           </div>
         </div>
-        <p className="leading-relaxed text-center border-t border-[var(--color-border)]/30 pt-3">
-          <strong className="text-[var(--color-foreground)]">How to win:</strong> Place orbs on empty or owned cells. When a cell reaches critical mass (orbs = adjacent neighbors), it explodes, claiming and distributing orbs to neighbors. Eliminate all other players to dominate!
-        </p>
-      </div>
+      )}
     </div>
   );
 }

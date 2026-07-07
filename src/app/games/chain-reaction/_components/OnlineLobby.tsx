@@ -53,6 +53,7 @@ export default function OnlineLobby({
 }: OnlineLobbyProps) {
   const isDark = useIsDark();
   const [copied, setCopied] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [localName, setLocalName] = useState(playerName);
   const [localRows, setLocalRows] = useState<string>(rows.toString());
   const [localCols, setLocalCols] = useState<string>(cols.toString());
@@ -76,6 +77,14 @@ export default function OnlineLobby({
     navigator.clipboard.writeText(roomCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyInviteLink = () => {
+    if (typeof window === 'undefined') return;
+    const inviteLink = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
+    navigator.clipboard.writeText(inviteLink);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   const handleDecrementRows = () => {
@@ -152,24 +161,41 @@ export default function OnlineLobby({
         </div>
 
         {/* Room Code Display */}
-        <div className="text-center mb-8 bg-[var(--color-surface)]/60 rounded-2xl p-6 border border-[var(--color-border)]/40">
-          <h2 className="text-xs uppercase font-extrabold tracking-widest text-[var(--color-muted)] mb-2">
-            Room Join Code
-          </h2>
-          <div className="flex items-center justify-center gap-3">
-            <span className="text-4xl font-black tracking-wider text-[var(--color-foreground)] uppercase">
-              {roomCode}
+        <div className="text-center mb-8 bg-[var(--color-surface)]/60 rounded-2xl p-6 border border-[var(--color-border)]/40 space-y-4">
+          <div>
+            <h2 className="text-xs uppercase font-extrabold tracking-widest text-[var(--color-muted)] mb-2">
+              Room Join Code
+            </h2>
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-4xl font-black tracking-wider text-[var(--color-foreground)] uppercase">
+                {roomCode}
+              </span>
+              <button
+                onClick={copyRoomCode}
+                aria-label="Copy room join code"
+                title="Copy Room Code"
+                className="w-10 h-10 rounded-xl border border-[var(--color-border)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] hover:scale-105 transition cursor-pointer"
+              >
+                <FontAwesomeIcon icon={copied ? faCheck : faCopy} className={copied ? 'text-green-500' : ''} />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center justify-center border-t border-[var(--color-border)]/35 pt-4">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-muted)] mb-2">
+              Or Share Invite Link
             </span>
             <button
-              onClick={copyRoomCode}
-              aria-label="Copy room join code"
-              className="w-10 h-10 rounded-xl border border-[var(--color-border)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] hover:scale-105 transition cursor-pointer"
+              onClick={copyInviteLink}
+              className="flex items-center gap-2 px-4 py-2 text-xs font-bold border border-[var(--color-border)] rounded-xl bg-[var(--color-background)] hover:bg-[var(--color-surface)] text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:scale-102 transition cursor-pointer"
             >
-              <FontAwesomeIcon icon={copied ? faCheck : faCopy} className={copied ? 'text-green-500' : ''} />
+              <FontAwesomeIcon icon={copiedLink ? faCheck : faCopy} className={copiedLink ? 'text-green-500' : ''} />
+              {copiedLink ? 'Invite Link Copied!' : 'Copy Direct Invite Link'}
             </button>
           </div>
-          <p className="text-[var(--color-muted)] text-xs mt-2">
-            Share this code with your friends to join the game session.
+
+          <p className="text-[var(--color-muted)] text-[11px]">
+            Friends opening the invite link will be directed straight to this room.
           </p>
         </div>
 
