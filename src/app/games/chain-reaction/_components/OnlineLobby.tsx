@@ -129,7 +129,7 @@ export default function OnlineLobby({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
-      className="w-full max-w-2xl mx-auto px-4 py-8"
+      className="w-full max-w-3xl mx-auto px-4 py-8"
     >
       <div className="glass-panel rounded-3xl p-8 shadow-2xl relative overflow-hidden border border-[var(--color-border)]/50 bg-[var(--color-surface)]/40 backdrop-blur-xl">
         {/* Glow Accent */}
@@ -210,7 +210,7 @@ export default function OnlineLobby({
                 <label className="text-xs text-[var(--color-muted)] block mb-1">Nickname</label>
                 <input
                   type="text"
-                  maxLength={15}
+                  maxLength={20}
                   value={localName}
                   onChange={(e) => setLocalName(e.target.value)}
                   onBlur={(e) => {
@@ -401,7 +401,7 @@ export default function OnlineLobby({
                         exit={{ opacity: 0, x: 10 }}
                         className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-3"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 min-w-0 flex-1 mr-2">
                           <span
                             className="w-4 h-4 rounded-full border border-black/10 flex-shrink-0"
                             style={{
@@ -409,12 +409,19 @@ export default function OnlineLobby({
                               boxShadow: `0 0 8px ${getThemeColor(displayColor, isDark)}40`,
                             }}
                           />
-                          <span className="text-sm font-semibold text-[var(--color-foreground)] truncate max-w-[140px]">
-                            {displayName}
+                          <div className="flex flex-wrap items-center gap-1.5 min-w-0 flex-1">
+                            <span 
+                              className="text-sm font-semibold text-[var(--color-foreground)] break-words whitespace-normal flex-1 min-w-[100px]" 
+                              title={displayName}
+                            >
+                              {displayName}
+                            </span>
                             {isMe && (
-                              <span className="text-[10px] text-[var(--color-muted)] font-normal ml-1">(You)</span>
+                              <span className="text-[9px] font-bold bg-[var(--color-accent)]/15 text-[var(--color-accent)] px-1.5 py-0.5 rounded border border-[var(--color-accent)]/20 flex-shrink-0">
+                                YOU
+                              </span>
                             )}
-                          </span>
+                          </div>
                         </div>
 
                         <div className="flex items-center gap-2">

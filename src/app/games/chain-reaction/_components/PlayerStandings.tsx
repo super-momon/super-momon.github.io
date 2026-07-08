@@ -52,22 +52,32 @@ export function PlayerStandings({
             />
 
             <div className="flex flex-col gap-1 mt-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold truncate max-w-[90px]" style={{ color: playerThemeColor }}>
-                  {p.name}
+              <div className="flex items-center justify-between gap-1.5 min-w-0">
+                <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                  <span 
+                    className="text-xs font-bold truncate" 
+                    style={{ color: playerThemeColor }}
+                    title={p.name}
+                  >
+                    {p.name}
+                  </span>
                   {isLocalPlayer && (
-                    <span className="text-[8px] font-normal text-[var(--color-muted)] ml-0.5">(You)</span>
+                    <span className="text-[8px] font-bold bg-[var(--color-accent)]/15 text-[var(--color-accent)] px-1 py-0.25 rounded border border-[var(--color-accent)]/20 flex-shrink-0">
+                      YOU
+                    </span>
                   )}
-                </span>
-                {!p.active && (
-                  <span className="text-[9px] font-bold text-red-500 uppercase tracking-widest">OUT</span>
-                )}
-                {isOnline && !p.connected && (
-                  <span className="text-[8px] font-extrabold text-red-500 bg-red-500/10 border border-red-500/25 px-1 py-0.5 rounded uppercase tracking-wider scale-90">OFFLINE</span>
-                )}
-                {isCurrent && p.connected && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                )}
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  {!p.active && (
+                    <span className="text-[8px] font-black text-red-500 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded uppercase tracking-wider">OUT</span>
+                  )}
+                  {isOnline && !p.connected && (
+                    <span className="text-[8px] font-extrabold text-red-500 bg-red-500/10 border border-red-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider">OFFLINE</span>
+                  )}
+                  {isCurrent && p.connected && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  )}
+                </div>
               </div>
               <div className="flex justify-between items-baseline">
                 <span className="text-[10px] text-[var(--color-muted)] font-medium">Orbs</span>

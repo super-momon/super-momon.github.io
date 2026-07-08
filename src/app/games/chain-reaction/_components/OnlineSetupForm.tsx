@@ -81,7 +81,7 @@ export default function OnlineSetupForm({
           <input
             type="text"
             required
-            maxLength={15}
+            maxLength={20}
             value={onlineName}
             onChange={(e) => setOnlineName(e.target.value)}
             onBlur={(e) => {
