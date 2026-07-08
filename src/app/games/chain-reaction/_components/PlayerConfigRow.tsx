@@ -36,7 +36,7 @@ export default function PlayerConfigRow({
       <input
         type="text"
         required
-        maxLength={15}
+        maxLength={20}
         value={player.name}
         onChange={(e) => onNameChange(index, e.target.value)}
         className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none focus:border-[var(--color-accent)] transition"
