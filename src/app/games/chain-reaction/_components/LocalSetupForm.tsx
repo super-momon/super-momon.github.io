@@ -18,7 +18,7 @@ import PlayerConfigRow from './PlayerConfigRow';
 import { PRESET_COLORS, useIsDark } from './colors';
 
 interface LocalSetupFormProps {
-  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean) => void;
+  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean, turnSecondsLimit: number) => void;
 }
 
 const DEFAULT_NAMES = ['Player One', 'Player Two', 'Player Three', 'Player Four', 'Player Five', 'Player Six'];
@@ -31,6 +31,21 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
   const [rows, setRows] = useState<number | ''>(15);
   const [cols, setCols] = useState<number | ''>(20);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [turnSecondsLimit, setTurnSecondsLimit] = useState<number | ''>(30);
+
+  const decrementTurnSeconds = () => {
+    setTurnSecondsLimit((prev) => {
+      const val = prev === '' ? 30 : prev;
+      return Math.max(10, val - 5);
+    });
+  };
+
+  const incrementTurnSeconds = () => {
+    setTurnSecondsLimit((prev) => {
+      const val = prev === '' ? 30 : prev;
+      return Math.min(120, val + 5);
+    });
+  };
 
   // Initialize local players config
   const [players, setPlayers] = useState<PlayerSetup[]>(
@@ -99,10 +114,12 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
     e.preventDefault();
     const finalRows = Math.max(6, Math.min(20, Number(rows) || 15));
     const finalCols = Math.max(6, Math.min(25, Number(cols) || 20));
+    const finalTurnSeconds = Math.max(10, Math.min(120, Number(turnSecondsLimit) || 30));
     setRows(finalRows);
     setCols(finalCols);
+    setTurnSecondsLimit(finalTurnSeconds);
     const activePlayers = players.slice(0, playerCount);
-    onStartGame(activePlayers, finalRows, finalCols, soundEnabled);
+    onStartGame(activePlayers, finalRows, finalCols, soundEnabled, finalTurnSeconds);
   };
 
   return (
@@ -166,100 +183,153 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
         </div>
       </div>
 
-      {/* Step 3: Board Size & Sound */}
+      {/* Step 3: Board Size & Settings */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-[var(--color-surface)]/30 rounded-2xl p-4 border border-[var(--color-border)]/40 flex flex-col gap-3">
-          <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2">
-            <FontAwesomeIcon icon={faBorderAll} className="text-[var(--color-accent)]" />
-            Grid Board Dimensions
-          </label>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <span className="text-xs text-[var(--color-muted)] block mb-1.5">Rows (6 - 20)</span>
-              <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
-                <button
-                  key="rows-dec"
-                  type="button"
-                  onClick={decrementRows}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
-                >
-                  <FontAwesomeIcon icon={faMinus} />
-                </button>
-                <input
-                  type="number"
-                  min={6}
-                  max={20}
-                  value={rows}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === '') {
-                      setRows('');
-                    } else {
-                      const parsed = parseInt(val, 10);
-                      if (!isNaN(parsed)) setRows(parsed);
-                    }
-                  }}
-                  onBlur={() => {
-                    const num = Number(rows);
-                    if (isNaN(num) || num < 6) setRows(6);
-                    else if (num > 20) setRows(20);
-                    else setRows(num);
-                  }}
-                  className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-                <button
-                  key="rows-inc"
-                  type="button"
-                  onClick={incrementRows}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                </button>
+        <div className="bg-[var(--color-surface)]/30 rounded-2xl p-4 border border-[var(--color-border)]/40 flex flex-col gap-4">
+          <div>
+            <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-3">
+              <FontAwesomeIcon icon={faBorderAll} className="text-[var(--color-accent)]" />
+              Grid Board Dimensions
+            </label>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <span className="text-xs text-[var(--color-muted)] block mb-1.5">Rows (6 - 20)</span>
+                <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                  <button
+                    key="rows-dec"
+                    type="button"
+                    onClick={decrementRows}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </button>
+                  <input
+                    type="number"
+                    min={6}
+                    max={20}
+                    value={rows}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '') {
+                        setRows('');
+                      } else {
+                        const parsed = parseInt(val, 10);
+                        if (!isNaN(parsed)) setRows(parsed);
+                      }
+                    }}
+                    onBlur={() => {
+                      const num = Number(rows);
+                      if (isNaN(num) || num < 6) setRows(6);
+                      else if (num > 20) setRows(20);
+                      else setRows(num);
+                    }}
+                    className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <button
+                    key="rows-inc"
+                    type="button"
+                    onClick={incrementRows}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                </div>
+              </div>
+              <div>
+                <span className="text-xs text-[var(--color-muted)] block mb-1.5">Columns (6 - 25)</span>
+                <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                  <button
+                    key="cols-dec"
+                    type="button"
+                    onClick={decrementCols}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </button>
+                  <input
+                    type="number"
+                    min={6}
+                    max={25}
+                    value={cols}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '') {
+                        setCols('');
+                      } else {
+                        const parsed = parseInt(val, 10);
+                        if (!isNaN(parsed)) setCols(parsed);
+                      }
+                    }}
+                    onBlur={() => {
+                      const num = Number(cols);
+                      if (isNaN(num) || num < 6) setCols(6);
+                      else if (num > 25) setCols(25);
+                      else setCols(num);
+                    }}
+                    className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <button
+                    key="cols-inc"
+                    type="button"
+                    onClick={incrementCols}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                </div>
               </div>
             </div>
-            <div>
-              <span className="text-xs text-[var(--color-muted)] block mb-1.5">Columns (6 - 25)</span>
-              <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
-                <button
-                  key="cols-dec"
-                  type="button"
-                  onClick={decrementCols}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
-                >
-                  <FontAwesomeIcon icon={faMinus} />
-                </button>
+          </div>
+
+          <div className="border-t border-[var(--color-border)]/30 pt-3.5">
+            <label className="text-xs font-bold text-[var(--color-muted)] flex items-center gap-1.5 mb-2">
+              <svg className="w-3.5 h-3.5 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Turn Time Limit (10 - 120s)
+            </label>
+            <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+              <button
+                type="button"
+                onClick={decrementTurnSeconds}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+              >
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+              <div className="flex items-center gap-1">
                 <input
                   type="number"
-                  min={6}
-                  max={25}
-                  value={cols}
+                  min={10}
+                  max={120}
+                  value={turnSecondsLimit}
                   onChange={(e) => {
                     const val = e.target.value;
                     if (val === '') {
-                      setCols('');
+                      setTurnSecondsLimit('');
                     } else {
                       const parsed = parseInt(val, 10);
-                      if (!isNaN(parsed)) setCols(parsed);
+                      if (!isNaN(parsed)) setTurnSecondsLimit(parsed);
                     }
                   }}
                   onBlur={() => {
-                    const num = Number(cols);
-                    if (isNaN(num) || num < 6) setCols(6);
-                    else if (num > 25) setCols(25);
-                    else setCols(num);
+                    const num = Number(turnSecondsLimit);
+                    if (isNaN(num) || num < 10) setTurnSecondsLimit(30);
+                    else if (num > 120) setTurnSecondsLimit(120);
+                    else setTurnSecondsLimit(num);
                   }}
                   className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
-                <button
-                  key="cols-inc"
-                  type="button"
-                  onClick={incrementCols}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                </button>
+                <span className="text-xs text-[var(--color-muted)] select-none pr-1">sec</span>
               </div>
+              <button
+                type="button"
+                onClick={incrementTurnSeconds}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
             </div>
           </div>
         </div>
