@@ -91,7 +91,7 @@ export function PlayerStandings({
                         color: turnSecondsLeft <= 10 ? undefined : playerThemeColor
                       }}
                     >
-                      {turnSecondsLeft}s
+                      {Math.max(0, turnSecondsLeft)}s
                     </span>
                   )}
                 </div>

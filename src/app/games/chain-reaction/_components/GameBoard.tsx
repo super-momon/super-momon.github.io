@@ -33,6 +33,7 @@ interface GameBoardProps {
   // True when this board was restored from a persisted session after a page
   // reload, so it should immediately pull the current state from peers.
   resumed?: boolean;
+  turnSecondsLimit?: number;
 }
 
 export interface Player {
@@ -72,6 +73,7 @@ export default function GameBoard({
   isHost = false,
   onGoToLobby,
   resumed = false,
+  turnSecondsLimit = 30,
 }: GameBoardProps) {
   const isDark = useIsDark();
   // Setup local state
@@ -93,7 +95,7 @@ export default function GameBoard({
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [zoomLevel, setZoomLevel] = useState<'sm' | 'md' | 'lg'>('md');
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
-  const [turnSecondsLeft, setTurnSecondsLeft] = useState<number>(60);
+  const [turnSecondsLeft, setTurnSecondsLeft] = useState<number>(turnSecondsLimit);
 
   // Session Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -185,6 +187,7 @@ export default function GameBoard({
     board: Cell[][];
     players: Player[];
     currentPlayerIndex: number;
+    isTimeout?: boolean;
   } | null>(null);
 
   useEffect(() => {
@@ -249,12 +252,22 @@ export default function GameBoard({
     };
 
     const handleSyncStateBroadcast = (payload: any) => {
-      const { board: syncedBoard, players: syncedPlayers, currentPlayerIndex: syncedCurrentPlayerIndex } = payload.payload;
+      const { board: syncedBoard, players: syncedPlayers, currentPlayerIndex: syncedCurrentPlayerIndex, isTimeout } = payload.payload;
+      
+      if (isTimeout) {
+        const prevActivePlayer = playersRef.current[currentPlayerIndexRef.current];
+        if (prevActivePlayer) {
+          setToast({ message: `${prevActivePlayer.name}'s turn timed out!`, type: 'info' });
+          setTimeout(() => setToast(null), 3000);
+        }
+      }
+
       if (isAnimatingRef.current) {
         pendingSyncStateRef.current = {
           board: syncedBoard,
           players: syncedPlayers,
           currentPlayerIndex: syncedCurrentPlayerIndex,
+          isTimeout,
         };
       } else {
         setBoard(syncedBoard);
@@ -575,20 +588,20 @@ export default function GameBoard({
   // Reset turn timer when currentPlayerIndex changes or when animation finishes
   useEffect(() => {
     if (!isAnimating) {
-      setTurnSecondsLeft(60);
+      setTurnSecondsLeft(turnSecondsLimit);
     }
-  }, [currentPlayerIndex, isAnimating]);
+  }, [currentPlayerIndex, isAnimating, turnSecondsLimit]);
 
   // Turn timer countdown effect
   useEffect(() => {
     if (isAnimating) return;
 
-    const activePlayers = players.filter((p) => p.active);
+    const activePlayers = playersRef.current.filter((p) => p.active);
     if (activePlayers.length <= 1) return;
 
     const interval = setInterval(() => {
       setTurnSecondsLeft((prev) => {
-        const activePlayer = players[currentPlayerIndex];
+        const activePlayer = playersRef.current[currentPlayerIndex];
         const isMyTurn = isOnline ? (activePlayer?.clientId === myClientId) : true;
         
         // Active player times out at 0, host enforces fallback at -3 to prevent race conditions and duplicate messages
@@ -603,14 +616,14 @@ export default function GameBoard({
               skipCurrentPlayerTurn();
             }, 0);
           }
-          return 60;
+          return turnSecondsLimit;
         }
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentPlayerIndex, isAnimating, players, isOnline, isHost, myClientId]);
+  }, [currentPlayerIndex, isAnimating, isOnline, isHost, myClientId, turnSecondsLimit]);
 
   // Initialize Board and Players
   const initializeGame = () => {
@@ -809,7 +822,11 @@ export default function GameBoard({
 
     if (foundNext) {
       setCurrentPlayerIndex(nextIdx);
-      setTurnSecondsLeft(60);
+      setTurnSecondsLeft(turnSecondsLimit);
+
+      // Show toast alert on the local machine that triggered the skip (works for both offline play and the online player/host who handled the skip)
+      setToast({ message: `${currentActivePlayer.name}'s turn timed out!`, type: 'info' });
+      setTimeout(() => setToast(null), 3000);
 
       if (isOnline) {
         const isMyTurn = currentActivePlayer.clientId === myClientId;
@@ -822,13 +839,11 @@ export default function GameBoard({
                 board: boardRef.current,
                 players: currentPlayers,
                 currentPlayerIndex: nextIdx,
+                isTimeout: true,
               },
             });
           }
         }
-      } else {
-        setToast({ message: `${currentActivePlayer.name}'s turn timed out!`, type: 'info' });
-        setTimeout(() => setToast(null), 3000);
       }
     }
   };
@@ -1005,9 +1020,13 @@ export default function GameBoard({
 
         {/* Grid Canvas Wrapper */}
         <div 
-          className={`w-full bg-[var(--color-surface)]/20 border border-[var(--color-border)]/50 rounded-3xl p-4 sm:p-6 overflow-hidden glass-panel flex items-center justify-center transition-all ${
+          className={`w-full bg-[var(--color-surface)]/20 border rounded-3xl p-4 sm:p-6 overflow-hidden glass-panel flex items-center justify-center transition-all duration-500 ${
             isShoutShaking ? 'shout-shake' : ''
           }`}
+          style={{
+            borderColor: activePlayerThemeColor ? `${activePlayerThemeColor}40` : 'var(--color-border)',
+            boxShadow: activePlayerThemeColor ? `0 8px 30px ${activePlayerThemeColor}10, inset 0 0 0 1px ${activePlayerThemeColor}15` : 'none',
+          }}
         >
           <div className="w-full overflow-auto max-h-[85vh] lg:max-h-none custom-scrollbar p-1 sm:p-2">
             <div

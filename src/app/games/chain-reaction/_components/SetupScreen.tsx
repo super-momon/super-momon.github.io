@@ -18,7 +18,7 @@ export interface PlayerSetup {
 }
 
 interface SetupScreenProps {
-  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean) => void;
+  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean, turnSecondsLimit: number) => void;
   onStartOnline: (mode: 'host' | 'join', name: string, code: string) => void;
   initialPlayMode?: 'local' | 'online';
   initialOnlineMode?: 'host' | 'join';

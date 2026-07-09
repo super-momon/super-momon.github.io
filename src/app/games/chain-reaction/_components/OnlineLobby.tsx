@@ -29,7 +29,8 @@ interface OnlineLobbyProps {
   connectionStatus: 'connecting' | 'connected' | 'error';
   rows: number;
   cols: number;
-  onSettingsChange: (rows: number, cols: number) => void;
+  turnSecondsLimit: number;
+  onSettingsChange: (rows: number, cols: number, turnSecondsLimit: number) => void;
   onLeave: () => void;
   onStartGame: () => void;
   myClientId: string;
@@ -46,6 +47,7 @@ export default function OnlineLobby({
   connectionStatus,
   rows,
   cols,
+  turnSecondsLimit,
   onSettingsChange,
   onLeave,
   onStartGame,
@@ -57,6 +59,7 @@ export default function OnlineLobby({
   const [localName, setLocalName] = useState(playerName);
   const [localRows, setLocalRows] = useState<string>(rows.toString());
   const [localCols, setLocalCols] = useState<string>(cols.toString());
+  const [localTurnSeconds, setLocalTurnSeconds] = useState<string>(turnSecondsLimit.toString());
 
   // Sync localName if playerName prop changes from parent
   useEffect(() => {
@@ -71,6 +74,10 @@ export default function OnlineLobby({
   useEffect(() => {
     setLocalCols(cols.toString());
   }, [cols]);
+
+  useEffect(() => {
+    setLocalTurnSeconds(turnSecondsLimit.toString());
+  }, [turnSecondsLimit]);
 
   // Clipboard copy helper
   const copyRoomCode = () => {
@@ -92,7 +99,7 @@ export default function OnlineLobby({
     const newVal = isNaN(val) ? 15 : val;
     const finalRows = Math.max(6, newVal - 1);
     setLocalRows(finalRows.toString());
-    onSettingsChange(finalRows, cols);
+    onSettingsChange(finalRows, cols, turnSecondsLimit);
   };
 
   const handleIncrementRows = () => {
@@ -100,7 +107,7 @@ export default function OnlineLobby({
     const newVal = isNaN(val) ? 15 : val;
     const finalRows = Math.min(20, newVal + 1);
     setLocalRows(finalRows.toString());
-    onSettingsChange(finalRows, cols);
+    onSettingsChange(finalRows, cols, turnSecondsLimit);
   };
 
   const handleDecrementCols = () => {
@@ -108,7 +115,7 @@ export default function OnlineLobby({
     const newVal = isNaN(val) ? 20 : val;
     const finalCols = Math.max(6, newVal - 1);
     setLocalCols(finalCols.toString());
-    onSettingsChange(rows, finalCols);
+    onSettingsChange(rows, finalCols, turnSecondsLimit);
   };
 
   const handleIncrementCols = () => {
@@ -116,7 +123,23 @@ export default function OnlineLobby({
     const newVal = isNaN(val) ? 20 : val;
     const finalCols = Math.min(25, newVal + 1);
     setLocalCols(finalCols.toString());
-    onSettingsChange(rows, finalCols);
+    onSettingsChange(rows, finalCols, turnSecondsLimit);
+  };
+
+  const handleDecrementTurnSeconds = () => {
+    const val = parseInt(localTurnSeconds, 10);
+    const newVal = isNaN(val) ? 30 : val;
+    const finalSeconds = Math.max(10, newVal - 5);
+    setLocalTurnSeconds(finalSeconds.toString());
+    onSettingsChange(rows, cols, finalSeconds);
+  };
+
+  const handleIncrementTurnSeconds = () => {
+    const val = parseInt(localTurnSeconds, 10);
+    const newVal = isNaN(val) ? 30 : val;
+    const finalSeconds = Math.min(120, newVal + 5);
+    setLocalTurnSeconds(finalSeconds.toString());
+    onSettingsChange(rows, cols, finalSeconds);
   };
 
   // Find which colors are already occupied by other players
@@ -264,97 +287,147 @@ export default function OnlineLobby({
               </div>
             </div>
 
-            {/* Grid Configuration (Host Only) */}
+            {/* Lobby Configuration */}
             <div className="bg-[var(--color-background)]/60 border border-[var(--color-border)]/50 rounded-2xl p-4 space-y-3">
               <label className="text-xs text-[var(--color-muted)] font-bold flex items-center gap-1.5">
                 <FontAwesomeIcon icon={faBorderAll} className="text-[var(--color-accent)]" />
-                Grid Board Dimensions
+                Lobby Game Settings
               </label>
 
               {isHost ? (
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5">Rows (6 - 20)</span>
-                    <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
-                      <button
-                        type="button"
-                        onClick={handleDecrementRows}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
-                      >
-                        <FontAwesomeIcon icon={faMinus} />
-                      </button>
-                      <input
-                        type="number"
-                        min={6}
-                        max={20}
-                        value={localRows}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalRows(val);
-                          if (val !== '') {
-                            const parsed = parseInt(val, 10);
-                            if (!isNaN(parsed)) {
-                              onSettingsChange(Math.max(6, Math.min(20, parsed)), cols);
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-[10px] text-[var(--color-muted)] block mb-1.5">Rows (6 - 20)</span>
+                      <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                        <button
+                          type="button"
+                          onClick={handleDecrementRows}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                        <input
+                          type="number"
+                          min={6}
+                          max={20}
+                          value={localRows}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setLocalRows(val);
+                            if (val !== '') {
+                              const parsed = parseInt(val, 10);
+                              if (!isNaN(parsed)) {
+                                onSettingsChange(Math.max(6, Math.min(20, parsed)), cols, turnSecondsLimit);
+                              }
                             }
-                          }
-                        }}
-                        onBlur={() => {
-                          const num = parseInt(localRows, 10);
-                          let finalRows = num;
-                          if (isNaN(num) || num < 6) finalRows = 6;
-                          else if (num > 20) finalRows = 20;
-                          setLocalRows(finalRows.toString());
-                          onSettingsChange(finalRows, cols);
-                        }}
-                        className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleIncrementRows}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </button>
+                          }}
+                          onBlur={() => {
+                            const num = parseInt(localRows, 10);
+                            let finalRows = num;
+                            if (isNaN(num) || num < 6) finalRows = 6;
+                            else if (num > 20) finalRows = 20;
+                            setLocalRows(finalRows.toString());
+                            onSettingsChange(finalRows, cols, turnSecondsLimit);
+                          }}
+                          className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleIncrementRows}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-[var(--color-muted)] block mb-1.5">Columns (6 - 25)</span>
+                      <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
+                        <button
+                          type="button"
+                          onClick={handleDecrementCols}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                        <input
+                          type="number"
+                          min={6}
+                          max={25}
+                          value={localCols}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setLocalCols(val);
+                            if (val !== '') {
+                              const parsed = parseInt(val, 10);
+                              if (!isNaN(parsed)) {
+                                onSettingsChange(rows, Math.max(6, Math.min(25, parsed)), turnSecondsLimit);
+                              }
+                            }
+                          }}
+                          onBlur={() => {
+                            const num = parseInt(localCols, 10);
+                            let finalCols = num;
+                            if (isNaN(num) || num < 6) finalCols = 6;
+                            else if (num > 25) finalCols = 25;
+                            setLocalCols(finalCols.toString());
+                            onSettingsChange(rows, finalCols, turnSecondsLimit);
+                          }}
+                          className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleIncrementCols}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5">Columns (6 - 25)</span>
+
+                  <div className="border-t border-[var(--color-border)]/30 pt-3">
+                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5">Turn Time Limit (10 - 120s)</span>
                     <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
                       <button
                         type="button"
-                        onClick={handleDecrementCols}
+                        onClick={handleDecrementTurnSeconds}
                         className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </button>
-                      <input
-                        type="number"
-                        min={6}
-                        max={25}
-                        value={localCols}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalCols(val);
-                          if (val !== '') {
-                            const parsed = parseInt(val, 10);
-                            if (!isNaN(parsed)) {
-                              onSettingsChange(rows, Math.max(6, Math.min(25, parsed)));
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          min={10}
+                          max={120}
+                          value={localTurnSeconds}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setLocalTurnSeconds(val);
+                            if (val !== '') {
+                              const parsed = parseInt(val, 10);
+                              if (!isNaN(parsed)) {
+                                onSettingsChange(rows, cols, Math.max(10, Math.min(120, parsed)));
+                              }
                             }
-                          }
-                        }}
-                        onBlur={() => {
-                          const num = parseInt(localCols, 10);
-                          let finalCols = num;
-                          if (isNaN(num) || num < 6) finalCols = 6;
-                          else if (num > 25) finalCols = 25;
-                          setLocalCols(finalCols.toString());
-                          onSettingsChange(rows, finalCols);
-                        }}
-                        className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
+                          }}
+                          onBlur={() => {
+                            const num = parseInt(localTurnSeconds, 10);
+                            let finalSeconds = num;
+                            if (isNaN(num) || num < 10) finalSeconds = 30;
+                            else if (num > 120) finalSeconds = 120;
+                            setLocalTurnSeconds(finalSeconds.toString());
+                            onSettingsChange(rows, cols, finalSeconds);
+                          }}
+                          className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <span className="text-xs text-[var(--color-muted)] select-none pr-1">sec</span>
+                      </div>
                       <button
                         type="button"
-                        onClick={handleIncrementCols}
+                        onClick={handleIncrementTurnSeconds}
                         className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faPlus} />
@@ -363,11 +436,19 @@ export default function OnlineLobby({
                   </div>
                 </div>
               ) : (
-                <div className="text-xs font-bold text-[var(--color-foreground)] flex items-center justify-between">
-                  <span>Current Dimensions:</span>
-                  <span className="bg-[var(--color-surface)] border border-[var(--color-border)] px-2 py-1 rounded-lg">
-                    {rows} × {cols}
-                  </span>
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-[var(--color-foreground)] flex items-center justify-between">
+                    <span>Current Dimensions:</span>
+                    <span className="bg-[var(--color-surface)] border border-[var(--color-border)] px-2 py-1 rounded-lg">
+                      {rows} × {cols}
+                    </span>
+                  </div>
+                  <div className="text-xs font-bold text-[var(--color-foreground)] flex items-center justify-between">
+                    <span>Turn Time Limit:</span>
+                    <span className="bg-[var(--color-surface)] border border-[var(--color-border)] px-2 py-1 rounded-lg">
+                      {turnSecondsLimit}s
+                    </span>
+                  </div>
                 </div>
               )}
             </div>

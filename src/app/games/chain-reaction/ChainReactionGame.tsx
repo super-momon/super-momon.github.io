@@ -40,6 +40,7 @@ interface PersistedOnlineSession {
   cols: number;
   players: PlayerSetup[];
   joinedAt: number;
+  turnSecondsLimit?: number;
   /** Timestamp of when the session was last persisted, used to expire old entries. */
   lastUpdated: number;
 }
@@ -128,6 +129,7 @@ export default function ChainReactionPage() {
   const [rows, setRows] = useState<number>(15);
   const [cols, setCols] = useState<number>(20);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [turnSecondsLimit, setTurnSecondsLimit] = useState<number>(30);
 
   // Winner stats
   const [winnerName, setWinnerName] = useState<string>('');
@@ -390,17 +392,19 @@ export default function ChainReactionPage() {
       .on('presence', { event: 'leave' }, syncLobbyPlayers)
       .on('broadcast', { event: 'settings-change' }, (payload) => {
         if (!isHostRef.current) {
-          const { rows: newRows, cols: newCols } = payload.payload;
+          const { rows: newRows, cols: newCols, turnSecondsLimit: newTurnSecondsLimit } = payload.payload;
           if (newRows) setRows(newRows);
           if (newCols) setCols(newCols);
+          if (newTurnSecondsLimit) setTurnSecondsLimit(newTurnSecondsLimit);
         }
       })
       .on('broadcast', { event: 'start-game' }, (payload) => {
         if (!isHostRef.current) {
-          const { players: finalPlayers, rows: finalRows, cols: finalCols } = payload.payload;
+          const { players: finalPlayers, rows: finalRows, cols: finalCols, turnSecondsLimit: finalTurnSecondsLimit } = payload.payload;
           setPlayers(finalPlayers);
           setRows(finalRows);
           setCols(finalCols);
+          if (finalTurnSecondsLimit) setTurnSecondsLimit(finalTurnSecondsLimit);
           setResumed(false);
           setPhase('playing');
         }
@@ -552,6 +556,7 @@ export default function ChainReactionPage() {
       setIsHost(saved.isHost);
       setRows(saved.rows);
       setCols(saved.cols);
+      if (saved.turnSecondsLimit) setTurnSecondsLimit(saved.turnSecondsLimit);
       if (saved.players && saved.players.length > 0) {
         setPlayers(saved.players);
       }
@@ -610,6 +615,7 @@ export default function ChainReactionPage() {
           cols,
           players,
           joinedAt: joinedAtRef.current,
+          turnSecondsLimit,
           lastUpdated: Date.now(),
         };
         saveSession(session);
@@ -640,6 +646,7 @@ export default function ChainReactionPage() {
     cols,
     players,
     myClientId,
+    turnSecondsLimit,
   ]);
 
   // Track game play when phase transitions to 'playing'
@@ -668,7 +675,8 @@ export default function ChainReactionPage() {
     setupPlayers: PlayerSetup[],
     gridRows: number,
     gridCols: number,
-    sound: boolean
+    sound: boolean,
+    limitSeconds: number
   ) => {
     const shuffled = shuffleArray(setupPlayers).map((p, index) => ({
       ...p,
@@ -678,6 +686,7 @@ export default function ChainReactionPage() {
     setRows(gridRows);
     setCols(gridCols);
     setSoundEnabled(sound);
+    setTurnSecondsLimit(limitSeconds);
     setIsOnline(false);
     setPhase('playing');
   };
@@ -705,6 +714,7 @@ export default function ChainReactionPage() {
         setIsHost(existing.isHost);
         if (existing.rows) setRows(existing.rows);
         if (existing.cols) setCols(existing.cols);
+        if (existing.turnSecondsLimit) setTurnSecondsLimit(existing.turnSecondsLimit);
         if (existing.players && existing.players.length > 0) {
           setPlayers(existing.players);
         }
@@ -758,6 +768,7 @@ export default function ChainReactionPage() {
         players: finalPlayers,
         rows,
         cols,
+        turnSecondsLimit,
       },
     }).then(() => {
       setPlayers(finalPlayers);
@@ -771,14 +782,15 @@ export default function ChainReactionPage() {
     });
   };
 
-  const handleSettingsChange = (newRows: number, newCols: number) => {
+  const handleSettingsChange = (newRows: number, newCols: number, newTurnSecondsLimit: number) => {
     setRows(newRows);
     setCols(newCols);
+    setTurnSecondsLimit(newTurnSecondsLimit);
     if (isHost && lobbyChannelRef.current) {
       lobbyChannelRef.current.send({
         type: 'broadcast',
         event: 'settings-change',
-        payload: { rows: newRows, cols: newCols },
+        payload: { rows: newRows, cols: newCols, turnSecondsLimit: newTurnSecondsLimit },
       });
     }
   };
@@ -945,6 +957,7 @@ export default function ChainReactionPage() {
             connectionStatus={connectionStatus}
             rows={rows}
             cols={cols}
+            turnSecondsLimit={turnSecondsLimit}
             onSettingsChange={handleSettingsChange}
             onLeave={handleBackToSetup}
             onStartGame={handleStartOnlineGame}
@@ -967,6 +980,7 @@ export default function ChainReactionPage() {
             isHost={isHost}
             onGoToLobby={handleGoToLobby}
             resumed={resumed}
+            turnSecondsLimit={turnSecondsLimit}
           />
         )}
 
