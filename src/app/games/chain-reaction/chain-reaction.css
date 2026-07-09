@@ -376,40 +376,35 @@
 
 /* Shout Alert Overlay Banner */
 .shout-banner-overlay {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: 5.5rem;
+  right: 1.5rem;
+  z-index: 70;
+  pointer-events: none; /* allow passing clicks through the overlay wrapper */
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-  pointer-events: auto;
-  background-color: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 1.5rem;
-  overflow: hidden;
-  transition: opacity 0.3s ease;
-  cursor: pointer;
+  flex-direction: column;
+  gap: 0.75rem; /* spacing between stacked toasts */
+  align-items: flex-end;
+  overflow: visible;
 }
 
 .shout-banner {
+  pointer-events: auto; /* intercept clicks on the toast itself */
   background: var(--shout-bg, rgba(15, 23, 42, 0.75));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--shout-border-color, rgba(255, 255, 255, 0.08));
   box-shadow: 
-    0 25px 60px -15px rgba(0, 0, 0, 0.5), 
-    0 0 30px var(--shout-glow),
+    0 10px 30px -5px rgba(0, 0, 0, 0.3), 
+    0 0 20px var(--shout-glow),
     inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  transform: rotate(-1.5deg);
-  max-width: 92%;
-  width: 480px;
-  border-radius: 1.5rem;
-  padding: 2rem 2.25rem;
-  pointer-events: auto;
+  max-width: 90vw;
+  width: 320px;
+  border-radius: 1rem;
+  padding: 1rem;
   position: relative;
   overflow: hidden;
-  animation: shout-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, shout-pulse-glow 2s infinite alternate ease-in-out 0.4s;
+  animation: shout-pulse-glow 2s infinite alternate ease-in-out;
   cursor: default;
 }
 
@@ -448,39 +443,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 6px;
+  width: 4px;
   height: 100%;
   background: linear-gradient(to bottom, var(--shout-color), transparent);
-}
-
-.animate-shout-banner {
-  animation: shout-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.animate-shout-banner-out {
-  animation: shout-slide-out 0.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
-}
-
-@keyframes shout-slide-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.85) rotate(-5deg) translateY(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(-1.5deg) translateY(0);
-  }
-}
-
-@keyframes shout-slide-out {
-  0% {
-    opacity: 1;
-    transform: scale(1) rotate(-1.5deg) translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.9) rotate(2deg) translateY(30px);
-  }
 }
 
 /* Megaphone swing animation */
@@ -540,28 +505,14 @@
 
 .shout-message {
   font-family: 'Outfit', sans-serif;
-  font-weight: 800;
-  font-size: 1.8rem;
-  line-height: 1.25;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.4;
   color: var(--shout-text-color, #ffffff);
   word-wrap: break-word;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  padding-left: 0.5rem;
-  margin-top: 0.5rem;
+  padding-left: 0.25rem;
+  margin-top: 0.4rem;
   animation: shout-text-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
-}
-
-.shout-dismiss-hint {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-muted);
-  opacity: 0.4;
-  text-align: center;
-  margin-top: 1.25rem;
-  transition: opacity 0.2s ease;
 }
 
 .shout-banner-overlay:hover .shout-dismiss-hint {

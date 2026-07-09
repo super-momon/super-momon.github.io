@@ -360,6 +360,24 @@ export default function ChainReactionPage() {
         }
       }
 
+      // If we are currently marked as host, but there is another player in the lobby
+      // who is also marked as host and joined earlier, we should step down and
+      // demote ourselves to prevent multiple hosts.
+      if (isHostRef.current) {
+        const otherHost = finalSorted.find(
+          (p) => p.clientId !== myClientId && p.isHost && p.joinedAt < joinedAtRef.current
+        );
+        if (otherHost) {
+          setIsHost(false);
+          if (uniquePresencesMap[myClientId]) {
+            uniquePresencesMap[myClientId].isHost = false;
+          }
+          finalSorted = finalSorted.map((p) =>
+            p.clientId === myClientId ? { ...p, isHost: false } : p
+          );
+        }
+      }
+
       setLobbyPlayers(finalSorted);
     };
 
@@ -637,13 +655,26 @@ export default function ChainReactionPage() {
     }
   }, [phase, isOnline, rows, cols, players.length]);
 
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+
   const handleStartGame = (
     setupPlayers: PlayerSetup[],
     gridRows: number,
     gridCols: number,
     sound: boolean
   ) => {
-    setPlayers(setupPlayers);
+    const shuffled = shuffleArray(setupPlayers).map((p, index) => ({
+      ...p,
+      id: index,
+    }));
+    setPlayers(shuffled);
     setRows(gridRows);
     setCols(gridCols);
     setSoundEnabled(sound);
@@ -708,8 +739,11 @@ export default function ChainReactionPage() {
   const handleStartOnlineGame = () => {
     if (!isHost || lobbyPlayers.length < 2 || !lobbyChannelRef.current) return;
 
-    // Map lobby players to PlayerSetup objects
-    const finalPlayers: PlayerSetup[] = lobbyPlayers.map((p, index) => ({
+    // Shuffle the lobby presence players first so host is not always first
+    const shuffledLobbyPlayers = shuffleArray(lobbyPlayers);
+
+    // Map shuffled lobby players to PlayerSetup objects
+    const finalPlayers: PlayerSetup[] = shuffledLobbyPlayers.map((p, index) => ({
       id: index,
       clientId: p.clientId,
       name: p.name.trim() || `Player ${index + 1}`,

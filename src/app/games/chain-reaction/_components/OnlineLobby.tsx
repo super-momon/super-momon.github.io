@@ -124,6 +124,14 @@ export default function OnlineLobby({
     .filter((p) => p.clientId !== myClientId)
     .map((p) => p.color);
 
+  // Determine the single true host of the lobby to prevent display inconsistencies.
+  // We prioritize the local player if they are the host, otherwise we find the oldest
+  // player marked as host, falling back to the oldest player in the lobby.
+  const hostCandidate = lobbyPlayers.find((p) => p.isHost);
+  const trueHostClientId = isHost
+    ? myClientId
+    : (hostCandidate ? hostCandidate.clientId : (lobbyPlayers[0]?.clientId || ''));
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -425,7 +433,7 @@ export default function OnlineLobby({
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {player.isHost ? (
+                          {player.clientId === trueHostClientId ? (
                             <span className="text-[10px] text-yellow-500 font-extrabold flex items-center gap-1 bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded-full">
                               <FontAwesomeIcon icon={faCrown} /> Host
                             </span>
