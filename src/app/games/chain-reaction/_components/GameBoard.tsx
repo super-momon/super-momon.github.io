@@ -46,6 +46,7 @@ export interface Player {
   // channel. Distinct from `active` (which tracks elimination) so that a
   // player who drops offline can rejoin and resume instead of being removed.
   connected: boolean;
+  disconnectSecondsLeft?: number;
 }
 
 export interface ChatMessage {
@@ -92,6 +93,7 @@ export default function GameBoard({
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [zoomLevel, setZoomLevel] = useState<'sm' | 'md' | 'lg'>('md');
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
+  const [turnSecondsLeft, setTurnSecondsLeft] = useState<number>(60);
 
   // Session Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -100,19 +102,8 @@ export default function GameBoard({
   const isChatOpenRef = useRef<boolean>(false);
 
   // Shout Alerts & Board Shake State
-  const [activeAlert, setActiveAlert] = useState<ChatMessage | null>(null);
-  const [isAlertExiting, setIsAlertExiting] = useState<boolean>(false);
+  const [activeAlerts, setActiveAlerts] = useState<ChatMessage[]>([]);
   const [isShoutShaking, setIsShoutShaking] = useState<boolean>(false);
-  const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const exitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Cleanup timeouts on unmount
-  useEffect(() => {
-    return () => {
-      if (alertTimeoutRef.current) clearTimeout(alertTimeoutRef.current);
-      if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
-    };
-  }, []);
 
   useEffect(() => {
     isChatOpenRef.current = isChatOpen;
@@ -169,13 +160,8 @@ export default function GameBoard({
       audioSynth.playAlert();
     }
 
-    // Clear existing timeouts
-    if (alertTimeoutRef.current) clearTimeout(alertTimeoutRef.current);
-    if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
-
-    // Set active alert and reset exit state
-    setActiveAlert(message);
-    setIsAlertExiting(false);
+    // Add alert to stack
+    setActiveAlerts((prev) => [...prev, message]);
 
     // Trigger board shake
     setIsShoutShaking(true);
@@ -183,18 +169,10 @@ export default function GameBoard({
       setIsShoutShaking(false);
     }, 450);
 
-    // After 3.2 seconds, start the exit animation (takes 300ms)
-    alertTimeoutRef.current = setTimeout(() => {
-      setIsAlertExiting(true);
-      
-      exitTimeoutRef.current = setTimeout(() => {
-        setActiveAlert(null);
-        setIsAlertExiting(false);
-        exitTimeoutRef.current = null;
-      }, 300); // matches the css exit animation duration
-
-      alertTimeoutRef.current = null;
-    }, 3200);
+    // Auto-remove this specific alert after 3.5 seconds
+    setTimeout(() => {
+      setActiveAlerts((prev) => prev.filter((a) => a.id !== message.id));
+    }, 3500);
   };
 
   const isAnimatingRef = useRef(false);
@@ -543,6 +521,97 @@ export default function GameBoard({
     }
   }, [players, currentPlayerIndex, isOnline, isHost, board, isAnimating]);
 
+  // Player disconnect timeout (120 seconds)
+  useEffect(() => {
+    if (!isOnline || players.length === 0) return;
+
+    const interval = setInterval(() => {
+      setPlayers((prevPlayers) => {
+        let changed = false;
+        const newPlayers = prevPlayers.map((p) => {
+          if (p.active && !p.connected) {
+            const currentLeft = p.disconnectSecondsLeft ?? 120;
+            if (currentLeft <= 1) {
+              changed = true;
+              return { ...p, active: false, disconnectSecondsLeft: 0 };
+            }
+            changed = true;
+            return { ...p, disconnectSecondsLeft: currentLeft - 1 };
+          } else if (p.active && p.connected && p.disconnectSecondsLeft !== undefined) {
+            changed = true;
+            const newP = { ...p };
+            delete newP.disconnectSecondsLeft;
+            return newP;
+          }
+          return p;
+        });
+
+        return changed ? newPlayers : prevPlayers;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOnline, players.length]);
+
+  // Game win condition evaluation (for when players are eliminated by disconnect)
+  useEffect(() => {
+    if (players.length === 0 || isAnimating) return;
+
+    const activePlayers = players.filter((p) => p.active);
+    const movedPlayers = players.filter((p) => p.hasMoved);
+    
+    // Only declare a winner if someone has actually moved (prevents instant win before game starts)
+    if (movedPlayers.length > 0 && activePlayers.length === 1 && players.length > 1) {
+      const winner = activePlayers[0];
+      const winnerOrbs = countPlayerOrbs(board, winner.id);
+      
+      setIsAnimating(false);
+      isAnimatingRef.current = false;
+      audioSynth.playVictory();
+      onGameFinished(winner.name, winner.color, winnerOrbs);
+    }
+  }, [players, board, isAnimating, onGameFinished]);
+
+  // Reset turn timer when currentPlayerIndex changes or when animation finishes
+  useEffect(() => {
+    if (!isAnimating) {
+      setTurnSecondsLeft(60);
+    }
+  }, [currentPlayerIndex, isAnimating]);
+
+  // Turn timer countdown effect
+  useEffect(() => {
+    if (isAnimating) return;
+
+    const activePlayers = players.filter((p) => p.active);
+    if (activePlayers.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setTurnSecondsLeft((prev) => {
+        const activePlayer = players[currentPlayerIndex];
+        const isMyTurn = isOnline ? (activePlayer?.clientId === myClientId) : true;
+        
+        // Active player times out at 0, host enforces fallback at -3 to prevent race conditions and duplicate messages
+        const timeoutThreshold = isMyTurn ? 0 : -3;
+
+        if (prev <= timeoutThreshold + 1) {
+          clearInterval(interval);
+          
+          const shouldAct = isMyTurn || (isHost && !isMyTurn);
+          if (shouldAct) {
+            setTimeout(() => {
+              skipCurrentPlayerTurn();
+            }, 0);
+          }
+          return 60;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [currentPlayerIndex, isAnimating, players, isOnline, isHost, myClientId]);
+
   // Initialize Board and Players
   const initializeGame = () => {
     const freshBoard: Cell[][] = Array.from({ length: rows }, () =>
@@ -720,6 +789,50 @@ export default function GameBoard({
     }
   };
 
+  const skipCurrentPlayerTurn = () => {
+    const currentPlayers = playersRef.current;
+    const currentIdx = currentPlayerIndexRef.current;
+    const currentActivePlayer = currentPlayers[currentIdx];
+    if (!currentActivePlayer) return;
+
+    let nextIdx = (currentIdx + 1) % currentPlayers.length;
+    let foundNext = false;
+    for (let i = 0; i < currentPlayers.length; i++) {
+      const p = currentPlayers[nextIdx];
+      const isPlayerAvailable = isOnline ? (p.active && p.connected) : p.active;
+      if (isPlayerAvailable) {
+        foundNext = true;
+        break;
+      }
+      nextIdx = (nextIdx + 1) % currentPlayers.length;
+    }
+
+    if (foundNext) {
+      setCurrentPlayerIndex(nextIdx);
+      setTurnSecondsLeft(60);
+
+      if (isOnline) {
+        const isMyTurn = currentActivePlayer.clientId === myClientId;
+        if (isMyTurn || isHost) {
+          if (channelRef.current) {
+            channelRef.current.send({
+              type: 'broadcast',
+              event: 'sync-state',
+              payload: {
+                board: boardRef.current,
+                players: currentPlayers,
+                currentPlayerIndex: nextIdx,
+              },
+            });
+          }
+        }
+      } else {
+        setToast({ message: `${currentActivePlayer.name}'s turn timed out!`, type: 'info' });
+        setTimeout(() => setToast(null), 3000);
+      }
+    }
+  };
+
   const handleCellClick = (r: number, c: number) => {
     if (isAnimatingRef.current) return;
 
@@ -876,25 +989,17 @@ export default function GameBoard({
         myClientId={myClientId}
         isOnline={isOnline}
         isDark={isDark}
+        turnSecondsLeft={turnSecondsLeft}
       />
 
       {/* Board & Chat Responsive Layout Grid */}
       <div className="w-full relative">
         {/* Shout Alert Overlay Banner */}
         <ShoutBanner
-          activeAlert={activeAlert}
-          isAlertExiting={isAlertExiting}
+          activeAlerts={activeAlerts}
           isDark={isDark}
-          onDismiss={() => {
-            setIsAlertExiting(true);
-            if (alertTimeoutRef.current) clearTimeout(alertTimeoutRef.current);
-            if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
-            
-            exitTimeoutRef.current = setTimeout(() => {
-              setActiveAlert(null);
-              setIsAlertExiting(false);
-              exitTimeoutRef.current = null;
-            }, 300);
+          onDismiss={(id) => {
+            setActiveAlerts((prev) => prev.filter((a) => a.id !== id));
           }}
         />
 

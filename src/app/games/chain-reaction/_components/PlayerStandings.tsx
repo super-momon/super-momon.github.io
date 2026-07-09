@@ -13,6 +13,7 @@ interface PlayerStandingsProps {
   myClientId: string;
   isOnline: boolean;
   isDark: boolean;
+  turnSecondsLeft: number;
 }
 
 export function PlayerStandings({
@@ -23,6 +24,7 @@ export function PlayerStandings({
   myClientId,
   isOnline,
   isDark,
+  turnSecondsLeft,
 }: PlayerStandingsProps) {
   return (
     <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-6">
@@ -71,11 +73,26 @@ export function PlayerStandings({
                   {!p.active && (
                     <span className="text-[8px] font-black text-red-500 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded uppercase tracking-wider">OUT</span>
                   )}
-                  {isOnline && !p.connected && (
-                    <span className="text-[8px] font-extrabold text-red-500 bg-red-500/10 border border-red-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider">OFFLINE</span>
+                  {isOnline && !p.connected && p.active && (
+                    <span className="text-[8px] font-extrabold text-red-500 bg-red-500/10 border border-red-500/25 px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
+                      OFFLINE
+                      <span className="opacity-80">({p.disconnectSecondsLeft ?? 120}s)</span>
+                    </span>
                   )}
                   {isCurrent && p.connected && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span 
+                      className={`text-[10px] font-extrabold font-mono px-1.5 py-0.5 rounded-md border flex-shrink-0 transition-all duration-300 ${
+                        turnSecondsLeft <= 10 
+                          ? 'bg-red-500/10 border-red-500/30 text-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.2)]'
+                          : 'bg-[var(--color-background)]/85 border-[var(--color-border)]'
+                      }`}
+                      style={{
+                        borderColor: turnSecondsLeft <= 10 ? undefined : playerThemeColor,
+                        color: turnSecondsLeft <= 10 ? undefined : playerThemeColor
+                      }}
+                    >
+                      {turnSecondsLeft}s
+                    </span>
                   )}
                 </div>
               </div>

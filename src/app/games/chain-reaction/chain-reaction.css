@@ -376,40 +376,35 @@
 
 /* Shout Alert Overlay Banner */
 .shout-banner-overlay {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 70;
+  pointer-events: none; /* allow passing clicks through the overlay wrapper */
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-  pointer-events: auto;
-  background-color: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 1.5rem;
-  overflow: hidden;
-  transition: opacity 0.3s ease;
-  cursor: pointer;
+  flex-direction: column-reverse; /* stack upwards */
+  gap: 0.75rem; /* spacing between stacked toasts */
+  align-items: flex-start; /* align left */
+  overflow: visible;
 }
 
 .shout-banner {
+  pointer-events: auto; /* intercept clicks on the toast itself */
   background: var(--shout-bg, rgba(15, 23, 42, 0.75));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--shout-border-color, rgba(255, 255, 255, 0.08));
   box-shadow: 
-    0 25px 60px -15px rgba(0, 0, 0, 0.5), 
-    0 0 30px var(--shout-glow),
+    0 8px 24px -4px rgba(0, 0, 0, 0.25), 
+    0 0 16px var(--shout-glow),
     inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  transform: rotate(-1.5deg);
-  max-width: 92%;
-  width: 480px;
-  border-radius: 1.5rem;
-  padding: 2rem 2.25rem;
-  pointer-events: auto;
+  max-width: 85vw;
+  width: 250px;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
   position: relative;
   overflow: hidden;
-  animation: shout-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, shout-pulse-glow 2s infinite alternate ease-in-out 0.4s;
+  animation: shout-pulse-glow 2s infinite alternate ease-in-out;
   cursor: default;
 }
 
@@ -448,39 +443,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 6px;
+  width: 4px;
   height: 100%;
   background: linear-gradient(to bottom, var(--shout-color), transparent);
-}
-
-.animate-shout-banner {
-  animation: shout-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.animate-shout-banner-out {
-  animation: shout-slide-out 0.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
-}
-
-@keyframes shout-slide-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.85) rotate(-5deg) translateY(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(-1.5deg) translateY(0);
-  }
-}
-
-@keyframes shout-slide-out {
-  0% {
-    opacity: 1;
-    transform: scale(1) rotate(-1.5deg) translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.9) rotate(2deg) translateY(30px);
-  }
 }
 
 /* Megaphone swing animation */
@@ -511,57 +476,29 @@
   font-family: 'Outfit', sans-serif;
   text-transform: uppercase;
   font-weight: 800;
-  letter-spacing: 0.1em;
-  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   color: var(--shout-color);
   background: var(--shout-title-bg);
   border: 1px solid var(--shout-title-border);
-  padding: 0.35rem 0.75rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 9999px;
-  text-shadow: 0 0 8px var(--shout-glow);
-}
-
-.shout-pill {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  padding: 0.2rem 0.5rem;
-  background: var(--shout-color);
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  border-radius: 9999px;
-  opacity: 0.9;
+  text-shadow: 0 0 6px var(--shout-glow);
 }
 
 .shout-message {
   font-family: 'Outfit', sans-serif;
-  font-weight: 800;
-  font-size: 1.8rem;
-  line-height: 1.25;
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1.35;
   color: var(--shout-text-color, #ffffff);
   word-wrap: break-word;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  padding-left: 0.5rem;
-  margin-top: 0.5rem;
+  padding-left: 0.15rem;
+  margin-top: 0.35rem;
   animation: shout-text-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
-}
-
-.shout-dismiss-hint {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-muted);
-  opacity: 0.4;
-  text-align: center;
-  margin-top: 1.25rem;
-  transition: opacity 0.2s ease;
 }
 
 .shout-banner-overlay:hover .shout-dismiss-hint {
