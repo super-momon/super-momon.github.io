@@ -28,7 +28,7 @@ export default function MobileNavSection({
     <li style={{ animation: `mobileMenuItemSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${slideDelay} backwards` }}>
       <button
         onClick={onToggle}
-        className="relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-all duration-300 group overflow-hidden"
+        className="relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-all duration-300 group overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       >
         <span className="absolute inset-0 bg-[var(--color-surface)]/50 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 rounded-xl" />
         <span className="absolute inset-0 rounded-xl border border-[var(--color-border)]/0 group-hover:border-[var(--color-border)]/50 transition-all duration-300" />
@@ -47,7 +47,7 @@ export default function MobileNavSection({
               <a
                 href={link.href}
                 onClick={() => onLinkClick(link)}
-                className="relative flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-all duration-200 group/sub overflow-hidden"
+                className="relative flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition-all duration-200 group/sub overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                 style={{ transitionDelay: `${i * 20}ms` }}
               >
                 <span className="absolute inset-0 bg-[var(--color-surface)]/40 translate-x-[-100%] group-hover/sub:translate-x-0 transition-transform duration-200 rounded-xl" />

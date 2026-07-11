@@ -213,11 +213,11 @@ export default function Skills() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
             className="text-2xl md:text-3xl font-bold text-foreground
-                       tracking-tight leading-tight mb-4"
+                       tracking-tight leading-tight mb-4 text-balance"
           >
             Skills &amp;{" "}
             <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
               style={{ fontStyle: "italic" }}
             >
               Technologies

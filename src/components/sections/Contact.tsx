@@ -124,10 +124,10 @@ export default function Contact() {
           </FadeIn>
 
           <FadeIn delay={0.05}>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4 text-balance">
               Let&apos;s Build{" "}
               <span
-                className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
+                className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
                 style={{ fontStyle: "italic" }}
               >
                 Something Great
@@ -182,7 +182,7 @@ export default function Contact() {
                     <button
                       key={method.id}
                       onClick={() => setActiveMethodId(method.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                         isActive
                           ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
                           : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
@@ -326,7 +326,7 @@ export default function Contact() {
                       {active.id === "email" && (
                         <button
                           onClick={handleCopyEmail}
-                          className="shrink-0 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
+                          className="shrink-0 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                         >
                           <FontAwesomeIcon icon={copied ? faCheck : faCopy} className="text-xs" />
                           <span>{copied ? "Copied" : "Copy Address"}</span>
@@ -347,7 +347,7 @@ export default function Contact() {
                           event_label: active.label.toLowerCase(),
                         })
                       }
-                      className="group/btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer"
+                      className="group/btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <span>{active.actionText}</span>
                       <FontAwesomeIcon

@@ -134,11 +134,11 @@ export default function Projects() {
             initial={{ opacity: 0, y: 22 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
-            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4"
+            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4 text-balance"
           >
             Projects &amp;{" "}
             <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
               style={{ fontStyle: "italic" }}
             >
               Contributions
@@ -195,7 +195,7 @@ export default function Projects() {
                     <button
                       key={project.id}
                       onClick={() => setActiveProjectId(project.id)}
-                      className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-300 border text-center cursor-pointer ${
+                      className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-300 border text-center cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                         isActive
                           ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
                           : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
@@ -354,7 +354,7 @@ export default function Projects() {
                   {activeProject.live ? (
                     <a
                       href={activeProject.live}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer group/link"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer group/link focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <span>{activeProject.type === "game" ? "Play Interactive Game" : "View Live Project"}</span>
                       <FontAwesomeIcon
