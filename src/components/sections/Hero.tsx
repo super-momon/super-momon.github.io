@@ -6,7 +6,7 @@ import { HighlightText } from "@/components/common/HighlightText";
 import { trackEvent } from "@/lib/analytics";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 export default function Hero() {
   const [charAnimations, setCharAnimations] = useState(false);
@@ -156,7 +156,7 @@ export default function Hero() {
                 className="group relative px-6 py-3 rounded-xl bg-accent text-white font-semibold text-sm
                            overflow-hidden transition-all duration-300 ease-out
                            hover:shadow-[0_0_30px_rgba(0,199,88,0.4)]
-                           active:scale-95"
+                           active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 <span className="relative z-10">View Projects</span>
                 <m.div
@@ -172,7 +172,7 @@ export default function Hero() {
                 className="group px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm
                            transition-all duration-300 ease-out bg-surface/90 md:bg-surface/30 md:backdrop-blur-md
                            hover:border-accent hover:bg-surface/60 hover:shadow-lg hover:shadow-accent/5
-                           active:scale-95"
+                           active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 Let&apos;s Talk
               </a>
@@ -180,15 +180,16 @@ export default function Hero() {
               <a
                 href="/resume.pdf"
                 download="Mark_Raymond_Ayade_Resume.pdf"
+                data-analytics-skip-auto
                 onClick={() => trackEvent("resume_download", { method: "hero_button" })}
                 className="group px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm
                            transition-all duration-300 ease-out bg-surface/90 md:bg-surface/30 md:backdrop-blur-md
                            hover:border-accent hover:bg-surface/60 hover:shadow-lg hover:shadow-accent/5
-                           active:scale-95"
+                           active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 <span className="inline-flex items-center gap-2">
                   Resume
-                  <FontAwesomeIcon icon={faArrowDown} className="transition-transform group-hover:translate-y-0.5" />
+                  <FontAwesomeIcon icon={faDownload} className="transition-transform group-hover:translate-y-0.5" />
                 </span>
               </a>
             </div>
@@ -199,7 +200,7 @@ export default function Hero() {
             <m.a
               href="#about"
               aria-label="Scroll down"
-              className="inline-flex flex-col items-center gap-2 text-muted hover:text-accent transition-colors"
+              className="inline-flex flex-col items-center gap-2 text-muted hover:text-accent transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-xl px-2 py-1"
               animate={{
                 y: [0, 10, 0],
               }}
@@ -210,7 +211,7 @@ export default function Hero() {
               }}
             >
               <span className="text-xs uppercase tracking-widest font-medium">Scroll</span>
-              <FontAwesomeIcon icon={faChevronDown} className="text-sm" />
+              <FontAwesomeIcon icon={faArrowDown} className="text-sm" />
             </m.a>
           </FadeIn>
         </div>

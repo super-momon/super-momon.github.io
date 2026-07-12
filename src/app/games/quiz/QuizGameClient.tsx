@@ -81,7 +81,10 @@ export default function QuizPage() {
         {game.phase === 'select' && (
           <ModeSelect
             onStart={game.startGame}
-            onOpenLeaderboard={() => setLeaderboardOpen(true)}
+            onOpenLeaderboard={() => {
+              trackEvent('quiz_leaderboard_open', { source: 'mode_select' });
+              setLeaderboardOpen(true);
+            }}
           />
         )}
 
@@ -118,7 +121,10 @@ export default function QuizPage() {
 
       <LeaderboardModal
         open={leaderboardOpen}
-        onClose={() => setLeaderboardOpen(false)}
+        onClose={() => {
+          trackEvent('quiz_leaderboard_close', { source: 'quiz_page' });
+          setLeaderboardOpen(false);
+        }}
       />
     </div>
   );

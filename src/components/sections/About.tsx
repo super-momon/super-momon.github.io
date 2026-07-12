@@ -3,6 +3,7 @@
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
+import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLayerGroup,
@@ -165,11 +166,11 @@ export default function About() {
             initial={{ opacity: 0, y: 22 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
-            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4"
+            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4 text-balance"
           >
             About{" "}
             <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
+              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
               style={{ fontStyle: "italic" }}
             >
               Me
@@ -220,7 +221,10 @@ export default function About() {
                   return (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => {
+                        setActiveTab(tab.id);
+                        trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "mobile" });
+                      }}
                       className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 border text-center cursor-pointer ${isActive
                         ? "bg-background/85 shadow-xs border-border/50 text-foreground font-bold"
                         : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
@@ -240,7 +244,10 @@ export default function About() {
                   return (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => {
+                        setActiveTab(tab.id);
+                        trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "desktop" });
+                      }}
                       className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
                         ? "bg-background/80 shadow-xs border border-border/50"
                         : "hover:bg-background/30 border border-transparent"

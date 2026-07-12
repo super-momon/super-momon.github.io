@@ -124,10 +124,10 @@ export default function Contact() {
           </FadeIn>
 
           <FadeIn delay={0.05}>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4 text-balance">
               Let&apos;s Build{" "}
               <span
-                className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 inline-block"
+                className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
                 style={{ fontStyle: "italic" }}
               >
                 Something Great
@@ -156,7 +156,7 @@ export default function Contact() {
         >
           {/* Left Column: Selector */}
           <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 lg:sticky lg:top-24">
-            
+
             {/* Communication Hub Header Card */}
             <div className="relative p-5 rounded-3xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30 flex flex-col gap-4 items-center text-center">
               <div className="relative w-16 h-16 rounded-2xl bg-accent/15 border border-accent/25 flex items-center justify-center shrink-0">
@@ -170,9 +170,9 @@ export default function Contact() {
 
             {/* Interactive Tabs list */}
             <div className="flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
-              
+
               {/* Mobile tabs row */}
-              <div 
+              <div
                 style={{ scrollbarWidth: "none" }}
                 className="flex flex-row lg:hidden gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
               >
@@ -181,12 +181,14 @@ export default function Contact() {
                   return (
                     <button
                       key={method.id}
-                      onClick={() => setActiveMethodId(method.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap ${
-                        isActive
+                      onClick={() => {
+                        setActiveMethodId(method.id);
+                        trackEvent("portfolio_contact_method_select", { method: method.id, device: "mobile" });
+                      }}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
                           ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
                           : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
-                      }`}
+                        }`}
                     >
                       <FontAwesomeIcon icon={method.icon} className={`text-xs ${isActive ? "text-accent" : "text-foreground/50"}`} />
                       <span className="text-[10px] font-semibold tracking-tight">{method.label}</span>
@@ -202,27 +204,27 @@ export default function Contact() {
                   return (
                     <button
                       key={method.id}
-                      onClick={() => setActiveMethodId(method.id)}
-                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
-                        isActive
+                      onClick={() => {
+                        setActiveMethodId(method.id);
+                        trackEvent("portfolio_contact_method_select", { method: method.id, device: "desktop" });
+                      }}
+                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
                           ? "bg-background/80 shadow-xs border border-border/50"
                           : "hover:bg-background/30 border border-transparent"
-                      }`}
+                        }`}
                     >
                       {/* Active Indicator on Left */}
                       <span
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${
-                          isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
-                        }`}
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
+                          }`}
                       />
 
                       {/* Icon block */}
                       <span
-                        className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${
-                          isActive
+                        className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${isActive
                             ? "bg-accent/15 text-accent shadow-xs"
                             : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
-                        }`}
+                          }`}
                       >
                         <FontAwesomeIcon
                           icon={method.icon}
@@ -234,9 +236,8 @@ export default function Contact() {
                       {/* Text Content */}
                       <div className="flex flex-col text-left min-w-0">
                         <span
-                          className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
-                            isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
-                          }`}
+                          className={`text-xs font-semibold leading-tight transition-colors duration-300 ${isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
+                            }`}
                         >
                           {method.label}
                         </span>
@@ -288,7 +289,7 @@ export default function Contact() {
                           <p className="text-xs text-foreground/60 font-mono mt-0.5">{active.handle}</p>
                         </div>
                       </div>
-                      
+
                       {active.id === "email" && (
                         <div className="flex items-center gap-2">
                           <span className="relative flex h-2 w-2">
@@ -322,11 +323,11 @@ export default function Contact() {
                           {active.handle}
                         </p>
                       </div>
-                      
+
                       {active.id === "email" && (
                         <button
                           onClick={handleCopyEmail}
-                          className="shrink-0 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
+                          className="shrink-0 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                         >
                           <FontAwesomeIcon icon={copied ? faCheck : faCopy} className="text-xs" />
                           <span>{copied ? "Copied" : "Copy Address"}</span>
@@ -341,13 +342,14 @@ export default function Contact() {
                       href={active.href}
                       target={active.id === "email" ? undefined : "_blank"}
                       rel="noopener noreferrer"
+                      data-analytics-skip-auto
                       onClick={() =>
                         trackEvent("social_link_click", {
                           event_category: "contact",
                           event_label: active.label.toLowerCase(),
                         })
                       }
-                      className="group/btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer"
+                      className="group/btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <span>{active.actionText}</span>
                       <FontAwesomeIcon
