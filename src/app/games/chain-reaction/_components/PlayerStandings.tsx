@@ -1,9 +1,12 @@
 'use client';
 
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShieldHalved, faSnowflake, faBomb } from '@fortawesome/free-solid-svg-icons';
 import { Player } from './GameBoard';
 import { Cell, countPlayerOrbs } from './gameUtils';
 import { getThemeColor } from './colors';
+import { Ability } from './GameBoardControls';
 
 interface PlayerStandingsProps {
   players: Player[];
@@ -14,6 +17,8 @@ interface PlayerStandingsProps {
   isOnline: boolean;
   isDark: boolean;
   turnSecondsLeft: number;
+  activeAbility: Ability | null;
+  setActiveAbility: (ability: Ability | null) => void;
 }
 
 export function PlayerStandings({
@@ -25,6 +30,8 @@ export function PlayerStandings({
   isOnline,
   isDark,
   turnSecondsLeft,
+  activeAbility,
+  setActiveAbility,
 }: PlayerStandingsProps) {
   return (
     <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-6">
@@ -101,6 +108,59 @@ export function PlayerStandings({
                 <span className="text-lg font-black text-[var(--color-foreground)]">
                   {totalOrbs}
                 </span>
+              </div>
+              {/* Power Ups display */}
+              <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-[var(--color-border)]/45">
+                <div className="flex items-center gap-1.5">
+                  {(['shield', 'freeze', 'detonate'] as const).map((ability) => {
+                    const count = p.powers[ability];
+                    const icon = ability === 'shield' ? faShieldHalved : ability === 'freeze' ? faSnowflake : faBomb;
+                    const isSelected = activeAbility === ability && isCurrent;
+                    const canInteract = isCurrent && (!isOnline || isLocalPlayer) && !isAnimating;
+
+                    // Ability theme colors
+                    const colorClass = 
+                      ability === 'shield'
+                        ? count > 0 ? 'text-blue-500 dark:text-blue-400' : 'text-[var(--color-muted)] opacity-30'
+                        : ability === 'freeze'
+                          ? count > 0 ? 'text-cyan-600 dark:text-cyan-400' : 'text-[var(--color-muted)] opacity-30'
+                          : count > 0 ? 'text-orange-600 dark:text-orange-500' : 'text-[var(--color-muted)] opacity-30';
+
+                    const borderClass = isSelected
+                      ? ability === 'shield'
+                        ? 'bg-blue-500/20 border-blue-500/50 text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/30'
+                        : ability === 'freeze'
+                          ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/30'
+                          : 'bg-orange-500/20 border-orange-500/50 text-orange-600 dark:text-orange-500 ring-1 ring-orange-500/30'
+                      : 'border-transparent bg-transparent';
+
+                    return (
+                      <button
+                        key={ability}
+                        type="button"
+                        disabled={!canInteract || count === 0}
+                        onClick={() => {
+                          if (canInteract && count > 0) {
+                            setActiveAbility(isSelected ? null : ability);
+                          }
+                        }}
+                        className={`flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-bold transition-all ${colorClass} ${borderClass} ${
+                          canInteract && count > 0
+                            ? 'hover:scale-105 active:scale-95 cursor-pointer'
+                            : 'cursor-default'
+                        }`}
+                        title={
+                          canInteract && count > 0
+                            ? `Click to use ${ability} (1 turn)`
+                            : `${ability}: ${count} available`
+                        }
+                      >
+                        <FontAwesomeIcon icon={icon} className="text-[10px]" />
+                        <span>{count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

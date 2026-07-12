@@ -17,8 +17,18 @@ export interface PlayerSetup {
   color: string;
 }
 
+export interface SpecialCellsConfig {
+  walls: number;
+  portals: number;
+  multipliers: number;
+  blackholes: number;
+}
+
+export const DEFAULT_SPECIAL_CELLS: SpecialCellsConfig = { walls: 0, portals: 0, multipliers: 0, blackholes: 0 };
+
+
 interface SetupScreenProps {
-  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean, turnSecondsLimit: number) => void;
+  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean, turnSecondsLimit: number, specialCells: SpecialCellsConfig) => void;
   onStartOnline: (mode: 'host' | 'join', name: string, code: string) => void;
   initialPlayMode?: 'local' | 'online';
   initialOnlineMode?: 'host' | 'join';

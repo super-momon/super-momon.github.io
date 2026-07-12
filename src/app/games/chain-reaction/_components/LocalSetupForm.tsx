@@ -13,12 +13,12 @@ import {
   faPlus, 
   faMinus 
 } from '@fortawesome/free-solid-svg-icons';
-import { PlayerSetup } from './SetupScreen';
+import { PlayerSetup, SpecialCellsConfig, DEFAULT_SPECIAL_CELLS } from './SetupScreen';
 import PlayerConfigRow from './PlayerConfigRow';
 import { PRESET_COLORS, useIsDark } from './colors';
 
 interface LocalSetupFormProps {
-  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean, turnSecondsLimit: number) => void;
+  onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean, turnSecondsLimit: number, specialCells: SpecialCellsConfig) => void;
 }
 
 const DEFAULT_NAMES = ['Player One', 'Player Two', 'Player Three', 'Player Four', 'Player Five', 'Player Six'];
@@ -32,6 +32,21 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
   const [cols, setCols] = useState<number | ''>(20);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [turnSecondsLimit, setTurnSecondsLimit] = useState<number | ''>(30);
+  const [specialCells, setSpecialCells] = useState<SpecialCellsConfig>(DEFAULT_SPECIAL_CELLS);
+
+  const handleSpecialCellChange = (key: keyof SpecialCellsConfig, increment: boolean) => {
+    setSpecialCells(prev => {
+      const current = prev[key];
+      const totalCells = Object.values(prev).reduce((a, b) => a + b, 0);
+
+      if (increment) {
+        if (current >= 5 || totalCells >= 10) return prev;
+        return { ...prev, [key]: current + 1 };
+      } else {
+        return { ...prev, [key]: Math.max(0, current - 1) };
+      }
+    });
+  };
 
   const decrementTurnSeconds = () => {
     setTurnSecondsLimit((prev) => {
@@ -119,7 +134,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
     setCols(finalCols);
     setTurnSecondsLimit(finalTurnSeconds);
     const activePlayers = players.slice(0, playerCount);
-    onStartGame(activePlayers, finalRows, finalCols, soundEnabled, finalTurnSeconds);
+    onStartGame(activePlayers, finalRows, finalCols, soundEnabled, finalTurnSeconds, specialCells);
   };
 
   return (
@@ -334,22 +349,60 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
           </div>
         </div>
 
-        <div className="bg-[var(--color-surface)]/30 rounded-2xl p-4 border border-[var(--color-border)]/40 flex justify-between items-center">
-          <div>
-            <span className="text-sm font-semibold text-[var(--color-foreground)]/80 block mb-1">Sound Effects</span>
-            <span className="text-xs text-[var(--color-muted)]">Synthesized retro play sounds</span>
+        {/* Right Column: Special Cells & Sound */}
+        <div className="bg-[var(--color-surface)]/30 rounded-2xl p-4 border border-[var(--color-border)]/40 flex flex-col">
+          <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-3">
+            <span className="text-[var(--color-accent)]">✨</span>
+            Special Cells (Randomly Placed)
+          </label>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {(['walls', 'portals', 'multipliers', 'blackholes'] as const).map(key => (
+              <div key={key} className="bg-[var(--color-background)]/50 p-2.5 rounded-xl border border-[var(--color-border)]/30 flex flex-col gap-2">
+                <span className="text-[10px] uppercase font-bold text-[var(--color-muted)] tracking-wider flex items-center gap-1.5">
+                  {key === 'walls' && '🧱'}
+                  {key === 'portals' && '🌀'}
+                  {key === 'multipliers' && '✨'}
+                  {key === 'blackholes' && '⚫'}
+                  {key}
+                </span>
+                <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-1 shadow-sm">
+                   <button
+                    type="button"
+                    onClick={() => handleSpecialCellChange(key, false)}
+                    className="w-7 h-7 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </button>
+                  <span className="text-sm font-extrabold w-6 text-center text-[var(--color-foreground)]">{specialCells[key]}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleSpecialCellChange(key, true)}
+                    className="w-7 h-7 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-          <button
-            type="button"
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-all ${
-              soundEnabled
-                ? 'bg-[var(--color-accent)]/10 text-[var(--color-accent)] border-[var(--color-accent)]/20'
-                : 'bg-[var(--color-surface)] text-[var(--color-muted)] border-[var(--color-border)]'
-            }`}
-          >
-            <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="text-lg" />
-          </button>
+
+          <div className="mt-auto border-t border-[var(--color-border)]/30 pt-4 flex justify-between items-center">
+            <div>
+              <span className="text-sm font-semibold text-[var(--color-foreground)]/80 block mb-0.5">Sound Effects</span>
+              <span className="text-[10px] text-[var(--color-muted)]">Synthesized retro play sounds</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                soundEnabled
+                  ? 'bg-[var(--color-accent)]/10 text-[var(--color-accent)] border-[var(--color-accent)]/20 shadow-inner'
+                  : 'bg-[var(--color-surface)] text-[var(--color-muted)] border-[var(--color-border)]'
+              }`}
+            >
+              <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} className="text-base" />
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import SetupScreen, { PlayerSetup } from './_components/SetupScreen';
+import SetupScreen, { PlayerSetup, SpecialCellsConfig, DEFAULT_SPECIAL_CELLS } from './_components/SetupScreen';
 import GameBoard from './_components/GameBoard';
 import WinnerScreen from './_components/WinnerScreen';
 import OnlineLobby from './_components/OnlineLobby';
@@ -22,12 +22,25 @@ export interface LobbyPresenceUser {
   isHost: boolean;
   joinedAt: number;
   phase?: GamePhase;
+  rows?: number;
+  cols?: number;
+  turnSecondsLimit?: number;
+  specialCells?: SpecialCellsConfig;
 }
 
 // Persisted session shape stored in localStorage keyed by room code.
 // Using localStorage (not sessionStorage) so sessions survive tab close and
 // enable reconnection via room code from any tab or after a browser restart.
 const ONLINE_SESSION_PREFIX = 'chain-reaction:session:';
+
+const clampSpecialCells = (config: SpecialCellsConfig): SpecialCellsConfig => {
+  return {
+    walls: Math.min(5, Math.max(0, config.walls || 0)),
+    portals: Math.min(5, Math.max(0, config.portals || 0)),
+    multipliers: Math.min(5, Math.max(0, config.multipliers || 0)),
+    blackholes: Math.min(5, Math.max(0, config.blackholes || 0)),
+  };
+};
 
 interface PersistedOnlineSession {
   clientId: string;
@@ -41,6 +54,7 @@ interface PersistedOnlineSession {
   players: PlayerSetup[];
   joinedAt: number;
   turnSecondsLimit?: number;
+  specialCells?: SpecialCellsConfig;
   /** Timestamp of when the session was last persisted, used to expire old entries. */
   lastUpdated: number;
 }
@@ -125,11 +139,23 @@ const generateRoomCode = () => {
 
 export default function ChainReactionPage() {
   const [phase, setPhase] = useState<GamePhase>('setup');
-  const [players, setPlayers] = useState<PlayerSetup[]>([]);
+  const [players, setPlayers] = useState<any[]>([]);
   const [rows, setRows] = useState<number>(15);
   const [cols, setCols] = useState<number>(20);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [turnSecondsLimit, setTurnSecondsLimit] = useState<number>(30);
+  const [specialCells, setSpecialCells] = useState<SpecialCellsConfig>(DEFAULT_SPECIAL_CELLS);
+
+  // Refs to prevent stale closure captures in channel presence track callbacks
+  const rowsRef = useRef(rows);
+  const colsRef = useRef(cols);
+  const turnSecondsLimitRef = useRef(turnSecondsLimit);
+  const specialCellsRef = useRef(specialCells);
+
+  useEffect(() => { rowsRef.current = rows; }, [rows]);
+  useEffect(() => { colsRef.current = cols; }, [cols]);
+  useEffect(() => { turnSecondsLimitRef.current = turnSecondsLimit; }, [turnSecondsLimit]);
+  useEffect(() => { specialCellsRef.current = specialCells; }, [specialCells]);
 
   // Winner stats
   const [winnerName, setWinnerName] = useState<string>('');
@@ -243,6 +269,10 @@ export default function ChainReactionPage() {
           isHost: isHostRef.current,
           joinedAt: joinedAtRef.current,
           phase: phase,
+          rows: rowsRef.current,
+          cols: colsRef.current,
+          turnSecondsLimit: turnSecondsLimitRef.current,
+          specialCells: specialCellsRef.current,
         });
       } catch (err) {
         console.error('Error tracking lobby presence:', err);
@@ -278,6 +308,17 @@ export default function ChainReactionPage() {
       const sorted = Object.values(uniquePresencesMap).sort(
         (a, b) => a.joinedAt - b.joinedAt
       );
+
+      // Sync guest settings with host's presence configurations
+      if (!isHostRef.current) {
+        const host = sorted.find((p) => p.isHost);
+        if (host) {
+          if (host.rows) setRows(host.rows);
+          if (host.cols) setCols(host.cols);
+          if (host.turnSecondsLimit) setTurnSecondsLimit(host.turnSecondsLimit);
+          if (host.specialCells) setSpecialCells(host.specialCells);
+        }
+      }
 
       // Enforce 6-player limit
       const myIndex = sorted.findIndex((p) => p.clientId === myClientId);
@@ -392,10 +433,11 @@ export default function ChainReactionPage() {
       .on('presence', { event: 'leave' }, syncLobbyPlayers)
       .on('broadcast', { event: 'settings-change' }, (payload) => {
         if (!isHostRef.current) {
-          const { rows: newRows, cols: newCols, turnSecondsLimit: newTurnSecondsLimit } = payload.payload;
+          const { rows: newRows, cols: newCols, turnSecondsLimit: newTurnSecondsLimit, specialCells: newSpecialCells } = payload.payload;
           if (newRows) setRows(newRows);
           if (newCols) setCols(newCols);
           if (newTurnSecondsLimit) setTurnSecondsLimit(newTurnSecondsLimit);
+          if (newSpecialCells) setSpecialCells(clampSpecialCells(newSpecialCells));
         }
       })
       .on('broadcast', { event: 'start-game' }, (payload) => {
@@ -482,7 +524,7 @@ export default function ChainReactionPage() {
     }
 
     const currentOfflineClientIds = players
-      .filter(p => !lobbyPlayers.some(lp => lp.clientId === p.clientId))
+      .filter(p => p.connected === false)
       .map(p => p.clientId)
       .filter(Boolean) as string[];
 
@@ -510,16 +552,14 @@ export default function ChainReactionPage() {
       // Update our tracked list if some reconnected but others remain offline
       setOfflinePlayersCounted(stillOfflineCounted);
     }
-  }, [isOnline, phase, players, lobbyPlayers, offlinePlayersCounted, disconnectCountdown]);
+  }, [isOnline, phase, players, offlinePlayersCounted, disconnectCountdown]);
 
   // Countdown timer interval and game re-evaluation on timeout
   useEffect(() => {
     if (disconnectCountdown === null || disconnectCountdown <= 0) {
       if (disconnectCountdown === 0) {
         // Re-evaluate game: find who is currently online
-        const onlineGamePlayers = players.filter(p =>
-          lobbyPlayers.some(lp => lp.clientId === p.clientId)
-        );
+        const onlineGamePlayers = players.filter(p => p.connected);
         if (onlineGamePlayers.length === 1) {
           const winner = onlineGamePlayers[0];
           handleGameFinished(winner.name, winner.color, 0);
@@ -535,7 +575,7 @@ export default function ChainReactionPage() {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [disconnectCountdown, players, lobbyPlayers]);
+  }, [disconnectCountdown, players]);
 
   // Restore or prefill online session on mount.
   // Priority: (1) URL ?room= with matching localStorage session → reconnect,
@@ -557,6 +597,7 @@ export default function ChainReactionPage() {
       setRows(saved.rows);
       setCols(saved.cols);
       if (saved.turnSecondsLimit) setTurnSecondsLimit(saved.turnSecondsLimit);
+      if (saved.specialCells) setSpecialCells(clampSpecialCells(saved.specialCells));
       if (saved.players && saved.players.length > 0) {
         setPlayers(saved.players);
       }
@@ -616,6 +657,7 @@ export default function ChainReactionPage() {
           players,
           joinedAt: joinedAtRef.current,
           turnSecondsLimit,
+          specialCells,
           lastUpdated: Date.now(),
         };
         saveSession(session);
@@ -676,7 +718,8 @@ export default function ChainReactionPage() {
     gridRows: number,
     gridCols: number,
     sound: boolean,
-    limitSeconds: number
+    limitSeconds: number,
+    specialCellsConfig: SpecialCellsConfig
   ) => {
     const shuffled = shuffleArray(setupPlayers).map((p, index) => ({
       ...p,
@@ -687,6 +730,7 @@ export default function ChainReactionPage() {
     setCols(gridCols);
     setSoundEnabled(sound);
     setTurnSecondsLimit(limitSeconds);
+    setSpecialCells(specialCellsConfig);
     setIsOnline(false);
     trackEvent('chain_reaction_local_start', {
       mode: 'local',
@@ -723,6 +767,7 @@ export default function ChainReactionPage() {
         if (existing.rows) setRows(existing.rows);
         if (existing.cols) setCols(existing.cols);
         if (existing.turnSecondsLimit) setTurnSecondsLimit(existing.turnSecondsLimit);
+        if (existing.specialCells) setSpecialCells(existing.specialCells);
         if (existing.players && existing.players.length > 0) {
           setPlayers(existing.players);
         }
@@ -800,6 +845,7 @@ export default function ChainReactionPage() {
         rows,
         cols,
         turnSecondsLimit,
+        specialCells,
       },
     }).then(() => {
       setPlayers(finalPlayers);
@@ -813,15 +859,37 @@ export default function ChainReactionPage() {
     });
   };
 
-  const handleSettingsChange = (newRows: number, newCols: number, newTurnSecondsLimit: number) => {
+  const handleSettingsChange = (newRows: number, newCols: number, newLimit: number, newSpecialCells?: SpecialCellsConfig) => {
     setRows(newRows);
     setCols(newCols);
-    setTurnSecondsLimit(newTurnSecondsLimit);
-    if (isHost && lobbyChannelRef.current) {
+    setTurnSecondsLimit(newLimit);
+    if (newSpecialCells) setSpecialCells(clampSpecialCells(newSpecialCells));
+
+    if (isOnline && isHost && lobbyChannelRef.current) {
+      // Re-track presence to sync current settings immediately with newly joined players
+      const clamped = newSpecialCells ? clampSpecialCells(newSpecialCells) : specialCells;
+      lobbyChannelRef.current.track({
+        clientId: myClientId,
+        name: onlineNameRef.current,
+        color: onlineColorRef.current,
+        isHost: isHostRef.current,
+        joinedAt: joinedAtRef.current,
+        phase: phase,
+        rows: newRows,
+        cols: newCols,
+        turnSecondsLimit: newLimit,
+        specialCells: clamped,
+      }).catch((err) => console.error('Error tracking presence on settings change:', err));
+
       lobbyChannelRef.current.send({
         type: 'broadcast',
         event: 'settings-change',
-        payload: { rows: newRows, cols: newCols, turnSecondsLimit: newTurnSecondsLimit },
+        payload: {
+          rows: newRows,
+          cols: newCols,
+          turnSecondsLimit: newLimit,
+          specialCells: clamped,
+        },
       });
     }
   };
@@ -1004,6 +1072,7 @@ export default function ChainReactionPage() {
             rows={rows}
             cols={cols}
             turnSecondsLimit={turnSecondsLimit}
+            specialCells={specialCells}
             onSettingsChange={handleSettingsChange}
             onLeave={handleBackToSetup}
             onStartGame={handleStartOnlineGame}
@@ -1024,9 +1093,19 @@ export default function ChainReactionPage() {
             myClientId={myClientId}
             roomCode={roomCode}
             isHost={isHost}
-            onGoToLobby={handleGoToLobby}
+            onGoToLobby={() => {
+              if (isOnline && isHost && lobbyChannelRef.current) {
+                lobbyChannelRef.current.send({
+                  type: 'broadcast',
+                  event: 'go-to-lobby',
+                });
+              }
+              setPhase('lobby');
+            }}
             resumed={resumed}
             turnSecondsLimit={turnSecondsLimit}
+            specialCells={specialCells}
+            onPlayersChange={setPlayers}
           />
         )}
 

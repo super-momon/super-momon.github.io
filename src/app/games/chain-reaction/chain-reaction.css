@@ -262,14 +262,15 @@
 
 /* Glass panel */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .dark .glass-panel {
-  background: rgba(15, 23, 42, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* Grid & Cell Sizing from variables */
@@ -543,5 +544,126 @@
   border-color: rgba(249, 115, 22, 0.6) !important;
   box-shadow: 0 0 10px rgba(249, 115, 22, 0.15) !important;
   background-color: rgba(249, 115, 22, 0.03) !important;
+}
+
+/* Special Cells */
+/* Special Cells */
+@keyframes portal-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes portal-pulse {
+  0%, 100% { box-shadow: inset 0 0 10px rgba(147, 51, 234, 0.35), 0 0 5px rgba(147, 51, 234, 0.2); }
+  50% { box-shadow: inset 0 0 16px rgba(147, 51, 234, 0.65), 0 0 10px rgba(147, 51, 234, 0.45); }
+}
+
+@keyframes multiplier-pulse {
+  0%, 100% { box-shadow: inset 0 0 8px rgba(234, 179, 8, 0.25), 0 0 4px rgba(234, 179, 8, 0.15); }
+  50% { box-shadow: inset 0 0 15px rgba(234, 179, 8, 0.6), 0 0 8px rgba(234, 179, 8, 0.35); }
+}
+
+@keyframes blackhole-suck {
+  0%, 100% { transform: scale(1); box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.95), 0 0 6px rgba(147, 51, 234, 0.25); }
+  50% { transform: scale(0.95); box-shadow: inset 0 0 16px rgba(0, 0, 0, 1), 0 0 12px rgba(147, 51, 234, 0.5); }
+}
+
+.cell-type-wall {
+  background-color: #cbd5e1 !important;
+  background-image: repeating-linear-gradient(45deg, rgba(71, 85, 105, 0.15), rgba(71, 85, 105, 0.15) 6px, transparent 6px, transparent 12px) !important;
+  border: 2px solid #64748b !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  cursor: not-allowed !important;
+}
+
+.dark .cell-type-wall {
+  background-color: #1e293b !important;
+  background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35) 6px, transparent 6px, transparent 12px) !important;
+  border: 2px solid #475569 !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.cell-type-portal {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(147, 51, 234, 0.08) 60%, transparent 100%) !important;
+  border: 2px dashed rgba(168, 85, 247, 0.8) !important;
+  animation: portal-pulse 3s infinite ease-in-out;
+  position: relative;
+}
+
+.cell-type-portal::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  border: 2px dotted rgba(168, 85, 247, 0.55);
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  animation: portal-spin 8s linear infinite;
+}
+
+.cell-type-multiplier {
+  background: radial-gradient(circle, rgba(253, 224, 71, 0.25) 0%, rgba(234, 179, 8, 0.06) 60%, transparent 100%) !important;
+  border: 2px solid rgba(234, 179, 8, 0.75) !important;
+  animation: multiplier-pulse 2.5s infinite ease-in-out;
+  position: relative;
+}
+
+.cell-type-multiplier::after {
+  content: '×2';
+  position: absolute;
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #b45309 !important; /* Amber-700 for excellent contrast */
+  background: rgba(254, 243, 199, 0.95) !important;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  border-radius: 4px;
+  padding: 0px 3px;
+  top: 3px;
+  left: 3px;
+  line-height: 1.1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.dark .cell-type-multiplier::after {
+  color: #fef08a !important; /* Light amber for dark mode */
+  background: rgba(120, 53, 4, 0.85) !important; /* Dark amber background */
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.cell-type-blackhole {
+  background: radial-gradient(circle, #000000 20%, rgba(59, 7, 100, 0.55) 45%, rgba(0, 0, 0, 0.05) 75%, transparent 100%) !important;
+  border: 2px solid rgba(168, 85, 247, 0.7) !important;
+  animation: blackhole-suck 3.5s infinite ease-in-out;
+  position: relative;
+}
+
+.cell-type-blackhole::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(168, 85, 247, 0.45);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  animation: portal-spin 4s linear infinite reverse;
+}
+
+.cell-type-blackhole::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: #000000;
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+}
+
+/* Status Effects */
+.status-shielded {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.6), inset 0 0 10px rgba(59, 130, 246, 0.3) !important;
+}
+.status-frozen {
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.6), inset 0 0 10px rgba(6, 182, 212, 0.3) !important;
+  background-color: rgba(6, 182, 212, 0.1) !important;
 }
 

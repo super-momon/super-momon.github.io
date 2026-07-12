@@ -7,15 +7,20 @@ import {
   faRotateRight, 
   faVolumeUp, 
   faVolumeMute,
-  faCircleInfo
+  faCircleInfo,
+  faShieldHalved,
+  faSnowflake,
+  faBomb
 } from '@fortawesome/free-solid-svg-icons';
 import { Player } from './GameBoard';
+
+export type Ability = 'shield' | 'freeze' | 'detonate';
 
 interface GameBoardControlsProps {
   isOnline: boolean;
   isHost: boolean;
   isAnimating: boolean;
-  activePlayer: { name: string; color: string };
+  activePlayer: Player;
   activePlayerThemeColor: string;
   isMyTurn: boolean;
   totalOrbsCount: number;
@@ -127,6 +132,8 @@ export function GameBoardControls({
           </div>
         </div>
       </div>
+
+
 
       {/* Board Zoom & Sound Controls */}
       <div className="flex items-center gap-3">

@@ -4,15 +4,16 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Cell, getNeighbors, getCellCriticalMass, countPlayerOrbs } from './gameUtils';
+import { buildBoardWithSpecialCells } from './boardInitializer';
 import { GameCell } from './GameCell';
 import { PlayerStandings } from './PlayerStandings';
-import { GameBoardControls } from './GameBoardControls';
+import { GameBoardControls, Ability } from './GameBoardControls';
 import { ShoutBanner } from './ShoutBanner';
 import { GameGuideModal } from './GameGuideModal';
-import { PlayerSetup } from './SetupScreen';
+import { PlayerSetup, SpecialCellsConfig } from './SetupScreen';
 import { audioSynth } from './AudioSynth';
-import { RealtimeChannel } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { useOnlineSync } from './useOnlineSync';
+import { useGameTimers } from './useGameTimers';
 import { getThemeColor, useIsDark } from './colors';
 import GameChat from './GameChat';
 import '../chain-reaction.css';
@@ -34,6 +35,8 @@ interface GameBoardProps {
   // reload, so it should immediately pull the current state from peers.
   resumed?: boolean;
   turnSecondsLimit?: number;
+  specialCells?: SpecialCellsConfig;
+  onPlayersChange?: (players: Player[]) => void;
 }
 
 export interface Player {
@@ -48,6 +51,11 @@ export interface Player {
   // player who drops offline can rejoin and resume instead of being removed.
   connected: boolean;
   disconnectSecondsLeft?: number;
+  powers: {
+    shield: number;
+    freeze: number;
+    detonate: number;
+  };
 }
 
 export interface ChatMessage {
@@ -59,6 +67,7 @@ export interface ChatMessage {
   timestamp: number;
   isAlert?: boolean;
 }
+
 
 export default function GameBoard({
   initialPlayers,
@@ -74,13 +83,14 @@ export default function GameBoard({
   onGoToLobby,
   resumed = false,
   turnSecondsLimit = 30,
+  specialCells,
+  onPlayersChange,
 }: GameBoardProps) {
   const isDark = useIsDark();
-  // Setup local state
+  // Setup local state — the board is initialised once; if resumed, special cells
+  // will be synced from peers so we skip placement to avoid duplication.
   const [board, setBoard] = useState<Cell[][]>(() =>
-    Array.from({ length: rows }, () =>
-      Array.from({ length: cols }, () => ({ ownerId: null, orbs: 0 }))
-    )
+    buildBoardWithSpecialCells(rows, cols, !resumed ? specialCells : undefined)
   );
   const [players, setPlayers] = useState<Player[]>(() =>
     initialPlayers.map((p) => ({
@@ -88,6 +98,7 @@ export default function GameBoard({
       active: true,
       hasMoved: false,
       connected: true,
+      powers: { shield: 1, freeze: 1, detonate: 1 },
     }))
   );
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
@@ -95,7 +106,7 @@ export default function GameBoard({
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [zoomLevel, setZoomLevel] = useState<'sm' | 'md' | 'lg'>('md');
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
-  const [turnSecondsLeft, setTurnSecondsLeft] = useState<number>(turnSecondsLimit);
+  const [activeAbility, setActiveAbility] = useState<Ability | null>(null);
 
   // Session Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -136,23 +147,7 @@ export default function GameBoard({
   // Temporary notification toast for player disconnects and reconnects
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
-  // Match Duration Timer State
-  const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-
-  // Timer Effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSecondsElapsed((prev) => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatTime = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   const triggerAlert = (message: ChatMessage) => {
     if (!message.isAlert) return;
@@ -183,12 +178,6 @@ export default function GameBoard({
   const boardRef = useRef(board);
   const playersRef = useRef(players);
   const currentPlayerIndexRef = useRef(currentPlayerIndex);
-  const pendingSyncStateRef = useRef<{
-    board: Cell[][];
-    players: Player[];
-    currentPlayerIndex: number;
-    isTimeout?: boolean;
-  } | null>(null);
 
   useEffect(() => {
     boardRef.current = board;
@@ -196,298 +185,69 @@ export default function GameBoard({
     currentPlayerIndexRef.current = currentPlayerIndex;
   }, [board, players, currentPlayerIndex]);
 
-  const channelRef = useRef<RealtimeChannel | null>(null);
-  // Tracks whether we've completed an initial channel subscription, so a
-  // subsequent SUBSCRIBED (from Supabase auto-reconnect) can be treated as a
-  // reconnection and trigger a state resync.
-  const hasSubscribedRef = useRef<boolean>(false);
-  // Kept in a ref so the (async) subscribe callback can read the latest value
-  // without adding it to the channel effect deps and forcing a resubscribe.
-  const resumedRef = useRef<boolean>(resumed);
   useEffect(() => {
-    resumedRef.current = resumed;
-  }, [resumed]);
-
-  // Grace period timers: when a player's presence fires 'leave', we delay
-  // marking them disconnected by DISCONNECT_GRACE_MS. If a 'join' for the
-  // same clientId arrives before the timer fires, we cancel it — it was just
-  // a Supabase websocket reconnect, not a real disconnect.
-  const DISCONNECT_GRACE_MS = 5000;
-  const disconnectTimersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
-  // Ref for the periodic presence re-track interval on the game channel
-  const presenceRetrackIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  // Ref for request-sync retry timer
-  const syncRetryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const syncRetryCountRef = useRef<number>(0);
-  const MAX_SYNC_RETRIES = 2;
+    if (onPlayersChange) {
+      onPlayersChange(players);
+    }
+  }, [players, onPlayersChange]);
 
   // Lazy audio synth configuration
   useEffect(() => {
     audioSynth.toggle(soundEnabled);
   }, [soundEnabled]);
 
-  // Online game subscription listeners
-  useEffect(() => {
-    if (!isOnline || !roomCode) return;
+  // Forward-refs for functions defined later in this component body.
+  // Passed to hooks so they can be called before the actual functions are defined.
+  const skipCurrentPlayerTurnRef = useRef<() => void>(() => {});
+  const executeMoveRef = useRef<(r: number, c: number, playerIdx: number, ability?: Ability | null) => void>(() => {});
+  const initializeGameRef = useRef<() => void>(() => {});
+  const triggerAlertRef = useRef<(message: ChatMessage) => void>(() => {});
+  // triggerAlert is defined above — keep the ref current on every render so
+  // useOnlineSync always invokes the latest closure.
+  triggerAlertRef.current = triggerAlert;
 
-    const channelName = `chain-reaction-game:${roomCode.toUpperCase()}`;
-    const gameChannel = supabase.channel(channelName, {
-      config: {
-        broadcast: { self: false },
-        presence: { key: myClientId },
-      },
-    });
+  // Match duration and per-turn countdown timers
+  const {
+    secondsElapsed,
+    setSecondsElapsed,
+    turnSecondsLeft,
+    setTurnSecondsLeft,
+    formatTime,
+  } = useGameTimers({
+    isAnimating,
+    currentPlayerIndex,
+    turnSecondsLimit,
+    isOnline,
+    isHost,
+    myClientId,
+    playersRef,
+    onTurnTimeoutRef: skipCurrentPlayerTurnRef,
+  });
 
-    channelRef.current = gameChannel;
-
-    const handleMoveBroadcast = (payload: any) => {
-      const { r, c, playerIdx } = payload.payload;
-      if (isOnline) {
-        if (playerIdx !== currentPlayerIndexRef.current) {
-          console.warn(`Desync detected: received move for player ${playerIdx} but local currentPlayerIndex is ${currentPlayerIndexRef.current}. Aligning.`);
-          setCurrentPlayerIndex(playerIdx);
-        }
-        executeMove(r, c, playerIdx);
-      }
-    };
-
-    const handleSyncStateBroadcast = (payload: any) => {
-      const { board: syncedBoard, players: syncedPlayers, currentPlayerIndex: syncedCurrentPlayerIndex, isTimeout } = payload.payload;
-      
-      if (isTimeout) {
-        const prevActivePlayer = playersRef.current[currentPlayerIndexRef.current];
-        if (prevActivePlayer) {
-          setToast({ message: `${prevActivePlayer.name}'s turn timed out!`, type: 'info' });
-          setTimeout(() => setToast(null), 3000);
-        }
-      }
-
-      if (isAnimatingRef.current) {
-        pendingSyncStateRef.current = {
-          board: syncedBoard,
-          players: syncedPlayers,
-          currentPlayerIndex: syncedCurrentPlayerIndex,
-          isTimeout,
-        };
-      } else {
-        setBoard(syncedBoard);
-        setPlayers(syncedPlayers);
-        setCurrentPlayerIndex(syncedCurrentPlayerIndex);
-      }
-    };
-
-    const handleResetGameBroadcast = () => {
-      initializeGame();
-    };
-
-    const handleChatBroadcast = (payload: any) => {
-      const { message } = payload.payload;
-      setMessages((prev) => [...prev, message]);
-      
-      // Use ref to read fresh state without re-running subscription useEffect
-      if (!isChatOpenRef.current) {
-        setUnreadCount((c) => c + 1);
-      }
-
-      if (message.isAlert) {
-        triggerAlert(message);
-      }
-    };
-
-    const handleGoToLobbyBroadcast = () => {
-      if (onGoToLobby) onGoToLobby();
-    };
-
-    const handleQuitGameBroadcast = () => {
-      onQuit();
-    };
-
-    // A reconnecting client asks its peers for the current game state. To
-    // avoid a flood of conflicting replies, exactly one peer answers: the
-    // connected player with the lowest id (a deterministic choice all clients
-    // agree on). This also covers the host reconnecting, since another
-    // connected player will respond in its place.
-    const handleRequestSyncBroadcast = (payload: { payload?: { clientId?: string } }) => {
-      const requesterId = payload?.payload?.clientId;
-      if (!requesterId || requesterId === myClientId) return;
-      if (isAnimatingRef.current) return;
-
-      const responder = playersRef.current
-        .filter((p) => p.connected && p.clientId && p.clientId !== requesterId)
-        .sort((a, b) => a.id - b.id)[0];
-      if (!responder || responder.clientId !== myClientId) return;
-
-      channelRef.current?.send({
-        type: 'broadcast',
-        event: 'sync-state',
-        payload: {
-          board: boardRef.current,
-          players: playersRef.current,
-          currentPlayerIndex: currentPlayerIndexRef.current,
-        },
-      });
-    };
-
-    gameChannel
-      .on('broadcast', { event: 'move' }, handleMoveBroadcast)
-      .on('broadcast', { event: 'sync-state' }, handleSyncStateBroadcast)
-      .on('broadcast', { event: 'reset-game' }, handleResetGameBroadcast)
-      .on('broadcast', { event: 'chat' }, handleChatBroadcast)
-      .on('broadcast', { event: 'go-to-lobby' }, handleGoToLobbyBroadcast)
-      .on('broadcast', { event: 'quit-game' }, handleQuitGameBroadcast)
-      .on('broadcast', { event: 'request-sync' }, handleRequestSyncBroadcast)
-      .on('presence', { event: 'join' }, ({ newPresences }) => {
-        const joinedClientIds = newPresences.map((p) => (p as { clientId?: string }).clientId);
-
-        // Cancel any pending disconnect grace timers for reconnecting clients
-        joinedClientIds.forEach((cid) => {
-          if (cid && disconnectTimersRef.current[cid]) {
-            clearTimeout(disconnectTimersRef.current[cid]);
-            delete disconnectTimersRef.current[cid];
-          }
-        });
-
-        setPlayers((prevPlayers) =>
-          prevPlayers.map((p) => {
-            // Flip a previously-dropped player back to connected so their
-            // turns are no longer skipped and they can keep playing. The
-            // reconnecting client pulls fresh state via `request-sync`.
-            if (p.clientId && joinedClientIds.includes(p.clientId) && !p.connected) {
-              setToast({ message: `${p.name} reconnected!`, type: 'success' });
-              setTimeout(() => setToast(null), 3000);
-              return { ...p, connected: true };
-            }
-            return p;
-          })
-        );
-      })
-      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
-        const leftClientIds = leftPresences.map((p: any) => p.clientId).filter(Boolean) as string[];
-
-        // Start a grace period timer for each leaving client. If they
-        // reconnect within DISCONNECT_GRACE_MS, the timer is cancelled by
-        // the 'join' handler above and no disconnect is shown.
-        leftClientIds.forEach((cid) => {
-          // Don't start a timer if one is already pending
-          if (disconnectTimersRef.current[cid]) return;
-
-          const playerName = playersRef.current.find((p) => p.clientId === cid)?.name || 'A player';
-
-          disconnectTimersRef.current[cid] = setTimeout(() => {
-            delete disconnectTimersRef.current[cid];
-
-            setPlayers((prevPlayers) => {
-              const updated = prevPlayers.map((p) => {
-                if (p.clientId === cid && p.connected) {
-                  setToast({ message: `${p.name} disconnected. Waiting for them to reconnect…`, type: 'error' });
-                  setTimeout(() => setToast(null), 4000);
-                  return { ...p, connected: false };
-                }
-                return p;
-              });
-              return updated;
-            });
-          }, DISCONNECT_GRACE_MS);
-        });
-      })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          const me = playersRef.current.find((p) => p.clientId === myClientId);
-          if (me) {
-            await gameChannel.track({
-              clientId: myClientId,
-              name: me.name,
-              color: me.color,
-              isHost,
-            });
-          }
-
-          if (hasSubscribedRef.current || resumedRef.current) {
-            // Either Supabase auto-reconnect fired SUBSCRIBED again, or this
-            // board was restored after a reload: pull the latest authoritative
-            // state so we resume exactly where play stands.
-            syncRetryCountRef.current = 0;
-            const sendSyncRequest = () => {
-              gameChannel.send({
-                type: 'broadcast',
-                event: 'request-sync',
-                payload: { clientId: myClientId },
-              });
-            };
-            sendSyncRequest();
-
-            // Retry up to MAX_SYNC_RETRIES times if no sync-state arrives
-            if (syncRetryTimerRef.current) clearTimeout(syncRetryTimerRef.current);
-            const scheduleRetry = () => {
-              syncRetryTimerRef.current = setTimeout(() => {
-                syncRetryCountRef.current += 1;
-                if (syncRetryCountRef.current <= MAX_SYNC_RETRIES) {
-                  sendSyncRequest();
-                  scheduleRetry();
-                }
-                syncRetryTimerRef.current = null;
-              }, 3000);
-            };
-            scheduleRetry();
-          }
-          hasSubscribedRef.current = true;
-
-          // Start periodic presence re-track (every 30s) to keep presence
-          // fresh even after Supabase internal reconnects.
-          if (presenceRetrackIntervalRef.current) clearInterval(presenceRetrackIntervalRef.current);
-          presenceRetrackIntervalRef.current = setInterval(() => {
-            const currentMe = playersRef.current.find((p) => p.clientId === myClientId);
-            if (currentMe && channelRef.current) {
-              channelRef.current.track({
-                clientId: myClientId,
-                name: currentMe.name,
-                color: currentMe.color,
-                isHost,
-              });
-            }
-          }, 30000);
-        }
-      });
-
-    // Clear sync retry timer when a sync-state is received
-    const originalHandleSyncState = handleSyncStateBroadcast;
-    // We clear the retry on sync-state receipt inside the handler above,
-    // but also attach a supplemental listener via the ref:
-    const clearSyncRetry = () => {
-      if (syncRetryTimerRef.current) {
-        clearTimeout(syncRetryTimerRef.current);
-        syncRetryTimerRef.current = null;
-      }
-      syncRetryCountRef.current = 0;
-    };
-    // Wrap the sync-state handler to also clear retry timers
-    const wrappedSyncState = (payload: any) => {
-      clearSyncRetry();
-      originalHandleSyncState(payload);
-    };
-    // Re-register with wrapped handler (replace the one set above)
-    gameChannel.on('broadcast', { event: 'sync-state' }, wrappedSyncState);
-
-    return () => {
-      // Clean up disconnect grace timers
-      Object.values(disconnectTimersRef.current).forEach(clearTimeout);
-      disconnectTimersRef.current = {};
-      // Clean up periodic re-track interval
-      if (presenceRetrackIntervalRef.current) {
-        clearInterval(presenceRetrackIntervalRef.current);
-        presenceRetrackIntervalRef.current = null;
-      }
-      // Clean up sync retry timer
-      if (syncRetryTimerRef.current) {
-        clearTimeout(syncRetryTimerRef.current);
-        syncRetryTimerRef.current = null;
-      }
-      gameChannel.unsubscribe();
-      supabase.removeChannel(gameChannel);
-      channelRef.current = null;
-      hasSubscribedRef.current = false;
-    };
-  }, [isOnline, roomCode, myClientId, isHost]);
+  // Online game channel: broadcasts, presence, disconnect grace timers, sync retries
+  const { channelRef, pendingSyncStateRef, disconnectTimersRef } = useOnlineSync({
+    isOnline,
+    roomCode,
+    myClientId,
+    isHost,
+    resumed,
+    boardRef,
+    playersRef,
+    currentPlayerIndexRef,
+    isAnimatingRef,
+    isChatOpenRef,
+    onExecuteMoveRef: executeMoveRef,
+    onInitializeGameRef: initializeGameRef,
+    onTriggerAlertRef: triggerAlertRef,
+    setBoard,
+    setPlayers,
+    setCurrentPlayerIndex,
+    setMessages,
+    setUnreadCount,
+    setToast,
+    onGoToLobby,
+    onQuit,
+  });
 
   // Gracefully skip disconnected players' turns.
   // Only skips if the player is truly disconnected (i.e. their grace period
@@ -585,57 +345,17 @@ export default function GameBoard({
     }
   }, [players, board, isAnimating, onGameFinished]);
 
-  // Reset turn timer when currentPlayerIndex changes or when animation finishes
-  useEffect(() => {
-    if (!isAnimating) {
-      setTurnSecondsLeft(turnSecondsLimit);
-    }
-  }, [currentPlayerIndex, isAnimating, turnSecondsLimit]);
-
-  // Turn timer countdown effect
-  useEffect(() => {
-    if (isAnimating) return;
-
-    const activePlayers = playersRef.current.filter((p) => p.active);
-    if (activePlayers.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setTurnSecondsLeft((prev) => {
-        const activePlayer = playersRef.current[currentPlayerIndex];
-        const isMyTurn = isOnline ? (activePlayer?.clientId === myClientId) : true;
-        
-        // Active player times out at 0, host enforces fallback at -3 to prevent race conditions and duplicate messages
-        const timeoutThreshold = isMyTurn ? 0 : -3;
-
-        if (prev <= timeoutThreshold + 1) {
-          clearInterval(interval);
-          
-          const shouldAct = isMyTurn || (isHost && !isMyTurn);
-          if (shouldAct) {
-            setTimeout(() => {
-              skipCurrentPlayerTurn();
-            }, 0);
-          }
-          return turnSecondsLimit;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [currentPlayerIndex, isAnimating, isOnline, isHost, myClientId, turnSecondsLimit]);
 
   // Initialize Board and Players
   const initializeGame = () => {
-    const freshBoard: Cell[][] = Array.from({ length: rows }, () =>
-      Array.from({ length: cols }, () => ({ ownerId: null, orbs: 0 }))
-    );
+    const freshBoard = buildBoardWithSpecialCells(rows, cols, specialCells);
 
     const freshPlayers: Player[] = initialPlayers.map((p) => ({
       ...p,
       active: true,
       hasMoved: false,
       connected: true,
+      powers: { shield: 1, freeze: 1, detonate: 1 },
     }));
 
     setBoard(freshBoard);
@@ -645,9 +365,11 @@ export default function GameBoard({
     isAnimatingRef.current = false;
     setExplodingCells({});
     setSecondsElapsed(0);
+    return freshBoard;
   };
+  initializeGameRef.current = initializeGame;
 
-  // Reusable functions countPlayerOrbs and getCellCriticalMass are now imported from gameUtils.ts
+  // countPlayerOrbs and getCellCriticalMass are imported from gameUtils.ts
 
   // Asynchronous Cascade / Chain Reaction Solver
   const runChainReaction = async (
@@ -667,8 +389,8 @@ export default function GameBoard({
       const unstableCells: { r: number; c: number; limit: number; owner: number }[] = [];
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
-          const limit = getCellCriticalMass(r, c, rows, cols);
-          if (currentBoard[r][c].orbs >= limit) {
+          const limit = getCellCriticalMass(r, c, rows, cols, currentBoard);
+          if (currentBoard[r][c].orbs >= limit && currentBoard[r][c].orbs > 0 && currentBoard[r][c].type !== 'wall' && currentBoard[r][c].statusEffect !== 'frozen') {
             unstableCells.push({
               r,
               c,
@@ -702,10 +424,41 @@ export default function GameBoard({
           nextBoard[r][c].ownerId = null;
         }
 
-        const neighbors = getNeighbors(r, c, rows, cols);
+        const neighbors = getNeighbors(r, c, rows, cols, currentBoard); // Pass currentBoard to ignore walls
         neighbors.forEach(([nr, nc]) => {
-          nextBoard[nr][nc].orbs += 1;
-          nextBoard[nr][nc].ownerId = owner;
+          let targetR = nr;
+          let targetC = nc;
+
+          // Portal Logic
+          if (nextBoard[nr][nc].type === 'portal' && nextBoard[nr][nc].portalTarget) {
+            const target = nextBoard[nr][nc].portalTarget;
+            if (target) {
+              targetR = target.r;
+              targetC = target.c;
+            }
+          }
+
+          // Multiplier logic
+          let amount = 1;
+          if (nextBoard[targetR][targetC].type === 'multiplier') {
+             amount = 2; // Adds 2 orbs instead of 1
+          }
+
+          // Black Hole logic
+          if (nextBoard[targetR][targetC].type === 'blackhole') {
+             nextBoard[targetR][targetC].orbs += amount;
+             if (nextBoard[targetR][targetC].orbs >= 3) {
+                 nextBoard[targetR][targetC].orbs = 0;
+                 nextBoard[targetR][targetC].type = 'normal';
+                 nextBoard[targetR][targetC].ownerId = null;
+             }
+             return; // Black hole absorbs the orb(s) but does not change ownership
+          }
+
+          nextBoard[targetR][targetC].orbs += amount;
+          if (nextBoard[targetR][targetC].statusEffect !== 'shielded' || nextBoard[targetR][targetC].ownerId === null) {
+            nextBoard[targetR][targetC].ownerId = owner;
+          }
         });
       });
 
@@ -751,6 +504,20 @@ export default function GameBoard({
     setIsAnimating(false);
     isAnimatingRef.current = false;
     
+    // Decrement status effect durations
+    for (let rr = 0; rr < rows; rr++) {
+      for (let cc = 0; cc < cols; cc++) {
+        const duration = currentBoard[rr][cc].statusDuration;
+        if (duration !== undefined && duration > 0) {
+          currentBoard[rr][cc].statusDuration = duration - 1;
+          if (currentBoard[rr][cc].statusDuration === 0) {
+            currentBoard[rr][cc].statusEffect = undefined;
+          }
+        }
+      }
+    }
+    setBoard(currentBoard);
+
     if (isOnline) {
       const isPlacer = tempPlayers[placerId]?.clientId === myClientId;
       if (isPlacer) {
@@ -847,13 +614,19 @@ export default function GameBoard({
       }
     }
   };
+  // Keep forward ref current so useGameTimers always calls the latest version
+  skipCurrentPlayerTurnRef.current = skipCurrentPlayerTurn;
 
   const handleCellClick = (r: number, c: number) => {
     if (isAnimatingRef.current) return;
 
     const cell = board[r][c];
-    if (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) {
-      return; // Invalid move
+    if (cell.type === 'wall') return; // Cannot place on wall
+    
+    if (!activeAbility) {
+      if (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) {
+        return; // Invalid move
+      }
     }
 
     if (isOnline) {
@@ -867,46 +640,71 @@ export default function GameBoard({
         channelRef.current.send({
           type: 'broadcast',
           event: 'move',
-          payload: { r, c, playerIdx: currentPlayerIndex },
+          payload: { r, c, playerIdx: currentPlayerIndex, ability: activeAbility },
         });
       }
     }
 
-    executeMove(r, c, currentPlayerIndex);
+    executeMove(r, c, currentPlayerIndex, activeAbility);
+    setActiveAbility(null);
   };
 
-  const executeMove = (r: number, c: number, playerIdx: number) => {
+  const executeMove = (r: number, c: number, playerIdx: number, ability?: Ability | null) => {
     audioSynth.playPlace();
 
     const currentBoard = boardRef.current;
     const currentPlayers = playersRef.current;
 
     const updatedBoard = currentBoard.map((row) => row.map((cell) => ({ ...cell })));
-    updatedBoard[r][c].orbs += 1;
-    updatedBoard[r][c].ownerId = currentPlayers[playerIdx].id;
-
     const updatedPlayers = currentPlayers.map((p, idx) =>
-      idx === playerIdx ? { ...p, hasMoved: true } : p
+      idx === playerIdx ? { ...p, hasMoved: true, powers: { ...p.powers } } : p
     );
+
+    if (ability) {
+      // Deduct ability
+      if (updatedPlayers[playerIdx].powers[ability] > 0) {
+        updatedPlayers[playerIdx].powers[ability] -= 1;
+      }
+      
+      if (ability === 'shield') {
+        updatedBoard[r][c].statusEffect = 'shielded';
+        updatedBoard[r][c].statusDuration = 3;
+      } else if (ability === 'freeze') {
+        updatedBoard[r][c].statusEffect = 'frozen';
+        updatedBoard[r][c].statusDuration = 2;
+      } else if (ability === 'detonate') {
+        const limit = getCellCriticalMass(r, c, rows, cols, updatedBoard);
+        updatedBoard[r][c].orbs = limit; // Force explosion
+        updatedBoard[r][c].ownerId = updatedPlayers[playerIdx].id;
+      }
+    } else {
+      updatedBoard[r][c].orbs += 1;
+      updatedBoard[r][c].ownerId = updatedPlayers[playerIdx].id;
+    }
 
     setBoard(updatedBoard);
     setPlayers(updatedPlayers);
 
     runChainReaction(updatedBoard, updatedPlayers, playerIdx);
   };
+  // Keep forward ref current so useOnlineSync always calls the latest version
+  executeMoveRef.current = executeMove;
 
   const handleResetClick = () => {
+    const newBoard = initializeGame();
     if (isOnline) {
       if (isHost && channelRef.current) {
         channelRef.current.send({
           type: 'broadcast',
           event: 'reset-game',
+          payload: {
+            board: newBoard,
+          }
         });
       } else {
         return; // Only host resets online game
       }
     }
-    initializeGame();
   };
 
   const handleQuitClick = () => {
@@ -975,7 +773,7 @@ export default function GameBoard({
       )}
 
       {/* Control / Info Bar */}
-      <GameBoardControls
+        <GameBoardControls
         isOnline={isOnline}
         isHost={isHost}
         isAnimating={isAnimating}
@@ -1005,6 +803,8 @@ export default function GameBoard({
         isOnline={isOnline}
         isDark={isDark}
         turnSecondsLeft={turnSecondsLeft}
+        activeAbility={activeAbility}
+        setActiveAbility={setActiveAbility}
       />
 
       {/* Board & Chat Responsive Layout Grid */}
@@ -1048,7 +848,7 @@ export default function GameBoard({
                     (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) ||
                     (isOnline && !isMyTurn);
 
-                  const limit = getCellCriticalMass(r, c, rows, cols);
+                  const limit = getCellCriticalMass(r, c, rows, cols, board);
                   const isCritical = cell.orbs > 0 && cell.orbs === limit - 1;
                   const currentPlayerColor = getThemeColor(players[currentPlayerIndex]?.color, isDark);
 

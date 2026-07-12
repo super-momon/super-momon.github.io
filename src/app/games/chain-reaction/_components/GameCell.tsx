@@ -38,8 +38,8 @@ export function GameCell({
       } ${isExploding ? 'cell-explode' : ''} ${
         isCritical ? 'critical-cell' : ''
       } ${
-        isCellDisabled ? 'disabled cursor-not-allowed' : 'hover:scale-102 hover:shadow-sm'
-      }`}
+        isCellDisabled || cell.type === 'wall' ? 'disabled cursor-not-allowed' : 'hover:scale-102 hover:shadow-sm'
+      } cell-type-${cell.type || 'normal'} ${cell.statusEffect ? `status-${cell.statusEffect}` : ''}`}
       style={{
         '--owner-color': ownerColor || 'transparent',
         '--owner-bg': ownerColor ? `${ownerColor}15` : 'transparent',
@@ -68,7 +68,7 @@ export function GameCell({
 
       {/* Orb layout depending on orb count */}
       {cell.orbs > 0 && ownerColor && (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-full h-full flex items-center justify-center relative z-10">
           {cell.orbs === 1 && (
             <div className="orb-layout-1">
               <div
@@ -139,6 +139,13 @@ export function GameCell({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Portal partner label */}
+      {cell.type === 'portal' && cell.portalLabel && (
+        <div className="absolute bottom-1 right-1 w-3.5 h-3.5 flex items-center justify-center text-[8px] font-black text-purple-600 dark:text-purple-400 bg-purple-500/15 dark:bg-purple-500/25 rounded-full border border-purple-500/35 select-none pointer-events-none leading-none">
+          {cell.portalLabel}
         </div>
       )}
 
