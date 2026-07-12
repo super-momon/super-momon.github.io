@@ -62,9 +62,15 @@ export function useQuizGame() {
   }, []);
 
   const forfeitGame = useCallback(() => {
+    trackEvent('quiz_forfeit', {
+      mode: modeRef.current || 'unknown',
+      score,
+      answered: totalAnswered,
+      question_number: currentIndexRef.current + 1,
+    });
     clearPendingAdvance();
     setPhase('result');
-  }, [clearPendingAdvance]);
+  }, [clearPendingAdvance, score, totalAnswered]);
 
   const advanceToNext = useCallback(() => {
     const nextIdx = currentIndexRef.current + 1;
@@ -262,6 +268,20 @@ export function useQuizGame() {
 
   // Cleanup on unmount
   useEffect(() => () => clearPendingAdvance(), [clearPendingAdvance]);
+
+  useEffect(() => {
+    if (phase !== 'result' || !modeRef.current) return;
+
+    const accuracy = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
+    trackEvent('game_complete', {
+      game_name: 'quiz',
+      mode: modeRef.current,
+      score,
+      answered: totalAnswered,
+      correct: correctCount,
+      accuracy,
+    });
+  }, [phase, score, totalAnswered, correctCount]);
 
   return {
     phase,

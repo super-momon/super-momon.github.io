@@ -3,6 +3,7 @@
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/constants";
 import MarqueeBanner from "./common/MarqueeBanner";
 import React, { useRef, useEffect } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 // Magnetic button hook for premium interactions
 function useMagneticEffect(strength = 0.3) {
@@ -225,7 +226,10 @@ export default function Footer() {
 
             <div className="order-1 md:order-2">
               <button
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                onClick={() => {
+                  trackEvent("scroll_to_top_click", { location: "footer" });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
                 className="group flex items-center justify-center w-10 h-10 rounded-full bg-surface/95 dark:bg-surface/40 border border-border/85 dark:border-border/50 text-foreground/80 hover:text-accent hover:border-accent hover:bg-accent/10 transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer"
                 aria-label="Back to top"
               >

@@ -192,7 +192,7 @@ export default function ChainReactionPage() {
     myClientIdRef.current = persistedId || 'client_' + Math.random().toString(36).substr(2, 9);
   }
   const myClientId = myClientIdRef.current;
-  
+
   const lobbyChannelRef = useRef<RealtimeChannel | null>(null);
   const joinedAtRef = useRef<number>(Date.now());
   // Timers used to re-reconcile the presence snapshot after subscribing, to
@@ -437,7 +437,7 @@ export default function ChainReactionPage() {
       supabase.removeChannel(channel);
       lobbyChannelRef.current = null;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOnline, roomCode]);
 
   // Debounced presence re-track: update presence when player name, color or phase
@@ -688,6 +688,14 @@ export default function ChainReactionPage() {
     setSoundEnabled(sound);
     setTurnSecondsLimit(limitSeconds);
     setIsOnline(false);
+    trackEvent('chain_reaction_local_start', {
+      mode: 'local',
+      rows: gridRows,
+      cols: gridCols,
+      player_count: setupPlayers.length,
+      turn_limit_seconds: limitSeconds,
+      sound_enabled: sound,
+    });
     setPhase('playing');
   };
 
@@ -718,6 +726,11 @@ export default function ChainReactionPage() {
         if (existing.players && existing.players.length > 0) {
           setPlayers(existing.players);
         }
+        trackEvent('chain_reaction_online_resume', {
+          role: existing.isHost ? 'host' : 'guest',
+          room_code: code,
+          phase: existing.phase,
+        });
         // If the saved session was mid-game, go back to that phase
         setPhase(existing.phase === 'playing' ? 'playing' : 'lobby');
         return;
@@ -738,9 +751,19 @@ export default function ChainReactionPage() {
       const generatedCode = generateRoomCode();
       setRoomCode(generatedCode);
       setIsHost(true);
+      trackEvent('chain_reaction_online_setup', {
+        role: 'host',
+        room_code: generatedCode,
+        player_name: name,
+      });
     } else {
       setRoomCode(code);
       setIsHost(false);
+      trackEvent('chain_reaction_online_setup', {
+        role: 'guest',
+        room_code: code,
+        player_name: name,
+      });
     }
 
     setPhase('lobby');
@@ -748,6 +771,14 @@ export default function ChainReactionPage() {
 
   const handleStartOnlineGame = () => {
     if (!isHost || lobbyPlayers.length < 2 || !lobbyChannelRef.current) return;
+
+    trackEvent('chain_reaction_online_game_start', {
+      room_code: roomCode,
+      player_count: lobbyPlayers.length,
+      rows,
+      cols,
+      turn_limit_seconds: turnSecondsLimit,
+    });
 
     // Shuffle the lobby presence players first so host is not always first
     const shuffledLobbyPlayers = shuffleArray(lobbyPlayers);
@@ -799,10 +830,25 @@ export default function ChainReactionPage() {
     setWinnerName(name);
     setWinnerColor(color);
     setWinnerOrbs(orbs);
+    trackEvent('game_complete', {
+      game_name: 'chain-reaction',
+      mode: isOnline ? 'online' : 'local',
+      winner_name: name,
+      winner_orbs: orbs,
+      player_count: players.length,
+      rows,
+      cols,
+      room_code: roomCode || 'local',
+    });
     setPhase('winner');
   };
 
   const handlePlayAgain = () => {
+    trackEvent('chain_reaction_play_again', {
+      mode: isOnline ? 'online' : 'local',
+      room_code: roomCode || 'local',
+    });
+
     if (isOnline) {
       if (isHost && lobbyChannelRef.current) {
         // Return all players to the lobby so they can adjust settings or ready up again
@@ -936,8 +982,8 @@ export default function ChainReactionPage() {
         </AnimatePresence>
 
         {phase === 'setup' && (
-          <SetupScreen 
-            onStartGame={handleStartGame} 
+          <SetupScreen
+            onStartGame={handleStartGame}
             onStartOnline={handleStartOnline}
             initialPlayMode={initialPlayMode}
             initialOnlineMode={initialOnlineMode}
@@ -1017,29 +1063,27 @@ export default function ChainReactionPage() {
               className="relative w-full max-w-md bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-3xl p-6 shadow-2xl overflow-hidden glass-panel z-10"
             >
               {/* Glow Accent based on type */}
-              <div 
-                className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl pointer-events-none ${
-                  customAlert.type === 'error' 
-                    ? 'bg-red-500/10' 
+              <div
+                className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl pointer-events-none ${customAlert.type === 'error'
+                    ? 'bg-red-500/10'
                     : customAlert.type === 'warning'
                       ? 'bg-yellow-500/10'
                       : 'bg-[var(--color-accent)]/10'
-                }`} 
+                  }`}
               />
 
               <div className="flex flex-col items-center text-center">
                 {/* Icon Wrapper */}
-                <div 
-                  className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 border ${
-                    customAlert.type === 'error'
+                <div
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 border ${customAlert.type === 'error'
                       ? 'bg-red-500/10 border-red-500/20 text-red-500'
                       : customAlert.type === 'warning'
                         ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500'
                         : 'bg-[var(--color-accent)]/10 border-[var(--color-accent)]/20 text-[var(--color-accent)]'
-                  }`}
+                    }`}
                 >
-                  <FontAwesomeIcon 
-                    icon={customAlert.type === 'info' ? faCircleInfo : faExclamationTriangle} 
+                  <FontAwesomeIcon
+                    icon={customAlert.type === 'info' ? faCircleInfo : faExclamationTriangle}
                     className="text-xl"
                   />
                 </div>
@@ -1047,7 +1091,7 @@ export default function ChainReactionPage() {
                 <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-2">
                   {customAlert.title}
                 </h3>
-                
+
                 <p className="text-sm text-[var(--color-muted)] leading-relaxed mb-6">
                   {customAlert.message}
                 </p>

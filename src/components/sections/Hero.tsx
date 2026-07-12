@@ -180,6 +180,7 @@ export default function Hero() {
               <a
                 href="/resume.pdf"
                 download="Mark_Raymond_Ayade_Resume.pdf"
+                data-analytics-skip-auto
                 onClick={() => trackEvent("resume_download", { method: "hero_button" })}
                 className="group px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm
                            transition-all duration-300 ease-out bg-surface/90 md:bg-surface/30 md:backdrop-blur-md

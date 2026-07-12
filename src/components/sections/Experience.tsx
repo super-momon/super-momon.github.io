@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
+import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndustry, faBriefcase } from "@fortawesome/free-solid-svg-icons";
 
@@ -146,7 +147,7 @@ export default function Experience() {
         >
           {/* Left Column: Selector */}
           <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 lg:sticky lg:top-24">
-            
+
             {/* Career Hub Header Card */}
             <div className="relative p-5 rounded-3xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30 flex flex-col gap-4 items-center text-center">
               <div className="relative w-16 h-16 rounded-2xl bg-accent/15 border border-accent/25 flex items-center justify-center shrink-0">
@@ -160,9 +161,9 @@ export default function Experience() {
 
             {/* Interactive Tabs list */}
             <div className="flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
-              
+
               {/* Mobile tabs row */}
-              <div 
+              <div
                 style={{ scrollbarWidth: "none" }}
                 className="flex flex-row lg:hidden gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
               >
@@ -171,12 +172,14 @@ export default function Experience() {
                   return (
                     <button
                       key={i}
-                      onClick={() => setActiveIndex(i)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap ${
-                        isActive
+                      onClick={() => {
+                        setActiveIndex(i);
+                        trackEvent("portfolio_experience_change", { role: exp.role, index: i, device: "mobile" });
+                      }}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap ${isActive
                           ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
                           : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
-                      }`}
+                        }`}
                     >
                       <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-accent" : "bg-foreground/40"}`} />
                       <span className="text-[10px] font-semibold tracking-tight">{exp.role.split(" ").slice(0, 2).join(" ")}</span>
@@ -192,27 +195,27 @@ export default function Experience() {
                   return (
                     <button
                       key={i}
-                      onClick={() => setActiveIndex(i)}
-                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
-                        isActive
+                      onClick={() => {
+                        setActiveIndex(i);
+                        trackEvent("portfolio_experience_change", { role: exp.role, index: i, device: "desktop" });
+                      }}
+                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
                           ? "bg-background/80 shadow-xs border border-border/50"
                           : "hover:bg-background/30 border border-transparent"
-                      }`}
+                        }`}
                     >
                       {/* Active Indicator on Left */}
                       <span
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${
-                          isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
-                        }`}
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
+                          }`}
                       />
 
                       {/* Icon block */}
                       <span
-                        className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${
-                          isActive
+                        className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${isActive
                             ? "bg-accent/15 text-accent shadow-xs"
                             : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
-                        }`}
+                          }`}
                       >
                         <FontAwesomeIcon
                           icon={faBriefcase}
@@ -224,9 +227,8 @@ export default function Experience() {
                       {/* Text Content */}
                       <div className="flex flex-col text-left min-w-0">
                         <span
-                          className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
-                            isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
-                          }`}
+                          className={`text-xs font-semibold leading-tight transition-colors duration-300 ${isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
+                            }`}
                         >
                           {exp.role}
                         </span>

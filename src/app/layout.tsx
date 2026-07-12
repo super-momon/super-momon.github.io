@@ -10,6 +10,7 @@ import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import {
   SITE_OWNER,
   SITE_TITLE,
@@ -161,6 +162,7 @@ export default function RootLayout({
           }}
         /> */}
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AnalyticsTracker />
           <Navbar />
           {children}
           <Footer />
