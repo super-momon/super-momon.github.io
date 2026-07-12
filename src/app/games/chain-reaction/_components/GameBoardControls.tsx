@@ -88,7 +88,7 @@ export function GameBoardControls({
       </div>
 
       {/* Turn & Session Stats Indicator */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full md:w-auto">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase">Turn</span>
           <div
@@ -101,26 +101,30 @@ export function GameBoardControls({
             }}
           >
             <span
-              className="w-2.5 h-2.5 rounded-full animate-ping"
+              className="w-2.5 h-2.5 rounded-full animate-ping flex-shrink-0"
               style={{ backgroundColor: activePlayerThemeColor }}
             />
-            {activePlayer.name}
+            <span className="truncate max-w-[100px] sm:max-w-[140px]" title={activePlayer.name}>
+              {activePlayer.name}
+            </span>
             {isOnline && isMyTurn && (
-              <span className="text-[10px] text-green-500 font-extrabold ml-1 bg-green-500/10 px-1.5 py-0.5 rounded-md border border-green-500/20">
+              <span className="text-[10px] text-green-500 font-extrabold ml-1 bg-green-500/10 px-1.5 py-0.5 rounded-md border border-green-500/20 flex-shrink-0">
                 (You)
               </span>
             )}
           </div>
         </div>
 
-        <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
-          <span className="text-[var(--color-muted)]">Total Orbs:</span>
-          <span className="text-[var(--color-foreground)]">{totalOrbsCount}</span>
-        </div>
+        <div className="flex items-center justify-center gap-3 flex-shrink-0">
+          <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <span className="text-[var(--color-muted)]">Total Orbs:</span>
+            <span className="text-[var(--color-foreground)]">{totalOrbsCount}</span>
+          </div>
 
-        <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
-          <span className="text-[var(--color-muted)]">Duration:</span>
-          <span className="text-[var(--color-foreground)]">{formatTime(secondsElapsed)}</span>
+          <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <span className="text-[var(--color-muted)]">Duration:</span>
+            <span className="text-[var(--color-foreground)]">{formatTime(secondsElapsed)}</span>
+          </div>
         </div>
       </div>
 
