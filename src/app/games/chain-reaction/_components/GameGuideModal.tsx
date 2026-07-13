@@ -77,11 +77,11 @@ export function GameGuideModal({
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl">
               <span className="text-[var(--color-foreground)] font-bold block mb-1">✨ Multiplier</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">When an orb enters via explosion, it duplicates into 2 orbs.</span>
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Place an orb here and it counts as 2 orbs, letting you reach critical mass faster.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl">
               <span className="text-[var(--color-foreground)] font-bold block mb-1">⚫ Black Hole</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Absorbs 3 orbs without exploding, then becomes a normal cell.</span>
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Absorbs all incoming exploding orbs throughout the entire game session.</span>
             </div>
           </div>
         </div>
@@ -92,11 +92,11 @@ export function GameGuideModal({
           <div className="grid grid-cols-1 gap-2 text-left">
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2 rounded-lg flex items-center gap-3">
               <span className="text-blue-600 dark:text-blue-400 font-bold w-16 flex-shrink-0">🛡️ Shield</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Protects one of your cells from being overtaken by an enemy explosion once.</span>
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Protects one of your cells from being overtaken by an enemy explosion until your next turn.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2 rounded-lg flex items-center gap-3">
               <span className="text-cyan-600 dark:text-cyan-400 font-bold w-16 flex-shrink-0">❄️ Freeze</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Prevents an enemy cell from exploding for one full round.</span>
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Prevents an enemy cell from exploding until your next turn.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2 rounded-lg flex items-center gap-3">
               <span className="text-red-600 dark:text-red-400 font-bold w-16 flex-shrink-0">🧨 Detonate</span>

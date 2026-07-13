@@ -62,14 +62,21 @@ export function GameBoardControls({
   };
 
   return (
-    <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-between mb-6 bg-[var(--color-surface)]/90 border border-[var(--color-border)] p-4 rounded-2xl shadow-sm backdrop-blur-md">
-      <div className="flex gap-2 items-center">
+    <div className="w-full flex flex-col lg:flex-row gap-4 items-center justify-between mb-6 bg-[var(--color-surface)]/90 border border-[var(--color-border)] p-3 sm:p-4 rounded-2xl shadow-sm backdrop-blur-md">
+      {/* Action Buttons: Quit, Reset, Guide */}
+      <div className="flex flex-wrap justify-center lg:justify-start gap-2 items-center w-full lg:w-auto">
         <button
           onClick={onQuitClick}
           aria-label="Quit game and return to setup"
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition"
         >
-          <FontAwesomeIcon icon={faArrowLeft} /> {isOnline ? 'Leave Room' : 'Quit Setup'}
+          <FontAwesomeIcon icon={faArrowLeft} />
+          <span className="hidden sm:inline">
+            {isOnline ? 'Leave Room' : 'Quit Setup'}
+          </span>
+          <span className="sm:hidden">
+            {isOnline ? 'Leave' : 'Quit'}
+          </span>
         </button>
         
         {(!isOnline || isHost) && (
@@ -77,7 +84,7 @@ export function GameBoardControls({
             onClick={onResetClick}
             disabled={isAnimating}
             aria-label="Reset board to restart game"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition disabled:opacity-50"
           >
             <FontAwesomeIcon icon={faRotateRight} /> Reset
           </button>
@@ -86,18 +93,18 @@ export function GameBoardControls({
         <button
           onClick={onOpenGuide}
           aria-label="Show gameplay rules"
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition cursor-pointer"
         >
           <FontAwesomeIcon icon={faCircleInfo} /> Guide
         </button>
       </div>
 
       {/* Turn & Session Stats Indicator */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full md:w-auto">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full lg:w-auto">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase">Turn</span>
           <div
-            className="px-4 py-1.5 rounded-full border text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
+            className="px-3.5 sm:px-4 py-1.5 rounded-full border text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
             style={{
               borderColor: activePlayerThemeColor,
               backgroundColor: `${activePlayerThemeColor}15`,
@@ -109,7 +116,7 @@ export function GameBoardControls({
               className="w-2.5 h-2.5 rounded-full animate-ping flex-shrink-0"
               style={{ backgroundColor: activePlayerThemeColor }}
             />
-            <span className="truncate max-w-[100px] sm:max-w-[140px]" title={activePlayer.name}>
+            <span className="truncate max-w-[80px] sm:max-w-[140px]" title={activePlayer.name}>
               {activePlayer.name}
             </span>
             {isOnline && isMyTurn && (
@@ -120,33 +127,33 @@ export function GameBoardControls({
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-3 flex-shrink-0">
-          <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
-            <span className="text-[var(--color-muted)]">Total Orbs:</span>
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="px-3 sm:px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <span className="text-[var(--color-muted)] hidden sm:inline">Total Orbs:</span>
+            <span className="text-[var(--color-muted)] sm:hidden">Orbs:</span>
             <span className="text-[var(--color-foreground)]">{totalOrbsCount}</span>
           </div>
 
-          <div className="px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
-            <span className="text-[var(--color-muted)]">Duration:</span>
+          <div className="px-3 sm:px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <span className="text-[var(--color-muted)] hidden sm:inline">Duration:</span>
+            <span className="text-[var(--color-muted)] sm:hidden">Time:</span>
             <span className="text-[var(--color-foreground)]">{formatTime(secondsElapsed)}</span>
           </div>
         </div>
       </div>
 
-
-
       {/* Board Zoom & Sound Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-auto">
         {isOnline && (
-          <div className="flex items-center gap-2 text-xs font-bold bg-[var(--color-surface)] px-3 py-1.5 rounded-xl border border-[var(--color-border)]/80">
-            <span className="text-[var(--color-muted)]">You:</span>
+          <div className="flex items-center gap-1.5 text-xs font-bold bg-[var(--color-surface)] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[var(--color-border)]/80">
+            <span className="text-[var(--color-muted)] hidden sm:inline">You:</span>
             <span
               className="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0"
               style={{
                 backgroundColor: myPlayerColor,
               }}
             />
-            <span className="text-[var(--color-foreground)] truncate max-w-[80px]">
+            <span className="text-[var(--color-foreground)] truncate max-w-[60px] sm:max-w-[80px]">
               {myPlayer?.name}
             </span>
           </div>
@@ -159,7 +166,9 @@ export function GameBoardControls({
               key={lvl}
               onClick={() => setZoomLevel(lvl)}
               aria-label={`Set cell size to ${lvl}`}
-              className={`p-1.5 px-2.5 text-xs font-bold rounded-md transition ${zoomLevel === lvl ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'}`}
+              className={`p-1 sm:p-1.5 px-2 sm:px-2.5 text-[10px] sm:text-xs font-bold rounded-md transition ${
+                zoomLevel === lvl ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+              }`}
             >
               {lvl.toUpperCase()}
             </button>
@@ -170,7 +179,7 @@ export function GameBoardControls({
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
           aria-label={soundEnabled ? "Mute game sounds" : "Unmute game sounds"}
-          className="w-8 h-8 rounded-lg border border-[var(--color-border)]/60 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition"
+          className="w-7 sm:w-8 h-7 sm:h-8 rounded-lg border border-[var(--color-border)]/60 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition cursor-pointer"
         >
           <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} />
         </button>

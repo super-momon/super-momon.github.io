@@ -92,6 +92,8 @@ export default function GameBoard({
   const [board, setBoard] = useState<Cell[][]>(() =>
     buildBoardWithSpecialCells(rows, cols, !resumed ? specialCells : undefined)
   );
+  const actualRows = board.length;
+  const actualCols = board[0]?.length || 0;
   const [players, setPlayers] = useState<Player[]>(() =>
     initialPlayers.map((p) => ({
       ...p,
@@ -136,9 +138,14 @@ export default function GameBoard({
   // Calculate total orbs in the session
   const totalOrbsCount = (() => {
     let count = 0;
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        count += board[r][c].orbs;
+    for (let r = 0; r < actualRows; r++) {
+      const row = board[r];
+      if (!row) continue;
+      for (let c = 0; c < actualCols; c++) {
+        const cell = row[c];
+        if (cell && typeof cell.orbs === 'number') {
+          count += cell.orbs;
+        }
       }
     }
     return count;
@@ -381,15 +388,17 @@ export default function GameBoard({
     isAnimatingRef.current = true;
     let currentBoard = startBoard.map((row) => row.map((cell) => ({ ...cell })));
     let tempPlayers = currentPlayers.map((p) => ({ ...p }));
+    const boardRows = currentBoard.length;
+    const boardCols = currentBoard[0]?.length || 0;
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
     let hasExplodedInWave = true;
 
     while (hasExplodedInWave) {
       const unstableCells: { r: number; c: number; limit: number; owner: number }[] = [];
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const limit = getCellCriticalMass(r, c, rows, cols, currentBoard);
+      for (let r = 0; r < boardRows; r++) {
+        for (let c = 0; c < boardCols; c++) {
+          const limit = getCellCriticalMass(r, c, boardRows, boardCols, currentBoard);
           if (currentBoard[r][c].orbs >= limit && currentBoard[r][c].orbs > 0 && currentBoard[r][c].type !== 'wall' && currentBoard[r][c].statusEffect !== 'frozen') {
             unstableCells.push({
               r,
@@ -424,7 +433,7 @@ export default function GameBoard({
           nextBoard[r][c].ownerId = null;
         }
 
-        const neighbors = getNeighbors(r, c, rows, cols, currentBoard); // Pass currentBoard to ignore walls
+        const neighbors = getNeighbors(r, c, boardRows, boardCols, currentBoard); // Pass currentBoard to ignore walls
         neighbors.forEach(([nr, nc]) => {
           let targetR = nr;
           let targetC = nc;
@@ -438,24 +447,15 @@ export default function GameBoard({
             }
           }
 
-          // Multiplier logic
-          let amount = 1;
-          if (nextBoard[targetR][targetC].type === 'multiplier') {
-             amount = 2; // Adds 2 orbs instead of 1
-          }
+          // Multiplier logic — no longer applies during explosions;
+          // the x2 bonus is applied only on direct placement (see executeMove).
 
-          // Black Hole logic
+          // Black Hole logic — absorb (discard) all incoming orbs, never accumulate
           if (nextBoard[targetR][targetC].type === 'blackhole') {
-             nextBoard[targetR][targetC].orbs += amount;
-             if (nextBoard[targetR][targetC].orbs >= 3) {
-                 nextBoard[targetR][targetC].orbs = 0;
-                 nextBoard[targetR][targetC].type = 'normal';
-                 nextBoard[targetR][targetC].ownerId = null;
-             }
-             return; // Black hole absorbs the orb(s) but does not change ownership
+             return; // silently discard: no orbs added, no ownership change, no explosion
           }
 
-          nextBoard[targetR][targetC].orbs += amount;
+          nextBoard[targetR][targetC].orbs += 1;
           if (nextBoard[targetR][targetC].statusEffect !== 'shielded' || nextBoard[targetR][targetC].ownerId === null) {
             nextBoard[targetR][targetC].ownerId = owner;
           }
@@ -505,13 +505,16 @@ export default function GameBoard({
     isAnimatingRef.current = false;
     
     // Decrement status effect durations
-    for (let rr = 0; rr < rows; rr++) {
-      for (let cc = 0; cc < cols; cc++) {
-        const duration = currentBoard[rr][cc].statusDuration;
+    for (let rr = 0; rr < boardRows; rr++) {
+      const row = currentBoard[rr];
+      if (!row) continue;
+      const rowCols = row.length;
+      for (let cc = 0; cc < rowCols; cc++) {
+        const duration = row[cc].statusDuration;
         if (duration !== undefined && duration > 0) {
-          currentBoard[rr][cc].statusDuration = duration - 1;
-          if (currentBoard[rr][cc].statusDuration === 0) {
-            currentBoard[rr][cc].statusEffect = undefined;
+          row[cc].statusDuration = duration - 1;
+          if (row[cc].statusDuration === 0) {
+            row[cc].statusEffect = undefined;
           }
         }
       }
@@ -622,6 +625,7 @@ export default function GameBoard({
 
     const cell = board[r][c];
     if (cell.type === 'wall') return; // Cannot place on wall
+    if (cell.type === 'blackhole') return; // Cannot place on black hole
     
     if (!activeAbility) {
       if (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) {
@@ -666,19 +670,24 @@ export default function GameBoard({
         updatedPlayers[playerIdx].powers[ability] -= 1;
       }
       
+      // Duration = number of active players so the effect lasts exactly until
+      // the casting player's next turn, regardless of their position in the order.
+      const numActivePlayers = updatedPlayers.filter((p) => p.active).length;
       if (ability === 'shield') {
         updatedBoard[r][c].statusEffect = 'shielded';
-        updatedBoard[r][c].statusDuration = 3;
+        updatedBoard[r][c].statusDuration = numActivePlayers;
       } else if (ability === 'freeze') {
         updatedBoard[r][c].statusEffect = 'frozen';
-        updatedBoard[r][c].statusDuration = 2;
+        updatedBoard[r][c].statusDuration = numActivePlayers;
       } else if (ability === 'detonate') {
-        const limit = getCellCriticalMass(r, c, rows, cols, updatedBoard);
+        const limit = getCellCriticalMass(r, c, updatedBoard.length, updatedBoard[0]?.length || 0, updatedBoard);
         updatedBoard[r][c].orbs = limit; // Force explosion
         updatedBoard[r][c].ownerId = updatedPlayers[playerIdx].id;
       }
     } else {
-      updatedBoard[r][c].orbs += 1;
+      // Multiplier cells give 2 orbs instead of 1 when a player places on them directly
+      const placementAmount = updatedBoard[r][c].type === 'multiplier' ? 2 : 1;
+      updatedBoard[r][c].orbs += placementAmount;
       updatedBoard[r][c].ownerId = updatedPlayers[playerIdx].id;
     }
 
@@ -832,7 +841,7 @@ export default function GameBoard({
             <div
               className={`grid gap-[2px] p-2 bg-[var(--color-background)]/60 rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel}`}
               style={{
-                gridTemplateColumns: `repeat(${cols}, var(--cell-size))`,
+                gridTemplateColumns: `repeat(${actualCols}, var(--cell-size))`,
                 width: 'max-content',
               }}
             >
@@ -848,7 +857,7 @@ export default function GameBoard({
                     (cell.ownerId !== null && cell.ownerId !== players[currentPlayerIndex].id) ||
                     (isOnline && !isMyTurn);
 
-                  const limit = getCellCriticalMass(r, c, rows, cols, board);
+                  const limit = getCellCriticalMass(r, c, actualRows, actualCols, board);
                   const isCritical = cell.orbs > 0 && cell.orbs === limit - 1;
                   const currentPlayerColor = getThemeColor(players[currentPlayerIndex]?.color, isDark);
 

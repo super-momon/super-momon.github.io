@@ -44,11 +44,15 @@ export const buildBoardWithSpecialCells = (
 
   const allPositions: { r: number; c: number }[] = [];
   const innerPositions: { r: number; c: number }[] = [];
+  const multiplierPositions: { r: number; c: number }[] = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       allPositions.push({ r, c });
       if (r > 0 && r < rows - 1 && c > 0 && c < cols - 1) {
         innerPositions.push({ r, c });
+      }
+      if (r >= 3 && r <= rows - 4 && c >= 3 && c <= cols - 4) {
+        multiplierPositions.push({ r, c });
       }
     }
   }
@@ -62,9 +66,14 @@ export const buildBoardWithSpecialCells = (
     const j = Math.floor(Math.random() * (i + 1));
     [innerPositions[i], innerPositions[j]] = [innerPositions[j], innerPositions[i]];
   }
+  for (let i = multiplierPositions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [multiplierPositions[i], multiplierPositions[j]] = [multiplierPositions[j], multiplierPositions[i]];
+  }
 
   let posIdx = 0;
   let innerPosIdx = 0;
+  let multiplierPosIdx = 0;
 
   const placeCells = (type: 'wall' | 'portal' | 'multiplier' | 'blackhole', count: number) => {
     let placed = 0;
@@ -72,19 +81,19 @@ export const buildBoardWithSpecialCells = (
     while (placed < count && attempts < allPositions.length * 2) {
       attempts++;
       if (type === 'multiplier') {
-        // Multipliers only go on inner tiles
-        if (innerPosIdx < innerPositions.length) {
-          const { r, c } = innerPositions[innerPosIdx++];
+        // Multipliers only go on the 4th cell from the edge
+        if (multiplierPosIdx < multiplierPositions.length) {
+          const { r, c } = multiplierPositions[multiplierPosIdx++];
           if (freshBoard[r][c].type === 'normal') {
             if (isTooCloseToSpecialCell(r, c, freshBoard)) {
-              innerPositions.push({ r, c }); // push back to try later
+              multiplierPositions.push({ r, c }); // push back to try later
               continue;
             }
             freshBoard[r][c].type = type;
             placed++;
           }
         } else {
-          break; // ran out of inner positions
+          break; // ran out of multiplier positions
         }
       } else {
         // Everything else can go anywhere
