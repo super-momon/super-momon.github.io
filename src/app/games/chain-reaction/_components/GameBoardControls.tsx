@@ -104,7 +104,7 @@ export function GameBoardControls({
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase">Turn</span>
           <div
-            className="px-3.5 sm:px-4 py-1.5 rounded-full border text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
+            className="w-[160px] sm:w-[220px] justify-center flex-shrink-0 px-3 sm:px-4 py-1.5 rounded-full border text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
             style={{
               borderColor: activePlayerThemeColor,
               backgroundColor: `${activePlayerThemeColor}15`,
@@ -113,17 +113,19 @@ export function GameBoardControls({
             }}
           >
             <span
-              className="w-2.5 h-2.5 rounded-full animate-ping flex-shrink-0"
+              className="w-2 h-2 rounded-full animate-ping flex-shrink-0"
               style={{ backgroundColor: activePlayerThemeColor }}
             />
-            <span className="truncate max-w-[80px] sm:max-w-[140px]" title={activePlayer.name}>
-              {activePlayer.name}
-            </span>
-            {isOnline && isMyTurn && (
-              <span className="text-[10px] text-green-500 font-extrabold ml-1 bg-green-500/10 px-1.5 py-0.5 rounded-md border border-green-500/20 flex-shrink-0">
-                (You)
+            <div className="flex items-center justify-center gap-1.5 min-w-0 max-w-[calc(100%-16px)]">
+              <span className="truncate max-w-[70px] sm:max-w-[120px]" title={activePlayer.name}>
+                {activePlayer.name}
               </span>
-            )}
+              {isOnline && isMyTurn && (
+                <span className="text-[8px] text-green-600 dark:text-green-400 font-extrabold bg-green-500/10 px-1 py-0.25 rounded border border-green-500/20 flex-shrink-0 leading-none">
+                  YOU
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

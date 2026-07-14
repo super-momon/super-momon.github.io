@@ -378,15 +378,25 @@
 /* Shout Alert Overlay Banner */
 .shout-banner-overlay {
   position: fixed;
-  bottom: 2rem;
-  left: 2rem;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
   z-index: 70;
   pointer-events: none; /* allow passing clicks through the overlay wrapper */
   display: flex;
   flex-direction: column-reverse; /* stack upwards */
   gap: 0.75rem; /* spacing between stacked toasts */
-  align-items: flex-start; /* align left */
+  align-items: center;
   overflow: visible;
+}
+
+@media (min-width: 640px) {
+  .shout-banner-overlay {
+    bottom: 2rem;
+    left: 2rem;
+    right: auto;
+    align-items: flex-start;
+  }
 }
 
 .shout-banner {
@@ -399,10 +409,10 @@
     0 8px 24px -4px rgba(0, 0, 0, 0.25), 
     0 0 16px var(--shout-glow),
     inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  max-width: 85vw;
-  width: 250px;
-  border-radius: 0.75rem;
-  padding: 0.75rem;
+  width: 360px;
+  max-width: calc(100vw - 2rem);
+  border-radius: 1rem;
+  padding: 1rem;
   position: relative;
   overflow: hidden;
   animation: shout-pulse-glow 2s infinite alternate ease-in-out;
@@ -492,13 +502,13 @@
 
 .shout-message {
   font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  font-size: 0.85rem;
-  line-height: 1.35;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.45;
   color: var(--shout-text-color, #ffffff);
   word-wrap: break-word;
   padding-left: 0.15rem;
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
   animation: shout-text-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s both;
 }
 

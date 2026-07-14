@@ -428,7 +428,15 @@ export default function ChainReactionPage() {
       // sync  – fires on initial state snapshot and after each diff
       .on('presence', { event: 'sync' }, syncLobbyPlayers)
       // join  – fires when a new peer tracks their presence; sync may not fire
-      .on('presence', { event: 'join' }, syncLobbyPlayers)
+      // presenceState() is updated *after* the join event, so we call
+      // syncLobbyPlayers immediately and then again after a short delay to
+      // catch any players whose presence entry wasn't yet in the snapshot.
+      .on('presence', { event: 'join' }, () => {
+        syncLobbyPlayers();
+        const t1 = setTimeout(syncLobbyPlayers, 300);
+        const t2 = setTimeout(syncLobbyPlayers, 1000);
+        resyncTimersRef.current.push(t1, t2);
+      })
       // leave – fires when a peer disconnects or untracks
       .on('presence', { event: 'leave' }, syncLobbyPlayers)
       .on('broadcast', { event: 'settings-change' }, (payload) => {
