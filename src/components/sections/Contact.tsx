@@ -31,7 +31,7 @@ const contactMethods = [
     id: "linkedin",
     label: "LinkedIn",
     handle: `in/${LINKEDIN_USERNAME}`,
-    description: "Connect professionally, view industry endorsements, and see my latest software engineering posts.",
+    description: "Connect with me professionally, view my experience, and see my professional profile.",
     href: LINKEDIN_URL,
     icon: faLinkedin,
     actionText: "Visit LinkedIn Profile",
@@ -40,7 +40,7 @@ const contactMethods = [
     id: "github",
     label: "GitHub",
     handle: `@${GITHUB_USERNAME}`,
-    description: "Explore my code repositories, check out web templates, and see my active open-source contribution graphs.",
+    description: "Explore my code repositories, check out my created projects, and visit my GitHub profile.",
     href: GITHUB_URL,
     icon: faGithub,
     actionText: "Explore Repositories",
@@ -186,8 +186,8 @@ export default function Contact() {
                         trackEvent("portfolio_contact_method_select", { method: method.id, device: "mobile" });
                       }}
                       className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
-                          ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
-                          : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
+                        ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
+                        : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
                         }`}
                     >
                       <FontAwesomeIcon icon={method.icon} className={`text-xs ${isActive ? "text-accent" : "text-foreground/50"}`} />
@@ -209,8 +209,8 @@ export default function Contact() {
                         trackEvent("portfolio_contact_method_select", { method: method.id, device: "desktop" });
                       }}
                       className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
-                          ? "bg-background/80 shadow-xs border border-border/50"
-                          : "hover:bg-background/30 border border-transparent"
+                        ? "bg-background/80 shadow-xs border border-border/50"
+                        : "hover:bg-background/30 border border-transparent"
                         }`}
                     >
                       {/* Active Indicator on Left */}
@@ -222,8 +222,8 @@ export default function Contact() {
                       {/* Icon block */}
                       <span
                         className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${isActive
-                            ? "bg-accent/15 text-accent shadow-xs"
-                            : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
+                          ? "bg-accent/15 text-accent shadow-xs"
+                          : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
                           }`}
                       >
                         <FontAwesomeIcon
