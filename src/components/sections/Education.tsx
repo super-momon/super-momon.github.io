@@ -18,18 +18,80 @@ const education = [
     details:
       "Gained hands-on experience with AWS services including EC2, S3, Lambda, and RDS. Contributed to several projects using AWS Services, learning about cloud architecture, serverless computing, and best practices for scalability and security.",
     skills: ["AWS", "Cloud Computing", "Serverless", "DevOps"],
-    certifications: [],
+    certifications: [
+      {
+        title: "AWS Cloud Quest: Cloud Practitioner",
+        urls: [
+          {
+            label: "Credly Badge",
+            url: "https://www.credly.com/badges/e79b80ec-8669-4174-8817-7b0d2303f10a/linked_in_profile"
+          }
+        ]
+      }
+    ],
   },
   {
     id: "linkedin-learning",
     icon: faLinkedin,
-    topic: "Various Programming Courses",
+    topic: "Various Software Engineering Courses",
     institution: "LinkedIn Learning",
     period: "2022 - Present",
     details:
       "80+ LinkedIn Learning Certificates. Continuously expanding my knowledge through courses on JavaScript, TypeScript, Next.js, Software architecture, and intermediate to advanced topics. Focused on best practices, design patterns, and modern development workflows.",
     skills: ["Best Practices", "UI/UX", "Software Architecture", "Software Development Cycle"],
-    certifications: [],
+    certifications: [
+      {
+        title: "Docker",
+        urls: [
+          {
+            label: "Docker Foundations Professional",
+            url: "https://www.linkedin.com/learning/certificates/c5fc73084a608efd872113187397a5764ab41f7f4396aa9276ce773d581188b3?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          },
+          {
+            label: "Docker: Your First Project",
+            url: "https://www.linkedin.com/learning/certificates/cc3882d1e1ce99b6464a00d3d0e9e788e13f5559e299b8463407404bcafe0213?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          },
+          {
+            label: "Learning Docker",
+            url: "https://www.linkedin.com/learning/certificates/f05a665c91e7bb6d6895ffc34b3a577249c1d5eb4d381288d50d0df8cfb7b06a?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          }
+        ]
+      },
+      {
+        title: "AWS Services",
+        urls: [
+          {
+            label: "AWS for Developers: Identity Access Management (IAM)",
+            url: "https://www.linkedin.com/learning/certificates/f05a665c91e7bb6d6895ffc34b3a577249c1d5eb4d381288d50d0df8cfb7b06a?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          },
+          {
+            label: "Learning Amazon Web Services (AWS) for Developers",
+            url: "https://www.linkedin.com/learning/certificates/15857f4ad7860b63681d218220ec7edea9c8b1419595e287ecc7dd254089bc36?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          },
+          {
+            label: "Prepare for AWS Certified Cloud Practioner (CLF-C02) Certification",
+            url: "https://www.linkedin.com/learning/certificates/7c8dfc9484355396e44996eb44118df941814859b079c5f664d21869d1a1e0a7?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          },
+          {
+            label: "AWS Certified Cloud Practitioner (CLF-C02) Cert Prep: 3 Cloud Technology and Services",
+            url: "https://www.linkedin.com/learning/certificates/ba977aedd7322240da0e4c701558a59582247c1530365b6b05de82071bd73e65?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          },
+          {
+            label: "AWS Certified Cloud Practitioner (CLF-C02) Cert Prep: 4 Billing, Pricing, and Support",
+            url: "https://www.linkedin.com/learning/certificates/812e86276a78a5394412a2ecd294047bd4d715ac0c8570b2fcc02149a51ee4ba?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_certifications_details%3BKTDzw%2FYIQFO85x53Nv%2FkTQ%3D%3D"
+          }
+        ]
+      },
+      {
+        title: "Web Development",
+        urls: [
+          {
+            label: "React",
+            url: ""
+          }
+        ]
+      }
+    ],
   },
   {
     id: "freecodecamp",
@@ -41,8 +103,24 @@ const education = [
       "Completed a comprehensive web development bootcamp covering HTML, CSS, JavaScript, React, Node.js, and database management.",
     skills: ["Responsive Design", "JavaScript", "Data Structures", "Algorithms"],
     certifications: [
-      "https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/javascript-algorithms-and-data-structures",
-      "https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/responsive-web-design",
+      {
+        title: "JavaScript Algorithms & Data Structures",
+        urls: [
+          {
+            label: "Certificate",
+            url: "https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/javascript-algorithms-and-data-structures"
+          }
+        ]
+      },
+      {
+        title: "Responsive Web Design",
+        urls: [
+          {
+            label: "Certificate",
+            url: "https://www.freecodecamp.org/certification/fcc4e2e9e02-23a3-4ff6-bba0-ce4e3dc66009/responsive-web-design"
+          }
+        ]
+      }
     ],
   },
   {
@@ -58,8 +136,19 @@ const education = [
   },
 ];
 
+interface CertificationUrl {
+  label: string;
+  url: string;
+}
+
+interface Certification {
+  title: string;
+  urls: CertificationUrl[];
+}
+
 export default function Education() {
   const [activeTopicId, setActiveTopicId] = useState("aws-services");
+  const [activeCert, setActiveCert] = useState<Certification | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
@@ -181,8 +270,8 @@ export default function Education() {
                         trackEvent("portfolio_education_change", { topic: item.id, device: "mobile" });
                       }}
                       className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap ${isActive
-                          ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
-                          : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
+                        ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
+                        : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
                         }`}
                     >
                       <FontAwesomeIcon icon={item.icon} className={`text-xs ${isActive ? "text-accent" : "text-foreground/50"}`} />
@@ -204,8 +293,8 @@ export default function Education() {
                         trackEvent("portfolio_education_change", { topic: item.id, device: "desktop" });
                       }}
                       className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
-                          ? "bg-background/80 shadow-xs border border-border/50"
-                          : "hover:bg-background/30 border border-transparent"
+                        ? "bg-background/80 shadow-xs border border-border/50"
+                        : "hover:bg-background/30 border border-transparent"
                         }`}
                     >
                       {/* Active Indicator on Left */}
@@ -217,8 +306,8 @@ export default function Education() {
                       {/* Icon block */}
                       <span
                         className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${isActive
-                            ? "bg-accent/15 text-accent shadow-xs"
-                            : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
+                          ? "bg-accent/15 text-accent shadow-xs"
+                          : "bg-background/80 text-foreground/60 group-hover:bg-accent/10 group-hover:text-accent"
                           }`}
                       >
                         <FontAwesomeIcon
@@ -287,45 +376,38 @@ export default function Education() {
                     {active.certifications.length > 0 && (
                       <div className="pt-2">
                         <h4 className="text-[10px] font-bold text-foreground/60 mb-3 uppercase tracking-widest">
-                          Certifications Links
+                          Certifications
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {active.certifications.map((cert, i) => {
-                            let platformName = "Certificate";
-                            try {
-                              const url = new URL(cert);
-                              const part = url.hostname.replace("www.", "").split(".")[0];
-                              platformName =
-                                part.charAt(0).toUpperCase() + part.slice(1) + " Certification";
-                            } catch {
-                              // keep default
-                            }
                             return (
-                              <a
+                              <button
                                 key={i}
-                                href={cert}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => trackEvent("portfolio_certification_click", { certification_url: cert, topic: active.id })}
-                                className="flex items-center gap-3 p-3 rounded-xl bg-background/50 border border-border/80 hover:bg-background hover:border-accent transition-all duration-300 group/cert cursor-pointer"
+                                type="button"
+                                onClick={() => setActiveCert(cert)}
+                                className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/80 hover:bg-background hover:border-accent transition-all duration-300 group/cert cursor-pointer text-left w-full"
                               >
-                                <div className="w-8 h-8 rounded-lg bg-surface border border-border/60 flex items-center justify-center shrink-0">
-                                  <FontAwesomeIcon
-                                    icon={faAward}
-                                    className="text-foreground/75 text-sm group-hover/cert:text-accent transition-colors"
-                                  />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs font-semibold text-foreground group-hover/cert:text-accent transition-colors duration-200 truncate">
-                                    {platformName}
-                                  </p>
-                                  <p className="text-[10px] text-foreground/50 truncate">{cert.replace("https://", "")}</p>
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="w-8 h-8 rounded-lg bg-surface border border-border/60 flex items-center justify-center shrink-0">
+                                    <FontAwesomeIcon
+                                      icon={faAward}
+                                      className="text-foreground/75 text-sm group-hover/cert:text-accent transition-colors"
+                                    />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-semibold text-foreground group-hover/cert:text-accent transition-colors duration-200 truncate">
+                                      {cert.title}
+                                    </p>
+                                    <p className="text-[10px] text-foreground/50">
+                                      {cert.urls.length} link{cert.urls.length !== 1 ? "s" : ""}
+                                    </p>
+                                  </div>
                                 </div>
                                 <FontAwesomeIcon
                                   icon={faArrowUpRightFromSquare}
                                   className="text-foreground/50 text-[10px] group-hover/cert:text-accent transition-colors shrink-0"
                                 />
-                              </a>
+                              </button>
                             );
                           })}
                         </div>
@@ -350,6 +432,87 @@ export default function Education() {
           </div>
         </motion.div>
       </div>
+
+      {/* Certification Links Modal */}
+      <AnimatePresence>
+        {activeCert && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveCert(null)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+            />
+
+            {/* Modal Card */}
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="relative w-full max-w-md bg-surface/95 dark:bg-surface/90 border border-border/80 dark:border-border/60 rounded-2xl p-6 shadow-2xl z-10 backdrop-blur-lg"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between gap-4 mb-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-accent/15 border border-accent/25 flex items-center justify-center shrink-0">
+                    <FontAwesomeIcon icon={faAward} className="text-accent text-lg" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground tracking-tight leading-tight">
+                      {activeCert.title}
+                    </h3>
+                    <p className="text-[10px] text-foreground/50 mt-0.5">Credential Links</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveCert(null)}
+                  className="w-8 h-8 rounded-full border border-border/80 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-background/80 transition-colors cursor-pointer"
+                  aria-label="Close modal"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Links list */}
+              <div className="flex flex-col gap-2.5 max-h-[300px] overflow-y-auto pr-1">
+                {activeCert.urls.map((link, j) => (
+                  <a
+                    key={j}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      trackEvent("portfolio_certification_click", {
+                        certification_url: link.url,
+                        topic: active.id,
+                        title: activeCert.title,
+                      });
+                      setActiveCert(null);
+                    }}
+                    className="flex items-center justify-between gap-3 p-3 rounded-xl bg-background/50 border border-border/80 hover:bg-background hover:border-accent transition-all duration-300 group/link cursor-pointer"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold text-foreground group-hover/link:text-accent transition-colors duration-200 truncate">
+                        {link.label}
+                      </p>
+                      <p className="text-[9px] text-foreground/45 truncate mt-0.5">{link.url.replace("https://", "")}</p>
+                    </div>
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      className="text-foreground/50 text-[10px] group-hover/link:text-accent transition-colors shrink-0"
+                    />
+                  </a>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
