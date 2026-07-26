@@ -3,6 +3,7 @@
 import { FadeIn } from "@/components/FadeIn";
 import { trackEvent } from "@/lib/analytics";
 import { EMAIL, GITHUB_URL, GITHUB_USERNAME, LINKEDIN_URL, LINKEDIN_USERNAME } from "@/lib/constants";
+import SectionHeader from "@/components/common/SectionHeader";
 import { useRef, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
@@ -87,12 +88,7 @@ export default function Contact() {
       />
 
       {/* Grain texture */}
-      <div
-        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none hidden md:block"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
+      <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none hidden md:block bg-noise" />
 
       {/* Ambient glow — bottom center */}
       <div
@@ -116,35 +112,12 @@ export default function Contact() {
 
       <div className="max-w-6xl mx-auto relative">
         {/* Section header */}
-        <div className="text-center mb-14">
-          <FadeIn>
-            <span className="inline-block text-xs font-mono font-semibold uppercase tracking-[0.22em] text-accent mb-3">
-              Get In Touch
-            </span>
-          </FadeIn>
-
-          <FadeIn delay={0.05}>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4 text-balance">
-              Let&apos;s Build{" "}
-              <span
-                className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
-                style={{ fontStyle: "italic" }}
-              >
-                Something Great
-              </span>
-            </h2>
-          </FadeIn>
-
-          <FadeIn delay={0.1}>
-            <p className="text-foreground/80 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
-              I&apos;m actively seeking opportunities to collaborate on ambitious projects. Whether you&apos;re building something transformative or exploring a technical challenge — I&apos;d love to hear from you.
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={0.15}>
-            <div className="w-14 h-px mx-auto mt-6 bg-linear-to-r from-transparent via-accent to-transparent" />
-          </FadeIn>
-        </div>
+        <SectionHeader
+          eyebrow="Get In Touch"
+          titlePrefix="Let's Build"
+          titleItalic="Something Great"
+          subtitle="I'm actively seeking opportunities to collaborate on ambitious projects. Whether you're building something transformative or exploring a technical challenge — I'd love to hear from you."
+        />
 
         {/* Split layout: selector + details dossier */}
         <motion.div
@@ -156,23 +129,13 @@ export default function Contact() {
         >
           {/* Left Column: Selector */}
           <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 lg:sticky lg:top-24">
-
-            {/* Communication Hub Header Card */}
-            <div className="relative p-5 rounded-3xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30 flex flex-col gap-4 items-center text-center">
-              <div className="relative w-16 h-16 rounded-2xl bg-accent/15 border border-accent/25 flex items-center justify-center shrink-0">
-                <FontAwesomeIcon icon={faPaperPlane} className="text-accent text-2xl" />
-              </div>
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-bold text-foreground tracking-tight">Reach Out</h3>
-                <p className="text-xs text-foreground/75 font-mono font-medium tracking-wide">Communication Hub</p>
-              </div>
-            </div>
-
             {/* Interactive Tabs list */}
             <div className="flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
 
               {/* Mobile tabs row */}
               <div
+                role="tablist"
+                aria-label="Contact channels (mobile)"
                 style={{ scrollbarWidth: "none" }}
                 className="flex flex-row lg:hidden gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
               >
@@ -181,11 +144,15 @@ export default function Contact() {
                   return (
                     <button
                       key={method.id}
+                      role="tab"
+                      id={`contact-tab-mobile-${method.id}`}
+                      aria-selected={isActive}
+                      aria-controls={`contact-tabpanel-${method.id}`}
                       onClick={() => {
                         setActiveMethodId(method.id);
                         trackEvent("portfolio_contact_method_select", { method: method.id, device: "mobile" });
                       }}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
+                      className={`flex items-center gap-2 min-h-[44px] px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
                         ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
                         : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
                         }`}
@@ -198,12 +165,16 @@ export default function Contact() {
               </div>
 
               {/* Desktop vertical tabs */}
-              <div className="hidden lg:flex flex-col gap-1.5">
+              <div role="tablist" aria-label="Contact channels" className="hidden lg:flex flex-col gap-1.5">
                 {contactMethods.map((method) => {
                   const isActive = activeMethodId === method.id;
                   return (
                     <button
                       key={method.id}
+                      role="tab"
+                      id={`contact-tab-${method.id}`}
+                      aria-selected={isActive}
+                      aria-controls={`contact-tabpanel-${method.id}`}
                       onClick={() => {
                         setActiveMethodId(method.id);
                         trackEvent("portfolio_contact_method_select", { method: method.id, device: "desktop" });
@@ -214,10 +185,13 @@ export default function Contact() {
                         }`}
                     >
                       {/* Active Indicator on Left */}
-                      <span
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
-                          }`}
-                      />
+                      {isActive && (
+                        <motion.span
+                          layoutId="contactTabPill"
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full"
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        />
+                      )}
 
                       {/* Icon block */}
                       <span

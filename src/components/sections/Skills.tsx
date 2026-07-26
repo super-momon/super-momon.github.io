@@ -3,156 +3,97 @@
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
+import SectionHeader from "@/components/common/SectionHeader";
 
-const skills = [
-
+const skillCategories = [
   {
-    name: "TypeScript",
-    icon: "devicon-typescript-plain",
+    title: "Backend & Languages",
+    description: "Core programming languages and backend frameworks",
+    items: [
+      { name: "C#", icon: "devicon-csharp-plain" },
+      { name: ".Net", icon: "devicon-dotnetcore-plain" },
+      { name: "TypeScript", icon: "devicon-typescript-plain" },
+      { name: "JavaScript", icon: "devicon-javascript-plain" },
+      { name: "Node.js", icon: "devicon-nodejs-plain-wordmark" },
+    ],
   },
   {
-    name: "Blazor",
-    icon: "devicon-blazor-original",
+    title: "Frontend & UI",
+    description: "Modern web application frameworks and user interfaces",
+    items: [
+      { name: "React", icon: "devicon-react-original" },
+      { name: "Next.js", icon: "devicon-nextjs-line" },
+      { name: "Blazor", icon: "devicon-blazor-original" },
+      { name: "HTML5", icon: "devicon-html5-plain" },
+      { name: "CSS3", icon: "devicon-css3-plain" },
+      { name: "Bootstrap", icon: "devicon-bootstrap-plain" },
+      { name: "JQuery", icon: "devicon-jquery-plain" },
+    ],
   },
   {
-    name: "React",
-    icon: "devicon-react-original",
+    title: "Databases & APIs",
+    description: "Data persistence, object-relational mapping, and query languages",
+    items: [
+      { name: "MSSQL Server", icon: "devicon-microsoftsqlserver-plain" },
+      { name: "PostgreSQL", icon: "devicon-postgresql-plain" },
+      { name: "MongoDB", icon: "devicon-mongodb-plain" },
+      { name: "GraphQL", icon: "devicon-graphql-plain" },
+      { name: "Entity Framework", icon: "devicon-entityframeworkcore-plain" },
+      { name: "JSON", icon: "devicon-json-plain" },
+    ],
   },
   {
-    name: "Next.js",
-    icon: "devicon-nextjs-line",
-  },
-  {
-    name: ".Net",
-    icon: "devicon-dotnetcore-plain",
-  },
-  {
-    name: "Node.js",
-    icon: "devicon-nodejs-plain-wordmark",
-  },
-  {
-    name: "MSSQL Server",
-    icon: "devicon-microsoftsqlserver-plain",
-  },
-  {
-    name: "PostgreSQL",
-    icon: "devicon-postgresql-plain",
-  },
-  {
-    name: "MongoDB",
-    icon: "devicon-mongodb-plain",
-  },
-  {
-    name: "GraphQL",
-    icon: "devicon-graphql-plain",
-  },
-  {
-    name: "Git",
-    icon: "devicon-git-plain",
-  },
-  {
-    name: "Docker",
-    icon: "devicon-docker-plain",
-  },
-  {
-    name: "Postman",
-    icon: "devicon-postman-plain",
-  },
-  {
-    name: "AWS",
-    icon: "devicon-amazonwebservices-plain-wordmark",
-  },
-  {
-    name: "HTML",
-    icon: "devicon-html5-plain",
-  },
-  {
-    name: "C#",
-    icon: "devicon-csharp-plain",
-  },
-  {
-    name: "CSS",
-    icon: "devicon-css3-plain",
-  },
-  {
-    name: "Bootstrap",
-    icon: "devicon-bootstrap-plain",
-  },
-  {
-    name: "JavaScript",
-    icon: "devicon-javascript-plain",
-  },
-  {
-    name: "Entity Framework",
-    icon: "devicon-entityframeworkcore-plain",
-  },
-  {
-    name: "Figma",
-    icon: "devicon-figma-plain",
-  },
-  {
-    name: "Jira",
-    icon: "devicon-jira-plain",
-  },
-  {
-    name: "JQuery",
-    icon: "devicon-jquery-plain",
-  },
-  {
-    name: "JSON",
-    icon: "devicon-json-plain",
+    title: "Cloud & Developer Tools",
+    description: "Infrastructure, containers, version control, and collaboration",
+    items: [
+      { name: "AWS", icon: "devicon-amazonwebservices-plain-wordmark" },
+      { name: "Docker", icon: "devicon-docker-plain" },
+      { name: "Git", icon: "devicon-git-plain" },
+      { name: "Postman", icon: "devicon-postman-plain" },
+      { name: "Figma", icon: "devicon-figma-plain" },
+      { name: "Jira", icon: "devicon-jira-plain" },
+    ],
   },
 ];
 
-function SkillPill({ skill, index }: { skill: typeof skills[0]; index: number }) {
+function SkillPill({ skill, index }: { skill: { name: string; icon: string }; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 18 }}
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{
         opacity: 1,
         y: 0,
         transition: {
-          duration: 0.45,
-          delay: index * 0.022,
+          duration: 0.35,
+          delay: index * 0.03,
           ease: [0.22, 1, 0.36, 1],
         },
       }}
-      viewport={{ once: true, margin: "-30px" }}
-      whileHover={{ scale: 1.02 }}
+      viewport={{ once: true, margin: "-20px" }}
+      whileHover={{ scale: 1.03, y: -2 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl
-                 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl
-                 border cursor-default select-none will-change-transform shadow-xs shadow-black/5"
+      className="relative flex items-center gap-2.5 px-3.5 py-2 rounded-xl
+                 bg-background/80 dark:bg-background/50 backdrop-blur-md
+                 border border-border/70 cursor-default select-none shadow-xs shadow-black/5"
       style={{
-        borderColor: isHovered ? "var(--color-accent)" : "var(--color-border)",
+        borderColor: isHovered ? "var(--color-accent)" : undefined,
         transition: "all 0.3s ease",
       }}
     >
-      {/* Hover background fill */}
-      <motion.div
-        initial={false}
-        animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.2 }}
-        className="absolute inset-0 rounded-xl bg-accent/6 pointer-events-none"
-      />
-
       <i
         className={skill.icon}
         style={{
-          fontSize: "1.25rem",
+          fontSize: "1.2rem",
           lineHeight: 1,
-          filter: isHovered
-            ? "drop-shadow(0 0 5px var(--color-accent))"
-            : "none",
+          filter: isHovered ? "drop-shadow(0 0 5px var(--color-accent))" : "none",
           transition: "filter 0.2s ease",
-          position: "relative",
         }}
       />
-      <span className="relative text-sm font-medium text-foreground whitespace-nowrap">
+      <span className="text-xs font-semibold text-foreground whitespace-nowrap">
         {skill.name}
       </span>
     </motion.div>
@@ -189,70 +130,51 @@ export default function Skills() {
       />
 
       {/* Grain texture */}
-      <div
-        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
+      <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none bg-noise" />
 
-      <div className="max-w-5xl mx-auto relative z-10">
-        {/* Section header */}
-        <div className="mb-14 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="inline-block mb-3 text-xs font-mono font-semibold tracking-[0.18em] uppercase text-accent"
-          >
-            Technical Stack
-          </motion.span>
+      <div className="max-w-6xl mx-auto relative z-10">
+        <SectionHeader
+          eyebrow="Technical Stack"
+          titlePrefix="Skills &"
+          titleItalic="Technologies"
+          subtitle="A categorized overview of the languages, frameworks, cloud services, and engineering tools I work with."
+        />
 
-          <motion.h2
-            initial={{ opacity: 0, y: 22 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
-            className="text-2xl md:text-3xl font-bold text-foreground
-                       tracking-tight leading-tight mb-4 text-balance"
-          >
-            Skills &amp;{" "}
-            <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
-              style={{ fontStyle: "italic" }}
+        {/* Categorized Skill Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+          {skillCategories.map((category, catIdx) => (
+            <motion.div
+              key={category.title}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: catIdx * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="p-6 md:p-7 rounded-2xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl shadow-md shadow-black/5 dark:shadow-black/25 flex flex-col justify-between"
             >
-              Technologies
-            </span>
-          </motion.h2>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-base font-bold text-foreground tracking-tight flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-accent" />
+                    {category.title}
+                  </h3>
+                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-background border border-border/70 text-foreground/75">
+                    {category.items.length} Techs
+                  </span>
+                </div>
+                <p className="text-xs text-foreground/70 mb-5 leading-relaxed">
+                  {category.description}
+                </p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
-            className="text-foreground/80 text-base md:text-lg max-w-xl mx-auto leading-relaxed"
-          >
-            Technologies I work with and have hands-on experience in.
-            I&apos;m always eager to learn new tools and frameworks.
-          </motion.p>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={isInView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
-            className="w-14 h-px mx-auto mt-6 bg-linear-to-r from-transparent via-accent to-transparent"
-          />
-        </div>
-
-        {/* Skill pills */}
-        <div className="flex flex-wrap justify-center gap-2.5 md:gap-3">
-          {skills.map((skill, i) => (
-            <SkillPill key={skill.name} skill={skill} index={i} />
+                <div className="flex flex-wrap gap-2">
+                  {category.items.map((item, itemIdx) => (
+                    <SkillPill key={item.name} skill={item} index={itemIdx} />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
-
-      {/* Bottom edge fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24
-                      bg-linear-to-t from-surface to-transparent pointer-events-none" />
     </section>
   );
 }

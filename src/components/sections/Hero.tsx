@@ -3,63 +3,13 @@
 import { LazyMotion, domAnimation, m, useReducedMotion } from "motion/react";
 import { trackEvent } from "@/lib/analytics";
 import { useRef, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
 
-/**
- * Lightweight floating shapes for the hero backdrop.
- * Uses unlit materials, low-poly geometry, and a slow rotation
- * to stay performant on lower-end devices.
- */
-function FloatingShapes() {
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    groupRef.current.rotation.y = state.clock.elapsedTime * 0.03;
-    groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.03;
-  });
-
-  return (
-    <group ref={groupRef}>
-      {/* Floating cube */}
-      <mesh position={[-2.5, 0.8, -1]} rotation={[0.4, 0.6, 0]}>
-        <boxGeometry args={[0.55, 0.55, 0.55]} />
-        <meshBasicMaterial color="#00c758" transparent opacity={0.18} />
-      </mesh>
-
-      {/* Floating sphere */}
-      <mesh position={[2.2, -0.6, -1.5]}>
-        <sphereGeometry args={[0.35, 24, 24]} />
-        <meshBasicMaterial color="#34d399" transparent opacity={0.14} />
-      </mesh>
-
-      {/* Floating torus */}
-      <mesh position={[1.4, 1.2, -2]} rotation={[0.8, 0.3, 0]}>
-        <torusGeometry args={[0.35, 0.08, 12, 32]} />
-        <meshBasicMaterial color="#00c758" transparent opacity={0.12} />
-      </mesh>
-
-      {/* Floating octahedron */}
-      <mesh position={[-1.6, -1.1, -0.8]} rotation={[0.5, 0.2, 0.4]}>
-        <octahedronGeometry args={[0.32, 0]} />
-        <meshBasicMaterial color="#6ee7b7" transparent opacity={0.16} />
-      </mesh>
-
-      {/* Small accent dots */}
-      <mesh position={[0.2, 1.6, -2.5]}>
-        <sphereGeometry args={[0.08, 12, 12]} />
-        <meshBasicMaterial color="#00c758" transparent opacity={0.35} />
-      </mesh>
-      <mesh position={[-0.4, -1.5, -1.8]}>
-        <sphereGeometry args={[0.06, 12, 12]} />
-        <meshBasicMaterial color="#34d399" transparent opacity={0.3} />
-      </mesh>
-    </group>
-  );
-}
+const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
+  ssr: false,
+});
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -99,25 +49,13 @@ export default function Hero() {
           style={{ opacity: shouldReduceMotion ? 0.5 : 0.8 }}
         >
           <Suspense fallback={null}>
-            <Canvas
-              camera={{ position: [0, 0, 5], fov: 50 }}
-              dpr={[1, 1.5]}
-              gl={{ antialias: false, alpha: true }}
-              style={{ background: "transparent" }}
-            >
-              <ambientLight intensity={0} />
-              <FloatingShapes />
-            </Canvas>
+            <HeroCanvas />
           </Suspense>
         </div>
 
         {/* Atmospheric noise texture */}
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-            mixBlendMode: "overlay",
-          }}
+          className="absolute inset-0 opacity-[0.03] pointer-events-none bg-noise mix-blend-overlay"
         />
 
         {/* Centered content wrapper */}
@@ -148,7 +86,16 @@ export default function Hero() {
 
           {/* Main headline */}
           <m.h1
-            className="text-[clamp(2.75rem,8vw,5rem)] font-bold leading-[1.08] tracking-tight mb-6 text-center"
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+              const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+              e.currentTarget.style.transform = `perspective(1000px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)";
+            }}
+            className="text-[clamp(2.75rem,8vw,5rem)] font-bold leading-[1.08] tracking-tight mb-6 text-center transition-transform duration-200 ease-out cursor-default select-none"
             {...fadeUp(0.2)}
           >
             Mark Raymond{" "}
@@ -203,8 +150,30 @@ export default function Hero() {
             </a>
           </m.div>
 
+          {/* Highlights Ribbon */}
+          <m.div
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 my-6 px-4 py-2.5 rounded-2xl
+                       bg-surface/60 backdrop-blur-md border border-border/50 text-xs font-mono text-foreground/80 shadow-xs"
+            {...fadeUp(0.55)}
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <span><strong className="text-foreground font-semibold">4+</strong> Years Exp</span>
+            </div>
+            <span className="hidden sm:inline text-border">•</span>
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <span><strong className="text-foreground font-semibold">Full Stack</strong> .NET & React</span>
+            </div>
+            <span className="hidden sm:inline text-border">•</span>
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <span><strong className="text-foreground font-semibold">AWS & Cloud</strong> Integration</span>
+            </div>
+          </m.div>
+
           {/* Resume link */}
-          <m.div {...fadeUp(0.6)}>
+          <m.div {...fadeUp(0.65)}>
             <a
               href="/resume.pdf"
               download="Mark_Raymond_Ayade_Resume.pdf"

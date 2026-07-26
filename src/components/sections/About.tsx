@@ -16,6 +16,7 @@ import {
   faUser,
   type IconDefinition
 } from "@fortawesome/free-solid-svg-icons";
+import SectionHeader from "@/components/common/SectionHeader";
 
 interface InfoCardProps {
   icon: IconDefinition;
@@ -144,46 +145,11 @@ export default function About() {
         className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-foreground/5 blur-3xl pointer-events-none opacity-30 will-change-transform"
       />
 
-      <div
-        className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
+      {/* Grain texture */}
+      <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none bg-noise" />
 
       <div className="relative max-w-6xl mx-auto">
-        <div className="mb-14 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="inline-block mb-3 text-xs font-mono font-semibold tracking-[0.18em] uppercase text-accent"
-          >
-            Background
-          </motion.span>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 22 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.07 }}
-            className="text-2xl md:text-3xl font-bold text-foreground tracking-tight leading-tight mb-4 text-balance"
-          >
-            About{" "}
-            <span
-              className="text-transparent bg-clip-text bg-linear-to-r from-accent to-accent-hover pb-1 pr-2 inline-block"
-              style={{ fontStyle: "italic" }}
-            >
-              Me
-            </span>
-          </motion.h2>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={isInView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
-            className="w-14 h-px mx-auto mt-6 bg-linear-to-r from-transparent via-accent to-transparent"
-          />
-        </div>
+        <SectionHeader eyebrow="Background" titlePrefix="About" titleItalic="Me" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           <motion.div
@@ -215,17 +181,21 @@ export default function About() {
             {/* Interactive Tabs Control */}
             <div className="flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
               {/* Mobile tabs row */}
-              <div className="grid grid-cols-3 lg:hidden gap-1.5">
+              <div role="tablist" aria-label="About section tabs (mobile)" className="grid grid-cols-3 lg:hidden gap-1.5">
                 {tabs.map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
                     <button
                       key={tab.id}
+                      role="tab"
+                      id={`about-tab-mobile-${tab.id}`}
+                      aria-selected={isActive}
+                      aria-controls={`about-tabpanel-${tab.id}`}
                       onClick={() => {
                         setActiveTab(tab.id);
                         trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "mobile" });
                       }}
-                      className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 border text-center cursor-pointer ${isActive
+                      className={`flex flex-col items-center justify-center min-h-[44px] p-3 rounded-xl transition-all duration-300 border text-center cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
                         ? "bg-background/85 shadow-xs border-border/50 text-foreground font-bold"
                         : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
                         }`}
@@ -238,12 +208,16 @@ export default function About() {
               </div>
 
               {/* Desktop vertical tabs */}
-              <div className="hidden lg:flex flex-col gap-1.5">
+              <div role="tablist" aria-label="About section tabs" className="hidden lg:flex flex-col gap-1.5">
                 {tabs.map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
                     <button
                       key={tab.id}
+                      role="tab"
+                      id={`about-tab-${tab.id}`}
+                      aria-selected={isActive}
+                      aria-controls={`about-tabpanel-${tab.id}`}
                       onClick={() => {
                         setActiveTab(tab.id);
                         trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "desktop" });
@@ -254,10 +228,13 @@ export default function About() {
                         }`}
                     >
                       {/* Active Indicator on Left */}
-                      <span
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full transition-all duration-350 ${isActive ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
-                          }`}
-                      />
+                      {isActive && (
+                        <motion.span
+                          layoutId="aboutTabPill"
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-accent rounded-full"
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        />
+                      )}
 
                       {/* Icon block */}
                       <span
