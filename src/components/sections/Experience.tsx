@@ -1,11 +1,11 @@
 "use client";
 
-import { AnimatePresence, motion, useInView, useScroll, useTransform } from "motion/react";
-import { useRef, useState } from "react";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faIndustry, faBriefcase } from "@fortawesome/free-solid-svg-icons";
+import { faIndustry, faBriefcase, faCalendarAlt, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import SectionHeader from "@/components/common/SectionHeader";
 
 const experiences = [
@@ -56,7 +56,6 @@ const experiences = [
 ];
 
 export default function Experience() {
-  const [activeIndex, setActiveIndex] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
@@ -68,8 +67,6 @@ export default function Experience() {
 
   const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
-
-  const active = experiences[activeIndex];
 
   return (
     <section
@@ -108,7 +105,7 @@ export default function Experience() {
           {/* Vertical connecting spine line */}
           <div
             aria-hidden="true"
-            className="absolute left-4 md:left-8 top-4 bottom-4 w-0.5 bg-gradient-to-b from-accent via-accent/40 to-border/40"
+            className="absolute left-4 md:left-6 top-6 bottom-6 w-0.5 bg-gradient-to-b from-accent via-accent/40 to-border/40"
           />
 
           <div className="space-y-8 md:space-y-12">
@@ -119,21 +116,21 @@ export default function Experience() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.5, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                className="relative pl-11 md:pl-20 group"
+                className="relative pl-11 md:pl-16 group"
               >
                 {/* Timeline node icon */}
                 <div
-                  className={`absolute left-0 top-1.5 w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                  className={`absolute left-0 top-1.5 w-8 h-8 md:w-12 md:h-12 rounded-2xl flex items-center justify-center border transition-all duration-300 ${
                     exp.current
-                      ? "bg-background border-accent shadow-[0_0_15px_rgba(0,199,88,0.4)] text-accent scale-110"
-                      : "bg-surface border-border text-foreground/60 group-hover:border-accent/80 group-hover:text-accent"
+                      ? "bg-background border-accent shadow-[0_0_20px_rgba(0,199,88,0.35)] text-accent scale-105"
+                      : "bg-background/90 border-border/80 text-foreground/60 group-hover:border-accent/80 group-hover:text-accent group-hover:scale-105"
                   }`}
                 >
                   <FontAwesomeIcon icon={faBriefcase} className="text-xs md:text-sm" />
                 </div>
 
                 {/* Role Card */}
-                <div className="p-6 md:p-8 rounded-2xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl shadow-md shadow-black/5 dark:shadow-black/25 group-hover:border-accent/50 group-hover:bg-surface/100 transition-all duration-300">
+                <div className="p-6 md:p-8 rounded-3xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl shadow-md shadow-black/5 dark:shadow-black/25 group-hover:border-accent/50 group-hover:bg-surface/100 group-hover:-translate-y-0.5 transition-all duration-300">
                   {/* Header */}
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
                     <div>
@@ -142,8 +139,9 @@ export default function Experience() {
                           {exp.role}
                         </h3>
                         {exp.current && (
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-accent text-white shadow-xs">
-                            Active
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-accent/15 border border-accent/40 text-accent shadow-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                            Current Role
                           </span>
                         )}
                       </div>
@@ -154,7 +152,8 @@ export default function Experience() {
                       </p>
                     </div>
 
-                    <span className="shrink-0 self-start text-xs font-mono text-foreground/80 border border-border/80 rounded-lg px-3 py-1.5 bg-background/80 shadow-xs">
+                    <span className="shrink-0 self-start text-xs font-mono text-foreground/85 border border-border/80 rounded-xl px-3 py-1.5 bg-background/80 shadow-xs flex items-center gap-1.5">
+                      <FontAwesomeIcon icon={faCalendarAlt} className="text-[10px] text-accent" />
                       {exp.period}
                     </span>
                   </div>
@@ -164,22 +163,32 @@ export default function Experience() {
                   {/* Bullet Points */}
                   <ul className="space-y-2.5 mb-6">
                     {exp.description.map((point, i) => (
-                      <li key={i} className="flex gap-3 text-sm leading-relaxed text-foreground/85">
-                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                      <li key={i} className="flex items-start gap-3 text-sm leading-relaxed text-foreground/85">
+                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent shrink-0 group-hover:scale-125 transition-transform" />
                         <span>{point}</span>
                       </li>
                     ))}
                   </ul>
 
-                  {/* Tech Tags */}
+                  {/* Tech Tags - Interactive Cross-Linking */}
                   <div className="flex flex-wrap gap-1.5 pt-4 border-t border-border/30">
                     {exp.tags.map((tag) => (
-                      <span
+                      <button
                         key={tag}
-                        className="px-2.5 py-1 rounded-md text-xs font-mono bg-background/80 border border-border/70 text-foreground/80 group-hover:border-accent/30 transition-colors"
+                        type="button"
+                        onClick={() => {
+                          trackEvent("experience_tag_click", { tag });
+                          // Smooth scroll to Projects or Skills section
+                          const targetSection = document.getElementById("projects") || document.getElementById("skills");
+                          if (targetSection) {
+                            targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+                          }
+                        }}
+                        className="px-2.5 py-1 rounded-lg text-xs font-mono bg-background/80 border border-border/70 text-foreground/80 hover:border-accent hover:text-accent hover:bg-accent/10 transition-all cursor-pointer shadow-2xs"
+                        title={`View projects & skills related to ${tag}`}
                       >
-                        {tag}
-                      </span>
+                        #{tag}
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -191,3 +200,5 @@ export default function Experience() {
     </section>
   );
 }
+
+
