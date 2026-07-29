@@ -38,8 +38,20 @@ export const GAME_LINKS: NavLink[] = [
 /** @deprecated use PORTFOLIO_LINKS + GAME_LINKS */
 export const NAV_LINKS: NavLink[] = PORTFOLIO_LINKS;
 
+export function isLinkActive(linkHref: string, activeSection: string, pathname: string): boolean {
+  if (pathname && pathname !== "/") {
+    if (linkHref === "/") return false;
+    return pathname === linkHref || pathname.startsWith(linkHref);
+  }
+  if (linkHref === "/") {
+    return activeSection === "/" || activeSection === "/#hero";
+  }
+  return activeSection === linkHref;
+}
+
 // ─── Site ─────────────────────────────────────────────────────────────────────
 export const SITE_URL = "https://super-momon.github.io";
 export const SITE_NAME = `${SITE_OWNER} — Portfolio`;
 export const OG_IMAGE = "/logo.PNG";
 export const GA_ID = "G-C3EYYVGG42";
+

@@ -4,12 +4,14 @@ import { useState } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { type NavLink } from "@/lib/constants";
+import { type NavLink, isLinkActive } from "@/lib/constants";
 
 export interface NavPanelProps {
   links: NavLink[];
   icons: Record<string, IconDefinition>;
   isOpen: boolean;
+  activeSection?: string;
+  pathname?: string;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   onClose: () => void;
@@ -101,7 +103,7 @@ const LINK_METADATA: Record<
   }
 };
 
-export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLeave, onClose, onLinkClick }: NavPanelProps) {
+export default function NavPanel({ links, icons, isOpen, activeSection, pathname, onMouseEnter, onMouseLeave, onClose, onLinkClick }: NavPanelProps) {
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
 
@@ -112,7 +114,11 @@ export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLe
     }
   }
 
-  const activeHref = hoveredHref || links[0]?.href;
+  const currentPath = pathname || (typeof window !== "undefined" ? window.location.pathname : "/");
+  const sectionActive = activeSection || "/";
+
+  const defaultActive = links.find(l => isLinkActive(l.href, sectionActive, currentPath))?.href || links[0]?.href;
+  const activeHref = hoveredHref || defaultActive;
   const activeMeta = LINK_METADATA[activeHref] || {
     title: activeHref ? (links.find(l => l.href === activeHref)?.label || "Explore") : "Explore",
     subtitle: "Navigate the site",
@@ -148,6 +154,9 @@ export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLe
           {links.map((link) => {
             const meta = LINK_METADATA[link.href];
             const isHovered = activeHref === link.href;
+            const isCurrentSection = isLinkActive(link.href, sectionActive, currentPath);
+
+
             return (
               <a
                 key={link.href}
@@ -161,17 +170,19 @@ export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLe
                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group/link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${
                   isHovered
                     ? "bg-[var(--color-background)]/80 shadow-sm border border-[var(--color-border)]/50"
+                    : isCurrentSection
+                    ? "bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20"
                     : "hover:bg-[var(--color-background)]/40 border border-transparent"
                 }`}
               >
                 {/* Active Indicator on Left */}
                 <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-[var(--color-accent)] rounded-full transition-all duration-300 ${
-                  isHovered ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
+                  isHovered || isCurrentSection ? "opacity-100 scale-y-100" : "opacity-0 scale-y-50"
                 }`} />
 
                 {/* Icon block */}
                 <span className={`relative z-10 w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${
-                  isHovered
+                  isHovered || isCurrentSection
                     ? "bg-[var(--color-accent)]/15 text-[var(--color-accent)] shadow-sm"
                     : "bg-[var(--color-background)]/80 text-[var(--color-muted)] group-hover/link:bg-[var(--color-accent)]/10 group-hover/link:text-[var(--color-accent)]"
                 }`}>
@@ -185,12 +196,19 @@ export default function NavPanel({ links, icons, isOpen, onMouseEnter, onMouseLe
                 </span>
 
                 {/* Text Content */}
-                <div className="flex flex-col text-left min-w-0">
-                  <span className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
-                    isHovered ? "text-[var(--color-foreground)]" : "text-[var(--color-foreground)]/75 group-hover/link:text-[var(--color-foreground)]"
-                  }`}>
-                    {meta?.title || link.label}
-                  </span>
+                <div className="flex flex-col text-left min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
+                      isHovered || isCurrentSection ? "text-[var(--color-foreground)]" : "text-[var(--color-foreground)]/75 group-hover/link:text-[var(--color-foreground)]"
+                    }`}>
+                      {meta?.title || link.label}
+                    </span>
+                    {isCurrentSection && (
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[var(--color-accent)]/20 text-[var(--color-accent)] border border-[var(--color-accent)]/30 tracking-wider">
+                        CURRENT
+                      </span>
+                    )}
+                  </div>
                   <span className="text-[10px] text-[var(--color-foreground)]/60 font-normal leading-normal mt-0.5 max-w-[200px] truncate group-hover/link:text-[var(--color-foreground)]/80 transition-colors duration-300">
                     {meta?.subtitle || "Explore this page section"}
                   </span>

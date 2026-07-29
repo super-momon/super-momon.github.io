@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faUser,
@@ -18,7 +19,7 @@ import MarqueeBanner from "./common/MarqueeBanner";
 import NotificationDropdown from "./common/NotificationDropdown";
 import ThemeToggle from "./common/ThemeToggle";
 import { useMagneticEffect } from "@/hooks/useMagneticEffect";
-import { PORTFOLIO_LINKS, GAME_LINKS } from "@/lib/constants";
+import { PORTFOLIO_LINKS, GAME_LINKS, isLinkActive } from "@/lib/constants";
 import NavPanel from "./navbar/NavPanel";
 import NavTrigger from "./navbar/NavTrigger";
 import MobileNavSection from "./navbar/MobileNavSection";
@@ -42,6 +43,7 @@ const GAME_ICONS: Record<string, IconDefinition> = {
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,11 +51,14 @@ export default function Navbar() {
   const [gameOpen, setGameOpen] = useState(false);
   const [mobilePortfolioOpen, setMobilePortfolioOpen] = useState(false);
   const [mobileGameOpen, setMobileGameOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>(() => pathname || "/");
+
   const lastScrollY = useRef(0);
   const mobileButtonRef = useMagneticEffect(0.25);
   const portfolioTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gameTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // ─── Scroll direction & backdrop handling ──────────────────────────────────
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -81,6 +86,62 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ─── Scrollspy for active section highlighting ──────────────────────────────
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSection(pathname);
+      return;
+    }
+
+    const sectionIds = ["hero", "about", "experience", "projects", "skills", "education", "contact"];
+
+    const handleScrollSpy = () => {
+      const scrollPosition = window.scrollY + 140; // 140px header offset threshold
+
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i];
+        const section = document.getElementById(id);
+        if (section) {
+          const top = section.offsetTop;
+          if (scrollPosition >= top) {
+            const activeHref = id === "hero" ? "/" : `/#${id}`;
+            setActiveSection(activeHref);
+            break;
+          }
+        }
+      }
+    };
+
+    handleScrollSpy();
+    window.addEventListener("scroll", handleScrollSpy, { passive: true });
+    return () => window.removeEventListener("scroll", handleScrollSpy);
+  }, [pathname]);
+
+  // ─── Escape key menu dismiss ────────────────────────────────────────────────
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsMenuOpen(false);
+        setPortfolioOpen(false);
+        setGameOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // ─── Mobile drawer body scroll locking ─────────────────────────────────────
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   const portfolioHandlers = {
     onEnter: () => {
       if (portfolioTimeoutRef.current) clearTimeout(portfolioTimeoutRef.current);
@@ -101,13 +162,18 @@ export default function Navbar() {
     }
   };
 
+  const isPortfolioActive = PORTFOLIO_LINKS.some((l) => isLinkActive(l.href, activeSection, pathname));
+  const isGameActive = GAME_LINKS.some((l) => isLinkActive(l.href, activeSection, pathname));
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${isVisible ? "translate-y-0" : "-translate-y-full"
-        } ${scrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } ${
+        scrolled
           ? "bg-[var(--color-background)]/95 md:bg-[var(--color-background)]/80 md:backdrop-blur-2xl border-b border-[var(--color-border)]/50 shadow-lg shadow-black/5"
           : "bg-transparent"
-        }`}
+      }`}
       style={{ willChange: "transform" }}
     >
       <MarqueeBanner />
@@ -126,11 +192,12 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center justify-center gap-1 absolute left-1/2 -translate-x-1/2">
-
           {/* Portfolio */}
           <NavTrigger
             label="Portfolio"
             isOpen={portfolioOpen}
+            isActive={isPortfolioActive}
+            onClick={() => setPortfolioOpen((p) => !p)}
             onMouseEnter={portfolioHandlers.onEnter}
             onMouseLeave={portfolioHandlers.onLeave}
           >
@@ -138,16 +205,20 @@ export default function Navbar() {
               links={PORTFOLIO_LINKS}
               icons={PORTFOLIO_ICONS}
               isOpen={portfolioOpen}
+              activeSection={activeSection}
+              pathname={pathname}
               onMouseEnter={portfolioHandlers.onEnter}
               onMouseLeave={portfolioHandlers.onLeave}
               onClose={() => setPortfolioOpen(false)}
             />
           </NavTrigger>
 
-          {/* Game */}
+          {/* Games */}
           <NavTrigger
             label="Games"
             isOpen={gameOpen}
+            isActive={isGameActive}
+            onClick={() => setGameOpen((p) => !p)}
             onMouseEnter={gameHandlers.onEnter}
             onMouseLeave={gameHandlers.onLeave}
           >
@@ -155,6 +226,8 @@ export default function Navbar() {
               links={GAME_LINKS}
               icons={GAME_ICONS}
               isOpen={gameOpen}
+              activeSection={activeSection}
+              pathname={pathname}
               onMouseEnter={gameHandlers.onEnter}
               onMouseLeave={gameHandlers.onLeave}
               onClose={() => setGameOpen(false)}
@@ -208,22 +281,25 @@ export default function Navbar() {
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)]/30 to-transparent pointer-events-none" />
 
           <ul className="relative flex flex-col gap-1 pt-2">
-
             <MobileNavSection
               label="Portfolio"
               links={PORTFOLIO_LINKS}
               icons={PORTFOLIO_ICONS}
               isOpen={mobilePortfolioOpen}
+              activeSection={activeSection}
+              pathname={pathname}
               onToggle={() => setMobilePortfolioOpen((p) => !p)}
               onLinkClick={() => { setIsMenuOpen(false); setMobilePortfolioOpen(false); }}
               slideDelay="0s"
             />
 
             <MobileNavSection
-              label="Game"
+              label="Games"
               links={GAME_LINKS}
               icons={GAME_ICONS}
               isOpen={mobileGameOpen}
+              activeSection={activeSection}
+              pathname={pathname}
               onToggle={() => setMobileGameOpen((p) => !p)}
               onLinkClick={(link) => {
                 setIsMenuOpen(false);
@@ -240,7 +316,9 @@ export default function Navbar() {
           </ul>
         </div>
       )}
+
     </header>
   );
 }
+
 
