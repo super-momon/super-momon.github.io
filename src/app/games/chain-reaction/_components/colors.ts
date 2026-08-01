@@ -2,7 +2,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 export const PRESET_COLORS = [
-  '#10b981', // Emerald Green
+  '#08ca5f', // Emerald Pulse (Primary Design Token)
   '#ef4444', // Coral Red
   '#3b82f6', // Royal Blue
   '#06b6d4', // Sky Cyan
@@ -12,7 +12,9 @@ export const PRESET_COLORS = [
 
 export const getThemeColor = (color: string, isDark: boolean) => {
   switch (color.toLowerCase()) {
-    // New Presets
+    // Primary Presets
+    case '#08ca5f':
+      return isDark ? '#08ca5f' : '#15803d';
     case '#10b981':
       return isDark ? '#10b981' : '#16a34a';
     case '#ef4444':

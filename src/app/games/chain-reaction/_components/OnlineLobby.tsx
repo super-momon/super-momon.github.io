@@ -12,6 +12,7 @@ import {
   faBorderAll, 
   faSpinner, 
   faUser,
+  faUserSlash,
   faMinus,
   faPlus
 } from '@fortawesome/free-solid-svg-icons';
@@ -35,6 +36,7 @@ interface OnlineLobbyProps {
   onSettingsChange: (rows: number, cols: number, turnSecondsLimit: number, specialCells?: SpecialCellsConfig) => void;
   onLeave: () => void;
   onStartGame: () => void;
+  onKickPlayer?: (clientId: string) => void;
   myClientId: string;
 }
 
@@ -63,6 +65,7 @@ export default function OnlineLobby({
   onSettingsChange,
   onLeave,
   onStartGame,
+  onKickPlayer,
   myClientId,
 }: OnlineLobbyProps) {
   const isDark = useIsDark();
@@ -96,7 +99,7 @@ export default function OnlineLobby({
 
   useEffect(() => {
     if (specialCells) setLocalSpecialCells(clampSpecialCells(specialCells));
-  }, [specialCells]);
+  }, [specialCells?.walls, specialCells?.portals, specialCells?.multipliers, specialCells?.blackholes]);
 
   // Clipboard copy helper
   const copyRoomCode = () => {
@@ -113,52 +116,50 @@ export default function OnlineLobby({
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
+  const getParsedCols = () => parseInt(localCols, 10) || cols;
+  const getParsedRows = () => parseInt(localRows, 10) || rows;
+  const getParsedSeconds = () => parseInt(localTurnSeconds, 10) || turnSecondsLimit;
+
   const handleDecrementRows = () => {
-    const val = parseInt(localRows, 10);
-    const newVal = isNaN(val) ? 15 : val;
-    const finalRows = Math.max(6, newVal - 1);
+    const val = getParsedRows();
+    const finalRows = Math.max(6, val - 1);
     setLocalRows(finalRows.toString());
-    onSettingsChange(finalRows, cols, turnSecondsLimit, localSpecialCells);
+    onSettingsChange(finalRows, getParsedCols(), getParsedSeconds(), localSpecialCells);
   };
 
   const handleIncrementRows = () => {
-    const val = parseInt(localRows, 10);
-    const newVal = isNaN(val) ? 15 : val;
-    const finalRows = Math.min(20, newVal + 1);
+    const val = getParsedRows();
+    const finalRows = Math.min(20, val + 1);
     setLocalRows(finalRows.toString());
-    onSettingsChange(finalRows, cols, turnSecondsLimit, localSpecialCells);
+    onSettingsChange(finalRows, getParsedCols(), getParsedSeconds(), localSpecialCells);
   };
 
   const handleDecrementCols = () => {
-    const val = parseInt(localCols, 10);
-    const newVal = isNaN(val) ? 20 : val;
-    const finalCols = Math.max(6, newVal - 1);
+    const val = getParsedCols();
+    const finalCols = Math.max(6, val - 1);
     setLocalCols(finalCols.toString());
-    onSettingsChange(rows, finalCols, turnSecondsLimit, localSpecialCells);
+    onSettingsChange(getParsedRows(), finalCols, getParsedSeconds(), localSpecialCells);
   };
 
   const handleIncrementCols = () => {
-    const val = parseInt(localCols, 10);
-    const newVal = isNaN(val) ? 20 : val;
-    const finalCols = Math.min(25, newVal + 1);
+    const val = getParsedCols();
+    const finalCols = Math.min(25, val + 1);
     setLocalCols(finalCols.toString());
-    onSettingsChange(rows, finalCols, turnSecondsLimit, localSpecialCells);
+    onSettingsChange(getParsedRows(), finalCols, getParsedSeconds(), localSpecialCells);
   };
 
   const handleDecrementTurnSeconds = () => {
-    const val = parseInt(localTurnSeconds, 10);
-    const newVal = isNaN(val) ? 30 : val;
-    const finalSeconds = Math.max(10, newVal - 5);
+    const val = getParsedSeconds();
+    const finalSeconds = Math.max(10, val - 5);
     setLocalTurnSeconds(finalSeconds.toString());
-    onSettingsChange(rows, cols, finalSeconds, localSpecialCells);
+    onSettingsChange(getParsedRows(), getParsedCols(), finalSeconds, localSpecialCells);
   };
 
   const handleIncrementTurnSeconds = () => {
-    const val = parseInt(localTurnSeconds, 10);
-    const newVal = isNaN(val) ? 30 : val;
-    const finalSeconds = Math.min(120, newVal + 5);
+    const val = getParsedSeconds();
+    const finalSeconds = Math.min(120, val + 5);
     setLocalTurnSeconds(finalSeconds.toString());
-    onSettingsChange(rows, cols, finalSeconds, localSpecialCells);
+    onSettingsChange(getParsedRows(), getParsedCols(), finalSeconds, localSpecialCells);
   };
 
   const handleSpecialCellChange = (key: keyof SpecialCellsConfig, increment: boolean) => {
@@ -174,7 +175,7 @@ export default function OnlineLobby({
     const updated = { ...localSpecialCells, [key]: newVal };
     
     setLocalSpecialCells(updated);
-    onSettingsChange(rows, cols, turnSecondsLimit, updated);
+    onSettingsChange(getParsedRows(), getParsedCols(), getParsedSeconds(), updated);
   };
 
   // Find which colors are already occupied by other players
@@ -388,9 +389,23 @@ export default function OnlineLobby({
                               <FontAwesomeIcon icon={faCrown} /> Host
                             </span>
                           ) : (
-                            <span className="text-[10px] text-[var(--color-muted)] font-bold flex items-center gap-1 bg-[var(--color-background)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
-                              <FontAwesomeIcon icon={faUser} /> Guest
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-[var(--color-muted)] font-bold flex items-center gap-1 bg-[var(--color-background)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
+                                <FontAwesomeIcon icon={faUser} /> Guest
+                              </span>
+                              {isHost && !isMe && (
+                                <button
+                                  type="button"
+                                  onClick={() => onKickPlayer?.(player.clientId)}
+                                  className="px-2 py-0.5 text-[10px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-full flex items-center gap-1 transition active:scale-95 cursor-pointer shadow-sm"
+                                  title={`Kick ${displayName} from lobby`}
+                                  aria-label={`Kick ${displayName} from lobby`}
+                                >
+                                  <FontAwesomeIcon icon={faUserSlash} className="text-[9px]" />
+                                  Kick
+                                </button>
+                              )}
+                            </div>
                           )}
                         </div>
                       </motion.div>
@@ -435,7 +450,7 @@ export default function OnlineLobby({
                           if (val !== '') {
                             const parsed = parseInt(val, 10);
                             if (!isNaN(parsed)) {
-                              onSettingsChange(Math.max(6, Math.min(20, parsed)), cols, turnSecondsLimit, localSpecialCells);
+                              onSettingsChange(Math.max(6, Math.min(20, parsed)), getParsedCols(), getParsedSeconds(), localSpecialCells);
                             }
                           }
                         }}
@@ -445,7 +460,7 @@ export default function OnlineLobby({
                           if (isNaN(num) || num < 6) finalRows = 6;
                           else if (num > 20) finalRows = 20;
                           setLocalRows(finalRows.toString());
-                          onSettingsChange(finalRows, cols, turnSecondsLimit, localSpecialCells);
+                          onSettingsChange(finalRows, getParsedCols(), getParsedSeconds(), localSpecialCells);
                         }}
                         className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-[var(--color-foreground)]"
                       />
@@ -479,7 +494,7 @@ export default function OnlineLobby({
                           if (val !== '') {
                             const parsed = parseInt(val, 10);
                             if (!isNaN(parsed)) {
-                              onSettingsChange(rows, Math.max(6, Math.min(25, parsed)), turnSecondsLimit, localSpecialCells);
+                              onSettingsChange(getParsedRows(), Math.max(6, Math.min(25, parsed)), getParsedSeconds(), localSpecialCells);
                             }
                           }
                         }}
@@ -489,7 +504,7 @@ export default function OnlineLobby({
                           if (isNaN(num) || num < 6) finalCols = 6;
                           else if (num > 25) finalCols = 25;
                           setLocalCols(finalCols.toString());
-                          onSettingsChange(rows, finalCols, turnSecondsLimit, localSpecialCells);
+                          onSettingsChange(getParsedRows(), finalCols, getParsedSeconds(), localSpecialCells);
                         }}
                         className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-[var(--color-foreground)]"
                       />
@@ -526,7 +541,7 @@ export default function OnlineLobby({
                           if (val !== '') {
                             const parsed = parseInt(val, 10);
                             if (!isNaN(parsed)) {
-                              onSettingsChange(rows, cols, Math.max(10, Math.min(120, parsed)), localSpecialCells);
+                              onSettingsChange(getParsedRows(), getParsedCols(), Math.max(10, Math.min(120, parsed)), localSpecialCells);
                             }
                           }
                         }}
@@ -536,7 +551,7 @@ export default function OnlineLobby({
                           if (isNaN(num) || num < 10) finalSeconds = 30;
                           else if (num > 120) finalSeconds = 120;
                           setLocalTurnSeconds(finalSeconds.toString());
-                          onSettingsChange(rows, cols, finalSeconds, localSpecialCells);
+                          onSettingsChange(getParsedRows(), getParsedCols(), finalSeconds, localSpecialCells);
                         }}
                         className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-[var(--color-foreground)]"
                       />
@@ -626,7 +641,7 @@ export default function OnlineLobby({
                         {key}
                       </span>
                       <span className="bg-[var(--color-background)] border border-[var(--color-border)] px-2.5 py-0.5 rounded-md text-xs font-extrabold text-[var(--color-foreground)] shadow-sm">
-                        {localSpecialCells[key]}
+                        {(specialCells ? clampSpecialCells(specialCells) : localSpecialCells)[key]}
                       </span>
                     </div>
                   ))}

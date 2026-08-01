@@ -44,6 +44,7 @@
 }
 
 /* Static layout arrangements for cells containing 1-4 orbs */
+/* Static layout arrangements for cells containing 1-4 orbs */
 .orb-layout-1 {
   display: flex;
   justify-content: center;
@@ -142,45 +143,57 @@
   margin: var(--orb-overlap, -2px);
 }
 
+/* Reduced motion preference override */
+@media (prefers-reduced-motion: reduce) {
+  .orb-layout-2,
+  .orb-layout-3,
+  .orb-layout-4,
+  .orb-layout-3 > .orb-simple,
+  .orb-layout-3-row,
+  .critical-cell .orb-simple,
+  .shout-shake {
+    animation: none !important;
+  }
+}
 
 /* Zoom Sizing Definitions & Variables (Responsive configurations) */
 .zoom-sm {
-  --cell-size: 28px;
-  --orb-overlap: -1.2px;
-  --orb-border: 0.6px;
+  --cell-size: 34px;
+  --orb-overlap: -1.5px;
+  --orb-border: 0.8px;
 }
 @media (min-width: 640px) {
-  .zoom-sm { --cell-size: 32px; }
+  .zoom-sm { --cell-size: 38px; }
 }
 
 .zoom-md {
-  --cell-size: 36px;
-  --orb-overlap: -2.2px;
+  --cell-size: 44px;
+  --orb-overlap: -2.5px;
   --orb-border: 1px;
 }
 @media (min-width: 640px) {
-  .zoom-md { --cell-size: 40px; }
+  .zoom-md { --cell-size: 48px; }
 }
 
 .zoom-lg {
-  --cell-size: 48px;
+  --cell-size: 52px;
   --orb-overlap: -3.8px;
   --orb-border: 1.5px;
 }
 @media (min-width: 640px) {
-  .zoom-lg { --cell-size: 56px; }
+  .zoom-lg { --cell-size: 58px; }
 }
 
 /* Zoom adjustments to scale down orbs for different cell sizes */
 .zoom-sm .orb-simple {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   box-shadow: 0 0 6px var(--orb-glow);
 }
 
 .zoom-md .orb-simple {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   box-shadow: 0 0 10px var(--orb-glow);
 }
 
@@ -188,6 +201,27 @@
   width: 18px;
   height: 18px;
   box-shadow: 0 0 14px var(--orb-glow);
+}
+
+/* Responsive Viewport Container for Board Overflow */
+.game-board-viewport {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+.game-board-viewport::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.game-board-viewport::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
 }
 
 /* Grid & Cell styling */

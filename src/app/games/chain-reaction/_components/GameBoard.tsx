@@ -12,7 +12,7 @@ import { ShoutBanner } from './ShoutBanner';
 import { GameGuideModal } from './GameGuideModal';
 import { PlayerSetup, SpecialCellsConfig } from './SetupScreen';
 import { audioSynth } from './AudioSynth';
-import { useOnlineSync } from './useOnlineSync';
+import { useOnlineSync, sendBroadcast } from './useOnlineSync';
 import { useGameTimers } from './useGameTimers';
 import { getThemeColor, useIsDark } from './colors';
 import GameChat from './GameChat';
@@ -288,14 +288,10 @@ export default function GameBoard({
 
       // If we are the host, sync this advanced turn state immediately
       if (isHost && found && channelRef.current) {
-        channelRef.current.send({
-          type: 'broadcast',
-          event: 'sync-state',
-          payload: {
-            board,
-            players,
-            currentPlayerIndex: nextIdx,
-          },
+        sendBroadcast(channelRef.current, 'sync-state', {
+          board,
+          players,
+          currentPlayerIndex: nextIdx,
         });
       }
     }
@@ -313,7 +309,7 @@ export default function GameBoard({
             const currentLeft = p.disconnectSecondsLeft ?? 120;
             if (currentLeft <= 1) {
               changed = true;
-              return { ...p, active: false, disconnectSecondsLeft: 0 };
+              return { ...p, active: false, disconnectSecondsLeft: 0, hasMoved: true };
             }
             changed = true;
             return { ...p, disconnectSecondsLeft: currentLeft - 1 };
@@ -537,14 +533,10 @@ export default function GameBoard({
         }
 
         if (channelRef.current) {
-          channelRef.current.send({
-            type: 'broadcast',
-            event: 'sync-state',
-            payload: {
-              board: currentBoard,
-              players: tempPlayers,
-              currentPlayerIndex: foundNext ? nextIdx : placerId,
-            },
+          sendBroadcast(channelRef.current, 'sync-state', {
+            board: currentBoard,
+            players: tempPlayers,
+            currentPlayerIndex: foundNext ? nextIdx : placerId,
           });
         }
       } else {
@@ -602,15 +594,11 @@ export default function GameBoard({
         const isMyTurn = currentActivePlayer.clientId === myClientId;
         if (isMyTurn || isHost) {
           if (channelRef.current) {
-            channelRef.current.send({
-              type: 'broadcast',
-              event: 'sync-state',
-              payload: {
-                board: boardRef.current,
-                players: currentPlayers,
-                currentPlayerIndex: nextIdx,
-                isTimeout: true,
-              },
+            sendBroadcast(channelRef.current, 'sync-state', {
+              board: boardRef.current,
+              players: currentPlayers,
+              currentPlayerIndex: nextIdx,
+              isTimeout: true,
             });
           }
         }
@@ -641,11 +629,7 @@ export default function GameBoard({
       }
 
       if (channelRef.current) {
-        channelRef.current.send({
-          type: 'broadcast',
-          event: 'move',
-          payload: { r, c, playerIdx: currentPlayerIndex, ability: activeAbility },
-        });
+        sendBroadcast(channelRef.current, 'move', { r, c, playerIdx: currentPlayerIndex, ability: activeAbility });
       }
     }
 
@@ -703,13 +687,7 @@ export default function GameBoard({
     const newBoard = initializeGame();
     if (isOnline) {
       if (isHost && channelRef.current) {
-        channelRef.current.send({
-          type: 'broadcast',
-          event: 'reset-game',
-          payload: {
-            board: newBoard,
-          }
-        });
+        sendBroadcast(channelRef.current, 'reset-game', { board: newBoard });
       } else {
         return; // Only host resets online game
       }
@@ -718,10 +696,7 @@ export default function GameBoard({
 
   const handleQuitClick = () => {
     if (isOnline && isHost && channelRef.current) {
-      channelRef.current.send({
-        type: 'broadcast',
-        event: 'quit-game',
-      });
+      sendBroadcast(channelRef.current, 'quit-game');
     }
     onQuit();
   };
@@ -742,17 +717,11 @@ export default function GameBoard({
       isAlert,
     };
 
-    channelRef.current.send({
-      type: 'broadcast',
-      event: 'chat',
-      payload: { message: chatMsg },
-    }).then(() => {
+    sendBroadcast(channelRef.current, 'chat', { message: chatMsg }).finally(() => {
       setMessages((prev) => [...prev, chatMsg]);
       if (isAlert) {
         triggerAlert(chatMsg);
       }
-    }).catch((err) => {
-      console.error('Error broadcasting chat:', err);
     });
   };
 
@@ -829,7 +798,7 @@ export default function GameBoard({
 
         {/* Grid Canvas Wrapper */}
         <div 
-          className={`w-full bg-[var(--color-surface)]/20 border rounded-3xl p-4 sm:p-6 overflow-hidden glass-panel flex items-center justify-center transition-all duration-500 ${
+          className={`w-full bg-[var(--color-surface)]/20 border rounded-3xl p-2 sm:p-4 overflow-hidden glass-panel flex items-center justify-center transition-all duration-500 ${
             isShoutShaking ? 'shout-shake' : ''
           }`}
           style={{
@@ -837,7 +806,7 @@ export default function GameBoard({
             boxShadow: activePlayerThemeColor ? `0 8px 30px ${activePlayerThemeColor}10, inset 0 0 0 1px ${activePlayerThemeColor}15` : 'none',
           }}
         >
-          <div className="w-full overflow-auto max-h-[85vh] lg:max-h-none custom-scrollbar p-1 sm:p-2">
+          <div className="game-board-viewport max-h-[80vh] p-1 sm:p-2">
             <div
               className={`grid gap-[2px] p-2 bg-[var(--color-background)]/60 rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel}`}
               style={{

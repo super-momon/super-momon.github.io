@@ -169,7 +169,9 @@ export function GameBoardControls({
               onClick={() => setZoomLevel(lvl)}
               aria-label={`Set cell size to ${lvl}`}
               className={`p-1 sm:p-1.5 px-2 sm:px-2.5 text-[10px] sm:text-xs font-bold rounded-md transition ${
-                zoomLevel === lvl ? 'bg-[var(--color-accent)] text-white' : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+                zoomLevel === lvl
+                  ? 'bg-[var(--color-primary)] text-black font-extrabold shadow-sm'
+                  : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
               }`}
             >
               {lvl.toUpperCase()}

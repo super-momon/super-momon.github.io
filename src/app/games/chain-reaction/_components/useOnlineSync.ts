@@ -104,6 +104,25 @@ export function useOnlineSync({
   const MAX_SYNC_RETRIES = 2;
 
   useEffect(() => {
+    const handleUnload = () => {
+      if (channelRef.current) {
+        try {
+          channelRef.current.untrack();
+          supabase.removeChannel(channelRef.current);
+        } catch {}
+      }
+    };
+
+    window.addEventListener('beforeunload', handleUnload);
+    window.addEventListener('pagehide', handleUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      window.removeEventListener('pagehide', handleUnload);
+    };
+  }, []);
+
+  useEffect(() => {
     resumedRef.current = resumed;
   }, [resumed]);
 
@@ -203,14 +222,10 @@ export function useOnlineSync({
         .sort((a, b) => a.id - b.id)[0];
       if (!responder || responder.clientId !== myClientId) return;
 
-      channelRef.current?.send({
-        type: 'broadcast',
-        event: 'sync-state',
-        payload: {
-          board: boardRef.current,
-          players: playersRef.current,
-          currentPlayerIndex: currentPlayerIndexRef.current,
-        },
+      sendBroadcast(channelRef.current, 'sync-state', {
+        board: boardRef.current,
+        players: playersRef.current,
+        currentPlayerIndex: currentPlayerIndexRef.current,
       });
     };
 
@@ -309,11 +324,7 @@ export function useOnlineSync({
             // state so we resume exactly where play stands.
             syncRetryCountRef.current = 0;
             const sendSyncRequest = () => {
-              gameChannel.send({
-                type: 'broadcast',
-                event: 'request-sync',
-                payload: { clientId: myClientId },
-              });
+              sendBroadcast(gameChannel, 'request-sync', { clientId: myClientId });
             };
             sendSyncRequest();
 
@@ -364,12 +375,53 @@ export function useOnlineSync({
         clearTimeout(syncRetryTimerRef.current);
         syncRetryTimerRef.current = null;
       }
-      gameChannel.unsubscribe();
-      supabase.removeChannel(gameChannel);
-      channelRef.current = null;
+      if (channelRef.current) {
+        try {
+          channelRef.current.untrack();
+        } catch {}
+        gameChannel.unsubscribe();
+        supabase.removeChannel(gameChannel);
+        channelRef.current = null;
+      }
       hasSubscribedRef.current = false;
     };
   }, [isOnline, roomCode, myClientId, isHost]);
 
   return { channelRef, pendingSyncStateRef, disconnectTimersRef };
+}
+
+/**
+ * Safely sends a broadcast message over Supabase Realtime.
+ * Uses WebSocket send() if channel state is 'joined' and can push,
+ * otherwise uses httpSend() (REST API delivery) to avoid the deprecated REST fallback warning.
+ */
+export async function sendBroadcast(
+  channel: RealtimeChannel | null,
+  event: string,
+  payload?: any
+): Promise<any> {
+  if (!channel) return;
+  const safePayload = payload || {};
+  try {
+    const isJoined = channel.state === 'joined';
+    const canPush = typeof (channel as any).canPush === 'function' ? (channel as any).canPush() : isJoined;
+
+    if (isJoined && canPush) {
+      return await channel.send({
+        type: 'broadcast',
+        event,
+        payload: safePayload,
+      });
+    } else if (typeof (channel as any).httpSend === 'function') {
+      return await (channel as any).httpSend(event, safePayload);
+    } else {
+      return await channel.send({
+        type: 'broadcast',
+        event,
+        payload: safePayload,
+      });
+    }
+  } catch (err) {
+    console.error(`Error sending broadcast '${event}':`, err);
+  }
 }
