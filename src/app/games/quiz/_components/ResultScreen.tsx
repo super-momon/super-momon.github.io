@@ -119,7 +119,7 @@ export function ResultScreen({
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-20">
+    <div className="min-h-screen flex flex-col items-center pt-28 sm:pt-32 md:pt-36 pb-20 px-4 sm:px-6">
       <div className="w-full" style={{ maxWidth: '480px' }}>
         <div className="w-full flex flex-col items-center">
           <motion.div

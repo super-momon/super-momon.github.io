@@ -85,7 +85,7 @@ export function QuizGame({
   }, [answerState, question.options.length, onAnswer, onSkipFeedback]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-28 pb-16 px-4">
+    <div className="min-h-screen flex flex-col items-center pt-28 sm:pt-32 md:pt-36 pb-20 px-4 sm:px-6">
       {/* Header bar */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}

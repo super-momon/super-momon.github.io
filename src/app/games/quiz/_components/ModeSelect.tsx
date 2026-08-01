@@ -401,14 +401,14 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
   );
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center pt-12 pb-16 px-4 select-none">
+    <div className="relative min-h-screen flex flex-col items-center pt-28 sm:pt-32 md:pt-36 pb-28 md:pb-32 px-4 sm:px-6 select-none">
       <AmbientBackground />
 
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative z-10 w-full max-w-5xl flex flex-col items-center justify-center gap-4 my-auto"
+        className="relative z-10 w-full max-w-5xl flex flex-col items-center gap-4 sm:gap-6"
       >
         {/* Centered Header */}
         <motion.div variants={item} className="flex flex-col items-center text-center justify-center gap-2 pb-1">
