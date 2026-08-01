@@ -11,6 +11,7 @@ interface Props {
 }
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
+const OPTION_KEYS = ['1', '2', '3', '4'];
 
 const DIFFICULTY: Record<string, { label: string; color: string; bg: string; border: string }> = {
   easy: { label: 'Easy', color: '#22c55e', bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.3)' },
@@ -35,9 +36,28 @@ function XIcon() {
   );
 }
 
+function renderFormattedText(text: string) {
+  if (!text.includes('`')) return text;
+  const parts = text.split(/(`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('`') && part.endsWith('`') && part.length > 2) {
+      const code = part.slice(1, -1);
+      return (
+        <code
+          key={i}
+          className="font-mono font-bold text-accent bg-accent/10 dark:bg-accent/15 px-1.5 py-0.5 rounded text-[0.88em] border border-accent/20 tracking-tight mx-0.5"
+        >
+          {code}
+        </code>
+      );
+    }
+    return part;
+  });
+}
+
 export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }: Props) {
   const isAnswered = answerState !== 'unanswered';
-  const diff = DIFFICULTY[question.difficulty];
+  const diff = DIFFICULTY[question.difficulty] ?? DIFFICULTY.easy;
 
   const getOptionState = (index: number) => {
     if (!isAnswered) return 'idle';
@@ -106,15 +126,22 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
       </div>
 
       {/* Question text */}
-      <p className="text-xl md:text-2xl font-extrabold leading-snug tracking-tight mb-8 text-foreground text-pretty">
-        {question.question}
-      </p>
+      <h2 className="text-xl md:text-2xl font-extrabold leading-snug tracking-tight mb-8 text-foreground text-pretty">
+        {renderFormattedText(question.question)}
+      </h2>
 
       {/* Options */}
-      <div className={`grid gap-3.5 ${question.type === 'true-false' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+      <div
+        className={`grid gap-3.5 ${question.type === 'true-false' ? 'grid-cols-2' : 'grid-cols-1'}`}
+        role="group"
+        aria-label="Quiz options"
+      >
         {question.options.map((option, index) => {
           const state = getOptionState(index);
           const styles = optionStyles[state];
+          const isSelected = selectedAnswer === index;
+          const isWrongSelection = isAnswered && isSelected && index !== question.correctAnswer;
+
           return (
             <motion.button
               key={index}
@@ -122,13 +149,18 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
               initial={{ opacity: 0, x: -10 }}
               animate={{
                 opacity: state === 'dim' ? 0.38 : 1,
-                x: 0,
-                transition: { duration: 0.3, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] },
+                x: isWrongSelection ? [0, -8, 8, -6, 6, -3, 3, 0] : 0,
+                transition: {
+                  duration: isWrongSelection ? 0.4 : 0.3,
+                  delay: isWrongSelection ? 0 : index * 0.06,
+                  ease: [0.22, 1, 0.36, 1],
+                },
               }}
               whileHover={!isAnswered ? { x: 4, transition: { duration: 0.15 } } : undefined}
               whileTap={!isAnswered ? { scale: 0.995 } : undefined}
               disabled={isAnswered}
               onClick={() => onAnswer(index)}
+              aria-pressed={isSelected}
               className={[
                 'group relative flex items-center gap-4 w-full p-4 rounded-xl border-2 text-left font-medium transition-[border-color,background-color,box-shadow,opacity] duration-300 outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background overflow-hidden select-none',
                 state === 'idle'
@@ -137,30 +169,39 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
                     ? 'border-green-500 bg-green-500/8 dark:bg-green-500/12'
                     : state === 'wrong'
                       ? 'border-red-500 bg-red-500/8 dark:bg-red-500/12'
-                      : 'border-border/30 bg-transparent text-muted opacity-30 cursor-default'
+                      : 'border-border/30 bg-transparent text-muted opacity-30 cursor-default',
               ].join(' ')}
               style={{
                 boxShadow: styles.glow,
                 cursor: isAnswered ? 'default' : 'pointer',
               }}
             >
-              {/* Hover highlight background overlay (only for idle option before answering) */}
+              {/* Hover highlight background overlay */}
               {state === 'idle' && !isAnswered && (
                 <span className="absolute inset-0 bg-accent/6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
               )}
 
-              {/* Letter label */}
-              <span
-                className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-200 border border-border/10 font-mono"
-                style={{ background: styles.labelBg, color: styles.labelText }}
-              >
-                {OPTION_LABELS[index]}
-              </span>
+              {/* Letter label & Key Hint */}
+              <div className="flex items-center gap-1 shrink-0">
+                <span
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-200 border border-border/10 font-mono"
+                  style={{ background: styles.labelBg, color: styles.labelText }}
+                >
+                  {OPTION_LABELS[index]}
+                </span>
+                {!isAnswered && (
+                  <span className="hidden sm:inline-block text-[10px] font-mono text-muted/50 px-1 border border-border/30 rounded">
+                    {OPTION_KEYS[index]}
+                  </span>
+                )}
+              </div>
 
               {/* Option text */}
-              <span className="text-sm md:text-base flex-1 pr-2 leading-relaxed">{option}</span>
+              <span className="text-sm md:text-base flex-1 pr-2 leading-relaxed">
+                {renderFormattedText(option)}
+              </span>
 
-              {/* Fixed Feedback Icon Placeholder Wrapper to prevent text wrapping/layout shift */}
+              {/* Fixed Feedback Icon Placeholder */}
               <div className="w-5 h-5 flex items-center justify-center shrink-0">
                 {isAnswered && state === 'correct' && (
                   <motion.span
@@ -187,6 +228,27 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
           );
         })}
       </div>
+
+      {/* Answer Explanation Banner when incorrect */}
+      {isAnswered && selectedAnswer !== null && selectedAnswer !== question.correctAnswer && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
+          className="mt-5 p-3.5 rounded-xl border border-amber-500/25 bg-amber-500/8 text-xs leading-relaxed flex items-start gap-2.5"
+        >
+          <span className="text-amber-500 text-sm">💡</span>
+          <div>
+            <span className="font-bold text-foreground block mb-0.5">
+              Correct Answer: {OPTION_LABELS[question.correctAnswer]} &mdash;{' '}
+              {question.options[question.correctAnswer]}
+            </span>
+            <span className="text-slate-600 dark:text-slate-300">
+              {question.options[question.correctAnswer] ? 'Review this topic to strengthen your knowledge base.' : ''}
+            </span>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

@@ -85,6 +85,8 @@ export default function QuizPage() {
               trackEvent('quiz_leaderboard_open', { source: 'mode_select' });
               setLeaderboardOpen(true);
             }}
+            soundEnabled={game.soundEnabled}
+            onToggleSound={game.toggleSound}
           />
         )}
 
@@ -95,13 +97,17 @@ export default function QuizPage() {
             score={game.score}
             lives={game.lives}
             maxLives={game.maxLives}
+            streak={game.streak}
             mode={game.mode!}
             answerState={game.answerState}
             selectedAnswer={game.selectedAnswer}
             timeLeft={game.timeLeft}
             totalSeconds={game.totalSeconds}
+            soundEnabled={game.soundEnabled}
+            onToggleSound={game.toggleSound}
             onAnswer={game.handleAnswer}
             onForfeit={game.forfeitGame}
+            onSkipFeedback={game.skipFeedback}
           />
         )}
 
@@ -112,6 +118,7 @@ export default function QuizPage() {
             correctCount={game.correctCount}
             totalQuestions={game.totalQuestions}
             avgSecondsPerQuestion={game.avgSecondsPerQuestion}
+            maxStreak={game.maxStreak}
             mode={game.mode!}
             onPlayAgain={game.playAgain}
             onChangeMode={game.resetGame}

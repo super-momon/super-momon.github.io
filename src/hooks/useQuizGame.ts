@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import type { QuizQuestion, GameMode, GamePhase, AnswerState, QuestionDifficulty } from '@/types/quiz';
 import { QUESTIONS_BY_CATEGORY, type CategoryKey, getAllQuestions } from '@/data/quiz';
 import { trackEvent } from '@/lib/analytics';
+import { quizAudio } from '@/app/games/quiz/_components/QuizAudioSynth';
 
 const TOTAL_LIVES = 3;
 const TIMER_SECONDS = 15;
@@ -33,6 +34,8 @@ export function useQuizGame() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(TOTAL_LIVES);
+  const [streak, setStreak] = useState(0);
+  const [maxStreak, setMaxStreak] = useState(0);
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
@@ -41,14 +44,28 @@ export function useQuizGame() {
   const [totalTimeSpentMs, setTotalTimeSpentMs] = useState(0);
   const [activeCategories, setActiveCategories] = useState<CategoryKey[]>([]);
   const [activeDifficulties, setActiveDifficulties] = useState<QuestionDifficulty[]>([]);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
-  // Refs for use inside async callbacks (avoid stale closures)
+  // Sync sound status on mount
+  useEffect(() => {
+    setSoundEnabled(quizAudio.isSoundEnabled());
+  }, []);
+
+  const handleToggleSound = useCallback(() => {
+    const updated = quizAudio.toggleSound();
+    setSoundEnabled(updated);
+  }, []);
+
+  // Refs for async callbacks
   const modeRef = useRef<GameMode | null>(null);
   const livesRef = useRef(TOTAL_LIVES);
+  const streakRef = useRef(0);
+  const maxStreakRef = useRef(0);
   const questionsRef = useRef<QuizQuestion[]>([]);
   const currentIndexRef = useRef(0);
   const isProcessingRef = useRef(false);
   const pendingAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nextTargetRef = useRef<'next' | 'result' | null>(null);
   const questionStartTimeRef = useRef<number>(0);
   const totalTimeSpentMsRef = useRef(0);
   const activeCategoriesRef = useRef<CategoryKey[]>([]);
@@ -59,6 +76,7 @@ export function useQuizGame() {
       clearTimeout(pendingAdvanceRef.current);
       pendingAdvanceRef.current = null;
     }
+    nextTargetRef.current = null;
   }, []);
 
   const forfeitGame = useCallback(() => {
@@ -79,7 +97,6 @@ export function useQuizGame() {
     if (nextIdx >= questionsRef.current.length) {
       const lastId = questionsRef.current[questionsRef.current.length - 1]?.id;
       let reshuffled = shuffle([...questionsRef.current]);
-      // Avoid showing the same question twice in a row across the loop boundary
       if (reshuffled.length > 1 && reshuffled[0].id === lastId) {
         [reshuffled[0], reshuffled[1]] = [reshuffled[1], reshuffled[0]];
       }
@@ -101,13 +118,17 @@ export function useQuizGame() {
     (isWrong: boolean, updatedLives: number) => {
       clearPendingAdvance();
       const delay = isWrong ? FEEDBACK_DELAY_WRONG_MS : FEEDBACK_DELAY_CORRECT_MS;
-      pendingAdvanceRef.current = setTimeout(() => {
-        const gameOver =
-          (modeRef.current === 'survival' && isWrong) ||
-          (modeRef.current === 'lives' && updatedLives <= 0) ||
-          (modeRef.current === 'best-of-100' && currentIndexRef.current >= questionsRef.current.length - 1);
 
+      const gameOver =
+        (modeRef.current === 'survival' && isWrong) ||
+        (modeRef.current === 'lives' && updatedLives <= 0) ||
+        (modeRef.current === 'best-of-100' && currentIndexRef.current >= questionsRef.current.length - 1);
+
+      nextTargetRef.current = gameOver ? 'result' : 'next';
+
+      pendingAdvanceRef.current = setTimeout(() => {
         if (gameOver) {
+          quizAudio.playVictory();
           setPhase('result');
         } else {
           advanceToNext();
@@ -117,12 +138,29 @@ export function useQuizGame() {
     [clearPendingAdvance, advanceToNext]
   );
 
-  // Timer: decrements timeLeft once per second; triggers timeout at 0
+  // Manual skip feedback (when pressing Space/Enter)
+  const skipFeedback = useCallback(() => {
+    if (!nextTargetRef.current) return;
+    const target = nextTargetRef.current;
+    clearPendingAdvance();
+    if (target === 'result') {
+      quizAudio.playVictory();
+      setPhase('result');
+    } else {
+      advanceToNext();
+    }
+  }, [clearPendingAdvance, advanceToNext]);
+
+  // Timer loop
   useEffect(() => {
     if (phase !== 'playing' || answerState !== 'unanswered') return;
 
+    if (timeLeft <= 5 && timeLeft > 0) {
+      quizAudio.playTick();
+    }
+
     if (timeLeft <= 0) {
-      // Timeout — treat as wrong answer
+      // Timeout
       if (isProcessingRef.current) return;
       isProcessingRef.current = true;
 
@@ -133,16 +171,20 @@ export function useQuizGame() {
         setLives(updatedLives);
       }
 
-      setSelectedAnswer(-1); // -1 signals timeout
+      streakRef.current = 0;
+      setStreak(0);
+      quizAudio.playWrong();
+
+      setSelectedAnswer(-1);
       setAnswerState('incorrect');
-      setTotalAnswered(prev => prev + 1);
+      setTotalAnswered((prev) => prev + 1);
       totalTimeSpentMsRef.current += TIMER_SECONDS * 1000;
       setTotalTimeSpentMs(totalTimeSpentMsRef.current);
       resolveAfterFeedback(true, updatedLives);
       return;
     }
 
-    const timer = setTimeout(() => setTimeLeft(t => t - 1), 1000);
+    const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearTimeout(timer);
   }, [phase, answerState, timeLeft, resolveAfterFeedback]);
 
@@ -153,17 +195,39 @@ export function useQuizGame() {
 
       const question = questionsRef.current[currentIndexRef.current];
       const isCorrect = index === question.correctAnswer;
-      const points = DIFFICULTY_POINTS[question.difficulty] ?? 1;
+      const basePoints = DIFFICULTY_POINTS[question.difficulty] ?? 1;
 
       setSelectedAnswer(index);
       setAnswerState(isCorrect ? 'correct' : 'incorrect');
-      setTotalAnswered(prev => prev + 1);
+      setTotalAnswered((prev) => prev + 1);
       totalTimeSpentMsRef.current += Date.now() - questionStartTimeRef.current;
       setTotalTimeSpentMs(totalTimeSpentMsRef.current);
 
       if (isCorrect) {
-        setScore(prev => prev + points);
-        setCorrectCount(prev => prev + 1);
+        const newStreak = streakRef.current + 1;
+        streakRef.current = newStreak;
+        setStreak(newStreak);
+        if (newStreak > maxStreakRef.current) {
+          maxStreakRef.current = newStreak;
+          setMaxStreak(newStreak);
+        }
+
+        // Streak bonus point (+1 bonus for every 3 consecutive correct)
+        const streakBonus = Math.floor(newStreak / 3);
+        const earnedPoints = basePoints + streakBonus;
+
+        setScore((prev) => prev + earnedPoints);
+        setCorrectCount((prev) => prev + 1);
+
+        if (newStreak >= 3) {
+          quizAudio.playStreak();
+        } else {
+          quizAudio.playCorrect();
+        }
+      } else {
+        streakRef.current = 0;
+        setStreak(0);
+        quizAudio.playWrong();
       }
 
       let updatedLives = livesRef.current;
@@ -181,6 +245,7 @@ export function useQuizGame() {
   const startGame = useCallback(
     (selectedMode: GameMode, categories: CategoryKey[], difficulties: QuestionDifficulty[]) => {
       clearPendingAdvance();
+      quizAudio.playStart();
 
       trackEvent('game_play', {
         game_name: 'quiz',
@@ -197,7 +262,9 @@ export function useQuizGame() {
       let questionsToUse: QuizQuestion[] = [];
       if (categories.length > 0) {
         categories.forEach((cat) => {
-          questionsToUse.push(...(QUESTIONS_BY_CATEGORY[cat] as QuizQuestion[]));
+          if (QUESTIONS_BY_CATEGORY[cat]) {
+            questionsToUse.push(...(QUESTIONS_BY_CATEGORY[cat] as QuizQuestion[]));
+          }
         });
       } else {
         questionsToUse = getAllQuestions() as QuizQuestion[];
@@ -216,6 +283,8 @@ export function useQuizGame() {
 
       modeRef.current = selectedMode;
       livesRef.current = TOTAL_LIVES;
+      streakRef.current = 0;
+      maxStreakRef.current = 0;
       questionsRef.current = finalQuestions;
       currentIndexRef.current = 0;
       isProcessingRef.current = false;
@@ -226,6 +295,8 @@ export function useQuizGame() {
       setCurrentIndex(0);
       setScore(0);
       setLives(TOTAL_LIVES);
+      setStreak(0);
+      setMaxStreak(0);
       setAnswerState('unanswered');
       setSelectedAnswer(null);
       setTimeLeft(TIMER_SECONDS);
@@ -242,6 +313,8 @@ export function useQuizGame() {
     clearPendingAdvance();
     modeRef.current = null;
     livesRef.current = TOTAL_LIVES;
+    streakRef.current = 0;
+    maxStreakRef.current = 0;
     questionsRef.current = [];
     currentIndexRef.current = 0;
     isProcessingRef.current = false;
@@ -254,6 +327,8 @@ export function useQuizGame() {
     setCurrentIndex(0);
     setScore(0);
     setLives(TOTAL_LIVES);
+    setStreak(0);
+    setMaxStreak(0);
     setAnswerState('unanswered');
     setSelectedAnswer(null);
     setTimeLeft(TIMER_SECONDS);
@@ -266,7 +341,6 @@ export function useQuizGame() {
     setActiveDifficulties([]);
   }, [clearPendingAdvance]);
 
-  // Cleanup on unmount
   useEffect(() => () => clearPendingAdvance(), [clearPendingAdvance]);
 
   useEffect(() => {
@@ -280,6 +354,7 @@ export function useQuizGame() {
       answered: totalAnswered,
       correct: correctCount,
       accuracy,
+      max_streak: maxStreakRef.current,
     });
   }, [phase, score, totalAnswered, correctCount]);
 
@@ -291,6 +366,8 @@ export function useQuizGame() {
     score,
     lives,
     maxLives: TOTAL_LIVES,
+    streak,
+    maxStreak,
     answerState,
     selectedAnswer,
     timeLeft,
@@ -302,6 +379,9 @@ export function useQuizGame() {
       totalAnswered > 0
         ? Math.round((totalTimeSpentMs / totalAnswered / 1000) * 10) / 10
         : 0,
+    soundEnabled,
+    toggleSound: handleToggleSound,
+    skipFeedback,
     startGame,
     handleAnswer,
     resetGame,
