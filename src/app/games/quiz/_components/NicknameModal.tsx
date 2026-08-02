@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrophy, faUser, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { submitScore } from '@/lib/leaderboard';
 import type { GameMode } from '@/types/quiz';
 import type { LeaderboardEntry } from '@/types/leaderboard';
@@ -26,11 +28,9 @@ export function NicknameModal({
   onClose,
 }: Props) {
   const [nickname, setNickname] = useState('');
-  const [focused, setFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Close on Escape key
   useEffect(() => {
     const handle = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -59,7 +59,7 @@ export function NicknameModal({
       });
       onSuccess(entry);
     } catch {
-      setError('Failed to submit. Please try again.');
+      setError('Failed to submit score. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -72,9 +72,9 @@ export function NicknameModal({
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{
-        background: 'rgba(0,0,0,0.55)',
-        backdropFilter: 'blur(4px)',
-        WebkitBackdropFilter: 'blur(4px)',
+        background: 'rgba(0,0,0,0.6)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
       }}
       onClick={onClose}
     >
@@ -82,100 +82,67 @@ export function NicknameModal({
         initial={{ opacity: 0, scale: 0.94, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 12 }}
-        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-xs rounded-2xl p-6"
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.35)',
-        }}
+        className="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl border border-[var(--color-border)]/80 bg-[var(--color-surface)]/95 backdrop-blur-xl relative overflow-hidden w-full max-w-sm"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl font-bold mb-1" style={{ color: 'var(--color-foreground)' }}>
-          Submit to Leaderboard
-        </h2>
-        <p className="text-sm mb-5" style={{ color: 'var(--color-muted)' }}>
-          Score:{' '}
-          <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>{score}</span>
-          {' · '}
-          <span style={{ fontWeight: 600 }}>{mode === 'survival' ? 'Survival' : mode === 'lives' ? '3 Lives' : 'Best of 100'}</span>
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <FontAwesomeIcon icon={faTrophy} className="text-amber-400 text-lg" />
+            <h2 className="text-xl font-extrabold text-[var(--color-foreground)]">
+              Submit Score
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-8 h-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/60 text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center justify-center transition-all cursor-pointer"
+          >
+            <FontAwesomeIcon icon={faXmark} className="text-sm" />
+          </button>
+        </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <div className="relative">
-            <input
-              type="text"
-              name="nickname"
-              id="nickname-input"
-              aria-label="Enter your nickname for the leaderboard"
-              placeholder="Enter nickname (e.g. coder123)…"
-              value={nickname}
-              maxLength={20}
-              autoFocus
-              autoComplete="off"
-              spellCheck={false}
-              onChange={(e) => {
-                setNickname(e.target.value);
-                setError(null);
-              }}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              className="w-full px-4 py-3 rounded-xl text-sm font-medium outline-hidden transition-colors duration-150"
-              style={{
-                background: 'color-mix(in srgb, var(--color-border) 40%, transparent)',
-                border: `1px solid ${focused ? 'var(--color-accent)' : 'var(--color-border)'}`,
-                color: 'var(--color-foreground)',
-              }}
-            />
-            {trimmed.length > 0 && (
-              <span
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs tabular-nums pointer-events-none"
-                style={{ color: 'var(--color-muted)' }}
-              >
-                {trimmed.length}/20
-              </span>
-            )}
+        <div className="mb-6 p-4 rounded-2xl bg-[var(--color-surface)]/60 border border-[var(--color-border)]/60 text-center">
+          <div className="text-xs uppercase font-extrabold text-[var(--color-muted)] tracking-wider mb-1">
+            Your Final Score
+          </div>
+          <div className="text-4xl font-extrabold text-[var(--color-accent)] tabular-nums">
+            {score}
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs font-extrabold text-[var(--color-foreground)]/80 uppercase tracking-wider block mb-2">
+              Enter Nickname
+            </label>
+            <div className="relative flex items-center">
+              <FontAwesomeIcon icon={faUser} className="absolute left-3.5 text-[var(--color-muted)] text-sm pointer-events-none" />
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="e.g. CyberCoder"
+                maxLength={20}
+                autoFocus
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-foreground)] font-bold text-sm focus:border-[var(--color-accent)] focus:outline-none transition-all"
+              />
+            </div>
           </div>
 
-          {error && (
-            <p
-              className="text-xs rounded-lg px-3 py-2"
-              style={{ color: '#ef4444', background: 'rgba(239,68,68,0.08)' }}
-            >
-              {error}
-            </p>
-          )}
+          {error && <p className="text-xs font-bold text-red-400">{error}</p>}
 
-          <div className="flex gap-2 mt-1">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={loading}
-              className="flex-1 py-3 rounded-xl text-sm font-semibold border transition-colors duration-150 cursor-pointer outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
-              style={{
-                borderColor: 'var(--color-border)',
-                color: 'var(--color-muted)',
-                background: 'transparent',
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!isValid || loading}
-              className="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-150 outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
-              style={{
-                background: isValid && !loading
-                  ? 'var(--color-accent)'
-                  : 'color-mix(in srgb, var(--color-accent) 35%, var(--color-border))',
-                color: 'var(--color-background)',
-                cursor: !isValid || loading ? 'not-allowed' : 'pointer',
-                opacity: !isValid || loading ? 0.65 : 1,
-              }}
-            >
-              {loading ? 'Submitting…' : 'Submit'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={!isValid || loading}
+            className={`w-full py-3.5 rounded-xl font-extrabold flex items-center justify-center gap-2 text-sm transition-all cursor-pointer ${
+              isValid && !loading
+                ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white shadow-lg shadow-[var(--color-accent)]/20'
+                : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] cursor-not-allowed opacity-50'
+            }`}
+          >
+            <FontAwesomeIcon icon={faCheck} />
+            {loading ? 'Submitting...' : 'Submit to Leaderboard'}
+          </button>
         </form>
       </motion.div>
     </motion.div>

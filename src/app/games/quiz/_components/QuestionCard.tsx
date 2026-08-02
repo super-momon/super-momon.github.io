@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'motion/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faXmark, faTag, faGaugeHigh } from '@fortawesome/free-solid-svg-icons';
 import type { QuizQuestion, AnswerState } from '@/types/quiz';
 
 interface Props {
@@ -20,22 +22,6 @@ const DIFFICULTY: Record<string, { label: string; color: string; bg: string; bor
   'extra-hard': { label: 'Extra Hard', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
 };
 
-function CheckIcon() {
-  return (
-    <svg className="w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg className="w-4 h-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function renderFormattedText(text: string) {
   if (!text.includes('`')) return text;
   const parts = text.split(/(`[^`]+`)/g);
@@ -45,7 +31,7 @@ function renderFormattedText(text: string) {
       return (
         <code
           key={i}
-          className="font-mono font-bold text-accent bg-accent/10 dark:bg-accent/15 px-1.5 py-0.5 rounded text-[0.88em] border border-accent/20 tracking-tight mx-0.5"
+          className="font-mono font-bold text-[var(--color-accent)] bg-[var(--color-accent)]/15 px-2 py-0.5 rounded-lg border border-[var(--color-accent)]/30 text-[0.88em] mx-1"
         >
           {code}
         </code>
@@ -66,189 +52,112 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
     return 'dim';
   };
 
-  const optionStyles: Record<string, { border: string; bg: string; text: string; labelBg: string; labelText: string; glow: string }> = {
-    idle: {
-      border: 'var(--color-border)',
-      bg: 'transparent',
-      text: 'var(--color-foreground)',
-      labelBg: 'var(--color-background)',
-      labelText: 'var(--color-muted)',
-      glow: 'none',
-    },
-    correct: {
-      border: '#22c55e',
-      bg: 'rgba(34,197,94,0.08)',
-      text: 'var(--color-foreground)',
-      labelBg: '#22c55e',
-      labelText: '#fff',
-      glow: '0 0 0 1px rgba(34,197,94,0.2), 0 4px 18px rgba(34,197,94,0.14)',
-    },
-    wrong: {
-      border: '#ef4444',
-      bg: 'rgba(239,68,68,0.08)',
-      text: 'var(--color-foreground)',
-      labelBg: '#ef4444',
-      labelText: '#fff',
-      glow: '0 0 0 1px rgba(239,68,68,0.2), 0 4px 18px rgba(239,68,68,0.14)',
-    },
-    dim: {
-      border: 'var(--color-border)',
-      bg: 'transparent',
-      text: 'var(--color-muted)',
-      labelBg: 'var(--color-surface)',
-      labelText: 'var(--color-border)',
-      glow: 'none',
-    },
-  };
-
   return (
-    <div className="w-full">
-      {/* Metadata badges */}
+    <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-[var(--color-border)]/80 bg-[var(--color-surface)]/80 backdrop-blur-xl">
+      {/* Background Glow matching Chain Reaction */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/10 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Metadata Badges */}
       <div className="flex flex-wrap items-center gap-2 mb-5">
-        <span
-          className="inline-flex items-center px-2.5 py-1 rounded-lg bg-foreground/5 border border-border/85 text-[10px] font-bold uppercase tracking-wider text-foreground/80"
-        >
+        <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/30 inline-flex items-center gap-1.5 uppercase tracking-wider">
+          <FontAwesomeIcon icon={faTag} className="text-[10px]" />
           {question.category}
         </span>
         <span
-          className="inline-flex items-center px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider"
+          className="px-3 py-1 rounded-full text-xs font-extrabold border inline-flex items-center gap-1.5 uppercase tracking-wider"
           style={{ color: diff.color, background: diff.bg, borderColor: diff.border }}
         >
+          <FontAwesomeIcon icon={faGaugeHigh} className="text-[10px]" />
           {diff.label}
         </span>
         {question.type === 'true-false' && (
-          <span
-            className="inline-flex items-center px-2.5 py-1 rounded-lg border border-purple-500/20 bg-purple-500/10 text-[10px] font-bold uppercase tracking-wider text-purple-500 dark:text-purple-400"
-          >
+          <span className="px-3 py-1 rounded-full text-xs font-extrabold border border-purple-500/30 bg-purple-500/10 text-purple-400 uppercase tracking-wider">
             True / False
           </span>
         )}
       </div>
 
-      {/* Question text */}
-      <h2 className="text-xl md:text-2xl font-extrabold leading-snug tracking-tight mb-8 text-foreground text-pretty">
+      {/* Question Prompt */}
+      <h2 className="text-xl sm:text-2xl font-extrabold text-[var(--color-foreground)] leading-snug tracking-tight my-6 text-pretty">
         {renderFormattedText(question.question)}
       </h2>
 
-      {/* Options */}
+      {/* Answer Options Grid */}
       <div
-        className={`grid gap-3.5 ${question.type === 'true-false' ? 'grid-cols-2' : 'grid-cols-1'}`}
+        className={`grid gap-3 ${question.type === 'true-false' ? 'grid-cols-2' : 'grid-cols-1'}`}
         role="group"
         aria-label="Quiz options"
       >
         {question.options.map((option, index) => {
           const state = getOptionState(index);
-          const styles = optionStyles[state];
           const isSelected = selectedAnswer === index;
           const isWrongSelection = isAnswered && isSelected && index !== question.correctAnswer;
 
           return (
             <motion.button
               key={index}
-              custom={index}
               initial={{ opacity: 0, x: -10 }}
               animate={{
-                opacity: state === 'dim' ? 0.38 : 1,
+                opacity: state === 'dim' ? 0.35 : 1,
                 x: isWrongSelection ? [0, -8, 8, -6, 6, -3, 3, 0] : 0,
                 transition: {
-                  duration: isWrongSelection ? 0.4 : 0.3,
-                  delay: isWrongSelection ? 0 : index * 0.06,
-                  ease: [0.22, 1, 0.36, 1],
+                  duration: isWrongSelection ? 0.4 : 0.25,
+                  delay: isWrongSelection ? 0 : index * 0.05,
                 },
               }}
-              whileHover={!isAnswered ? { x: 4, transition: { duration: 0.15 } } : undefined}
-              whileTap={!isAnswered ? { scale: 0.995 } : undefined}
+              whileHover={!isAnswered ? { x: 4 } : undefined}
               disabled={isAnswered}
               onClick={() => onAnswer(index)}
-              aria-pressed={isSelected}
-              className={[
-                'group relative flex items-center gap-4 w-full p-4 rounded-xl border-2 text-left font-medium transition-[border-color,background-color,box-shadow,opacity] duration-300 outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background overflow-hidden select-none',
+              className={`group relative flex items-center gap-4 w-full p-4 rounded-xl border-2 text-left font-bold transition-all duration-200 cursor-pointer overflow-hidden ${
                 state === 'idle'
-                  ? 'border-border/80 bg-surface/50 dark:bg-surface/30 hover:border-accent/40 shadow-2xs'
+                  ? 'border-[var(--color-border)] bg-[var(--color-surface)]/60 text-[var(--color-foreground)] hover:border-[var(--color-accent)]/60 hover:bg-[var(--color-surface)]'
                   : state === 'correct'
-                    ? 'border-green-500 bg-green-500/8 dark:bg-green-500/12'
+                    ? 'border-[#08ca5f] bg-[#08ca5f]/15 text-[var(--color-foreground)] shadow-lg shadow-[#08ca5f]/20'
                     : state === 'wrong'
-                      ? 'border-red-500 bg-red-500/8 dark:bg-red-500/12'
-                      : 'border-border/30 bg-transparent text-muted opacity-30 cursor-default',
-              ].join(' ')}
-              style={{
-                boxShadow: styles.glow,
-                cursor: isAnswered ? 'default' : 'pointer',
-              }}
+                      ? 'border-[#ef4444] bg-[#ef4444]/15 text-[var(--color-foreground)] shadow-lg shadow-[#ef4444]/20'
+                      : 'border-[var(--color-border)]/30 bg-transparent text-[var(--color-muted)] opacity-30 cursor-default'
+              }`}
             >
-              {/* Hover highlight background overlay */}
-              {state === 'idle' && !isAnswered && (
-                <span className="absolute inset-0 bg-accent/6 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-              )}
-
-              {/* Letter label & Key Hint */}
-              <div className="flex items-center gap-1 shrink-0">
+              {/* Option Letter Label Box */}
+              <div className="flex items-center gap-2 shrink-0">
                 <span
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-200 border border-border/10 font-mono"
-                  style={{ background: styles.labelBg, color: styles.labelText }}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-extrabold font-mono transition-all border ${
+                    state === 'correct'
+                      ? 'bg-[#08ca5f] text-black border-[#08ca5f]'
+                      : state === 'wrong'
+                        ? 'bg-[#ef4444] text-white border-[#ef4444]'
+                        : 'bg-[var(--color-surface)] text-[var(--color-muted)] border-[var(--color-border)]/50 group-hover:text-[var(--color-accent)] group-hover:border-[var(--color-accent)]/40'
+                  }`}
                 >
                   {OPTION_LABELS[index]}
                 </span>
                 {!isAnswered && (
-                  <span className="hidden sm:inline-block text-[10px] font-mono text-muted/50 px-1 border border-border/30 rounded">
+                  <span className="hidden sm:inline-block text-[10px] font-mono text-[var(--color-muted)]/50 px-1.5 py-0.5 border border-[var(--color-border)]/40 rounded-lg">
                     {OPTION_KEYS[index]}
                   </span>
                 )}
               </div>
 
-              {/* Option text */}
-              <span className="text-sm md:text-base flex-1 pr-2 leading-relaxed">
+              {/* Option Text */}
+              <span className="text-sm sm:text-base flex-1 pr-2 leading-relaxed font-semibold">
                 {renderFormattedText(option)}
               </span>
 
-              {/* Fixed Feedback Icon Placeholder */}
-              <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                {isAnswered && state === 'correct' && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
-                    style={{ color: '#22c55e' }}
-                  >
-                    <CheckIcon />
-                  </motion.span>
-                )}
-                {isAnswered && state === 'wrong' && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
-                    style={{ color: '#ef4444' }}
-                  >
-                    <XIcon />
-                  </motion.span>
-                )}
-              </div>
+              {/* Feedback Status Icon */}
+              {isAnswered && (
+                <div className="shrink-0 text-lg">
+                  {state === 'correct' && (
+                    <FontAwesomeIcon icon={faCheck} className="text-[#08ca5f]" />
+                  )}
+                  {state === 'wrong' && (
+                    <FontAwesomeIcon icon={faXmark} className="text-[#ef4444]" />
+                  )}
+                </div>
+              )}
             </motion.button>
           );
         })}
       </div>
-
-      {/* Answer Explanation Banner when incorrect */}
-      {isAnswered && selectedAnswer !== null && selectedAnswer !== question.correctAnswer && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-          className="mt-5 p-3.5 rounded-xl border border-amber-500/25 bg-amber-500/8 text-xs leading-relaxed flex items-start gap-2.5"
-        >
-          <span className="text-amber-500 text-sm">💡</span>
-          <div>
-            <span className="font-bold text-foreground block mb-0.5">
-              Correct Answer: {OPTION_LABELS[question.correctAnswer]} &mdash;{' '}
-              {question.options[question.correctAnswer]}
-            </span>
-            <span className="text-slate-600 dark:text-slate-300">
-              {question.options[question.correctAnswer] ? 'Review this topic to strengthen your knowledge base.' : ''}
-            </span>
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 }

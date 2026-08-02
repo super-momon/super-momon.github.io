@@ -78,7 +78,7 @@ export function LeaderboardModal({ open, onClose, initialMode = 'survival', high
               style={{
                 width: '100%',
                 maxWidth: '520px',
-                maxHeight: '85vh',
+                maxHeight: '90vh',
                 overflowY: 'auto',
                 pointerEvents: 'auto',
                 position: 'relative',

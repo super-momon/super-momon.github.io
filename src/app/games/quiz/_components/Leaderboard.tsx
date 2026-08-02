@@ -2,6 +2,14 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'motion/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faTrophy,
+  faRotateRight,
+  faXmark,
+  faCrown,
+  faMedal,
+} from '@fortawesome/free-solid-svg-icons';
 import type { GameMode } from '@/types/quiz';
 import type { LeaderboardEntry } from '@/types/leaderboard';
 import { fetchLeaderboard } from '@/lib/leaderboard';
@@ -12,10 +20,6 @@ interface Props {
   onClose?: () => void;
 }
 
-const MEDAL = ['🥇', '🥈', '🥉'];
-const ROW_COUNT = 10;
-
-// Module-level cache — persists for the lifetime of the browser session (page load)
 const leaderboardCache = new Map<GameMode, LeaderboardEntry[]>();
 
 export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
@@ -25,7 +29,6 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const showAccuracy = mode === 'best-of-100';
-  const gridTemplateColumns = showAccuracy ? '2rem 1fr 3.5rem 3.5rem 3.5rem' : '2rem 1fr 3.5rem 3.5rem';
 
   const refreshMode = useCallback((currentMode: GameMode) => {
     const controller = new AbortController();
@@ -38,7 +41,9 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
           setEntries(data);
         }
       })
-      .catch(() => { if (!controller.signal.aborted) setError('Could not load leaderboard.'); })
+      .catch(() => {
+        if (!controller.signal.aborted) setError('Could not load leaderboard.');
+      })
       .finally(() => {
         if (!controller.signal.aborted) {
           setRefreshing(false);
@@ -89,247 +94,133 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
   };
 
   return (
-    <div
-      className="w-full rounded-2xl overflow-hidden"
-      style={{
-        background: 'color-mix(in srgb, var(--color-surface) 72%, transparent)',
-        border: '1px solid var(--color-border)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-      }}
-    >
+    <div className="glass-panel rounded-3xl p-6 shadow-2xl border border-[var(--color-border)]/80 bg-[var(--color-surface)]/90 backdrop-blur-xl relative overflow-hidden w-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <h3 className="text-sm font-bold" style={{ color: 'var(--color-foreground)' }}>
-          Leaderboard
-        </h3>
-        <div className="flex items-center gap-1">
-          {/* Refresh */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <FontAwesomeIcon icon={faTrophy} className="text-amber-400 text-lg" />
+          <h3 className="text-lg font-extrabold text-[var(--color-foreground)]">
+            Global Leaderboard
+          </h3>
+        </div>
+        <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={() => refreshMode(mode)}
             disabled={loading || refreshing}
             title="Refresh leaderboard"
-            aria-label="Refresh leaderboard"
-            className="flex items-center justify-center w-6 h-6 rounded-lg transition-opacity duration-200 cursor-pointer disabled:opacity-40 outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            style={{ color: 'var(--color-muted)' }}
+            className="w-8 h-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/60 text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center justify-center transition-all cursor-pointer disabled:opacity-40"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{ transition: 'transform 0.4s', transform: refreshing ? 'rotate(360deg)' : 'none' }}
-            >
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-              <path d="M21 3v5h-5" />
-              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-              <path d="M3 21v-5h5" />
-            </svg>
+            <FontAwesomeIcon
+              icon={faRotateRight}
+              className={`text-xs ${refreshing ? 'animate-spin' : ''}`}
+            />
           </button>
-
-          {/* Close — only shown when rendered inside a modal */}
           {onClose && (
             <button
+              type="button"
               onClick={onClose}
-              aria-label="Close leaderboard"
-              className="flex items-center justify-center w-6 h-6 rounded-lg transition-[background-color,color,box-shadow] duration-150 cursor-pointer outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              style={{
-                background: 'color-mix(in srgb, var(--color-border) 70%, transparent)',
-                border: '1px solid var(--color-border)',
-                color: 'var(--color-muted)',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-border)';
-                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-foreground)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background =
-                  'color-mix(in srgb, var(--color-border) 70%, transparent)';
-                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-muted)';
-              }}
+              className="w-8 h-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/60 text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center justify-center transition-all cursor-pointer"
             >
-              <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
+              <FontAwesomeIcon icon={faXmark} className="text-sm" />
             </button>
           )}
         </div>
       </div>
 
-      {/* Mode toggle */}
-      <div
-        className="flex mx-4 mb-3 p-1 rounded-xl gap-1"
-        style={{ background: 'color-mix(in srgb, var(--color-border) 60%, transparent)' }}
-      >
-        {(['survival', 'lives', 'best-of-100'] as GameMode[]).map((m) => (
-          <button
-            key={m}
-            onClick={() => handleModeChange(m)}
-            className="flex-1 py-1.5 rounded-lg text-xs font-bold transition-[background-color,color,box-shadow] duration-200 cursor-pointer outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent focus-visible:ring-offset-background"
-            style={{
-              background: mode === m ? 'var(--color-surface)' : 'transparent',
-              color: mode === m ? 'var(--color-foreground)' : 'var(--color-muted)',
-              boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
-            }}
-          >
-            {m === 'survival' ? 'Survival' : m === 'lives' ? '3 Lives' : 'Best of 100'}
-          </button>
-        ))}
+      {/* Mode Selector Tabs (Chain Reaction Style) */}
+      <div className="flex bg-[var(--color-surface)] border border-[var(--color-border)]/80 rounded-2xl p-1 mb-4">
+        <button
+          type="button"
+          onClick={() => handleModeChange('survival')}
+          className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
+            mode === 'survival'
+              ? 'bg-[var(--color-accent)] text-white shadow-md'
+              : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+          }`}
+        >
+          Survival
+        </button>
+        <button
+          type="button"
+          onClick={() => handleModeChange('lives')}
+          className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
+            mode === 'lives'
+              ? 'bg-[var(--color-accent)] text-white shadow-md'
+              : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+          }`}
+        >
+          3 Lives
+        </button>
+        <button
+          type="button"
+          onClick={() => handleModeChange('best-of-100')}
+          className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
+            mode === 'best-of-100'
+              ? 'bg-[var(--color-accent)] text-white shadow-md'
+              : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+          }`}
+        >
+          Best of 100
+        </button>
       </div>
 
-      {/* Content */}
-      <div className="px-4 pb-4">
-        {loading ? (
-          <div className="flex flex-col gap-2">
-            {Array.from({ length: ROW_COUNT }).map((_, i) => (
+      {/* Leaderboard Table / Cards */}
+      {loading ? (
+        <div className="h-[480px] sm:h-[500px] flex items-center justify-center text-[var(--color-muted)] text-sm font-bold animate-pulse">
+          Loading scores...
+        </div>
+      ) : error ? (
+        <div className="h-[480px] sm:h-[500px] flex items-center justify-center text-red-400 text-sm font-bold">{error}</div>
+      ) : entries.length === 0 ? (
+        <div className="h-[480px] sm:h-[500px] flex items-center justify-center text-[var(--color-muted)] text-sm font-semibold">
+          No scores recorded yet for this mode. Be the first!
+        </div>
+      ) : (
+        <div className="space-y-2 h-[480px] sm:h-[500px] overflow-y-auto pr-1">
+          {entries.map((entry, index) => {
+            const isHighlight = highlightId === entry.id;
+            const rank = index + 1;
+            const medalColor =
+              rank === 1 ? 'text-amber-400' : rank === 2 ? 'text-slate-300' : rank === 3 ? 'text-amber-600' : '';
+
+            return (
               <div
-                key={i}
-                className="h-9 rounded-xl animate-pulse"
-                style={{ background: 'var(--color-border)', opacity: 1 - i * 0.1 }}
-              />
-            ))}
-          </div>
-        ) : error ? (
-          <p className="text-center text-sm py-5" style={{ color: '#ef4444' }}>
-            {error}
-          </p>
-        ) : (
-          <div className="flex flex-col gap-1">
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr
-                className="text-[10px] uppercase tracking-widest font-semibold border-b border-border/30"
-                style={{ color: 'var(--color-muted)' }}
+                key={entry.id || index}
+                className={`flex items-center justify-between p-2.5 sm:p-3 rounded-xl border transition-all ${
+                  isHighlight
+                    ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/15 shadow-md'
+                    : 'border-[var(--color-border)]/60 bg-[var(--color-surface)]/50'
+                }`}
               >
-                <th className="pb-2 px-3 text-left font-semibold w-8">#</th>
-                <th className="pb-2 px-3 text-left font-semibold">Player</th>
-                <th className="pb-2 px-3 text-right font-semibold w-14">Score</th>
-                {showAccuracy && <th className="pb-2 px-3 text-right font-semibold w-14">Acc</th>}
-                <th className="pb-2 px-3 text-right font-semibold w-14">Avg</th>
-              </tr>
-            </thead>
-            <tbody className="before:block before:h-1.5">
-              {Array.from({ length: ROW_COUNT }).map((_, idx) => {
-                const entry = entries[idx] ?? null;
-
-                if (!entry) {
-                  return (
-                    <motion.tr
-                      key={`empty-${idx}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.25, delay: idx * 0.03 }}
-                      style={{
-                        background: idx % 2 !== 0
-                          ? 'color-mix(in srgb, var(--color-border) 10%, transparent)'
-                          : 'transparent',
-                      }}
-                      className="h-10 border-b border-border/10 last:border-b-0"
-                    >
-                      <td className="px-3 text-xs tabular-nums w-8" style={{ color: 'color-mix(in srgb, var(--color-muted) 22%, transparent)' }}>
-                        {idx + 1}
-                      </td>
-                      <td className="px-3" colSpan={showAccuracy ? 4 : 3}>
-                        <div
-                          style={{
-                            height: '1px',
-                            background:
-                              'linear-gradient(90deg, color-mix(in srgb, var(--color-border) 55%, transparent) 0%, transparent 80%)',
-                            borderRadius: '1px',
-                            width: '50%',
-                          }}
-                        />
-                      </td>
-                    </motion.tr>
-                  );
-                }
-
-                const isHighlighted = entry.id === highlightId;
-                const accuracy =
-                  mode === 'best-of-100'
-                    ? Math.round(
-                        (entry.correct_count /
-                          (entry.total_answered < 100 && entry.correct_count < entry.total_answered
-                            ? 100
-                            : entry.total_answered)) *
-                          100
-                      )
-                    : entry.total_answered > 0
-                      ? Math.round((entry.correct_count / entry.total_answered) * 100)
-                      : 0;
-
-                return (
-                  <motion.tr
-                    key={entry.id}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.2, delay: idx * 0.04 }}
-                    className="text-sm h-10 border-b border-border/10 last:border-b-0 transition-colors duration-150 hover:bg-border/20"
-                    style={{
-                      background: isHighlighted
-                        ? 'color-mix(in srgb, var(--color-accent) 12%, transparent)'
-                        : idx % 2 !== 0
-                          ? 'color-mix(in srgb, var(--color-border) 25%, transparent)'
-                          : 'transparent',
-                      outline: isHighlighted
-                        ? '1px solid color-mix(in srgb, var(--color-accent) 30%, transparent)'
-                        : 'none',
-                    }}
-                  >
-                    {/* Rank */}
-                    <td className="px-3 font-medium w-8">
-                      {idx < 3 ? (
-                        <span role="img" aria-label={`Rank ${idx + 1}`} className="text-base">{MEDAL[idx]}</span>
-                      ) : (
-                        <span className="text-xs tabular-nums text-muted">{idx + 1}</span>
-                      )}
-                    </td>
-
-                    {/* Nickname */}
-                    <td
-                      className="px-3 font-semibold truncate max-w-[140px] sm:max-w-none"
-                      style={{
-                        color: isHighlighted ? 'var(--color-accent)' : 'var(--color-foreground)',
-                      }}
-                      title={entry.nickname}
-                    >
-                      {isHighlighted ? `${entry.nickname} ★` : entry.nickname}
-                    </td>
-
-                    {/* Score */}
-                    <td className="px-3 text-right font-bold tabular-nums text-accent w-14">
-                      {entry.score}
-                    </td>
-
-                    {showAccuracy && (
-                      <td
-                        className="px-3 text-right tabular-nums text-xs font-semibold w-14"
-                        style={{
-                          color: accuracy >= 70 ? '#22c55e' : accuracy >= 50 ? '#eab308' : '#ef4444',
-                        }}
-                      >
-                        {accuracy}%
-                      </td>
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="w-6 text-center font-extrabold text-xs font-mono shrink-0">
+                    {rank <= 3 ? (
+                      <FontAwesomeIcon icon={faCrown} className={medalColor} />
+                    ) : (
+                      <span className="text-[var(--color-muted)]">#{rank}</span>
                     )}
+                  </span>
+                  <span className="font-bold text-sm text-[var(--color-foreground)] truncate">
+                    {entry.nickname}
+                  </span>
+                </div>
 
-                    {/* Avg time */}
-                    <td className="px-3 text-right tabular-nums text-xs text-muted w-14">
-                      {Number(entry.avg_time_per_question).toFixed(1)}s
-                    </td>
-                  </motion.tr>
-                );
-              })}
-            </tbody>
-          </table>
-          </div>
-        )}
-      </div>
+                <div className="flex items-center gap-4 text-xs font-mono shrink-0">
+                  {showAccuracy && (
+                    <span className="text-[var(--color-muted)]">
+                      {Math.round((entry.correct_count / (entry.total_answered || 100)) * 100)}%
+                    </span>
+                  )}
+                  <span className="font-extrabold text-[var(--color-accent)] text-sm tabular-nums">
+                    {entry.score}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
