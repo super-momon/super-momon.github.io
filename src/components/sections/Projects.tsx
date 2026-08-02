@@ -16,6 +16,7 @@ import {
   faExpand,
   faTimes,
   faCheckCircle,
+  faComments,
 } from "@fortawesome/free-solid-svg-icons";
 
 import InlineQuizTeaser from "@/components/common/InlineQuizTeaser";
@@ -34,6 +35,18 @@ interface Project {
 }
 
 const projects: Project[] = [
+  {
+    id: "open-post",
+    title: "Open Post",
+    subtitle: "Infinite anonymous spatial canvas board",
+    description:
+      "An open, interactive spatial canvas board where anyone can drop sticky notes anonymously with zero sign-up friction. Features real-time multi-user synchronization powered by Supabase Realtime & Next.js, nested comment threads, upvote reactions, board search, and tag filtering.",
+    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Supabase", "Realtime", "Framer Motion", "AI-Coded"],
+    type: "app",
+    live: "https://openboard-post.vercel.app/",
+    withAi: true,
+    icon: faComments,
+  },
   {
     id: "job-manager",
     title: "Job Manager",
@@ -246,6 +259,8 @@ export default function Projects() {
                   {project.live ? (
                     <a
                       href={project.live}
+                      target={project.live.startsWith("http") ? "_blank" : undefined}
+                      rel={project.live.startsWith("http") ? "noopener noreferrer" : undefined}
                       onClick={() =>
                         trackEvent("portfolio_project_open", {
                           project_id: project.id,
@@ -400,6 +415,8 @@ export default function Projects() {
                   {selectedProject.live && (
                     <a
                       href={selectedProject.live}
+                      target={selectedProject.live.startsWith("http") ? "_blank" : undefined}
+                      rel={selectedProject.live.startsWith("http") ? "noopener noreferrer" : undefined}
                       onClick={() => {
                         trackEvent("portfolio_project_open", {
                           project_id: selectedProject.id,

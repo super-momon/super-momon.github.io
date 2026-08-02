@@ -10,13 +10,14 @@ import {
   faInbox,
   faArrowRight,
   faAtom,
+  faComments,
 } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { useMagneticEffect } from "@/hooks/useMagneticEffect";
 
 interface Notification {
   id: number;
+  headline?: string;
   text: string;
   icon: IconDefinition;
   timestamp: string;
@@ -27,7 +28,18 @@ interface Notification {
 
 const notifications: Notification[] = [
   {
+    id: 6,
+    headline: "Open Post is Live!",
+    text: "📌 Introducing Open Post! An infinite anonymous spatial canvas board for posting sticky notes, nested comments, and real-time ideas with zero sign-up.",
+    icon: faComments,
+    timestamp: "August 02, 2026",
+    color: "text-indigo-400",
+    link: "https://openboard-post.vercel.app/",
+    linkText: "Visit Open Post",
+  },
+  {
     id: 5,
+    headline: "Chain Reaction Game",
     text: "⚛️ Introducing Chain Reaction! A tactical pass-and-play game of grid domination and explosive cascades. Challenge friends and dominate the board.",
     icon: faAtom,
     timestamp: "July 05, 2026",
@@ -37,6 +49,7 @@ const notifications: Notification[] = [
   },
   {
     id: 4,
+    headline: "Developer Quiz App",
     text: "🎯 I built an interactive quiz app to sharpen and gauge my own programming skills — and for anyone else looking to do the same! Explore 12 topics: JavaScript, Python, AWS & more.",
     icon: faChartLine,
     timestamp: "June 29, 2026",
@@ -46,6 +59,7 @@ const notifications: Notification[] = [
   },
   {
     id: 3,
+    headline: "Website Design Refresh",
     text: "✨ Refreshed website design with smooth animations, enhanced mobile experience, and modern aesthetic",
     icon: faPalette,
     timestamp: "June 21, 2026",
@@ -53,6 +67,7 @@ const notifications: Notification[] = [
   },
   {
     id: 2,
+    headline: "Workplace Assessment",
     text: "🎯 Completed Workplace Insight Professional Assessment by Criteria Corp",
     icon: faChartLine,
     timestamp: "June 20, 2026",
@@ -62,6 +77,7 @@ const notifications: Notification[] = [
   },
   {
     id: 1,
+    headline: "Open to Opportunities",
     text: "💼 Actively seeking new opportunities! Open to full-time roles and exciting projects",
     icon: faBriefcase,
     timestamp: "June 01, 2026",
@@ -78,7 +94,7 @@ const notifications: Notification[] = [
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useMagneticEffect(0.25);
+  const latestNotification = notifications[0];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -106,27 +122,40 @@ export default function NotificationDropdown() {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        ref={buttonRef}
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label="Notifications"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className="relative w-10 h-10 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/50 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 backdrop-blur-sm transition-all duration-300 will-change-transform group"
-        style={{ transitionProperty: "color, background-color, border-color" }}
+        className="relative h-10 px-2.5 sm:px-3 rounded-xl flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/60 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/60 hover:border-[var(--color-accent)]/40 backdrop-blur-md transition-all duration-300 group cursor-pointer shadow-xs"
+        style={{ transitionProperty: "color, background-color, border-color, box-shadow" }}
       >
-        <span suppressHydrationWarning>
-          <FontAwesomeIcon
-            icon={faBell}
-            className={`text-base transition-transform duration-300 ${isOpen ? "scale-110 rotate-12" : "group-hover:scale-110"
+        <div className="relative flex items-center justify-center">
+          <span suppressHydrationWarning>
+            <FontAwesomeIcon
+              icon={faBell}
+              className={`text-sm sm:text-base transition-transform duration-300 ${
+                isOpen ? "scale-110 rotate-12 text-[var(--color-accent)]" : "group-hover:scale-110 text-[var(--color-accent)]"
               }`}
-            suppressHydrationWarning
-          />
-        </span>
-
-        {notifications.length > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-red-500/30 animate-pulse">
-            {notifications.length}
+              suppressHydrationWarning
+            />
           </span>
+
+          {notifications.length > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 bg-gradient-to-br from-red-500 to-red-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-pulse">
+              {notifications.length}
+            </span>
+          )}
+        </div>
+
+        {latestNotification && (
+          <div className="hidden sm:flex items-center gap-2 max-w-[140px] md:max-w-[180px] lg:max-w-[220px] overflow-hidden text-left leading-none">
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-wider uppercase bg-[var(--color-accent)]/15 text-[var(--color-accent)] border border-[var(--color-accent)]/20 shrink-0">
+              NEW
+            </span>
+            <span className="text-xs font-semibold text-[var(--color-foreground)] truncate group-hover:text-[var(--color-accent)] transition-colors">
+              {latestNotification.headline || latestNotification.text}
+            </span>
+          </div>
         )}
       </button>
 
@@ -238,6 +267,8 @@ export default function NotificationDropdown() {
                       <a
                         key={notification.id}
                         href={notification.link}
+                        target={notification.link?.startsWith("http") ? "_blank" : undefined}
+                        rel={notification.link?.startsWith("http") ? "noopener noreferrer" : undefined}
                         onClick={() => setIsOpen(false)}
                         role="menuitem"
                         className={className}
