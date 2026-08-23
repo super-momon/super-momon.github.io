@@ -82,13 +82,17 @@ export default function OnlineSetupForm({
             type="text"
             required
             maxLength={20}
+            autoComplete="off"
+            autoCapitalize="words"
+            autoCorrect="off"
+            spellCheck={false}
             value={onlineName}
             onChange={(e) => setOnlineName(e.target.value)}
             onBlur={(e) => {
               const trimmed = e.target.value.trim();
               setOnlineName(trimmed || 'Player');
             }}
-            className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-[var(--color-accent)] transition"
+            className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl px-3 py-2.5 text-sm font-medium focus:outline-none focus:border-[var(--color-accent)] transition"
             placeholder="Your Name"
           />
         </div>
@@ -104,7 +108,7 @@ export default function OnlineSetupForm({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="bg-[var(--color-surface)]/30 rounded-2xl p-5 border border-[var(--color-border)]/40"
+          className="bg-[var(--color-surface)]/30 rounded-2xl p-4 sm:p-5 border border-[var(--color-border)]/40"
         >
           <label className="text-sm font-semibold text-[var(--color-foreground)]/80 block mb-2">
             Enter 6-Digit Room Code
@@ -113,9 +117,14 @@ export default function OnlineSetupForm({
             type="text"
             required
             maxLength={6}
+            autoComplete="off"
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
+            inputMode="text"
             value={roomCode}
             onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-            className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-lg font-black tracking-widest text-center focus:outline-none focus:border-[var(--color-accent)] transition placeholder:tracking-normal placeholder:font-medium placeholder:text-sm"
+            className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-lg font-black tracking-widest text-center focus:outline-none focus:border-[var(--color-accent)] transition placeholder:tracking-normal placeholder:font-medium placeholder:text-sm font-mono"
             placeholder="E.G. X8J9L2"
           />
         </motion.div>
@@ -126,7 +135,7 @@ export default function OnlineSetupForm({
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         type="submit"
-        className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition-all cursor-pointer"
+        className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 active:scale-98 transition-all cursor-pointer"
       >
         <FontAwesomeIcon icon={onlineMode === 'host' ? faPlus : faSignInAlt} />
         {onlineMode === 'host' ? 'Create Online Lobby' : 'Join Online Room'}

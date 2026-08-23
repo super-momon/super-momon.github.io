@@ -55,14 +55,14 @@ export function ShoutBanner({
                       e.stopPropagation();
                       onDismiss(alert.id);
                     }}
-                    className="w-5.5 h-5.5 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10 text-black/50 dark:text-white/60 hover:text-black dark:hover:text-white hover:bg-black/20 dark:hover:bg-white/20 transition cursor-pointer text-[10px] border-0 flex-shrink-0"
+                    className="w-7 h-7 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10 text-black/50 dark:text-white/60 hover:text-black dark:hover:text-white hover:bg-black/20 dark:hover:bg-white/20 active:scale-90 transition cursor-pointer text-xs border-0 flex-shrink-0"
                     aria-label="Dismiss alert"
                   >
                     <FontAwesomeIcon icon={faTimes} />
                   </button>
                 </div>
               </div>
-              <div className="shout-message">
+              <div className="shout-message text-xs sm:text-sm">
                 {alert.text}
               </div>
             </motion.div>

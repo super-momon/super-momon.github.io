@@ -16,25 +16,26 @@ export function GameGuideModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
       <div 
         onClick={onClose}
         className="absolute inset-0 bg-black/65 backdrop-blur-sm transition-opacity" 
       />
       
-      <div className="relative w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-3xl p-6 shadow-2xl overflow-hidden glass-panel text-xs text-slate-800 dark:text-slate-200 z-10 animate-in fade-in zoom-in duration-200">
+      <div className="relative w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl overflow-y-auto max-h-[88dvh] sm:max-h-[90vh] glass-panel text-xs text-slate-800 dark:text-slate-200 z-10 animate-in fade-in zoom-in duration-200 custom-scrollbar">
         {/* Glow Accent */}
         <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-accent)]/10 rounded-full blur-2xl pointer-events-none" />
 
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/30 pb-3">
+        <div className="flex justify-between items-center mb-3 sm:mb-4 border-b border-[var(--color-border)]/30 pb-2.5 sm:pb-3 sticky top-0 bg-[var(--color-surface)]/95 backdrop-blur-md z-20">
           <h4 className="text-[var(--color-foreground)] font-bold text-sm flex items-center gap-1.5">
             <FontAwesomeIcon icon={faCircleInfo} className="text-[var(--color-accent)] text-base" />
             Critical Mass Explosion Guide
           </h4>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-muted)]/50 flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] transition cursor-pointer font-bold text-xs"
+            aria-label="Close guide modal"
+            className="w-9 h-9 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-muted)]/50 flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] active:scale-90 transition cursor-pointer font-bold text-xs"
           >
             ✕
           </button>

@@ -50,9 +50,9 @@ export default function SetupScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-2xl mx-auto px-4 py-8"
+      className="w-full max-w-2xl mx-auto px-2 sm:px-4 py-4 sm:py-8"
     >
-      <div className="glass-panel rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+      <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl relative overflow-hidden">
         {/* Glow accent */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/10 rounded-full blur-3xl pointer-events-none" />
 

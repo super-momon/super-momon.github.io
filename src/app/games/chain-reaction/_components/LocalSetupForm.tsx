@@ -202,10 +202,44 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-[var(--color-surface)]/30 rounded-2xl p-4 border border-[var(--color-border)]/40 flex flex-col gap-4">
           <div>
-            <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-3">
+            <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-2">
               <FontAwesomeIcon icon={faBorderAll} className="text-[var(--color-accent)]" />
               Grid Board Dimensions
             </label>
+
+            {/* Quick Grid Dimension Presets */}
+            <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mb-3.5">
+              {[
+                { name: 'Mobile', r: 8, c: 6 },
+                { name: 'Standard', r: 12, c: 8 },
+                { name: 'Classic', r: 15, c: 10 },
+                { name: 'Large', r: 20, c: 15 },
+              ].map((preset) => {
+                const isSelected = Number(rows) === preset.r && Number(cols) === preset.c;
+                return (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    onClick={() => {
+                      setRows(preset.r);
+                      setCols(preset.c);
+                    }}
+                    className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl text-center border transition-all active:scale-95 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[var(--color-accent)] text-white border-[var(--color-accent)] shadow-md shadow-[var(--color-accent)]/25 scale-[1.02]'
+                        : 'bg-[var(--color-surface)] text-[var(--color-foreground)]/80 border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-surface)]/80'
+                    }`}
+                  >
+                    <span className="text-xs sm:text-sm font-extrabold tracking-tight font-mono leading-none mb-1">
+                      {preset.r}×{preset.c}
+                    </span>
+                    <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-white/90' : 'text-[var(--color-muted)]'}`}>
+                      {preset.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
@@ -215,7 +249,8 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     key="rows-dec"
                     type="button"
                     onClick={decrementRows}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                    aria-label="Decrease rows"
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
@@ -245,7 +280,8 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     key="rows-inc"
                     type="button"
                     onClick={incrementRows}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                    aria-label="Increase rows"
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
@@ -258,7 +294,8 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     key="cols-dec"
                     type="button"
                     onClick={decrementCols}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                    aria-label="Decrease columns"
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
@@ -288,7 +325,8 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     key="cols-inc"
                     type="button"
                     onClick={incrementCols}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                    aria-label="Increase columns"
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
@@ -309,7 +347,8 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
               <button
                 type="button"
                 onClick={decrementTurnSeconds}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                aria-label="Decrease turn seconds"
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
               >
                 <FontAwesomeIcon icon={faMinus} />
               </button>
@@ -341,7 +380,8 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
               <button
                 type="button"
                 onClick={incrementTurnSeconds}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs"
+                aria-label="Increase turn seconds"
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
               >
                 <FontAwesomeIcon icon={faPlus} />
               </button>
@@ -355,7 +395,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
             <span className="text-[var(--color-accent)]">✨</span>
             Special Cells (Randomly Placed)
           </label>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-3 mb-4">
             {(['walls', 'portals', 'multipliers', 'blackholes'] as const).map(key => (
               <div key={key} className="bg-[var(--color-background)]/50 p-2.5 rounded-xl border border-[var(--color-border)]/30 flex flex-col gap-2">
                 <span className="text-[10px] uppercase font-bold text-[var(--color-muted)] tracking-wider flex items-center gap-1.5">
@@ -369,15 +409,17 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                    <button
                     type="button"
                     onClick={() => handleSpecialCellChange(key, false)}
-                    className="w-7 h-7 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                    aria-label={`Decrease ${key}`}
+                    className="w-8 h-8 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
-                  <span className="text-sm font-extrabold w-6 text-center text-[var(--color-foreground)]">{specialCells[key]}</span>
+                  <span className="text-sm font-extrabold w-6 text-center text-[var(--color-foreground)] font-mono">{specialCells[key]}</span>
                   <button
                     type="button"
                     onClick={() => handleSpecialCellChange(key, true)}
-                    className="w-7 h-7 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                    aria-label={`Increase ${key}`}
+                    className="w-8 h-8 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>

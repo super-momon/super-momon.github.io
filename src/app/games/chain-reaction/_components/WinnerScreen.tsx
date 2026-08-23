@@ -120,7 +120,7 @@ export default function WinnerScreen({
   }, [winnerColor]);
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden px-4">
+    <div className="relative min-h-screen min-h-[100dvh] w-full flex items-center justify-center overflow-hidden px-3 sm:px-4 py-6" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top, 0px))', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom, 0px))' }}>
       {/* Dynamic Fullscreen Confetti Canvas */}
       <canvas
         ref={canvasRef}
@@ -129,7 +129,7 @@ export default function WinnerScreen({
 
       {/* Radial Gradient Glow Backing */}
       <div
-        className="absolute w-[50%] aspect-ratio-1 rounded-full blur-3xl pointer-events-none opacity-20 z-0"
+        className="absolute w-[80%] sm:w-[50%] aspect-ratio-1 rounded-full blur-3xl pointer-events-none opacity-20 z-0"
         style={{
           background: `radial-gradient(circle, ${themeWinnerColor} 0%, transparent 70%)`,
         }}
@@ -140,13 +140,13 @@ export default function WinnerScreen({
         initial={{ opacity: 0, scale: 0.9, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: 'spring', damping: 15, duration: 0.6 }}
-        className="glass-panel w-full max-w-md rounded-3xl p-8 text-center shadow-2xl relative z-10 border border-[var(--color-border)]/60 bg-[var(--color-surface)]/80 backdrop-blur-xl"
+        className="glass-panel w-full max-w-md rounded-2xl sm:rounded-3xl p-5 sm:p-8 text-center shadow-2xl relative z-10 border border-[var(--color-border)]/60 bg-[var(--color-surface)]/85 backdrop-blur-xl"
       >
         {/* Trophy Header */}
         <motion.div
           animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.1, 1.1, 1] }}
           transition={{ repeat: Infinity, repeatDelay: 4, duration: 0.8 }}
-          className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full shadow-lg"
+          className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center rounded-full shadow-lg"
           style={{
             backgroundColor: `${themeWinnerColor}15`,
             color: themeWinnerColor,
@@ -154,15 +154,15 @@ export default function WinnerScreen({
             boxShadow: `0 0 25px ${themeWinnerColor}30`,
           }}
         >
-          <FontAwesomeIcon icon={faTrophy} className="text-4xl" />
+          <FontAwesomeIcon icon={faTrophy} className="text-3xl sm:text-4xl" />
         </motion.div>
 
-        <h1 className="text-xs uppercase tracking-widest font-black text-[var(--color-muted)] mb-2">
+        <h1 className="text-[10px] sm:text-xs uppercase tracking-widest font-black text-[var(--color-muted)] mb-1.5 sm:mb-2">
           Victory Achieved!
         </h1>
         
         <h2 
-          className="text-4xl font-extrabold tracking-tight mb-4 text-neon"
+          className="text-2xl sm:text-4xl font-extrabold tracking-tight mb-3 sm:mb-4 text-neon"
           style={{ 
             color: themeWinnerColor,
             '--neon-glow': `${themeWinnerColor}40`,
@@ -172,17 +172,17 @@ export default function WinnerScreen({
         </h2>
 
         {/* Stats */}
-        <div className="bg-[var(--color-surface)]/50 rounded-2xl p-4 border border-[var(--color-border)]/40 mb-8 max-w-xs mx-auto">
-          <span className="text-xs text-[var(--color-muted)] font-medium block mb-1">Remaining Dominating Orbs</span>
-          <span className="text-2xl font-black text-[var(--color-foreground)]">
+        <div className="bg-[var(--color-surface)]/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-[var(--color-border)]/40 mb-6 sm:mb-8 max-w-xs mx-auto">
+          <span className="text-xs text-[var(--color-muted)] font-medium block mb-0.5">Remaining Dominating Orbs</span>
+          <span className="text-xl sm:text-2xl font-black text-[var(--color-foreground)] font-mono">
             {totalOrbs} orbs
           </span>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5 sm:gap-3">
           {isOnline && !isHost ? (
-            <div className="text-center py-3.5 px-6 rounded-xl bg-[var(--color-surface)]/40 border border-[var(--color-border)]/40 text-[var(--color-muted)] text-xs font-bold animate-pulse">
+            <div className="text-center py-3 px-4 rounded-xl bg-[var(--color-surface)]/40 border border-[var(--color-border)]/40 text-[var(--color-muted)] text-xs font-bold animate-pulse">
               Waiting for Host to return to lobby...
             </div>
           ) : (
@@ -191,17 +191,17 @@ export default function WinnerScreen({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onPlayAgain}
-                className="w-full py-3.5 px-6 rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition cursor-pointer"
+                className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 active:scale-95 transition cursor-pointer"
               >
                 <FontAwesomeIcon icon={faRotateRight} />
-                {isOnline ? 'Return Lobby (Same Settings)' : 'Play Again (Same Settings)'}
+                {isOnline ? 'Return to Lobby' : 'Play Again (Same Settings)'}
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onBackToSetup}
-                className="w-full py-3.5 px-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-foreground)] hover:bg-[var(--color-surface)]/80 font-bold text-sm flex items-center justify-center gap-2 transition cursor-pointer"
+                className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-foreground)] hover:bg-[var(--color-surface)]/80 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95 transition cursor-pointer"
               >
                 <FontAwesomeIcon icon={faSliders} />
                 {isOnline ? 'Disconnect & Setup' : 'Change Game Settings'}
@@ -212,14 +212,14 @@ export default function WinnerScreen({
           {isOnline ? (
             <button
               onClick={onBackToSetup}
-              className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center gap-1.5 justify-center mt-3 transition hover:underline"
+              className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center gap-1.5 justify-center mt-2 transition hover:underline cursor-pointer"
             >
               <FontAwesomeIcon icon={faArrowLeft} /> Leave Online Room
             </button>
           ) : (
             <button
               onClick={() => window.location.href = '/'}
-              className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center gap-1.5 justify-center mt-3 transition hover:underline"
+              className="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] flex items-center gap-1.5 justify-center mt-2 transition hover:underline cursor-pointer"
             >
               <FontAwesomeIcon icon={faArrowLeft} /> Exit to Homepage
             </button>

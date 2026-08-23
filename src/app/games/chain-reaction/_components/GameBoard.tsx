@@ -7,7 +7,7 @@ import { Cell, getNeighbors, getCellCriticalMass, countPlayerOrbs } from './game
 import { buildBoardWithSpecialCells } from './boardInitializer';
 import { GameCell } from './GameCell';
 import { PlayerStandings } from './PlayerStandings';
-import { GameBoardControls, Ability } from './GameBoardControls';
+import { GameBoardControls, Ability, ZoomLevel } from './GameBoardControls';
 import { ShoutBanner } from './ShoutBanner';
 import { GameGuideModal } from './GameGuideModal';
 import { PlayerSetup, SpecialCellsConfig } from './SetupScreen';
@@ -106,7 +106,7 @@ export default function GameBoard({
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(initialSound);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
-  const [zoomLevel, setZoomLevel] = useState<'sm' | 'md' | 'lg'>('md');
+  const [zoomLevel, setZoomLevel] = useState<ZoomLevel>('fit');
   const [explodingCells, setExplodingCells] = useState<Record<string, boolean>>({});
   const [activeAbility, setActiveAbility] = useState<Ability | null>(null);
 
@@ -798,21 +798,25 @@ export default function GameBoard({
 
         {/* Grid Canvas Wrapper */}
         <div 
-          className={`w-full bg-[var(--color-surface)]/20 border rounded-3xl p-2 sm:p-4 overflow-hidden glass-panel flex items-center justify-center transition-all duration-500 ${
+          className={`w-full bg-[var(--color-surface)]/20 border rounded-2xl sm:rounded-3xl p-1.5 sm:p-4 overflow-hidden glass-panel flex items-center justify-center transition-all duration-500 ${
             isShoutShaking ? 'shout-shake' : ''
           }`}
           style={{
             borderColor: activePlayerThemeColor ? `${activePlayerThemeColor}40` : 'var(--color-border)',
             boxShadow: activePlayerThemeColor ? `0 8px 30px ${activePlayerThemeColor}10, inset 0 0 0 1px ${activePlayerThemeColor}15` : 'none',
-          }}
+            '--board-cols': actualCols,
+            '--board-rows': actualRows,
+          } as React.CSSProperties}
         >
-          <div className="game-board-viewport max-h-[80vh] p-1 sm:p-2">
+          <div className="game-board-viewport max-h-[75vh] sm:max-h-[80vh] p-0.5 sm:p-2">
             <div
-              className={`grid gap-[2px] p-2 bg-[var(--color-background)]/60 rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel}`}
+              className={`grid gap-[2px] p-1.5 sm:p-2 bg-[var(--color-background)]/60 rounded-xl sm:rounded-2xl border border-[var(--color-border)]/40 select-none shadow-xl mx-auto zoom-${zoomLevel}`}
               style={{
                 gridTemplateColumns: `repeat(${actualCols}, var(--cell-size))`,
                 width: 'max-content',
-              }}
+                '--board-cols': actualCols,
+                '--board-rows': actualRows,
+              } as React.CSSProperties}
             >
               {board.map((row, r) =>
                 row.map((cell, c) => {

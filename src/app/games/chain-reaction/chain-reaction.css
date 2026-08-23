@@ -11,11 +11,20 @@
 
 .game-container {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 6rem 1rem 3rem 1rem;
+  padding: max(4.5rem, calc(env(safe-area-inset-top, 0px) + 3.75rem)) max(0.5rem, env(safe-area-inset-right, 0px)) max(2rem, env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-left, 0px));
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .game-container {
+    padding: 6rem 1rem 3rem 1rem;
+  }
 }
 
 /* Simple Flat Glowing Orb */
@@ -43,7 +52,6 @@
   }
 }
 
-/* Static layout arrangements for cells containing 1-4 orbs */
 /* Static layout arrangements for cells containing 1-4 orbs */
 .orb-layout-1 {
   display: flex;
@@ -157,8 +165,28 @@
 }
 
 /* Zoom Sizing Definitions & Variables (Responsive configurations) */
+.zoom-fit {
+  --cell-size: clamp(20px, calc((100vw - 2.5rem) / var(--board-cols, 10)), 48px);
+  --orb-overlap: -1.5px;
+  --orb-border: 0.8px;
+}
+@media (min-width: 640px) {
+  .zoom-fit {
+    --cell-size: clamp(28px, calc((min(100vw, 1200px) - 5rem) / var(--board-cols, 10)), 56px);
+  }
+}
+
+.zoom-xs {
+  --cell-size: 26px;
+  --orb-overlap: -1px;
+  --orb-border: 0.6px;
+}
+@media (min-width: 640px) {
+  .zoom-xs { --cell-size: 30px; }
+}
+
 .zoom-sm {
-  --cell-size: 34px;
+  --cell-size: 32px;
   --orb-overlap: -1.5px;
   --orb-border: 0.8px;
 }
@@ -167,7 +195,7 @@
 }
 
 .zoom-md {
-  --cell-size: 44px;
+  --cell-size: 40px;
   --orb-overlap: -2.5px;
   --orb-border: 1px;
 }
@@ -176,15 +204,27 @@
 }
 
 .zoom-lg {
-  --cell-size: 52px;
-  --orb-overlap: -3.8px;
-  --orb-border: 1.5px;
+  --cell-size: 48px;
+  --orb-overlap: -3.5px;
+  --orb-border: 1.2px;
 }
 @media (min-width: 640px) {
   .zoom-lg { --cell-size: 58px; }
 }
 
 /* Zoom adjustments to scale down orbs for different cell sizes */
+.zoom-xs .orb-simple {
+  width: 7px;
+  height: 7px;
+  box-shadow: 0 0 4px var(--orb-glow);
+}
+
+.zoom-fit .orb-simple {
+  width: clamp(7px, calc(var(--cell-size) * 0.32), 16px);
+  height: clamp(7px, calc(var(--cell-size) * 0.32), 16px);
+  box-shadow: 0 0 6px var(--orb-glow);
+}
+
 .zoom-sm .orb-simple {
   width: 10px;
   height: 10px;
@@ -192,14 +232,14 @@
 }
 
 .zoom-md .orb-simple {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   box-shadow: 0 0 10px var(--orb-glow);
 }
 
 .zoom-lg .orb-simple {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   box-shadow: 0 0 14px var(--orb-glow);
 }
 
@@ -210,14 +250,21 @@
   overflow-x: auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0.5rem;
-  border-radius: 1rem;
+  overscroll-behavior: contain;
+  padding: 0.25rem;
+  border-radius: 0.875rem;
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
 }
+@media (min-width: 640px) {
+  .game-board-viewport {
+    padding: 0.5rem;
+    border-radius: 1rem;
+  }
+}
 .game-board-viewport::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
+  height: 4px;
+  width: 4px;
 }
 .game-board-viewport::-webkit-scrollbar-thumb {
   background: var(--color-border);
@@ -233,9 +280,17 @@
   justify-content: center;
   border: 1px solid var(--cell-empty-border);
   background-color: var(--cell-empty-bg);
-  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-out;
   cursor: pointer;
   overflow: visible;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.game-cell:active:not(.disabled) {
+  transform: scale(0.94);
 }
 
 .game-cell.owned {
@@ -298,12 +353,14 @@
 .glass-panel {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .dark .glass-panel {
   background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -322,6 +379,14 @@
 }
 
 /* Scaled particle sizes for smaller cell zoom */
+.zoom-xs .explosion-particle {
+  width: 4px;
+  height: 4px;
+}
+.zoom-fit .explosion-particle {
+  width: clamp(4px, calc(var(--cell-size) * 0.25), 12px);
+  height: clamp(4px, calc(var(--cell-size) * 0.25), 12px);
+}
 .zoom-sm .explosion-particle {
   width: 6px;
   height: 6px;
@@ -379,19 +444,53 @@
   }
 }
 
-/* Fade and slide up animation for floating chat */
+/* Mobile Player Standings Scroll Strip */
+.player-scroll-strip {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  gap: 0.5rem;
+  padding: 0.25rem 0.125rem;
+}
+.player-scroll-strip::-webkit-scrollbar {
+  display: none;
+}
+.player-scroll-strip > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Fade and slide up animation for floating chat and bottom sheet */
 .animate-fade-in-up {
-  animation: fade-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fade-in-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fade-in-up {
   0% {
     opacity: 0;
-    transform: translateY(16px) scale(0.95);
+    transform: translateY(16px) scale(0.96);
   }
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile Chat Bottom Sheet slide */
+.animate-slide-up-sheet {
+  animation: slide-up-sheet 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slide-up-sheet {
+  0% {
+    transform: translateY(100%);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
@@ -704,10 +803,24 @@
 
 /* Status Effects */
 .status-shielded {
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.6), inset 0 0 10px rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.6) !important;
 }
 .status-frozen {
-  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.6), inset 0 0 10px rgba(6, 182, 212, 0.3) !important;
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.6) !important;
   background-color: rgba(6, 182, 212, 0.1) !important;
 }
+
+@keyframes leader-crown-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(4deg);
+  }
+}
+
+.animate-leader-crown {
+  animation: leader-crown-float 2.5s infinite ease-in-out;
+}
+
 

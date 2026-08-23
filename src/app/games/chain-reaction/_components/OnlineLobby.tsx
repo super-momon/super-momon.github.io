@@ -196,17 +196,17 @@ export default function OnlineLobby({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
-      className="w-full max-w-4xl mx-auto px-4 py-8"
+      className="w-full max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-8"
     >
-      <div className="glass-panel rounded-3xl p-8 shadow-2xl relative overflow-hidden border border-[var(--color-border)]/50 bg-[var(--color-surface)]/40 backdrop-blur-xl">
+      <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl relative overflow-hidden border border-[var(--color-border)]/50 bg-[var(--color-surface)]/40 backdrop-blur-xl">
         {/* Glow Accent */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Header with Back Button */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
           <button
             onClick={onLeave}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-xl hover:bg-[var(--color-surface)] active:scale-95 transition cursor-pointer"
           >
             <FontAwesomeIcon icon={faArrowLeft} /> Leave Lobby
           </button>
@@ -228,20 +228,20 @@ export default function OnlineLobby({
         </div>
 
         {/* Room Code Display */}
-        <div className="text-center mb-8 bg-[var(--color-surface)]/60 rounded-2xl p-6 border border-[var(--color-border)]/40 space-y-4">
+        <div className="text-center mb-6 sm:mb-8 bg-[var(--color-surface)]/60 rounded-2xl p-4 sm:p-6 border border-[var(--color-border)]/40 space-y-3 sm:space-y-4">
           <div>
-            <h2 className="text-xs uppercase font-extrabold tracking-widest text-[var(--color-muted)] mb-2">
+            <h2 className="text-xs uppercase font-extrabold tracking-widest text-[var(--color-muted)] mb-1.5">
               Room Join Code
             </h2>
             <div className="flex items-center justify-center gap-3">
-              <span className="text-4xl font-black tracking-wider text-[var(--color-foreground)] uppercase">
+              <span className="text-3xl sm:text-4xl font-black tracking-wider text-[var(--color-foreground)] uppercase font-mono">
                 {roomCode}
               </span>
               <button
                 onClick={copyRoomCode}
                 aria-label="Copy room join code"
                 title="Copy Room Code"
-                className="w-10 h-10 rounded-xl border border-[var(--color-border)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] hover:scale-105 transition cursor-pointer"
+                className="w-11 h-11 rounded-xl border border-[var(--color-border)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] active:scale-90 transition cursor-pointer"
               >
                 <FontAwesomeIcon icon={copied ? faCheck : faCopy} className={copied ? 'text-green-500' : ''} />
               </button>
@@ -428,6 +428,41 @@ export default function OnlineLobby({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Left Settings: Dimensions & Turn Time */}
               <div className="space-y-4 flex flex-col justify-center">
+                {/* Quick Presets */}
+                <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mb-3.5">
+                  {[
+                    { name: 'Mobile', r: 8, c: 6 },
+                    { name: 'Standard', r: 12, c: 8 },
+                    { name: 'Classic', r: 15, c: 10 },
+                    { name: 'Large', r: 20, c: 15 },
+                  ].map((preset) => {
+                    const isSelected = getParsedRows() === preset.r && getParsedCols() === preset.c;
+                    return (
+                      <button
+                        key={preset.name}
+                        type="button"
+                        onClick={() => {
+                          setLocalRows(preset.r.toString());
+                          setLocalCols(preset.c.toString());
+                          onSettingsChange(preset.r, preset.c, getParsedSeconds(), localSpecialCells);
+                        }}
+                        className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl text-center border transition-all active:scale-95 cursor-pointer ${
+                          isSelected
+                            ? 'bg-[var(--color-accent)] text-white border-[var(--color-accent)] shadow-md shadow-[var(--color-accent)]/25 scale-[1.02]'
+                            : 'bg-[var(--color-surface)] text-[var(--color-foreground)]/80 border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-surface)]/80'
+                        }`}
+                      >
+                        <span className="text-xs sm:text-sm font-extrabold tracking-tight font-mono leading-none mb-1">
+                          {preset.r}×{preset.c}
+                        </span>
+                        <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-white/90' : 'text-[var(--color-muted)]'}`}>
+                          {preset.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <span className="text-[10px] text-[var(--color-muted)] block mb-1.5 font-bold uppercase tracking-wider">Rows (6 - 20)</span>
@@ -435,7 +470,8 @@ export default function OnlineLobby({
                       <button
                         type="button"
                         onClick={handleDecrementRows}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        aria-label="Decrease rows"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </button>
@@ -467,7 +503,8 @@ export default function OnlineLobby({
                       <button
                         type="button"
                         onClick={handleIncrementRows}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        aria-label="Increase rows"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faPlus} />
                       </button>
@@ -479,7 +516,8 @@ export default function OnlineLobby({
                       <button
                         type="button"
                         onClick={handleDecrementCols}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        aria-label="Decrease columns"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </button>
@@ -511,7 +549,8 @@ export default function OnlineLobby({
                       <button
                         type="button"
                         onClick={handleIncrementCols}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                        aria-label="Increase columns"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faPlus} />
                       </button>

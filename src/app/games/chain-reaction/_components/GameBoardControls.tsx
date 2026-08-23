@@ -15,6 +15,7 @@ import {
 import { Player } from './GameBoard';
 
 export type Ability = 'shield' | 'freeze' | 'detonate';
+export type ZoomLevel = 'fit' | 'xs' | 'sm' | 'md' | 'lg';
 
 interface GameBoardControlsProps {
   isOnline: boolean;
@@ -27,8 +28,8 @@ interface GameBoardControlsProps {
   secondsElapsed: number;
   myPlayer: Player | undefined;
   myPlayerColor: string;
-  zoomLevel: 'sm' | 'md' | 'lg';
-  setZoomLevel: (lvl: 'sm' | 'md' | 'lg') => void;
+  zoomLevel: ZoomLevel;
+  setZoomLevel: (lvl: ZoomLevel) => void;
   soundEnabled: boolean;
   setSoundEnabled: (enabled: boolean) => void;
   onQuitClick: () => void;
@@ -62,131 +63,137 @@ export function GameBoardControls({
   };
 
   return (
-    <div className="w-full flex flex-col lg:flex-row gap-4 items-center justify-between mb-6 bg-[var(--color-surface)]/90 border border-[var(--color-border)] p-3 sm:p-4 rounded-2xl shadow-sm backdrop-blur-md">
-      {/* Action Buttons: Quit, Reset, Guide */}
-      <div className="flex flex-wrap justify-center lg:justify-start gap-2 items-center w-full lg:w-auto">
-        <button
-          onClick={onQuitClick}
-          aria-label="Quit game and return to setup"
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition"
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
-          <span className="hidden sm:inline">
-            {isOnline ? 'Leave Room' : 'Quit Setup'}
-          </span>
-          <span className="sm:hidden">
-            {isOnline ? 'Leave' : 'Quit'}
-          </span>
-        </button>
-        
-        {(!isOnline || isHost) && (
+    <div className="w-full flex flex-col gap-2.5 mb-3 sm:mb-5 bg-[var(--color-surface)] border border-[var(--color-border)] p-2.5 sm:p-3.5 rounded-2xl shadow-sm">
+      {/* Top Row: Game Actions & View Settings */}
+      <div className="flex items-center justify-between gap-2 w-full flex-wrap">
+        {/* Left: Navigation, Reset, Rules */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
-            onClick={onResetClick}
-            disabled={isAnimating}
-            aria-label="Reset board to restart game"
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition disabled:opacity-50"
+            onClick={onQuitClick}
+            aria-label="Quit game and return to setup"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)]/80 active:scale-95 transition cursor-pointer"
           >
-            <FontAwesomeIcon icon={faRotateRight} /> Reset
+            <FontAwesomeIcon icon={faArrowLeft} />
+            <span>{isOnline ? 'Leave' : 'Quit'}</span>
           </button>
-        )}
+          
+          {(!isOnline || isHost) && (
+            <button
+              onClick={onResetClick}
+              disabled={isAnimating}
+              aria-label="Reset board to restart game"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)]/80 active:scale-95 transition disabled:opacity-40 cursor-pointer"
+            >
+              <FontAwesomeIcon icon={faRotateRight} />
+              <span className="hidden xs:inline">Reset</span>
+            </button>
+          )}
 
-        <button
-          onClick={onOpenGuide}
-          aria-label="Show gameplay rules"
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)]/60 rounded-lg hover:bg-[var(--color-surface)] transition cursor-pointer"
-        >
-          <FontAwesomeIcon icon={faCircleInfo} /> Guide
-        </button>
+          <button
+            onClick={onOpenGuide}
+            aria-label="Show gameplay rules"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)]/80 active:scale-95 transition cursor-pointer"
+          >
+            <FontAwesomeIcon icon={faCircleInfo} />
+            <span className="hidden xs:inline">Rules</span>
+          </button>
+        </div>
+
+        {/* Right: Online identity, Cell Size Toggle & Sound */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {isOnline && (
+            <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-[var(--color-background)] px-2.5 py-1.5 rounded-xl border border-[var(--color-border)]">
+              <span className="text-[var(--color-muted)] text-[10px] uppercase font-bold">You:</span>
+              <span
+                className="w-3 h-3 rounded-full border border-black/10 flex-shrink-0"
+                style={{ backgroundColor: myPlayerColor }}
+              />
+              <span className="text-[var(--color-foreground)] truncate max-w-[80px]">
+                {myPlayer?.name}
+              </span>
+            </div>
+          )}
+
+          {/* Cell Size Zoom Toggle (Fixed: White text on emerald accent for high contrast on both dark & light themes) */}
+          <div className="flex items-center bg-[var(--color-background)] rounded-xl p-1 border border-[var(--color-border)] gap-0.5">
+            <span className="text-[9px] font-bold text-[var(--color-muted)] uppercase px-1 hidden md:inline select-none">
+              Size:
+            </span>
+            {(['fit', 'sm', 'md', 'lg'] as const).map((lvl) => {
+              const isSelected = zoomLevel === lvl;
+              return (
+                <button
+                  key={lvl}
+                  type="button"
+                  onClick={() => setZoomLevel(lvl)}
+                  aria-label={`Set cell zoom to ${lvl}`}
+                  className={`px-2 sm:px-2.5 py-1 text-[10px] sm:text-xs font-extrabold rounded-lg transition-all active:scale-95 cursor-pointer uppercase ${
+                    isSelected
+                      ? 'bg-[var(--color-accent)] text-white shadow-sm'
+                      : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-surface)]'
+                  }`}
+                >
+                  {lvl}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Sound Toggle */}
+          <button
+            type="button"
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            aria-label={soundEnabled ? "Mute game sounds" : "Unmute game sounds"}
+            className="w-8 h-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] active:scale-95 transition cursor-pointer text-xs"
+          >
+            <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} />
+          </button>
+        </div>
       </div>
 
-      {/* Turn & Session Stats Indicator */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full lg:w-auto">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[var(--color-muted)] tracking-wider uppercase">Turn</span>
-          <div
-            className="w-[160px] sm:w-[220px] justify-center flex-shrink-0 px-3 sm:px-4 py-1.5 rounded-full border text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm transition-all"
-            style={{
-              borderColor: activePlayerThemeColor,
-              backgroundColor: `${activePlayerThemeColor}15`,
-              color: activePlayerThemeColor,
-              boxShadow: `0 0 10px ${activePlayerThemeColor}25`,
-            }}
-          >
+      {/* Bottom Row: Active Turn Banner + Orbs & Elapsed Time */}
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[var(--color-border)]/50">
+        {/* Active Player Turn Indicator */}
+        <div
+          className="flex-1 min-w-[140px] px-3 py-1.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-between gap-2 transition-colors"
+          style={{
+            borderColor: activePlayerThemeColor ? `${activePlayerThemeColor}50` : 'var(--color-border)',
+            backgroundColor: activePlayerThemeColor ? `${activePlayerThemeColor}10` : 'var(--color-surface)',
+            color: activePlayerThemeColor,
+          }}
+        >
+          <div className="flex items-center gap-2 min-w-0">
             <span
-              className="w-2 h-2 rounded-full animate-ping flex-shrink-0"
+              className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse"
               style={{ backgroundColor: activePlayerThemeColor }}
             />
-            <div className="flex items-center justify-center gap-1.5 min-w-0 max-w-[calc(100%-16px)]">
-              <span className="truncate max-w-[70px] sm:max-w-[120px]" title={activePlayer.name}>
-                {activePlayer.name}
-              </span>
-              {isOnline && isMyTurn && (
-                <span className="text-[8px] text-green-600 dark:text-green-400 font-extrabold bg-green-500/10 px-1 py-0.25 rounded border border-green-500/20 flex-shrink-0 leading-none">
-                  YOU
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 flex-shrink-0">
-          <div className="px-3 sm:px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
-            <span className="text-[var(--color-muted)] hidden sm:inline">Total Orbs:</span>
-            <span className="text-[var(--color-muted)] sm:hidden">Orbs:</span>
-            <span className="text-[var(--color-foreground)]">{totalOrbsCount}</span>
-          </div>
-
-          <div className="px-3 sm:px-3.5 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
-            <span className="text-[var(--color-muted)] hidden sm:inline">Duration:</span>
-            <span className="text-[var(--color-muted)] sm:hidden">Time:</span>
-            <span className="text-[var(--color-foreground)]">{formatTime(secondsElapsed)}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Board Zoom & Sound Controls */}
-      <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 w-full lg:w-auto">
-        {isOnline && (
-          <div className="flex items-center gap-1.5 text-xs font-bold bg-[var(--color-surface)] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[var(--color-border)]/80">
-            <span className="text-[var(--color-muted)] hidden sm:inline">You:</span>
-            <span
-              className="w-3.5 h-3.5 rounded-full border border-black/10 flex-shrink-0"
-              style={{
-                backgroundColor: myPlayerColor,
-              }}
-            />
-            <span className="text-[var(--color-foreground)] truncate max-w-[60px] sm:max-w-[80px]">
-              {myPlayer?.name}
+            <span className="text-[10px] uppercase tracking-wider text-[var(--color-muted)] font-extrabold flex-shrink-0">
+              TURN:
+            </span>
+            <span className="truncate font-bold" title={activePlayer.name}>
+              {activePlayer.name}
             </span>
           </div>
-        )}
 
-        {/* Zoom Buttons */}
-        <div className="flex bg-[var(--color-surface)] rounded-lg p-0.5 border border-[var(--color-border)]/80">
-          {(['sm', 'md', 'lg'] as const).map((lvl) => (
-            <button
-              key={lvl}
-              onClick={() => setZoomLevel(lvl)}
-              aria-label={`Set cell size to ${lvl}`}
-              className={`p-1 sm:p-1.5 px-2 sm:px-2.5 text-[10px] sm:text-xs font-bold rounded-md transition ${
-                zoomLevel === lvl
-                  ? 'bg-[var(--color-primary)] text-black font-extrabold shadow-sm'
-                  : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
-              }`}
-            >
-              {lvl.toUpperCase()}
-            </button>
-          ))}
+          {isOnline && isMyTurn && (
+            <span className="text-[8px] sm:text-[9px] text-green-500 font-extrabold bg-green-500/15 px-2 py-0.5 rounded-full border border-green-500/30 flex-shrink-0 leading-none">
+              YOUR TURN
+            </span>
+          )}
         </div>
 
-        {/* Sound Toggle */}
-        <button
-          onClick={() => setSoundEnabled(!soundEnabled)}
-          aria-label={soundEnabled ? "Mute game sounds" : "Unmute game sounds"}
-          className="w-7 sm:w-8 h-7 sm:h-8 rounded-lg border border-[var(--color-border)]/60 bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] transition cursor-pointer"
-        >
-          <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} />
-        </button>
+        {/* Stats: Total Orbs & Duration */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <div className="px-3 py-1.5 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-xs font-bold flex items-center gap-1.5">
+            <span className="text-[var(--color-muted)] text-[10px] uppercase font-bold">Orbs:</span>
+            <span className="text-[var(--color-foreground)] font-mono font-bold">{totalOrbsCount}</span>
+          </div>
+
+          <div className="px-3 py-1.5 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-xs font-bold flex items-center gap-1.5">
+            <span className="text-[var(--color-muted)] text-[10px] uppercase font-bold">Time:</span>
+            <span className="text-[var(--color-foreground)] font-mono font-bold">{formatTime(secondsElapsed)}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
