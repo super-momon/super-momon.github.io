@@ -448,14 +448,14 @@ export default function OnlineLobby({
                         }}
                         className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl text-center border transition-all active:scale-95 cursor-pointer ${
                           isSelected
-                            ? 'bg-[var(--color-accent)] text-white border-[var(--color-accent)] shadow-md shadow-[var(--color-accent)]/25 scale-[1.02]'
+                            ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] border-[var(--color-accent)] shadow-md shadow-[var(--color-accent)]/25 scale-[1.02]'
                             : 'bg-[var(--color-surface)] text-[var(--color-foreground)]/80 border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-surface)]/80'
                         }`}
                       >
                         <span className="text-xs sm:text-sm font-extrabold tracking-tight font-mono leading-none mb-1">
                           {preset.r}×{preset.c}
                         </span>
-                        <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-white/90' : 'text-[var(--color-muted)]'}`}>
+                        <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-[var(--color-accent-contrast)]' : 'text-[var(--color-muted)]'}`}>
                           {preset.name}
                         </span>
                       </button>
@@ -697,7 +697,7 @@ export default function OnlineLobby({
             whileTap={{ scale: 0.98 }}
             disabled={lobbyPlayers.length < 2}
             onClick={onStartGame}
-            className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-[var(--color-accent-contrast)] hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <FontAwesomeIcon icon={faPlay} />
             Start Online Game

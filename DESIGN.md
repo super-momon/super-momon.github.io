@@ -3,13 +3,17 @@ name: super-momon Portfolio & Quiz Hub
 description: Full Stack Developer portfolio and interactive CS quiz application
 colors:
   primary: "#08ca5f"
-  primary-hover: "#07ce60"
+  primary-hover: "#23d873"
+  primary-contrast: "#052e16"
   neutral-bg: "#0a0a0f"
   surface: "#111827"
-  border: "#1e293b"
+  border: "#273449"
   foreground: "#f1f5f9"
-  muted: "#94a3b8"
-  warning: "#facc15"
+  muted: "#9aa8bd"
+  warning: "#fbbf24"
+  light-primary: "#067a3a"
+  light-primary-hover: "#05602e"
+  light-primary-contrast: "#ffffff"
 typography:
   display:
     fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
@@ -31,7 +35,7 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.primary}"
-    textColor: "#000000"
+    textColor: "{colors.primary-contrast}"
     rounded: "{rounded.md}"
     padding: "12px 24px"
 ---
@@ -47,7 +51,7 @@ A high-performance, dark-mode-first developer workspace combined with an immersi
 **Key Characteristics:**
 - Dark mode glassmorphic UI with vibrant emerald green (`#08ca5f`) key actions
 - High-contrast typography powered by Geist sans & Geist mono
-- Tactical borders (`#1e293b`) and subtle glow effects
+- Tactical borders (`#273449`) and subtle glow effects
 - Responsive, gaming-inspired layouts with interactive feedback
 
 ## Colors
@@ -56,13 +60,16 @@ The palette pairs deep dark backgrounds with crisp neon emerald highlights for a
 
 ### Primary
 - **Emerald Pulse** (`#08ca5f`): Used for key call-to-actions, score indicators, active states, and focus rings.
+- **Primary contrast** (`#052e16`): Dark foreground on the bright dark-theme accent; it provides 6.83:1 contrast.
+- **Light theme accent** (`#067a3a`): Paired with white action text for 5.45:1 contrast; hover uses `#05602e`.
 
 ### Neutral
 - **Obsidian Deep** (`#0a0a0f`): Core background color.
 - **Surface Elevation** (`#111827`): Cards, modal containers, and elevated surfaces.
-- **Slate Border** (`#1e293b`): Crisp structural divider and card border line.
+- **Slate Border** (`#273449`): Crisp structural divider and card border line.
 - **Foreground Text** (`#f1f5f9`): Primary high-contrast reading text.
-- **Muted Slate** (`#94a3b8`): Secondary text, subtitles, and metadata labels.
+- **Muted Slate** (`#9aa8bd`): Secondary text, subtitles, and metadata labels.
+- Light surfaces use `#f6f8fa`, borders use `#d5dbe2`, and muted text uses `#4b5563`.
 
 ### Named Rules
 **The Single-Accent Anchor.** The emerald accent is reserved for interactive affordances, key scores, and active selections.
@@ -94,7 +101,7 @@ Card radii default to `rounded-xl` (12px) to `rounded-2xl` (16px), with pill bad
 
 ### Buttons
 - **Shape:** Rounded 12px or full pill.
-- **Primary:** Background `#08ca5f`, text black/dark slate, font weight 600. Hover: slight scale effect and elevated glow.
+- **Primary:** Background `#08ca5f`, text `#052e16`, font weight 600. In light mode use `#067a3a` with white text. Hover uses the theme-specific contrast-safe color.
 - **Ghost / Outline:** Background transparent, border `#1e293b`, hover border `#08ca5f`.
 
 ### Cards
@@ -105,8 +112,8 @@ Card radii default to `rounded-xl` (12px) to `rounded-2xl` (16px), with pill bad
 
 ### Do:
 - **Do** use `#08ca5f` consistently as the sole interactive accent color.
-- **Do** maintain high contrast with `#f1f5f9` text against deep dark backgrounds.
+- **Do** maintain contrast-safe foregrounds in both light and dark themes.
 
 ### Don't:
-- **Don't** use light mode backgrounds or low-contrast gray text on dark surfaces.
+- **Don't** use low-contrast text against either theme's background.
 - **Don't** introduce arbitrary un-themed accent colors.

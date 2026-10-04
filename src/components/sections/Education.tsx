@@ -288,7 +288,7 @@ export default function Education() {
                     <button
                       type="button"
                       onClick={() => setSelectedItem(item)}
-                      className="w-full flex items-center justify-between p-3 rounded-xl bg-background/60 hover:bg-background border border-border/70 hover:border-accent transition-all duration-300 group/btn cursor-pointer text-left"
+                      className="w-full min-h-11 flex items-center justify-between p-3 rounded-xl bg-background/60 hover:bg-background border border-border/70 hover:border-accent transition-all duration-300 group/btn cursor-pointer text-left focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <FontAwesomeIcon
@@ -378,7 +378,7 @@ export default function Education() {
                 <button
                   type="button"
                   onClick={() => setSelectedItem(null)}
-                  className="w-9 h-9 rounded-full border border-border/80 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-background/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent transition-colors cursor-pointer shrink-0"
+                  className="w-11 h-11 rounded-full border border-border/80 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-background/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent transition-colors cursor-pointer shrink-0"
                   aria-label="Close modal"
                 >
                   <FontAwesomeIcon icon={faTimes} className="text-sm" />
@@ -428,7 +428,7 @@ export default function Education() {
                                     title: cert.title,
                                   });
                                 }}
-                                className="flex items-center justify-between p-2.5 rounded-xl bg-background border border-border/80 hover:border-accent transition-all group/link cursor-pointer"
+                                className="flex min-h-11 items-center justify-between p-2.5 rounded-xl bg-background border border-border/80 hover:border-accent transition-all group/link cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                               >
                                 <div className="min-w-0 pr-2">
                                   <p className="text-xs font-semibold text-foreground group-hover/link:text-accent transition-colors truncate">
@@ -491,7 +491,7 @@ export default function Education() {
                   <button
                     type="button"
                     onClick={() => setSelectedItem(null)}
-                    className="px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-white text-xs font-semibold transition-all cursor-pointer shadow-xs"
+                    className="min-h-11 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all cursor-pointer shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     Done
                   </button>
@@ -504,5 +504,4 @@ export default function Education() {
     </section>
   );
 }
-
 

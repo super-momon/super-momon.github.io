@@ -135,7 +135,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
           onClick={() => handleModeChange('survival')}
           className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
             mode === 'survival'
-              ? 'bg-[var(--color-accent)] text-white shadow-md'
+              ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-md'
               : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
           }`}
         >
@@ -146,7 +146,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
           onClick={() => handleModeChange('lives')}
           className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
             mode === 'lives'
-              ? 'bg-[var(--color-accent)] text-white shadow-md'
+              ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-md'
               : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
           }`}
         >
@@ -157,7 +157,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
           onClick={() => handleModeChange('best-of-100')}
           className={`flex-1 py-2 px-2 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
             mode === 'best-of-100'
-              ? 'bg-[var(--color-accent)] text-white shadow-md'
+              ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-md'
               : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
           }`}
         >

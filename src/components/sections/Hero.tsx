@@ -103,7 +103,7 @@ export default function Hero() {
               className="bg-clip-text text-transparent"
               style={{
                 backgroundImage:
-                  "linear-gradient(135deg, var(--color-accent), #34d399)",
+                  "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
               }}
             >
               Ayade
@@ -125,7 +125,7 @@ export default function Hero() {
           >
             <a
               href="#projects"
-              className="group relative px-7 py-3 rounded-full bg-accent text-white font-semibold text-sm
+              className="group relative px-7 py-3 rounded-full bg-accent text-[var(--color-accent-contrast)] font-semibold text-sm
                          overflow-hidden transition-all duration-300 ease-out
                          hover:shadow-[0_0_30px_rgba(0,199,88,0.35)] hover:-translate-y-0.5
                          active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
@@ -179,7 +179,7 @@ export default function Hero() {
               download="Mark_Raymond_Ayade_Resume.pdf"
               data-analytics-skip-auto
               onClick={() => trackEvent("resume_download", { method: "hero_link" })}
-              className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent transition-colors
+              className="inline-flex min-h-11 items-center gap-2 text-sm text-muted hover:text-accent transition-colors
                          focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-lg px-3 py-1.5"
             >
               <FontAwesomeIcon icon={faDownload} className="text-xs" />
@@ -220,4 +220,3 @@ export default function Hero() {
     </LazyMotion>
   );
 }
-

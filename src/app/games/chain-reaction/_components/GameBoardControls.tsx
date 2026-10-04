@@ -129,7 +129,7 @@ export function GameBoardControls({
                   aria-label={`Set cell zoom to ${lvl}`}
                   className={`px-2 sm:px-2.5 py-1 text-[10px] sm:text-xs font-extrabold rounded-lg transition-all active:scale-95 cursor-pointer uppercase ${
                     isSelected
-                      ? 'bg-[var(--color-accent)] text-white shadow-sm'
+                      ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-sm'
                       : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-surface)]'
                   }`}
                 >

@@ -189,7 +189,7 @@ export default function InlineQuizTeaser() {
         <a
           href="/games/quiz"
           onClick={() => trackEvent("inline_quiz_play_full", { category: currentQ.category })}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-accent/90 hover:bg-accent text-white text-xs font-semibold transition-all shadow-xs cursor-pointer"
+          className="inline-flex min-h-11 items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all shadow-xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
           <FontAwesomeIcon icon={faGamepad} className="text-[11px]" />
           <span>Play Full Game</span>
@@ -199,4 +199,3 @@ export default function InlineQuizTeaser() {
     </div>
   );
 }
-

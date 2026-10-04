@@ -161,7 +161,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
               onClick={() => setPlayerCount(num)}
               className={`py-3 px-4 rounded-xl border font-bold text-sm transition-all duration-300 ${
                 playerCount === num
-                  ? 'bg-[var(--color-accent)] text-white border-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/20 scale-102'
+                  ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] border-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/20 scale-102'
                   : 'bg-[var(--color-surface)] text-[var(--color-muted)] border-[var(--color-border)] hover:border-[var(--color-muted)]/50'
               }`}
             >
@@ -226,14 +226,14 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     }}
                     className={`flex flex-col items-center justify-center py-2 px-1 rounded-xl text-center border transition-all active:scale-95 cursor-pointer ${
                       isSelected
-                        ? 'bg-[var(--color-accent)] text-white border-[var(--color-accent)] shadow-md shadow-[var(--color-accent)]/25 scale-[1.02]'
+                        ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] border-[var(--color-accent)] shadow-md shadow-[var(--color-accent)]/25 scale-[1.02]'
                         : 'bg-[var(--color-surface)] text-[var(--color-foreground)]/80 border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-surface)]/80'
                     }`}
                   >
                     <span className="text-xs sm:text-sm font-extrabold tracking-tight font-mono leading-none mb-1">
                       {preset.r}×{preset.c}
                     </span>
-                    <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-white/90' : 'text-[var(--color-muted)]'}`}>
+                    <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-[var(--color-accent-contrast)]' : 'text-[var(--color-muted)]'}`}>
                       {preset.name}
                     </span>
                   </button>
@@ -453,7 +453,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         type="submit"
-        className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition-all cursor-pointer"
+        className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-[var(--color-accent-contrast)] hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition-all cursor-pointer"
       >
         <FontAwesomeIcon icon={faPlay} />
         Start Local Game

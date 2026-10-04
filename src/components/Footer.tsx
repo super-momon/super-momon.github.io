@@ -49,7 +49,7 @@ function SocialLink({ href, label, children }: { href: string; label: string; ch
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
       aria-label={label}
-      className="group relative w-9 h-9 md:w-10 h-10 rounded-xl flex items-center justify-center text-foreground/80 hover:text-white bg-surface/80 dark:bg-surface/40 hover:bg-accent border border-border/85 dark:border-border/50 hover:border-accent shadow-xs hover:shadow-md transition-all duration-300 will-change-transform overflow-hidden"
+      className="group relative w-11 h-11 rounded-xl flex items-center justify-center text-foreground/80 hover:text-[var(--color-accent-contrast)] bg-surface/80 dark:bg-surface/40 hover:bg-accent border border-border/85 dark:border-border/50 hover:border-accent shadow-xs hover:shadow-md transition-all duration-300 will-change-transform overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     >
       {/* Glow effect on hover */}
       <span className="absolute inset-0 bg-accent/0 group-hover:bg-accent/5 transition-all duration-300 rounded-xl" />
@@ -69,7 +69,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <a
       href={href}
-      className="group relative text-xs md:text-sm text-foreground/80 hover:text-foreground transition-all duration-300 py-1.5 inline-flex items-center gap-1.5 font-medium"
+      className="group relative min-h-11 text-xs md:text-sm text-foreground/80 hover:text-foreground transition-all duration-300 py-1.5 inline-flex items-center gap-1.5 font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     >
       <span className="w-1 h-1 rounded-full bg-accent/0 group-hover:bg-accent transition-colors duration-300" />
       <span className="relative">
@@ -230,7 +230,7 @@ export default function Footer() {
                   trackEvent("scroll_to_top_click", { location: "footer" });
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="group flex items-center justify-center w-10 h-10 rounded-full bg-surface/95 dark:bg-surface/40 border border-border/85 dark:border-border/50 text-foreground/80 hover:text-accent hover:border-accent hover:bg-accent/10 transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer"
+                className="group flex items-center justify-center w-11 h-11 rounded-full bg-surface/95 dark:bg-surface/40 border border-border/85 dark:border-border/50 text-foreground/80 hover:text-accent hover:border-accent hover:bg-accent/10 transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                 aria-label="Back to top"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" className="transition-transform duration-300 group-hover:-translate-y-1">
