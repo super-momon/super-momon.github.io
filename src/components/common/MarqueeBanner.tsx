@@ -19,7 +19,7 @@ export default function MarqueeBanner({
   separator,
   repeat = 5,
   bgColor = "var(--color-accent)",
-  textColor = "var(--color-foreground)",
+  textColor = "var(--color-accent-contrast)",
   animationDurationInSeconds = 30,
   direction = "right",
 }: MarqueeBannerProps) {

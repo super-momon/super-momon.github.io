@@ -262,7 +262,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                       onClick={() => setSelectedMode(m.id)}
                       className={`flex-1 py-2.5 px-1.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[var(--color-accent)] text-white shadow-md shadow-[var(--color-accent)]/20'
+                          ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-md shadow-[var(--color-accent)]/20'
                           : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
                       }`}
                     >
@@ -420,7 +420,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
           onClick={() => canStart && onStart(selectedMode, selectedCats, selectedDiffs)}
           className={`w-full py-4 px-6 rounded-2xl font-extrabold flex items-center justify-center gap-3 text-base sm:text-lg transition-all cursor-pointer shadow-2xl ${
             canStart
-              ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white shadow-lg shadow-[var(--color-accent)]/25 hover:scale-[1.01]'
+              ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-[var(--color-accent-contrast)] shadow-lg shadow-[var(--color-accent)]/25 hover:scale-[1.01]'
               : 'bg-[var(--color-surface)]/80 border border-[var(--color-border)] text-[var(--color-muted)] cursor-not-allowed opacity-50'
           }`}
         >

@@ -3,6 +3,7 @@
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
+import { handleTabListKeyDown } from "@/lib/accessibility";
 import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -190,7 +191,9 @@ export default function About() {
                       role="tab"
                       id={`about-tab-mobile-${tab.id}`}
                       aria-selected={isActive}
-                      aria-controls={`about-tabpanel-${tab.id}`}
+                      aria-controls="about-tabpanel"
+                      tabIndex={isActive ? 0 : -1}
+                      onKeyDown={handleTabListKeyDown}
                       onClick={() => {
                         setActiveTab(tab.id);
                         trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "mobile" });
@@ -217,7 +220,9 @@ export default function About() {
                       role="tab"
                       id={`about-tab-${tab.id}`}
                       aria-selected={isActive}
-                      aria-controls={`about-tabpanel-${tab.id}`}
+                      aria-controls="about-tabpanel"
+                      tabIndex={isActive ? 0 : -1}
+                      onKeyDown={handleTabListKeyDown}
                       onClick={() => {
                         setActiveTab(tab.id);
                         trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "desktop" });
@@ -300,7 +305,13 @@ export default function About() {
                   })()}
 
                   {/* Dynamic Content switching */}
-                  <div className="w-full">
+                  <div
+                    id="about-tabpanel"
+                    role="tabpanel"
+                    aria-labelledby={`about-tab-${activeTab}`}
+                    tabIndex={0}
+                    className="w-full"
+                  >
                     {activeTab === "bio" && (
                       <motion.div
                         key="bio"

@@ -84,7 +84,7 @@ export default function SetupScreen({
             onClick={() => setPlayMode('local')}
             className={`flex-1 py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 transition-all ${
               playMode === 'local'
-                ? 'bg-[var(--color-accent)] text-white shadow-lg'
+                ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-lg'
                 : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
             }`}
           >
@@ -96,7 +96,7 @@ export default function SetupScreen({
             onClick={() => setPlayMode('online')}
             className={`flex-1 py-3 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 transition-all ${
               playMode === 'online'
-                ? 'bg-[var(--color-accent)] text-white shadow-lg'
+                ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-lg'
                 : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
             }`}
           >

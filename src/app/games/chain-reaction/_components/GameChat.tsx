@@ -294,7 +294,7 @@ export default function GameChat({
                 type="submit"
                 disabled={!inputText.trim()}
                 aria-label="Send message"
-                className={`w-9 h-9 rounded-xl bg-[var(--color-accent)] text-white flex items-center justify-center hover:scale-105 active:scale-90 transition disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed cursor-pointer ${
+                className={`w-11 h-11 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-contrast)] flex items-center justify-center hover:scale-105 active:scale-90 transition disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed cursor-pointer ${
                   isAlertMode && inputText.trim() ? 'shout-pulse-active' : ''
                 }`}
               >
@@ -311,7 +311,7 @@ export default function GameChat({
         <button
           onClick={toggleChat}
           aria-label="Toggle game chat"
-          className="pointer-events-auto relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/90 text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer"
+          className="pointer-events-auto relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/90 text-[var(--color-accent-contrast)] flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer"
         >
           <FontAwesomeIcon 
             icon={faComments} 

@@ -136,7 +136,7 @@ export function NicknameModal({
             disabled={!isValid || loading}
             className={`w-full py-3.5 rounded-xl font-extrabold flex items-center justify-center gap-2 text-sm transition-all cursor-pointer ${
               isValid && !loading
-                ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white shadow-lg shadow-[var(--color-accent)]/20'
+                ? 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-[var(--color-accent-contrast)] shadow-lg shadow-[var(--color-accent)]/20'
                 : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-muted)] cursor-not-allowed opacity-50'
             }`}
           >

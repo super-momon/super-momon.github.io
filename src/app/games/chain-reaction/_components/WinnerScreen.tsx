@@ -191,7 +191,7 @@ export default function WinnerScreen({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onPlayAgain}
-                className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 active:scale-95 transition cursor-pointer"
+                className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-contrast)] hover:bg-[var(--color-accent-hover)] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 active:scale-95 transition cursor-pointer"
               >
                 <FontAwesomeIcon icon={faRotateRight} />
                 {isOnline ? 'Return to Lobby' : 'Play Again (Same Settings)'}

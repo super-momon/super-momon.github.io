@@ -184,7 +184,7 @@ export function ResultScreen({
           <button
             type="button"
             onClick={onPlayAgain}
-            className="w-full py-4 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-extrabold shadow-lg shadow-[var(--color-accent)]/20 flex items-center justify-center gap-2 text-base transition-all cursor-pointer"
+            className="w-full py-4 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-[var(--color-accent-contrast)] font-extrabold shadow-lg shadow-[var(--color-accent)]/20 flex items-center justify-center gap-2 text-base transition-all cursor-pointer"
           >
             <FontAwesomeIcon icon={faRotateRight} />
             Play Again

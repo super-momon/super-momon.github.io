@@ -126,7 +126,7 @@ export default function NotificationDropdown() {
         aria-label="Notifications"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className="relative h-10 px-2.5 sm:px-3 rounded-xl flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/60 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/60 hover:border-[var(--color-accent)]/40 backdrop-blur-md transition-all duration-300 group cursor-pointer shadow-xs"
+        className="relative min-h-11 min-w-11 px-2.5 sm:px-3 rounded-xl flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/60 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/60 hover:border-[var(--color-accent)]/40 backdrop-blur-md transition-all duration-300 group cursor-pointer shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         style={{ transitionProperty: "color, background-color, border-color, box-shadow" }}
       >
         <div className="relative flex items-center justify-center">

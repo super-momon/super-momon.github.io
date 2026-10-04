@@ -135,7 +135,7 @@ export default function OnlineSetupForm({
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         type="submit"
-        className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 active:scale-98 transition-all cursor-pointer"
+        className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-[var(--color-accent-contrast)] hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 active:scale-98 transition-all cursor-pointer"
       >
         <FontAwesomeIcon icon={onlineMode === 'host' ? faPlus : faSignInAlt} />
         {onlineMode === 'host' ? 'Create Online Lobby' : 'Join Online Room'}

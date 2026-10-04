@@ -5,6 +5,7 @@ import { trackEvent } from "@/lib/analytics";
 import { EMAIL, GITHUB_URL, GITHUB_USERNAME, LINKEDIN_URL, LINKEDIN_USERNAME } from "@/lib/constants";
 import SectionHeader from "@/components/common/SectionHeader";
 import { useRef, useState } from "react";
+import { handleTabListKeyDown } from "@/lib/accessibility";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -147,7 +148,9 @@ export default function Contact() {
                       role="tab"
                       id={`contact-tab-mobile-${method.id}`}
                       aria-selected={isActive}
-                      aria-controls={`contact-tabpanel-${method.id}`}
+                      aria-controls="contact-tabpanel"
+                      tabIndex={isActive ? 0 : -1}
+                      onKeyDown={handleTabListKeyDown}
                       onClick={() => {
                         setActiveMethodId(method.id);
                         trackEvent("portfolio_contact_method_select", { method: method.id, device: "mobile" });
@@ -174,7 +177,9 @@ export default function Contact() {
                       role="tab"
                       id={`contact-tab-${method.id}`}
                       aria-selected={isActive}
-                      aria-controls={`contact-tabpanel-${method.id}`}
+                      aria-controls="contact-tabpanel"
+                      tabIndex={isActive ? 0 : -1}
+                      onKeyDown={handleTabListKeyDown}
                       onClick={() => {
                         setActiveMethodId(method.id);
                         trackEvent("portfolio_contact_method_select", { method: method.id, device: "desktop" });
@@ -239,7 +244,13 @@ export default function Contact() {
 
           {/* Right Column: Contact Dossier Card */}
           <div className="lg:col-span-7 xl:col-span-8 flex flex-col">
-            <div className="relative min-h-[360px] h-full">
+            <div
+              id="contact-tabpanel"
+              role="tabpanel"
+              aria-labelledby={`contact-tab-${activeMethodId}`}
+              tabIndex={0}
+              className="relative min-h-[360px] h-full"
+            >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeMethodId}
@@ -301,7 +312,7 @@ export default function Contact() {
                       {active.id === "email" && (
                         <button
                           onClick={handleCopyEmail}
-                          className="shrink-0 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                          className="shrink-0 min-h-11 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                         >
                           <FontAwesomeIcon icon={copied ? faCheck : faCopy} className="text-xs" />
                           <span>{copied ? "Copied" : "Copy Address"}</span>
@@ -323,7 +334,7 @@ export default function Contact() {
                           event_label: active.label.toLowerCase(),
                         })
                       }
-                      className="group/btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                      className="group/btn inline-flex min-h-11 items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <span>{active.actionText}</span>
                       <FontAwesomeIcon
