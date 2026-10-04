@@ -149,23 +149,25 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
     >
       {/* Step 1: Players Count */}
       <div>
-        <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-3">
+        <p id="player-count-label" className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--color-foreground)]/80">
           <FontAwesomeIcon icon={faUsers} className="text-[var(--color-accent)]" />
           Number of Players (2 - 6)
-        </label>
-        <div className="grid grid-cols-5 gap-2">
+        </p>
+        <div role="group" aria-labelledby="player-count-label" className="grid grid-cols-5 gap-2">
           {[2, 3, 4, 5, 6].map((num) => (
             <button
               key={num}
               type="button"
+              aria-label={`${num} players`}
+              aria-pressed={playerCount === num}
               onClick={() => setPlayerCount(num)}
-              className={`py-3 px-4 rounded-xl border font-bold text-sm transition-all duration-300 ${
+              className={`min-h-11 min-w-0 rounded-xl border px-2 py-3 font-bold text-sm transition-all duration-300 ${
                 playerCount === num
                   ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] border-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/20 scale-102'
                   : 'bg-[var(--color-surface)] text-[var(--color-muted)] border-[var(--color-border)] hover:border-[var(--color-muted)]/50'
               }`}
             >
-              {num} Players
+              {num}
             </button>
           ))}
         </div>
@@ -178,7 +180,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
           <button
             type="button"
             onClick={randomizeNames}
-            className="text-xs text-[var(--color-accent)] hover:underline flex items-center gap-1.5 font-medium transition-all"
+            className="flex min-h-11 items-center gap-1.5 px-2 text-xs font-medium text-[var(--color-accent)] transition-all hover:underline"
           >
             <FontAwesomeIcon icon={faDice} /> Randomize Names
           </button>
@@ -233,7 +235,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     <span className="text-xs sm:text-sm font-extrabold tracking-tight font-mono leading-none mb-1">
                       {preset.r}×{preset.c}
                     </span>
-                    <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-[var(--color-accent-contrast)]' : 'text-[var(--color-muted)]'}`}>
+                    <span className={`text-xs font-semibold leading-none truncate max-w-full ${isSelected ? 'text-[var(--color-accent-contrast)]' : 'text-[var(--color-muted)]'}`}>
                       {preset.name}
                     </span>
                   </button>
@@ -243,18 +245,19 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <span className="text-xs text-[var(--color-muted)] block mb-1.5">Rows (6 - 20)</span>
+                <label htmlFor="local-board-rows" className="mb-1.5 block text-xs text-[var(--color-muted)]">Rows (6 - 20)</label>
                 <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
                   <button
                     key="rows-dec"
                     type="button"
                     onClick={decrementRows}
                     aria-label="Decrease rows"
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
                   <input
+                    id="local-board-rows"
                     type="number"
                     min={6}
                     max={20}
@@ -274,32 +277,33 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                       else if (num > 20) setRows(20);
                       else setRows(num);
                     }}
-                    className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="min-h-11 w-12 bg-transparent text-base font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <button
                     key="rows-inc"
                     type="button"
                     onClick={incrementRows}
                     aria-label="Increase rows"
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
                 </div>
               </div>
               <div>
-                <span className="text-xs text-[var(--color-muted)] block mb-1.5">Columns (6 - 25)</span>
+                <label htmlFor="local-board-columns" className="mb-1.5 block text-xs text-[var(--color-muted)]">Columns (6 - 25)</label>
                 <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
                   <button
                     key="cols-dec"
                     type="button"
                     onClick={decrementCols}
                     aria-label="Decrease columns"
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
                   <input
+                    id="local-board-columns"
                     type="number"
                     min={6}
                     max={25}
@@ -319,14 +323,14 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                       else if (num > 25) setCols(25);
                       else setCols(num);
                     }}
-                    className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="min-h-11 w-12 bg-transparent text-base font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <button
                     key="cols-inc"
                     type="button"
                     onClick={incrementCols}
                     aria-label="Increase columns"
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
@@ -336,7 +340,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
           </div>
 
           <div className="border-t border-[var(--color-border)]/30 pt-3.5">
-            <label className="text-xs font-bold text-[var(--color-muted)] flex items-center gap-1.5 mb-2">
+            <label htmlFor="local-turn-time" className="mb-2 flex items-center gap-1.5 text-xs font-bold text-[var(--color-muted)]">
               <svg className="w-3.5 h-3.5 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
@@ -348,12 +352,13 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                 type="button"
                 onClick={decrementTurnSeconds}
                 aria-label="Decrease turn seconds"
-                className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
               >
                 <FontAwesomeIcon icon={faMinus} />
               </button>
               <div className="flex items-center gap-1">
                 <input
+                  id="local-turn-time"
                   type="number"
                   min={10}
                   max={120}
@@ -373,7 +378,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     else if (num > 120) setTurnSecondsLimit(120);
                     else setTurnSecondsLimit(num);
                   }}
-                  className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="min-h-11 w-12 bg-transparent text-base font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
                 <span className="text-xs text-[var(--color-muted)] select-none pr-1">sec</span>
               </div>
@@ -381,7 +386,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                 type="button"
                 onClick={incrementTurnSeconds}
                 aria-label="Increase turn seconds"
-                className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
               >
                 <FontAwesomeIcon icon={faPlus} />
               </button>
@@ -395,10 +400,10 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
             <span className="text-[var(--color-accent)]">✨</span>
             Special Cells (Randomly Placed)
           </label>
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {(['walls', 'portals', 'multipliers', 'blackholes'] as const).map(key => (
               <div key={key} className="bg-[var(--color-background)]/50 p-2.5 rounded-xl border border-[var(--color-border)]/30 flex flex-col gap-2">
-                <span className="text-[10px] uppercase font-bold text-[var(--color-muted)] tracking-wider flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                   {key === 'walls' && '🧱'}
                   {key === 'portals' && '🌀'}
                   {key === 'multipliers' && '✨'}
@@ -410,7 +415,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     type="button"
                     onClick={() => handleSpecialCellChange(key, false)}
                     aria-label={`Decrease ${key}`}
-                    className="w-8 h-8 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
@@ -419,7 +424,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     type="button"
                     onClick={() => handleSpecialCellChange(key, true)}
                     aria-label={`Increase ${key}`}
-                    className="w-8 h-8 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
@@ -431,7 +436,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
           <div className="mt-auto border-t border-[var(--color-border)]/30 pt-4 flex justify-between items-center">
             <div>
               <span className="text-sm font-semibold text-[var(--color-foreground)]/80 block mb-0.5">Sound Effects</span>
-              <span className="text-[10px] text-[var(--color-muted)]">Synthesized retro play sounds</span>
+              <span className="text-xs text-[var(--color-muted)]">Synthesized retro play sounds</span>
             </div>
             <button
               type="button"

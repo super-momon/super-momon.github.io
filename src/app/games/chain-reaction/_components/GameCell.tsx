@@ -8,7 +8,6 @@ interface GameCellProps {
   c: number;
   cell: Cell;
   ownerColor: string | null;
-  currentPlayerColor: string;
   isExploding: boolean;
   isCritical: boolean;
   isCellDisabled: boolean;
@@ -23,7 +22,6 @@ function GameCellComponent({
   c,
   cell,
   ownerColor,
-  currentPlayerColor,
   isExploding,
   isCritical,
   isCellDisabled,
@@ -195,7 +193,7 @@ function GameCellComponent({
       )}
 
       {/* Critical mass hover threshold hint */}
-      <div className="absolute top-0.5 right-0.5 text-[10px] font-mono px-1 py-0.25 bg-slate-900/90 text-slate-200 rounded border border-slate-700/80 opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity select-none pointer-events-none font-bold z-10 shadow-sm">
+      <div className="absolute top-0.5 right-0.5 rounded border border-slate-700/80 bg-slate-900/90 px-1 py-0.25 font-mono text-xs font-bold text-slate-200 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:opacity-100 select-none pointer-events-none z-10">
         {cell.orbs}/{limit}
       </div>
     </button>
@@ -212,7 +210,6 @@ function arePropsEqual(prevProps: GameCellProps, nextProps: GameCellProps) {
     prevProps.cell.statusEffect === nextProps.cell.statusEffect &&
     prevProps.cell.portalLabel === nextProps.cell.portalLabel &&
     prevProps.ownerColor === nextProps.ownerColor &&
-    prevProps.currentPlayerColor === nextProps.currentPlayerColor &&
     prevProps.isExploding === nextProps.isExploding &&
     prevProps.isCritical === nextProps.isCritical &&
     prevProps.isCellDisabled === nextProps.isCellDisabled &&
@@ -221,4 +218,3 @@ function arePropsEqual(prevProps: GameCellProps, nextProps: GameCellProps) {
 }
 
 export const GameCell = React.memo(GameCellComponent, arePropsEqual);
-

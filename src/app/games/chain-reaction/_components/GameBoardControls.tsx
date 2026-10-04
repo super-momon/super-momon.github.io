@@ -8,9 +8,6 @@ import {
   faVolumeUp, 
   faVolumeMute,
   faCircleInfo,
-  faShieldHalved,
-  faSnowflake,
-  faBomb
 } from '@fortawesome/free-solid-svg-icons';
 import { Player } from './GameBoard';
 
@@ -71,7 +68,7 @@ export function GameBoardControls({
           <button
             onClick={onQuitClick}
             aria-label="Quit game and return to setup"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)]/80 active:scale-95 transition cursor-pointer"
+            className="flex min-h-11 items-center gap-1.5 rounded-xl border border-[var(--color-border)] px-3 py-2 text-xs font-bold text-[var(--color-muted)] transition hover:bg-[var(--color-surface)]/80 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
           >
             <FontAwesomeIcon icon={faArrowLeft} />
             <span>{isOnline ? 'Leave' : 'Quit'}</span>
@@ -82,7 +79,7 @@ export function GameBoardControls({
               onClick={onResetClick}
               disabled={isAnimating}
               aria-label="Reset board to restart game"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)]/80 active:scale-95 transition disabled:opacity-40 cursor-pointer"
+              className="flex min-h-11 items-center gap-1.5 rounded-xl border border-[var(--color-border)] px-3 py-2 text-xs font-bold text-[var(--color-muted)] transition hover:bg-[var(--color-surface)]/80 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-40 active:scale-95 cursor-pointer"
             >
               <FontAwesomeIcon icon={faRotateRight} />
               <span className="hidden xs:inline">Reset</span>
@@ -92,7 +89,7 @@ export function GameBoardControls({
           <button
             onClick={onOpenGuide}
             aria-label="Show gameplay rules"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)]/80 active:scale-95 transition cursor-pointer"
+            className="flex min-h-11 items-center gap-1.5 rounded-xl border border-[var(--color-border)] px-3 py-2 text-xs font-bold text-[var(--color-muted)] transition hover:bg-[var(--color-surface)]/80 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
           >
             <FontAwesomeIcon icon={faCircleInfo} />
             <span className="hidden xs:inline">Rules</span>
@@ -103,7 +100,7 @@ export function GameBoardControls({
         <div className="flex items-center gap-1.5 sm:gap-2">
           {isOnline && (
             <div className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-[var(--color-background)] px-2.5 py-1.5 rounded-xl border border-[var(--color-border)]">
-              <span className="text-[var(--color-muted)] text-[10px] uppercase font-bold">You:</span>
+              <span className="text-xs font-bold uppercase text-[var(--color-muted)]">You:</span>
               <span
                 className="w-3 h-3 rounded-full border border-black/10 flex-shrink-0"
                 style={{ backgroundColor: myPlayerColor }}
@@ -116,7 +113,7 @@ export function GameBoardControls({
 
           {/* Cell Size Zoom Toggle (Fixed: White text on emerald accent for high contrast on both dark & light themes) */}
           <div className="flex items-center bg-[var(--color-background)] rounded-xl p-1 border border-[var(--color-border)] gap-0.5">
-            <span className="text-[9px] font-bold text-[var(--color-muted)] uppercase px-1 hidden md:inline select-none">
+            <span className="hidden select-none px-1 text-xs font-bold uppercase text-[var(--color-muted)] md:inline">
               Size:
             </span>
             {(['fit', 'sm', 'md', 'lg'] as const).map((lvl) => {
@@ -127,7 +124,7 @@ export function GameBoardControls({
                   type="button"
                   onClick={() => setZoomLevel(lvl)}
                   aria-label={`Set cell zoom to ${lvl}`}
-                  className={`px-2 sm:px-2.5 py-1 text-[10px] sm:text-xs font-extrabold rounded-lg transition-all active:scale-95 cursor-pointer uppercase ${
+                  className={`flex min-h-11 min-w-11 items-center justify-center rounded-lg px-2 text-xs font-extrabold uppercase transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer ${
                     isSelected
                       ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-sm'
                       : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-surface)]'
@@ -144,7 +141,7 @@ export function GameBoardControls({
             type="button"
             onClick={() => setSoundEnabled(!soundEnabled)}
             aria-label={soundEnabled ? "Mute game sounds" : "Unmute game sounds"}
-            className="w-8 h-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] active:scale-95 transition cursor-pointer text-xs"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-xs text-[var(--color-muted)] transition hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
           >
             <FontAwesomeIcon icon={soundEnabled ? faVolumeUp : faVolumeMute} />
           </button>
@@ -167,7 +164,7 @@ export function GameBoardControls({
               className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse"
               style={{ backgroundColor: activePlayerThemeColor }}
             />
-            <span className="text-[10px] uppercase tracking-wider text-[var(--color-muted)] font-extrabold flex-shrink-0">
+            <span className="shrink-0 text-xs font-extrabold uppercase tracking-wider text-[var(--color-muted)]">
               TURN:
             </span>
             <span className="truncate font-bold" title={activePlayer.name}>
@@ -176,7 +173,7 @@ export function GameBoardControls({
           </div>
 
           {isOnline && isMyTurn && (
-            <span className="text-[8px] sm:text-[9px] text-green-500 font-extrabold bg-green-500/15 px-2 py-0.5 rounded-full border border-green-500/30 flex-shrink-0 leading-none">
+            <span className="shrink-0 rounded-full border border-[var(--color-status-easy)]/30 bg-[var(--color-status-easy)]/15 px-2 py-1 text-xs font-extrabold leading-none text-[var(--color-status-easy)]">
               YOUR TURN
             </span>
           )}
@@ -185,12 +182,12 @@ export function GameBoardControls({
         {/* Stats: Total Orbs & Duration */}
         <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           <div className="px-3 py-1.5 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-xs font-bold flex items-center gap-1.5">
-            <span className="text-[var(--color-muted)] text-[10px] uppercase font-bold">Orbs:</span>
+            <span className="text-xs font-bold uppercase text-[var(--color-muted)]">Orbs:</span>
             <span className="text-[var(--color-foreground)] font-mono font-bold">{totalOrbsCount}</span>
           </div>
 
           <div className="px-3 py-1.5 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-xs font-bold flex items-center gap-1.5">
-            <span className="text-[var(--color-muted)] text-[10px] uppercase font-bold">Time:</span>
+            <span className="text-xs font-bold uppercase text-[var(--color-muted)]">Time:</span>
             <span className="text-[var(--color-foreground)] font-mono font-bold">{formatTime(secondsElapsed)}</span>
           </div>
         </div>

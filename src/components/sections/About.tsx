@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { handleTabListKeyDown } from "@/lib/accessibility";
@@ -35,7 +36,7 @@ function InfoCard({ icon, label, value }: InfoCardProps) {
         <FontAwesomeIcon icon={icon} className="text-foreground/80 text-lg md:text-xl group-hover:text-foreground transition-colors duration-300" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] md:text-[11px] text-foreground/75 mb-1 font-bold uppercase tracking-widest">{label}</p>
+        <p className="mb-1 text-xs font-bold uppercase tracking-widest text-foreground/75">{label}</p>
         <p className="font-semibold text-foreground text-sm truncate">{value}</p>
       </div>
     </motion.div>
@@ -76,7 +77,6 @@ function ExpertiseCard({ icon, title, description, index }: ExpertiseCardProps) 
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
@@ -135,7 +135,7 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative py-24 md:py-32 px-6 bg-background overflow-hidden"
+      className="relative py-28 px-6 bg-background overflow-hidden"
     >
       <motion.div
         style={skipParallax ? undefined : { y: orb1Y }}
@@ -163,17 +163,19 @@ export default function About() {
             {/* Profile Picture Card */}
             <div className="relative p-5 rounded-3xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30 flex flex-col gap-4 items-center text-center">
               <div className="relative w-36 h-36 rounded-full overflow-hidden border border-border/60 shadow-inner group/avatar">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/logo.PNG"
+                <Image
+                  src="/profile-portrait.webp"
                   alt="Mark Raymond Ayade"
+                  width={400}
+                  height={386}
+                  loading="lazy"
                   className="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-500 scale-105 hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-background/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
               <div className="space-y-1.5 flex flex-col items-center">
                 <h3 className="text-lg font-bold text-foreground tracking-tight">Mark Raymond Ayade</h3>
-                <span className="inline-block bg-foreground/5 border border-border/80 text-foreground/85 text-[10px] font-mono font-semibold tracking-wider px-2.5 py-0.5 rounded-full">
+                <span className="inline-block rounded-full border border-border/80 bg-foreground/5 px-2.5 py-0.5 font-mono text-xs font-semibold tracking-wider text-foreground/85">
                   Full Stack Developer
                 </span>
               </div>
@@ -204,7 +206,7 @@ export default function About() {
                         }`}
                     >
                       <FontAwesomeIcon icon={tab.icon} className={`text-sm mb-1.5 ${isActive ? "text-accent" : "text-foreground/60"}`} />
-                      <span className="text-[10px] font-semibold tracking-tight leading-none">{tab.label.split(" ").pop()}</span>
+                      <span className="text-xs font-semibold leading-none tracking-tight">{tab.label.split(" ").pop()}</span>
                     </button>
                   );
                 })}
@@ -263,7 +265,7 @@ export default function About() {
                         >
                           {tab.label}
                         </span>
-                        <span className="text-[10px] text-foreground/70 font-normal leading-normal mt-0.5 max-w-[200px] truncate group-hover:text-foreground/80 transition-colors duration-300">
+                        <span className="mt-0.5 max-w-[200px] truncate text-xs font-normal leading-normal text-foreground/70 transition-colors duration-300 group-hover:text-foreground/80">
                           {tab.subtitle}
                         </span>
                       </div>
@@ -293,7 +295,7 @@ export default function About() {
                     const activeMeta = tabs.find((t) => t.id === activeTab)!;
                     return (
                       <div className="border-b border-border/30 pb-5 mb-6">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-foreground/5 border border-border/80 text-[9px] font-bold uppercase tracking-wider text-foreground/85 mb-2">
+                        <span className="mb-2 inline-flex items-center rounded border border-border/80 bg-foreground/5 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-foreground/85">
                           {activeMeta.tag}
                         </span>
                         <h3 className="text-base font-bold text-foreground flex items-center gap-2.5">
@@ -380,7 +382,7 @@ export default function About() {
                               className="p-5 rounded-2xl bg-surface/90 md:bg-surface/30 md:backdrop-blur-xs border border-border/40 text-center will-change-transform flex flex-col justify-center min-h-[100px]"
                             >
                               <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
-                              <div className="text-[10px] text-foreground/75 font-semibold uppercase tracking-widest">{stat.label}</div>
+                              <div className="text-xs font-semibold uppercase tracking-widest text-foreground/75">{stat.label}</div>
                             </motion.div>
                           ))}
                         </div>
@@ -401,17 +403,19 @@ export default function About() {
 
                             <div className="relative flex-1 w-full sm:w-auto text-center sm:text-left">
                               <div className="flex items-center justify-center sm:justify-start gap-3 mb-1.5">
-                                <span className="text-[10px] md:text-[11px] text-foreground/75 font-bold uppercase tracking-widest">
+                                <span className="text-xs font-bold uppercase tracking-widest text-foreground/75 md:text-sm">
                                   Professional Assessment
                                 </span>
                                 <div className="hidden sm:block flex-1 h-px bg-border/40" />
                               </div>
                               <p className="font-bold text-foreground text-sm mb-2">Workplace Insight Report</p>
                               <div className="flex items-center justify-center sm:justify-start">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
+                                <Image
                                   src="/Criteria-logo-web-white.png"
                                   alt="Criteria Corp"
+                                  width={125}
+                                  height={31}
+                                  loading="lazy"
                                   className="h-4 opacity-80 group-hover:opacity-100 transition-opacity invert dark:invert-0"
                                 />
                               </div>

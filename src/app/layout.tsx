@@ -6,6 +6,7 @@ import '@/lib/icons'
 config.autoAddCss = false
 
 import { Geist, Geist_Mono } from "next/font/google";
+import { MotionConfig } from "motion/react";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import { Suspense } from "react";
@@ -163,15 +164,16 @@ export default function RootLayout({
           }}
         /> */}
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Suspense fallback={null}>
-            <AnalyticsTracker />
-          </Suspense>
-          <Navbar />
-          {children}
-          <Footer />
+          <MotionConfig reducedMotion="user">
+            <Suspense fallback={null}>
+              <AnalyticsTracker />
+            </Suspense>
+            <Navbar />
+            {children}
+            <Footer />
+          </MotionConfig>
         </ThemeProvider>
       </body>
     </html>
   );
 }
-

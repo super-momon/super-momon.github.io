@@ -117,7 +117,7 @@ export default function WinnerScreen({
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [winnerColor]);
+  }, [themeWinnerColor]);
 
   return (
     <div className="relative min-h-screen min-h-[100dvh] w-full flex items-center justify-center overflow-hidden px-3 sm:px-4 py-6" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top, 0px))', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom, 0px))' }}>
@@ -157,7 +157,7 @@ export default function WinnerScreen({
           <FontAwesomeIcon icon={faTrophy} className="text-3xl sm:text-4xl" />
         </motion.div>
 
-        <h1 className="text-[10px] sm:text-xs uppercase tracking-widest font-black text-[var(--color-muted)] mb-1.5 sm:mb-2">
+        <h1 className="mb-1.5 text-xs font-black uppercase tracking-widest text-[var(--color-muted)] sm:mb-2 sm:text-sm">
           Victory Achieved!
         </h1>
         

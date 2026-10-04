@@ -2,7 +2,7 @@
 
 import { LazyMotion, domAnimation, m, useReducedMotion } from "motion/react";
 import { trackEvent } from "@/lib/analytics";
-import { useRef, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faArrowDown } from "@fortawesome/free-solid-svg-icons";
@@ -14,6 +14,29 @@ const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion() ?? false;
+  const [canvasAllowed, setCanvasAllowed] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false);
+
+  useEffect(() => {
+    const canvasMedia = window.matchMedia(
+      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+    );
+    const updateCanvasAvailability = () => setCanvasAllowed(canvasMedia.matches);
+    const frame = window.requestAnimationFrame(updateCanvasAvailability);
+
+    canvasMedia.addEventListener("change", updateCanvasAvailability);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      canvasMedia.removeEventListener("change", updateCanvasAvailability);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!canvasAllowed || shouldReduceMotion) return;
+
+    const timer = window.setTimeout(() => setCanvasReady(true), 700);
+    return () => window.clearTimeout(timer);
+  }, [canvasAllowed, shouldReduceMotion]);
 
   const fadeUp = (delay: number) => ({
     initial: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
@@ -38,20 +61,21 @@ export default function Hero() {
           className="absolute inset-x-0 bottom-0 h-[65vh] pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 85% 100% at 50% 100%, rgba(0, 199, 88, 0.10), transparent 70%)",
+              "radial-gradient(ellipse 85% 100% at 50% 100%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 70%)",
           }}
         />
 
         {/* Lightweight 3D backdrop */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none"
-          style={{ opacity: shouldReduceMotion ? 0.5 : 0.8 }}
-        >
-          <Suspense fallback={null}>
-            <HeroCanvas />
-          </Suspense>
-        </div>
+        {canvasAllowed && canvasReady && !shouldReduceMotion && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-80"
+          >
+            <Suspense fallback={null}>
+              <HeroCanvas reducedMotion={shouldReduceMotion} />
+            </Suspense>
+          </div>
+        )}
 
         {/* Atmospheric noise texture */}
         <div
@@ -86,13 +110,13 @@ export default function Hero() {
 
           {/* Main headline */}
           <m.h1
-            onMouseMove={(e) => {
+            onMouseMove={shouldReduceMotion ? undefined : (e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
               const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
               e.currentTarget.style.transform = `perspective(1000px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={shouldReduceMotion ? undefined : (e) => {
               e.currentTarget.style.transform = "perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)";
             }}
             className="text-[clamp(2.75rem,8vw,5rem)] font-bold leading-[1.08] tracking-tight mb-6 text-center transition-transform duration-200 ease-out cursor-default select-none"
@@ -199,7 +223,7 @@ export default function Hero() {
             className="group flex flex-col items-center gap-2 text-muted/60 hover:text-accent transition-all duration-300
                        focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-full p-2"
           >
-            <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-muted/50 group-hover:text-accent transition-colors">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted/60 transition-colors group-hover:text-accent">
               Scroll
             </span>
             <div className="w-5 h-8 rounded-full border-2 border-border/80 group-hover:border-accent/60 transition-colors flex justify-center p-1 bg-surface/30 backdrop-blur-xs shadow-xs">
@@ -213,7 +237,7 @@ export default function Hero() {
                 }}
               />
             </div>
-            <FontAwesomeIcon icon={faArrowDown} className="text-[10px] text-muted/40 group-hover:text-accent group-hover:translate-y-0.5 transition-all" />
+            <FontAwesomeIcon icon={faArrowDown} className="text-xs text-muted/50 group-hover:text-accent group-hover:translate-y-0.5 transition-all" />
           </m.a>
         </m.div>
       </section>

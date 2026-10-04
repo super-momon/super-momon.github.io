@@ -1,4 +1,4 @@
-import { useState, useEffect, MutableRefObject } from 'react';
+import { useEffect, useState, MutableRefObject } from 'react';
 import { Player } from './GameBoard';
 
 interface UseGameTimersOptions {
@@ -53,11 +53,14 @@ export function useGameTimers({
     return () => clearInterval(interval);
   }, []);
 
-  // Reset the turn timer whenever the active player changes or animation ends
+  // Defer the timer reset until the turn/animation state has committed.
   useEffect(() => {
-    if (!isAnimating) {
+    if (isAnimating) return;
+
+    const frame = requestAnimationFrame(() => {
       setTurnSecondsLeft(turnSecondsLimit);
-    }
+    });
+    return () => cancelAnimationFrame(frame);
   }, [currentPlayerIndex, isAnimating, turnSecondsLimit]);
 
   // Per-turn countdown; triggers the timeout callback when time is up
@@ -89,7 +92,17 @@ export function useGameTimers({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentPlayerIndex, isAnimating, isOnline, isHost, myClientId, turnSecondsLimit]);
+  }, [
+    currentPlayerIndex,
+    isAnimating,
+    isOnline,
+    isHost,
+    myClientId,
+    turnSecondsLimit,
+    playersRef,
+    onTurnTimeoutRef,
+    setTurnSecondsLeft,
+  ]);
 
   const formatTime = (totalSeconds: number): string => {
     const mins = Math.floor(totalSeconds / 60);

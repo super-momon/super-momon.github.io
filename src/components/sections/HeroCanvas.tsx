@@ -1,20 +1,26 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { useTheme } from "next-themes";
 import * as THREE from "three";
 
-function ParticleSwarm({ count = 1200 }: { count?: number }) {
+function ParticleSwarm({ count = 600, color }: { count?: number; color: string }) {
   const pointsRef = useRef<THREE.Points>(null);
 
-  // Generate initial particle positions and speeds
   const [positions, initialPositions] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const initPos = new Float32Array(count * 3);
+
+    const seededValue = (index: number, seed: number) => {
+      const value = Math.sin((index + 1) * 12.9898 + seed * 78.233) * 43758.5453;
+      return value - Math.floor(value);
+    };
+
     for (let i = 0; i < count; i++) {
-      const x = (Math.random() - 0.5) * 12;
-      const y = (Math.random() - 0.5) * 10;
-      const z = (Math.random() - 0.5) * 8 - 2;
+      const x = (seededValue(i, 1) - 0.5) * 12;
+      const y = (seededValue(i, 2) - 0.5) * 10;
+      const z = (seededValue(i, 3) - 0.5) * 8 - 2;
 
       pos[i * 3] = x;
       pos[i * 3 + 1] = y;
@@ -74,7 +80,7 @@ function ParticleSwarm({ count = 1200 }: { count?: number }) {
       </bufferGeometry>
       <pointsMaterial
         size={0.035}
-        color="#00c758"
+        color={color}
         transparent
         opacity={0.55}
         sizeAttenuation
@@ -84,7 +90,7 @@ function ParticleSwarm({ count = 1200 }: { count?: number }) {
   );
 }
 
-function FloatingShapes() {
+function FloatingShapes({ color }: { color: string }) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -98,41 +104,65 @@ function FloatingShapes() {
       {/* Floating cube */}
       <mesh position={[-2.5, 0.8, -1]} rotation={[0.4, 0.6, 0]}>
         <boxGeometry args={[0.55, 0.55, 0.55]} />
-        <meshBasicMaterial color="#00c758" transparent opacity={0.18} />
+        <meshBasicMaterial color={color} transparent opacity={0.18} />
       </mesh>
 
       {/* Floating sphere */}
       <mesh position={[2.2, -0.6, -1.5]}>
         <sphereGeometry args={[0.35, 24, 24]} />
-        <meshBasicMaterial color="#34d399" transparent opacity={0.14} />
+        <meshBasicMaterial color={color} transparent opacity={0.14} />
       </mesh>
 
       {/* Floating torus */}
       <mesh position={[1.4, 1.2, -2]} rotation={[0.8, 0.3, 0]}>
         <torusGeometry args={[0.35, 0.08, 12, 32]} />
-        <meshBasicMaterial color="#00c758" transparent opacity={0.12} />
+        <meshBasicMaterial color={color} transparent opacity={0.12} />
       </mesh>
 
       {/* Floating octahedron */}
       <mesh position={[-1.6, -1.1, -0.8]} rotation={[0.5, 0.2, 0.4]}>
         <octahedronGeometry args={[0.32, 0]} />
-        <meshBasicMaterial color="#6ee7b7" transparent opacity={0.16} />
+        <meshBasicMaterial color={color} transparent opacity={0.16} />
       </mesh>
     </group>
   );
 }
 
-export default function HeroCanvas() {
+interface HeroCanvasProps {
+  reducedMotion: boolean;
+}
+
+export default function HeroCanvas({ reducedMotion }: HeroCanvasProps) {
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const accentColor = resolvedTheme === "light" ? "#067a3a" : "#08ca5f";
+
+  useEffect(() => {
+    const container = canvasContainerRef.current;
+    if (!container || reducedMotion || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    });
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, [reducedMotion]);
+
   return (
-    <Canvas
-      camera={{ position: [0, 0, 5], fov: 50 }}
-      dpr={[1, 1.5]}
-      gl={{ antialias: false, alpha: true }}
-      style={{ background: "transparent" }}
-    >
-      <ambientLight intensity={0} />
-      <ParticleSwarm count={1200} />
-      <FloatingShapes />
-    </Canvas>
+    <div ref={canvasContainerRef} className="h-full w-full">
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 50 }}
+        dpr={[1, 1.25]}
+        frameloop={!reducedMotion && isVisible ? "always" : "demand"}
+        gl={{ antialias: false, alpha: true }}
+        style={{ background: "transparent" }}
+      >
+        <ambientLight intensity={0} />
+        <ParticleSwarm count={600} color={accentColor} />
+        <FloatingShapes color={accentColor} />
+      </Canvas>
+    </div>
   );
 }

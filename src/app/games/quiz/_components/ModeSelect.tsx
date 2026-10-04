@@ -52,38 +52,45 @@ const MODES_CONFIG = {
 
 const MODES_LIST = [MODES_CONFIG.survival, MODES_CONFIG.lives, MODES_CONFIG['best-of-100']];
 
-const DIFFICULTY_CONFIG = {
+const DIFFICULTY_CONFIG: Record<QuestionDifficulty, {
+  id: QuestionDifficulty;
+  label: string;
+  pts: string;
+  color: string;
+  bg: string;
+  border: string;
+}> = {
   easy: {
     id: 'easy' as QuestionDifficulty,
     label: 'Easy',
     pts: '+1',
-    color: '#22c55e',
-    bg: 'rgba(34,197,94,0.14)',
-    border: 'rgba(34,197,94,0.35)',
+    color: 'var(--color-status-easy)',
+    bg: 'color-mix(in srgb, var(--color-status-easy) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-easy) 35%, var(--color-border))',
   },
   medium: {
     id: 'medium' as QuestionDifficulty,
     label: 'Medium',
     pts: '+2',
-    color: '#eab308',
-    bg: 'rgba(234,179,8,0.14)',
-    border: 'rgba(234,179,8,0.35)',
+    color: 'var(--color-status-medium)',
+    bg: 'color-mix(in srgb, var(--color-status-medium) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-medium) 35%, var(--color-border))',
   },
   hard: {
     id: 'hard' as QuestionDifficulty,
     label: 'Hard',
     pts: '+3',
-    color: '#f97316',
-    bg: 'rgba(249,115,22,0.14)',
-    border: 'rgba(249,115,22,0.35)',
+    color: 'var(--color-status-hard)',
+    bg: 'color-mix(in srgb, var(--color-status-hard) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-hard) 35%, var(--color-border))',
   },
   'extra-hard': {
     id: 'extra-hard' as QuestionDifficulty,
     label: 'X-Hard',
     pts: '+5',
-    color: '#ef4444',
-    bg: 'rgba(239,68,68,0.14)',
-    border: 'rgba(239,68,68,0.35)',
+    color: 'var(--color-status-extra-hard)',
+    bg: 'color-mix(in srgb, var(--color-status-extra-hard) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-extra-hard) 35%, var(--color-border))',
   },
 } as const;
 
@@ -221,9 +228,9 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
             <button
               type="button"
               onClick={onOpenLeaderboard}
-              className="py-2 px-3.5 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)] text-[var(--color-foreground)] font-bold text-xs bg-[var(--color-surface)]/50 transition-all cursor-pointer flex items-center gap-2"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/50 px-3.5 text-xs font-bold text-[var(--color-foreground)] transition-all hover:border-[var(--color-accent)]"
             >
-              <FontAwesomeIcon icon={faTrophy} className="text-amber-400" />
+              <FontAwesomeIcon icon={faTrophy} className="text-[var(--color-status-medium)]" />
               Leaderboard
             </button>
 
@@ -232,7 +239,8 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                 type="button"
                 onClick={onToggleSound}
                 title={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
-                className="py-2 px-3 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)] text-[var(--color-muted)] hover:text-[var(--color-foreground)] font-bold text-xs bg-[var(--color-surface)]/50 transition-all cursor-pointer flex items-center justify-center"
+                aria-label={soundEnabled ? 'Mute sound' : 'Enable sound'}
+                className="inline-flex size-11 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/50 text-xs font-bold text-[var(--color-muted)] transition-all hover:border-[var(--color-accent)] hover:text-[var(--color-foreground)]"
               >
                 <FontAwesomeIcon
                   icon={soundEnabled ? faVolumeUp : faVolumeMute}
@@ -260,7 +268,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                       key={m.id}
                       type="button"
                       onClick={() => setSelectedMode(m.id)}
-                      className={`flex-1 py-2.5 px-1.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      className={`flex-1 min-h-11 py-2.5 px-1.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                         isSelected
                           ? 'bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-md shadow-[var(--color-accent)]/20'
                           : 'text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
@@ -276,7 +284,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
 
             {/* Selected Mode Description Banner */}
             <div className="p-3.5 rounded-2xl bg-[var(--color-surface)]/60 border border-[var(--color-border)]/50">
-              <div className="text-[11px] uppercase font-extrabold text-[var(--color-accent)] tracking-wider mb-1">
+              <div className="mb-1 text-xs font-extrabold uppercase tracking-wider text-[var(--color-accent)]">
                 {MODES_CONFIG[selectedMode].tagline}
               </div>
               <p className="text-xs text-[var(--color-muted)] leading-relaxed">
@@ -304,7 +312,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                       key={preset.id}
                       type="button"
                       onClick={() => applyPreset(preset)}
-                      className={`py-2 px-2 rounded-xl border font-bold text-xs transition-all duration-200 cursor-pointer truncate ${
+                      className={`min-h-11 whitespace-normal break-words py-1.5 px-2 rounded-xl border font-bold text-xs leading-tight text-center transition-all duration-200 cursor-pointer ${
                         isMatch
                           ? 'bg-[var(--color-accent)]/15 text-[var(--color-accent)] border-[var(--color-accent)]/40 shadow-xs'
                           : 'bg-[var(--color-surface)]/50 text-[var(--color-muted)] border-[var(--color-border)] hover:border-[var(--color-accent)]/40 hover:text-[var(--color-foreground)]'
@@ -331,7 +339,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                   <button
                     type="button"
                     onClick={selectAllCats}
-                    className="text-xs font-bold text-[var(--color-accent)] hover:underline cursor-pointer"
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-xs font-bold text-[var(--color-accent)] hover:underline cursor-pointer"
                   >
                     All
                   </button>
@@ -339,7 +347,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                   <button
                     type="button"
                     onClick={clearAllCats}
-                    className="text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] cursor-pointer"
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-xs font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] cursor-pointer"
                   >
                     Clear
                   </button>
@@ -354,7 +362,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                       key={cat}
                       type="button"
                       onClick={() => toggleCategory(cat)}
-                      className={`py-2 px-2.5 rounded-xl border font-bold text-xs flex items-center justify-between gap-1.5 transition-all duration-200 cursor-pointer ${
+                      className={`min-h-11 py-2 px-2.5 rounded-xl border font-bold text-xs flex items-center justify-between gap-1.5 transition-all duration-200 cursor-pointer ${
                         isSelected
                           ? 'bg-[var(--color-accent)]/15 text-[var(--color-foreground)] border-[var(--color-accent)]/40 shadow-xs'
                           : 'bg-[var(--color-surface)]/40 text-[var(--color-muted)]/60 border-[var(--color-border)]/40 hover:border-[var(--color-border)] hover:text-[var(--color-muted)]'
@@ -384,7 +392,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                       key={diff.id}
                       type="button"
                       onClick={() => toggleDifficulty(diff.id)}
-                      className="py-2 px-2.5 rounded-xl border font-bold text-xs flex items-center justify-between transition-all duration-200 cursor-pointer"
+                      className="min-h-11 py-2 px-2.5 rounded-xl border font-bold text-xs flex items-center justify-between transition-all duration-200 cursor-pointer"
                       style={{
                         color: isSelected ? diff.color : 'var(--color-muted)',
                         backgroundColor: isSelected ? diff.bg : 'color-mix(in srgb, var(--color-surface) 40%, transparent)',
@@ -393,7 +401,7 @@ export function ModeSelect({ onStart, onOpenLeaderboard, soundEnabled = true, on
                     >
                       <span>{diff.label}</span>
                       <span
-                        className="text-[10px] font-mono font-bold"
+                        className="text-xs font-mono font-bold"
                         style={{ color: diff.color }}
                       >
                         {diff.pts}

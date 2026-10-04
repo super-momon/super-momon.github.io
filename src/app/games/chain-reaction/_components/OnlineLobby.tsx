@@ -18,7 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { LobbyPresenceUser } from '../ChainReactionGame';
 import { SpecialCellsConfig, DEFAULT_SPECIAL_CELLS } from './SetupScreen';
-import { PRESET_COLORS, getThemeColor, useIsDark } from './colors';
+import { PRESET_COLORS, PRESET_COLOR_LABELS, getThemeColor, useIsDark } from './colors';
 
 interface OnlineLobbyProps {
   roomCode: string;
@@ -79,27 +79,21 @@ export default function OnlineLobby({
     specialCells ? clampSpecialCells(specialCells) : DEFAULT_SPECIAL_CELLS
   );
 
-  // Sync localName if playerName prop changes from parent
+  // Apply authoritative lobby updates after the current frame while preserving
+  // immediate edits to the local draft fields.
   useEffect(() => {
-    setLocalName(playerName);
-  }, [playerName]);
+    const frame = window.requestAnimationFrame(() => {
+      setLocalName(playerName);
+      setLocalRows(rows.toString());
+      setLocalCols(cols.toString());
+      setLocalTurnSeconds(turnSecondsLimit.toString());
+      setLocalSpecialCells(
+        specialCells ? clampSpecialCells(specialCells) : DEFAULT_SPECIAL_CELLS,
+      );
+    });
 
-  // Sync localRows/localCols if props change
-  useEffect(() => {
-    setLocalRows(rows.toString());
-  }, [rows]);
-
-  useEffect(() => {
-    setLocalCols(cols.toString());
-  }, [cols]);
-
-  useEffect(() => {
-    setLocalTurnSeconds(turnSecondsLimit.toString());
-  }, [turnSecondsLimit]);
-
-  useEffect(() => {
-    if (specialCells) setLocalSpecialCells(clampSpecialCells(specialCells));
-  }, [specialCells?.walls, specialCells?.portals, specialCells?.multipliers, specialCells?.blackholes]);
+    return () => window.cancelAnimationFrame(frame);
+  }, [playerName, rows, cols, turnSecondsLimit, specialCells]);
 
   // Clipboard copy helper
   const copyRoomCode = () => {
@@ -212,17 +206,17 @@ export default function OnlineLobby({
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-muted)]">Status:</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-muted)]">Status:</span>
             {connectionStatus === 'connecting' && (
-              <span className="text-yellow-500 text-xs font-bold flex items-center gap-1">
+              <span className="flex items-center gap-1 text-xs font-bold text-[var(--color-status-medium)]">
                 <FontAwesomeIcon icon={faSpinner} className="animate-spin" /> Connecting
               </span>
             )}
             {connectionStatus === 'connected' && (
-              <span className="text-green-500 text-xs font-bold">● Connected</span>
+              <span className="text-xs font-bold text-[var(--color-status-easy)]">● Connected</span>
             )}
             {connectionStatus === 'error' && (
-              <span className="text-red-500 text-xs font-bold">▲ Error</span>
+              <span className="text-xs font-bold text-[var(--color-status-extra-hard)]">▲ Error</span>
             )}
           </div>
         </div>
@@ -243,25 +237,25 @@ export default function OnlineLobby({
                 title="Copy Room Code"
                 className="w-11 h-11 rounded-xl border border-[var(--color-border)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] active:scale-90 transition cursor-pointer"
               >
-                <FontAwesomeIcon icon={copied ? faCheck : faCopy} className={copied ? 'text-green-500' : ''} />
+                <FontAwesomeIcon icon={copied ? faCheck : faCopy} className={copied ? 'text-[var(--color-status-easy)]' : ''} />
               </button>
             </div>
           </div>
 
           <div className="flex flex-col items-center justify-center border-t border-[var(--color-border)]/35 pt-4">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-muted)] mb-2">
+            <span className="mb-2 text-xs font-bold uppercase tracking-widest text-[var(--color-muted)]">
               Or Share Invite Link
             </span>
             <button
               onClick={copyInviteLink}
               className="flex items-center gap-2 px-4 py-2 text-xs font-bold border border-[var(--color-border)] rounded-xl bg-[var(--color-background)] hover:bg-[var(--color-surface)] text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:scale-102 transition cursor-pointer"
             >
-              <FontAwesomeIcon icon={copiedLink ? faCheck : faCopy} className={copiedLink ? 'text-green-500' : ''} />
+              <FontAwesomeIcon icon={copiedLink ? faCheck : faCopy} className={copiedLink ? 'text-[var(--color-status-easy)]' : ''} />
               {copiedLink ? 'Invite Link Copied!' : 'Copy Direct Invite Link'}
             </button>
           </div>
 
-          <p className="text-[var(--color-muted)] text-[11px]">
+          <p className="text-xs text-[var(--color-muted)]">
             Friends opening the invite link will be directed straight to this room.
           </p>
         </div>
@@ -274,8 +268,9 @@ export default function OnlineLobby({
             
             <div className="bg-[var(--color-background)]/60 border border-[var(--color-border)]/50 rounded-2xl p-4 space-y-4">
               <div>
-                <label className="text-xs text-[var(--color-muted)] block mb-1">Nickname</label>
+                <label htmlFor="online-player-name" className="mb-1 block text-xs text-[var(--color-muted)]">Nickname</label>
                 <input
+                  id="online-player-name"
                   type="text"
                   maxLength={20}
                   value={localName}
@@ -286,14 +281,14 @@ export default function OnlineLobby({
                     setLocalName(finalName);
                     setPlayerName(finalName);
                   }}
-                  className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[var(--color-accent)] transition"
+                  className="min-h-11 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-base font-semibold transition focus:border-[var(--color-accent)] focus:outline-none sm:text-sm"
                   placeholder="Your Name"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-[var(--color-muted)] block mb-1.5">Color</label>
-                <div className="flex gap-2">
+                <span className="mb-1.5 block text-xs text-[var(--color-muted)]">Color</span>
+                <div role="group" aria-label="Choose your player color" className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
                   {PRESET_COLORS.map((color) => {
                     const isOccupied = occupiedColors.includes(color);
                     const isSelected = playerColor === color;
@@ -303,19 +298,26 @@ export default function OnlineLobby({
                         type="button"
                         disabled={isOccupied}
                         onClick={() => setPlayerColor(color)}
-                        className={`w-8 h-8 rounded-full border-2 transition-all flex items-center justify-center relative ${
+                        aria-label={
+                          isOccupied
+                            ? `${PRESET_COLOR_LABELS[color] ?? color} color, already chosen by another player`
+                            : `Set your color to ${PRESET_COLOR_LABELS[color] ?? color}`
+                        }
+                        aria-pressed={isSelected}
+                        className={`flex h-11 w-11 items-center justify-center rounded-xl border border-transparent transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                           isSelected 
-                            ? 'border-[var(--color-foreground)] scale-110 shadow-lg' 
+                            ? 'bg-[var(--color-surface)] shadow-lg'
                             : isOccupied 
                               ? 'opacity-20 cursor-not-allowed scale-90' 
-                              : 'border-transparent hover:scale-105 hover:border-[var(--color-border)]'
+                              : 'hover:scale-105 hover:bg-[var(--color-surface)]'
                         }`}
-                        style={{ backgroundColor: getThemeColor(color, isDark) }}
                         title={isOccupied ? 'Color chosen by another player' : ''}
                       >
-                        {isSelected && (
-                          <span className="w-2.5 h-2.5 rounded-full bg-white shadow-sm" />
-                        )}
+                        <span
+                          aria-hidden="true"
+                          className={`h-6 w-6 rounded-full border-2 ${isSelected ? 'border-[var(--color-foreground)]' : 'border-transparent'}`}
+                          style={{ backgroundColor: getThemeColor(color, isDark) }}
+                        />
                       </button>
                     );
                   })}
@@ -328,7 +330,7 @@ export default function OnlineLobby({
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-sm font-bold text-[var(--color-foreground)]/80">Players ({lobbyPlayers.length}/6)</h3>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-muted)] bg-[var(--color-surface)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
+              <span className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                 Max 6 players
               </span>
             </div>
@@ -376,7 +378,7 @@ export default function OnlineLobby({
                               {displayName}
                             </span>
                             {isMe && (
-                              <span className="text-[9px] font-bold bg-[var(--color-accent)]/15 text-[var(--color-accent)] px-1.5 py-0.5 rounded border border-[var(--color-accent)]/20 flex-shrink-0">
+                              <span className="shrink-0 rounded border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/15 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">
                                 YOU
                               </span>
                             )}
@@ -385,23 +387,23 @@ export default function OnlineLobby({
 
                         <div className="flex items-center gap-2">
                           {player.clientId === trueHostClientId ? (
-                            <span className="text-[10px] text-yellow-500 font-extrabold flex items-center gap-1 bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded-full">
+                            <span className="flex items-center gap-1 rounded-full border border-[var(--color-status-medium)]/20 bg-[var(--color-status-medium)]/10 px-2 py-0.5 text-xs font-extrabold text-[var(--color-status-medium)]">
                               <FontAwesomeIcon icon={faCrown} /> Host
                             </span>
                           ) : (
                             <div className="flex items-center gap-2">
-                              <span className="text-[10px] text-[var(--color-muted)] font-bold flex items-center gap-1 bg-[var(--color-background)] border border-[var(--color-border)] px-2 py-0.5 rounded-full">
+                              <span className="flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-background)] px-2 py-0.5 text-xs font-bold text-[var(--color-muted)]">
                                 <FontAwesomeIcon icon={faUser} /> Guest
                               </span>
                               {isHost && !isMe && (
                                 <button
                                   type="button"
                                   onClick={() => onKickPlayer?.(player.clientId)}
-                                  className="px-2 py-0.5 text-[10px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-full flex items-center gap-1 transition active:scale-95 cursor-pointer shadow-sm"
+                                  className="flex min-h-11 items-center gap-1 rounded-full border border-[var(--color-status-extra-hard)]/20 bg-[var(--color-status-extra-hard)]/10 px-2 py-0.5 text-xs font-bold text-[var(--color-status-extra-hard)] shadow-sm transition hover:bg-[var(--color-status-extra-hard)]/20 hover:text-[var(--color-status-danger-strong)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
                                   title={`Kick ${displayName} from lobby`}
                                   aria-label={`Kick ${displayName} from lobby`}
                                 >
-                                  <FontAwesomeIcon icon={faUserSlash} className="text-[9px]" />
+                                  <FontAwesomeIcon icon={faUserSlash} className="text-xs" />
                                   Kick
                                 </button>
                               )}
@@ -455,7 +457,7 @@ export default function OnlineLobby({
                         <span className="text-xs sm:text-sm font-extrabold tracking-tight font-mono leading-none mb-1">
                           {preset.r}×{preset.c}
                         </span>
-                        <span className={`text-[10px] font-semibold leading-none truncate max-w-full ${isSelected ? 'text-[var(--color-accent-contrast)]' : 'text-[var(--color-muted)]'}`}>
+                        <span className={`text-xs font-semibold leading-none truncate max-w-full ${isSelected ? 'text-[var(--color-accent-contrast)]' : 'text-[var(--color-muted)]'}`}>
                           {preset.name}
                         </span>
                       </button>
@@ -463,33 +465,25 @@ export default function OnlineLobby({
                   })}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5 font-bold uppercase tracking-wider">Rows (6 - 20)</span>
+                    <label htmlFor="online-board-rows" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Rows (6 - 20)</label>
                     <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20 shadow-sm">
                       <button
                         type="button"
                         onClick={handleDecrementRows}
                         aria-label="Decrease rows"
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </button>
                       <input
+                        id="online-board-rows"
                         type="number"
                         min={6}
                         max={20}
                         value={localRows}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalRows(val);
-                          if (val !== '') {
-                            const parsed = parseInt(val, 10);
-                            if (!isNaN(parsed)) {
-                              onSettingsChange(Math.max(6, Math.min(20, parsed)), getParsedCols(), getParsedSeconds(), localSpecialCells);
-                            }
-                          }
-                        }}
+                        onChange={(e) => setLocalRows(e.target.value)}
                         onBlur={() => {
                           const num = parseInt(localRows, 10);
                           let finalRows = num;
@@ -498,44 +492,36 @@ export default function OnlineLobby({
                           setLocalRows(finalRows.toString());
                           onSettingsChange(finalRows, getParsedCols(), getParsedSeconds(), localSpecialCells);
                         }}
-                        className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-[var(--color-foreground)]"
+                        className="min-h-11 w-12 bg-transparent text-base font-bold text-center text-[var(--color-foreground)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                       <button
                         type="button"
                         onClick={handleIncrementRows}
                         aria-label="Increase rows"
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faPlus} />
                       </button>
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5 font-bold uppercase tracking-wider">Cols (6 - 25)</span>
+                    <label htmlFor="online-board-columns" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Columns (6 - 25)</label>
                     <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20 shadow-sm">
                       <button
                         type="button"
                         onClick={handleDecrementCols}
                         aria-label="Decrease columns"
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </button>
                       <input
+                        id="online-board-columns"
                         type="number"
                         min={6}
                         max={25}
                         value={localCols}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalCols(val);
-                          if (val !== '') {
-                            const parsed = parseInt(val, 10);
-                            if (!isNaN(parsed)) {
-                              onSettingsChange(getParsedRows(), Math.max(6, Math.min(25, parsed)), getParsedSeconds(), localSpecialCells);
-                            }
-                          }
-                        }}
+                        onChange={(e) => setLocalCols(e.target.value)}
                         onBlur={() => {
                           const num = parseInt(localCols, 10);
                           let finalCols = num;
@@ -544,13 +530,13 @@ export default function OnlineLobby({
                           setLocalCols(finalCols.toString());
                           onSettingsChange(getParsedRows(), finalCols, getParsedSeconds(), localSpecialCells);
                         }}
-                        className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-[var(--color-foreground)]"
+                        className="min-h-11 w-12 bg-transparent text-base font-bold text-center text-[var(--color-foreground)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                       <button
                         type="button"
                         onClick={handleIncrementCols}
                         aria-label="Increase columns"
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-90 transition-all text-xs cursor-pointer"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faPlus} />
                       </button>
@@ -559,31 +545,23 @@ export default function OnlineLobby({
                 </div>
 
                 <div className="border-t border-[var(--color-border)]/30 pt-3">
-                  <span className="text-[10px] text-[var(--color-muted)] block mb-1.5 font-bold uppercase tracking-wider">Turn Time Limit (10 - 120s)</span>
+                  <label htmlFor="online-turn-time" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Turn Time Limit (10 - 120s)</label>
                   <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20 shadow-sm">
                     <button
                       type="button"
                       onClick={handleDecrementTurnSeconds}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                     >
                       <FontAwesomeIcon icon={faMinus} />
                     </button>
                     <div className="flex items-center gap-1">
                       <input
+                        id="online-turn-time"
                         type="number"
                         min={10}
                         max={120}
                         value={localTurnSeconds}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setLocalTurnSeconds(val);
-                          if (val !== '') {
-                            const parsed = parseInt(val, 10);
-                            if (!isNaN(parsed)) {
-                              onSettingsChange(getParsedRows(), getParsedCols(), Math.max(10, Math.min(120, parsed)), localSpecialCells);
-                            }
-                          }
-                        }}
+                        onChange={(e) => setLocalTurnSeconds(e.target.value)}
                         onBlur={() => {
                           const num = parseInt(localTurnSeconds, 10);
                           let finalSeconds = num;
@@ -592,14 +570,14 @@ export default function OnlineLobby({
                           setLocalTurnSeconds(finalSeconds.toString());
                           onSettingsChange(getParsedRows(), getParsedCols(), finalSeconds, localSpecialCells);
                         }}
-                        className="w-12 bg-transparent text-sm font-bold text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-[var(--color-foreground)]"
+                        className="min-h-11 w-12 bg-transparent text-base font-bold text-center text-[var(--color-foreground)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                       <span className="text-xs text-[var(--color-muted)] select-none pr-1">sec</span>
                     </div>
                     <button
                       type="button"
                       onClick={handleIncrementTurnSeconds}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                     >
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
@@ -609,13 +587,13 @@ export default function OnlineLobby({
 
               {/* Right Settings: Special Cells */}
               <div className="flex flex-col">
-                <label className="text-[10px] text-[var(--color-muted)] block mb-1.5 uppercase font-bold tracking-wider flex items-center gap-1.5">
+                <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                   <span className="text-[var(--color-accent)]">✨</span> Special Cells
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {(['walls', 'portals', 'multipliers', 'blackholes'] as const).map(key => (
                     <div key={key} className="bg-[var(--color-surface)]/40 p-2.5 rounded-xl border border-[var(--color-border)]/30 flex flex-col gap-2">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-muted)] tracking-wider flex items-center gap-1.5">
+                      <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                         {key === 'walls' && '🧱'}
                         {key === 'portals' && '🌀'}
                         {key === 'multipliers' && '✨'}
@@ -626,7 +604,7 @@ export default function OnlineLobby({
                         <button
                           type="button"
                           onClick={() => handleSpecialCellChange(key, false)}
-                          className="w-7 h-7 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
                         >
                           <FontAwesomeIcon icon={faMinus} />
                         </button>
@@ -634,7 +612,7 @@ export default function OnlineLobby({
                         <button
                           type="button"
                           onClick={() => handleSpecialCellChange(key, true)}
-                          className="w-7 h-7 rounded-md flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/50 active:scale-95 transition-all text-xs cursor-pointer"
+                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
                         >
                           <FontAwesomeIcon icon={faPlus} />
                         </button>
@@ -648,15 +626,15 @@ export default function OnlineLobby({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column: Dimensions & Turn Time */}
               <div className="space-y-4 flex flex-col justify-center">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5 font-bold uppercase tracking-wider">Current Dimensions</span>
+                    <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Current Dimensions</span>
                     <div className="bg-[var(--color-surface)] border border-[var(--color-border)] px-3 py-2 rounded-xl text-center text-sm font-extrabold text-[var(--color-foreground)] shadow-sm">
                       {rows} × {cols}
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] text-[var(--color-muted)] block mb-1.5 font-bold uppercase tracking-wider">Turn Time Limit</span>
+                    <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Turn Time Limit</span>
                     <div className="bg-[var(--color-surface)] border border-[var(--color-border)] px-3 py-2 rounded-xl text-center text-sm font-extrabold text-[var(--color-foreground)] shadow-sm">
                       {turnSecondsLimit}s
                     </div>
@@ -666,13 +644,13 @@ export default function OnlineLobby({
 
               {/* Right Column: Special Cells specific counts */}
               <div className="flex flex-col">
-                <label className="text-[10px] text-[var(--color-muted)] block mb-1.5 uppercase font-bold tracking-wider flex items-center gap-1.5">
+                <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                   <span className="text-[var(--color-accent)]">✨</span> Special Cells Configured
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {(['walls', 'portals', 'multipliers', 'blackholes'] as const).map(key => (
                     <div key={key} className="bg-[var(--color-surface)]/40 p-2.5 rounded-xl border border-[var(--color-border)]/30 flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-muted)] tracking-wider flex items-center gap-1.5">
+                      <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                         {key === 'walls' && '🧱'}
                         {key === 'portals' && '🌀'}
                         {key === 'multipliers' && '✨'}

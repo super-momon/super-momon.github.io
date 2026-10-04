@@ -1,6 +1,7 @@
 "use client";
 
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { useReducedMotion } from "motion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { type NavLink, isLinkActive } from "@/lib/constants";
@@ -28,13 +29,20 @@ export default function MobileNavSection({
   onLinkClick,
   slideDelay = "0s",
 }: MobileNavSectionProps) {
+  const shouldReduceMotion = useReducedMotion() ?? false;
   const currentPath = pathname || (typeof window !== "undefined" ? window.location.pathname : "/");
   const sectionActive = activeSection || "/";
 
   const hasActiveLink = links.some((l) => isLinkActive(l.href, sectionActive, currentPath));
 
   return (
-    <li style={{ animation: `mobileMenuItemSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${slideDelay} backwards` }}>
+    <li
+      style={
+        shouldReduceMotion
+          ? undefined
+          : { animation: `mobileMenuItemSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${slideDelay} backwards` }
+      }
+    >
       <button
         onClick={onToggle}
         className={`relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
@@ -51,7 +59,7 @@ export default function MobileNavSection({
         </span>
         <FontAwesomeIcon
           icon={faChevronDown}
-          className={`relative z-10 text-[10px] transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+          className={`relative z-10 text-xs transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
         />
         <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-0 bg-[var(--color-accent)] group-hover:h-8 transition-all duration-300" />
       </button>
@@ -67,7 +75,7 @@ export default function MobileNavSection({
                 <a
                   href={link.href}
                   onClick={() => onLinkClick(link)}
-                  className={`relative flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group/sub overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+                  className={`relative min-h-11 flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group/sub overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                     isCurrentSection
                       ? "text-[var(--color-foreground)] bg-[var(--color-accent)]/10 font-semibold"
                       : "text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
@@ -82,19 +90,19 @@ export default function MobileNavSection({
                     {icons[link.href] && (
                       <FontAwesomeIcon
                         icon={icons[link.href]}
-                        className={`text-[10px] ${isCurrentSection ? "text-[var(--color-accent)] opacity-100" : "text-[var(--color-accent)] opacity-60"}`}
+                        className={`text-xs ${isCurrentSection ? "text-[var(--color-accent)] opacity-100" : "text-[var(--color-accent)] opacity-60"}`}
                       />
                     )}
                     {link.label}
                   </span>
                   {isCurrentSection ? (
-                    <span className="relative z-10 text-[9px] font-bold px-1.5 py-0.5 rounded bg-[var(--color-accent)]/20 text-[var(--color-accent)] uppercase">
+                    <span className="relative z-10 rounded bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold uppercase text-[var(--color-accent)]">
                       Current
                     </span>
                   ) : (
                     <FontAwesomeIcon
                       icon={faArrowRight}
-                      className="relative z-10 text-[9px] opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 transition-all duration-200"
+                      className="relative z-10 text-xs opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 transition-all duration-200"
                     />
                   )}
                 </a>

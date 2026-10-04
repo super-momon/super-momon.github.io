@@ -57,7 +57,11 @@ export function QuizGame({
   const isUrgent = timeLeft <= 5;
   const isWarning = timeLeft <= 10 && timeLeft > 5;
 
-  const timerBg = isUrgent ? '#ef4444' : isWarning ? '#f59e0b' : 'var(--color-accent)';
+  const timerBg = isUrgent
+    ? 'var(--color-status-extra-hard)'
+    : isWarning
+      ? 'var(--color-status-medium)'
+      : 'var(--color-accent)';
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -107,7 +111,7 @@ export function QuizGame({
                 <FontAwesomeIcon icon={faTrophy} />
               </div>
               <div>
-                <span className="text-[10px] uppercase tracking-wider font-extrabold text-[var(--color-muted)] block">
+                <span className="block text-xs font-extrabold uppercase tracking-wider text-[var(--color-muted)]">
                   Score
                 </span>
                 <AnimatePresence mode="popLayout">
@@ -128,9 +132,9 @@ export function QuizGame({
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-extrabold bg-amber-500/10 border border-amber-500/30 text-amber-400"
+                className="flex items-center gap-1.5 rounded-xl border border-[var(--color-status-medium)]/30 bg-[var(--color-status-medium)]/10 px-3 py-1 text-xs font-extrabold text-[var(--color-status-medium)]"
               >
-                <FontAwesomeIcon icon={faFire} className="text-amber-400" />
+                <FontAwesomeIcon icon={faFire} className="text-[var(--color-status-medium)]" />
                 <span>{streak} Streak</span>
               </motion.div>
             )}
@@ -138,7 +142,7 @@ export function QuizGame({
 
           {/* Question Counter */}
           <div className="text-center">
-            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[var(--color-muted)] block">
+            <span className="block text-xs font-extrabold uppercase tracking-wider text-[var(--color-muted)]">
               Question
             </span>
             <span className="text-base font-extrabold tabular-nums text-[var(--color-foreground)]">
@@ -156,7 +160,7 @@ export function QuizGame({
                     icon={faHeart}
                     className={`text-base transition-all ${
                       i < lives
-                        ? 'text-red-500 drop-shadow-[0_0_6px_rgba(239,68,68,0.5)]'
+                        ? 'text-[var(--color-status-extra-hard)] drop-shadow-[0_0_6px_rgba(239,68,68,0.5)]'
                         : 'text-[var(--color-muted)]/30'
                     }`}
                   />
@@ -167,7 +171,7 @@ export function QuizGame({
                 {questionNumber}/100
               </span>
             ) : (
-              <span className="text-xs font-extrabold uppercase px-2.5 py-1 rounded-xl border border-orange-500/30 bg-orange-500/10 text-orange-400">
+              <span className="rounded-xl border border-[var(--color-status-hard)]/30 bg-[var(--color-status-hard)]/10 px-2.5 py-1 text-xs font-extrabold uppercase text-[var(--color-status-hard)]">
                 Survival
               </span>
             )}
@@ -201,8 +205,8 @@ export function QuizGame({
                 }}
                 className={`py-1.5 px-3 rounded-xl border text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1.5 ${
                   confirmForfeit
-                    ? 'bg-red-500 text-white border-red-500 shadow-md'
-                    : 'border-[var(--color-border)] bg-[var(--color-surface)]/50 text-[var(--color-muted)] hover:text-red-400 hover:border-red-500/40'
+                    ? 'bg-[var(--color-status-danger-strong)] text-[var(--color-status-danger-contrast)] border-[var(--color-status-danger-strong)] shadow-md'
+                    : 'border-[var(--color-border)] bg-[var(--color-surface)]/50 text-[var(--color-muted)] hover:text-[var(--color-status-extra-hard)] hover:border-[var(--color-status-danger-strong)]/40'
                 }`}
               >
                 <FontAwesomeIcon icon={faFlag} />
@@ -217,10 +221,10 @@ export function QuizGame({
       <div className="w-full mb-6">
         <div className="flex items-center justify-between text-xs font-extrabold text-[var(--color-muted)] mb-1.5 px-1">
           <span className="flex items-center gap-1.5">
-            <FontAwesomeIcon icon={faClock} className={isUrgent ? 'text-red-500 animate-pulse' : ''} />
+            <FontAwesomeIcon icon={faClock} className={isUrgent ? 'text-[var(--color-status-extra-hard)] animate-pulse' : ''} />
             Time Remaining
           </span>
-          <span className={`font-mono tabular-nums ${isUrgent ? 'text-red-500 font-bold' : ''}`}>
+          <span className={`font-mono tabular-nums ${isUrgent ? 'font-bold text-[var(--color-status-extra-hard)]' : ''}`}>
             {timeLeft}s
           </span>
         </div>

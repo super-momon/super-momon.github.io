@@ -167,7 +167,7 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
                   onClose();
                 }}
                 onMouseEnter={() => setHoveredHref(link.href)}
-                className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group/link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${
+                className={`relative min-h-11 flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group/link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${
                   isHovered
                     ? "bg-[var(--color-background)]/80 shadow-sm border border-[var(--color-border)]/50"
                     : isCurrentSection
@@ -204,12 +204,12 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
                       {meta?.title || link.label}
                     </span>
                     {isCurrentSection && (
-                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[var(--color-accent)]/20 text-[var(--color-accent)] border border-[var(--color-accent)]/30 tracking-wider">
+                      <span className="rounded border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold tracking-wider text-[var(--color-accent)]">
                         CURRENT
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] text-[var(--color-foreground)]/60 font-normal leading-normal mt-0.5 max-w-[200px] truncate group-hover/link:text-[var(--color-foreground)]/80 transition-colors duration-300">
+                  <span className="mt-0.5 max-w-[200px] truncate text-xs font-normal leading-normal text-[var(--color-foreground)]/70 transition-colors duration-300 group-hover/link:text-[var(--color-foreground)]/80">
                     {meta?.subtitle || "Explore this page section"}
                   </span>
                 </div>
@@ -226,7 +226,7 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
           <div>
             {/* Tag */}
             {activeMeta.tag && (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[var(--color-accent)]/10 text-[9px] font-bold uppercase tracking-wider text-[var(--color-accent)]">
+              <span className="inline-flex items-center rounded bg-[var(--color-accent)]/10 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[var(--color-accent)]">
                 {activeMeta.tag}
               </span>
             )}
@@ -237,17 +237,17 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
             </h4>
 
             {/* Description */}
-            <p className="text-[11px] text-[var(--color-foreground)]/80 leading-relaxed mt-2 font-normal">
+            <p className="mt-2 text-xs font-normal leading-relaxed text-[var(--color-foreground)]/80">
               {activeMeta.detailDescription}
             </p>
           </div>
 
           {/* CTA Link (Visual indicator) */}
-          <div className="flex items-center gap-1.5 text-[11px] text-[var(--color-accent)] font-semibold mt-4 group/cta cursor-pointer">
+          <div className="mt-4 flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-[var(--color-accent)] group/cta">
             <span>{activeMeta.detailCta}</span>
             <FontAwesomeIcon
               icon={faArrowRight}
-              className="text-[9px] transition-transform duration-300 group-hover/cta:translate-x-1"
+              className="text-xs transition-transform duration-300 group-hover/cta:translate-x-1"
               aria-hidden="true"
             />
           </div>

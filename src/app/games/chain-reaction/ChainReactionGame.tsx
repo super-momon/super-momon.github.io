@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import SetupScreen, { PlayerSetup, SpecialCellsConfig, DEFAULT_SPECIAL_CELLS } from './_components/SetupScreen';
-import GameBoard from './_components/GameBoard';
+import GameBoard, { type Player } from './_components/GameBoard';
 import WinnerScreen from './_components/WinnerScreen';
 import OnlineLobby from './_components/OnlineLobby';
 import { sendBroadcast } from './_components/useOnlineSync';
@@ -28,6 +28,8 @@ export interface LobbyPresenceUser {
   turnSecondsLimit?: number;
   specialCells?: SpecialCellsConfig;
 }
+
+type GamePlayerState = PlayerSetup & Partial<Omit<Player, keyof PlayerSetup>>;
 
 // Persisted session shape stored in localStorage keyed by room code.
 // Using localStorage (not sessionStorage) so sessions survive tab close and
@@ -140,7 +142,7 @@ const generateRoomCode = () => {
 
 export default function ChainReactionPage() {
   const [phase, setPhase] = useState<GamePhase>('setup');
-  const [players, setPlayers] = useState<any[]>([]);
+  const [players, setPlayers] = useState<GamePlayerState[]>([]);
   const [rows, setRows] = useState<number>(15);
   const [cols, setCols] = useState<number>(20);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
@@ -180,6 +182,10 @@ export default function ChainReactionPage() {
   // True only for a session restored from storage after a reload, so the
   // resumed game board knows to pull fresh state from peers on first connect.
   const [resumed, setResumed] = useState<boolean>(false);
+  const resumedRef = useRef(resumed);
+  useEffect(() => {
+    resumedRef.current = resumed;
+  }, [resumed]);
 
   // Initial name/color used to prefill lobby input
   const [initialOnlineName, setInitialOnlineName] = useState<string>('Player');
@@ -192,40 +198,9 @@ export default function ChainReactionPage() {
 
   const [isMounted, setIsMounted] = useState(false);
 
-  // Refs for tracking
-  const myClientIdRef = useRef<string>('');
-  if (!myClientIdRef.current) {
-    let persistedId = '';
-    if (typeof window !== 'undefined') {
-      try {
-        const tabClientId = window.sessionStorage.getItem('chain-reaction:tabClientId');
-        const params = new URLSearchParams(window.location.search);
-        const roomParam = params.get('room');
-
-        if (tabClientId) {
-          persistedId = tabClientId;
-        } else if (!roomParam) {
-          const active = findActiveSession();
-          if (active?.clientId) {
-            persistedId = active.clientId;
-          }
-        }
-      } catch {
-        persistedId = '';
-      }
-    }
-    const finalId = persistedId || 'client_' + Math.random().toString(36).substr(2, 9);
-    myClientIdRef.current = finalId;
-    if (typeof window !== 'undefined') {
-      try {
-        window.sessionStorage.setItem('chain-reaction:tabClientId', finalId);
-      } catch {}
-    }
-  }
-  const myClientId = myClientIdRef.current;
-
+  const [myClientId, setMyClientId] = useState('');
   const lobbyChannelRef = useRef<RealtimeChannel | null>(null);
-  const joinedAtRef = useRef<number>(Date.now());
+  const joinedAtRef = useRef<number>(0);
   const lobbyRetrackIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Timers used to re-reconcile the presence snapshot after subscribing, to
   // guard against missed/partial initial sync events on slower connections.
@@ -234,6 +209,26 @@ export default function ChainReactionPage() {
   const retrackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Track if this is the client's first sync event after subscribing to the lobby
   const initialLobbySyncRef = useRef<boolean>(true);
+
+  const cleanupOnlineSession = useCallback(async () => {
+    if (lobbyChannelRef.current) {
+      try {
+        await lobbyChannelRef.current.untrack();
+        lobbyChannelRef.current.unsubscribe();
+        supabase.removeChannel(lobbyChannelRef.current);
+      } catch (err) {
+        console.error('Error untracking lobby channel:', err);
+      }
+      lobbyChannelRef.current = null;
+    }
+    if (roomCode) removeSession(roomCode);
+    setRoomCode('');
+    setIsOnline(false);
+    setIsHost(false);
+    setLobbyPlayers([]);
+    setResumed(false);
+    initialLobbySyncRef.current = true;
+  }, [roomCode]);
 
   // Refs to break stale closures in Supabase Realtime event handlers.
   // The channel subscribes once and its callbacks capture the closure at that
@@ -272,7 +267,6 @@ export default function ChainReactionPage() {
   // Lobby channel lifecycle
   useEffect(() => {
     if (!isOnline || !roomCode) {
-      setConnectionStatus('connecting');
       return;
     }
 
@@ -353,7 +347,7 @@ export default function ChainReactionPage() {
       // Check if the game is already in progress.
       if (initialLobbySyncRef.current) {
         const inProgressUser = sorted.find((p) => p.clientId !== myClientId && (p.phase === 'playing' || p.phase === 'winner'));
-        if (inProgressUser && !resumed) {
+        if (inProgressUser && !resumedRef.current) {
           setCustomAlert({
             title: 'Game In Progress',
             message: 'This game is already in progress. You cannot join mid-game.',
@@ -541,8 +535,7 @@ export default function ChainReactionPage() {
         lobbyChannelRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOnline, roomCode]);
+  }, [isOnline, roomCode, myClientId, cleanupOnlineSession]);
 
   // Debounced presence re-track: update presence when player name, color, or phase changes
   useEffect(() => {
@@ -591,63 +584,82 @@ export default function ChainReactionPage() {
   //           (4) Nothing → show setup screen.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
+    const frame = window.requestAnimationFrame(() => {
+      const params = new URLSearchParams(window.location.search);
+      const roomParam = params.get('room');
+      let persistedId = '';
 
-    // Helper to restore state from a persisted session
-    const restoreSession = (saved: PersistedOnlineSession) => {
-      myClientIdRef.current = saved.clientId || myClientIdRef.current;
-      joinedAtRef.current = saved.joinedAt || Date.now();
-      setInitialOnlineName(saved.name);
-      setInitialOnlineColor(saved.color);
-      setRoomCode(saved.roomCode);
-      setIsHost(saved.isHost);
-      setRows(saved.rows);
-      setCols(saved.cols);
-      if (saved.turnSecondsLimit) setTurnSecondsLimit(saved.turnSecondsLimit);
-      if (saved.specialCells) setSpecialCells(clampSpecialCells(saved.specialCells));
-      if (saved.players && saved.players.length > 0) {
-        setPlayers(saved.players);
+      try {
+        const tabClientId = window.sessionStorage.getItem('chain-reaction:tabClientId');
+        if (tabClientId) {
+          persistedId = tabClientId;
+        } else if (!roomParam) {
+          persistedId = findActiveSession()?.clientId ?? '';
+        }
+      } catch {
+        persistedId = '';
       }
-      setIsOnline(true);
-      setResumed(true);
-      setPhase(saved.phase);
-    };
 
-    // 1. Check URL ?room= param
-    const roomParam = params.get('room');
-    if (roomParam && roomParam.trim().length === 6) {
-      const code = roomParam.trim().toUpperCase();
+      const finalId = persistedId || `client_${Math.random().toString(36).slice(2, 11)}`;
+      joinedAtRef.current = Date.now();
+      setMyClientId(finalId);
 
-      // Check localStorage for an existing session for this room (reconnect)
-      const existing = loadSession(code);
-      if (existing && (existing.phase === 'lobby' || existing.phase === 'playing')) {
-        restoreSession(existing);
+      try {
+        window.sessionStorage.setItem('chain-reaction:tabClientId', finalId);
+      } catch {
+        // Multiplayer remains available for the current page load.
+      }
+
+      const restoreSession = (saved: PersistedOnlineSession) => {
+        const clientId = saved.clientId || finalId;
+        setMyClientId(clientId);
+        joinedAtRef.current = saved.joinedAt || Date.now();
+        setConnectionStatus('connecting');
+        setInitialOnlineName(saved.name);
+        setInitialOnlineColor(saved.color);
+        setRoomCode(saved.roomCode);
+        setIsHost(saved.isHost);
+        setRows(saved.rows);
+        setCols(saved.cols);
+        if (saved.turnSecondsLimit) setTurnSecondsLimit(saved.turnSecondsLimit);
+        if (saved.specialCells) setSpecialCells(clampSpecialCells(saved.specialCells));
+        if (saved.players && saved.players.length > 0) {
+          setPlayers(saved.players);
+        }
+        setIsOnline(true);
+        setResumed(true);
+        setPhase(saved.phase);
+      };
+
+      if (roomParam && roomParam.trim().length === 6) {
+        const code = roomParam.trim().toUpperCase();
+        const existing = loadSession(code);
+        if (existing && (existing.phase === 'lobby' || existing.phase === 'playing')) {
+          restoreSession(existing);
+        } else {
+          setConnectionStatus('connecting');
+          setInitialPlayMode('online');
+          setInitialOnlineMode('join');
+          setInitialRoomCodeVal(code);
+        }
         setIsMounted(true);
         return;
       }
 
-      // No existing session — treat as a fresh invite link
-      setInitialPlayMode('online');
-      setInitialOnlineMode('join');
-      setInitialRoomCodeVal(code);
+      const active = findActiveSession();
+      if (active && active.roomCode && (active.phase === 'lobby' || active.phase === 'playing')) {
+        restoreSession(active);
+      }
       setIsMounted(true);
-      return;
-    }
+    });
 
-    // 2. No URL param — check localStorage for any active session
-    const active = findActiveSession();
-    if (active && active.roomCode && (active.phase === 'lobby' || active.phase === 'playing')) {
-      restoreSession(active);
-      setIsMounted(true);
-      return;
-    }
-
-    setIsMounted(true);
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   // Persist the active online session to localStorage and update the URL
   // to a clean ?room=XXXX so the user can reconnect by room code alone.
   useEffect(() => {
+    if (!isMounted || !myClientId) return;
     const isActiveOnline =
       isOnline && !!roomCode && (phase === 'lobby' || phase === 'playing');
     try {
@@ -696,6 +708,8 @@ export default function ChainReactionPage() {
     players,
     myClientId,
     turnSecondsLimit,
+    specialCells,
+    isMounted,
   ]);
 
   // Track game play when phase transitions to 'playing'
@@ -728,6 +742,7 @@ export default function ChainReactionPage() {
     limitSeconds: number,
     specialCellsConfig: SpecialCellsConfig
   ) => {
+    setConnectionStatus('connecting');
     const shuffled = shuffleArray(setupPlayers).map((p, index) => ({
       ...p,
       id: index,
@@ -761,7 +776,7 @@ export default function ChainReactionPage() {
     if (mode === 'join' && code) {
       const existing = loadSession(code);
       if (existing && existing.clientId) {
-        myClientIdRef.current = existing.clientId;
+        setMyClientId(existing.clientId);
         joinedAtRef.current = existing.joinedAt || Date.now();
         // Restore name/color from the saved session so the user doesn't
         // appear as a new player with default values.
@@ -881,7 +896,7 @@ export default function ChainReactionPage() {
     }
   };
 
-  const handleGameFinished = (name: string, color: string, orbs: number) => {
+  const handleGameFinished = useCallback((name: string, color: string, orbs: number) => {
     setWinnerName(name);
     setWinnerColor(color);
     setWinnerOrbs(orbs);
@@ -896,7 +911,7 @@ export default function ChainReactionPage() {
       room_code: roomCode || 'local',
     });
     setPhase('winner');
-  };
+  }, [isOnline, players.length, rows, cols, roomCode]);
 
   const handlePlayAgain = () => {
     trackEvent('chain_reaction_play_again', {
@@ -921,34 +936,17 @@ export default function ChainReactionPage() {
     setLobbyPlayers((prev) => prev.filter((p) => p.clientId !== targetClientId));
   };
 
-  const handleBackToSetup = () => {
-    cleanupOnlineSession();
+  const handleBackToSetup = useCallback(() => {
+    void cleanupOnlineSession();
     setPhase('setup');
-  };
+  }, [cleanupOnlineSession]);
 
-  const handleGoToLobby = () => {
-    setPhase('lobby');
-  };
-
-  const cleanupOnlineSession = async () => {
-    if (lobbyChannelRef.current) {
-      try {
-        await lobbyChannelRef.current.untrack();
-        lobbyChannelRef.current.unsubscribe();
-        supabase.removeChannel(lobbyChannelRef.current);
-      } catch (err) {
-        console.error('Error untracking lobby channel:', err);
-      }
-      lobbyChannelRef.current = null;
+  const handleGoToLobby = useCallback(() => {
+    if (isOnline && isHost && lobbyChannelRef.current) {
+      sendBroadcast(lobbyChannelRef.current, 'go-to-lobby');
     }
-    if (roomCode) removeSession(roomCode);
-    setRoomCode('');
-    setIsOnline(false);
-    setIsHost(false);
-    setLobbyPlayers([]);
-    setResumed(false);
-    initialLobbySyncRef.current = true;
-  };
+    setPhase('lobby');
+  }, [isOnline, isHost]);
 
   if (!isMounted) {
     return (
@@ -1093,12 +1091,7 @@ export default function ChainReactionPage() {
             myClientId={myClientId}
             roomCode={roomCode}
             isHost={isHost}
-            onGoToLobby={() => {
-              if (isOnline && isHost && lobbyChannelRef.current) {
-                sendBroadcast(lobbyChannelRef.current, 'go-to-lobby');
-              }
-              setPhase('lobby');
-            }}
+            onGoToLobby={handleGoToLobby}
             resumed={resumed}
             turnSecondsLimit={turnSecondsLimit}
             specialCells={specialCells}

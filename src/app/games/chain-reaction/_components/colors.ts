@@ -1,5 +1,4 @@
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
 
 export const PRESET_COLORS = [
   '#08ca5f', // Emerald Pulse (Primary Design Token)
@@ -9,6 +8,15 @@ export const PRESET_COLORS = [
   '#f59e0b', // Amber / Yellow
   '#8b5cf6', // Violet Purple
 ];
+
+export const PRESET_COLOR_LABELS: Record<string, string> = {
+  '#08ca5f': 'Emerald',
+  '#ef4444': 'Red',
+  '#3b82f6': 'Blue',
+  '#06b6d4': 'Cyan',
+  '#f59e0b': 'Amber',
+  '#8b5cf6': 'Violet',
+};
 
 export const getThemeColor = (color: string, isDark: boolean) => {
   switch (color.toLowerCase()) {
@@ -51,12 +59,5 @@ export const getThemeColor = (color: string, isDark: boolean) => {
 
 export function useIsDark() {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return true;
-  return resolvedTheme === 'dark';
+  return resolvedTheme === undefined ? true : resolvedTheme === 'dark';
 }

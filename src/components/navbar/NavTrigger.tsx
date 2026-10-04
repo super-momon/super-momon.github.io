@@ -28,7 +28,7 @@ export default function NavTrigger({
         aria-haspopup="true"
         aria-expanded={isOpen}
         onClick={onClick}
-        className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group overflow-hidden flex items-center gap-2 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+        className={`relative min-h-11 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group overflow-hidden flex items-center gap-2 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
           isOpen || isActive
             ? "text-[var(--color-foreground)] bg-[var(--color-surface)]/70"
             : "text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
@@ -51,4 +51,3 @@ export default function NavTrigger({
     </li>
   );
 }
-

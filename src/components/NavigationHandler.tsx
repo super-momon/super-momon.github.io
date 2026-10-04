@@ -22,9 +22,10 @@ export function NavigationHandler({ children }: NavigationHandlerProps) {
 
       // Reinitialize Font Awesome icons after navigation
       // This ensures icons render properly after browser back/forward
-      if (typeof window !== 'undefined' && (window as any).FontAwesome) {
+      const fontAwesome = window.FontAwesome;
+      if (fontAwesome) {
         setTimeout(() => {
-          (window as any).FontAwesome.dom.i2svg();
+          fontAwesome.dom.i2svg();
         }, 50);
       }
     };
@@ -32,11 +33,6 @@ export function NavigationHandler({ children }: NavigationHandlerProps) {
     window.addEventListener("popstate", handlePopState);
 
     // Also listen for hash changes (for hash-based navigation)
-    const handleHashChange = () => {
-      // Don't re-mount on hash changes within the same page
-      // Only on actual page navigation
-    };
-
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };

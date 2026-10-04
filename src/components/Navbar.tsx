@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -44,6 +45,7 @@ const GAME_ICONS: Record<string, IconDefinition> = {
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const pathname = usePathname();
+  const shouldReduceMotion = useReducedMotion() ?? false;
   const [scrolled, setScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -88,10 +90,7 @@ export default function Navbar() {
 
   // ─── Scrollspy for active section highlighting ──────────────────────────────
   useEffect(() => {
-    if (pathname !== "/") {
-      setActiveSection(pathname);
-      return;
-    }
+    if (pathname !== "/") return;
 
     const sectionIds = ["hero", "about", "experience", "projects", "skills", "education", "contact"];
 
@@ -162,8 +161,9 @@ export default function Navbar() {
     }
   };
 
-  const isPortfolioActive = PORTFOLIO_LINKS.some((l) => isLinkActive(l.href, activeSection, pathname));
-  const isGameActive = GAME_LINKS.some((l) => isLinkActive(l.href, activeSection, pathname));
+  const currentActiveSection = pathname === "/" ? activeSection : pathname;
+  const isPortfolioActive = PORTFOLIO_LINKS.some((l) => isLinkActive(l.href, currentActiveSection, pathname));
+  const isGameActive = GAME_LINKS.some((l) => isLinkActive(l.href, currentActiveSection, pathname));
 
   return (
     <header
@@ -182,7 +182,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/#hero"
-          className="relative text-lg font-bold text-[var(--color-foreground)] hover:text-[var(--color-accent)] transition-all duration-300 justify-self-start group z-10"
+          className="relative inline-flex min-h-11 items-center text-lg font-bold text-[var(--color-foreground)] hover:text-[var(--color-accent)] transition-all duration-300 justify-self-start group z-10"
         >
           <span className="relative inline-block">
             &lt;momon /&gt;
@@ -205,7 +205,7 @@ export default function Navbar() {
               links={PORTFOLIO_LINKS}
               icons={PORTFOLIO_ICONS}
               isOpen={portfolioOpen}
-              activeSection={activeSection}
+              activeSection={currentActiveSection}
               pathname={pathname}
               onMouseEnter={portfolioHandlers.onEnter}
               onMouseLeave={portfolioHandlers.onLeave}
@@ -226,7 +226,7 @@ export default function Navbar() {
               links={GAME_LINKS}
               icons={GAME_ICONS}
               isOpen={gameOpen}
-              activeSection={activeSection}
+              activeSection={currentActiveSection}
               pathname={pathname}
               onMouseEnter={gameHandlers.onEnter}
               onMouseLeave={gameHandlers.onLeave}
@@ -276,7 +276,11 @@ export default function Navbar() {
       {isMenuOpen && (
         <div
           className="md:hidden bg-[var(--color-background)] border-b border-[var(--color-border)]/50 px-6 pb-4 overflow-hidden"
-          style={{ animation: "mobileMenuSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }}
+          style={
+            shouldReduceMotion
+              ? undefined
+              : { animation: "mobileMenuSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }
+          }
         >
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)]/30 to-transparent pointer-events-none" />
 
@@ -286,7 +290,7 @@ export default function Navbar() {
               links={PORTFOLIO_LINKS}
               icons={PORTFOLIO_ICONS}
               isOpen={mobilePortfolioOpen}
-              activeSection={activeSection}
+              activeSection={currentActiveSection}
               pathname={pathname}
               onToggle={() => setMobilePortfolioOpen((p) => !p)}
               onLinkClick={() => { setIsMenuOpen(false); setMobilePortfolioOpen(false); }}
@@ -298,7 +302,7 @@ export default function Navbar() {
               links={GAME_LINKS}
               icons={GAME_ICONS}
               isOpen={mobileGameOpen}
-              activeSection={activeSection}
+              activeSection={currentActiveSection}
               pathname={pathname}
               onToggle={() => setMobileGameOpen((p) => !p)}
               onLinkClick={(link) => {
@@ -320,4 +324,3 @@ export default function Navbar() {
     </header>
   );
 }
-

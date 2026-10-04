@@ -37,7 +37,7 @@ export default function QuizPage() {
             left: '-15%',
             width: '60%',
             aspectRatio: '1',
-            background: 'radial-gradient(circle, rgba(0,199,88,0.1) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--color-accent) 10%, transparent) 0%, transparent 65%)',
             filter: 'blur(70px)',
           }}
         />
@@ -49,7 +49,7 @@ export default function QuizPage() {
             right: '-15%',
             width: '55%',
             aspectRatio: '1',
-            background: 'radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--color-accent) 8%, transparent) 0%, transparent 65%)',
             filter: 'blur(70px)',
           }}
         />
@@ -61,7 +61,7 @@ export default function QuizPage() {
             left: '50%',
             width: '40%',
             aspectRatio: '1',
-            background: 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--color-accent) 6%, transparent) 0%, transparent 65%)',
             filter: 'blur(50px)',
           }}
         />
@@ -70,7 +70,7 @@ export default function QuizPage() {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: 'radial-gradient(circle, rgba(100,116,139,0.1) 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(circle, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 1px)',
             backgroundSize: '28px 28px',
           }}
         />
