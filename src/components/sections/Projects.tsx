@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "motion/react";
-import { useRef, useState, useEffect } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +22,7 @@ import {
 
 import InlineQuizTeaser from "@/components/common/InlineQuizTeaser";
 import SectionHeader from "@/components/common/SectionHeader";
+import { useDialogFocus } from "@/hooks/useDialogFocus";
 
 interface Project {
   id: string;
@@ -31,7 +33,7 @@ interface Project {
   type: string;
   live: string | null;
   withAi: boolean;
-  icon: any;
+  icon: IconProp;
 }
 
 const projects: Project[] = [
@@ -111,6 +113,11 @@ const projects: Project[] = [
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const closeProjectModal = useCallback(() => setSelectedProject(null), []);
+  const projectDialogRef = useDialogFocus<HTMLDivElement>(
+    Boolean(selectedProject),
+    closeProjectModal,
+  );
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
@@ -123,19 +130,12 @@ export default function Projects() {
   const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
 
-  // Trap Escape key & prevent background scroll when detail modal is active
+  // Prevent background scroll while project details are open.
   useEffect(() => {
     if (!selectedProject) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSelectedProject(null);
-      }
-    };
     document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedProject]);
 
@@ -190,7 +190,7 @@ export default function Projects() {
                       <FontAwesomeIcon icon={project.icon} className="text-accent text-lg" />
                     </div>
                     <div className="min-w-0">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded bg-foreground/5 border border-border/80 text-[9px] font-bold uppercase tracking-wider text-foreground/85 mb-1">
+                      <span className="mb-1 inline-flex items-center rounded border border-border/80 bg-foreground/5 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-foreground/85">
                         {project.type === "game" ? "Interactive Game" : "Production Platform"}
                       </span>
                       <h3 className="text-lg font-bold text-foreground tracking-tight group-hover:text-accent transition-colors truncate">
@@ -201,10 +201,10 @@ export default function Projects() {
 
                   {project.withAi && (
                     <span
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-accent/60 text-accent bg-accent/10 whitespace-nowrap shadow-xs shrink-0"
+                      className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border border-accent/60 bg-accent/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-accent shadow-xs"
                       title="Coded with AI Assistance"
                     >
-                      <FontAwesomeIcon icon={faWandSparkles} className="text-[10px]" />
+                      <FontAwesomeIcon icon={faWandSparkles} className="text-xs" />
                       AI Coded
                     </span>
                   )}
@@ -227,18 +227,18 @@ export default function Projects() {
                     className="w-full min-h-11 flex items-center justify-between px-3 py-2 rounded-xl bg-background/60 hover:bg-background border border-border/70 hover:border-accent/50 text-xs text-foreground/80 hover:text-accent font-medium transition-all group/btn cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     <span className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faExpand} className="text-[10px] text-accent/80 group-hover/btn:scale-110 transition-transform" />
+                      <FontAwesomeIcon icon={faExpand} className="text-xs text-accent/80 group-hover/btn:scale-110 transition-transform" />
                       <span>{project.id === "quiz-game" ? "Preview Quiz Teaser & Overview" : "View Architectural Details"}</span>
                     </span>
-                    <span className="text-[10px] font-mono text-accent">Details →</span>
+                    <span className="text-xs font-mono text-accent">Details →</span>
                   </button>
                 </div>
               </div>
 
               {/* Bottom Section: Tech Tags & Primary Action */}
               <div className="shrink-0 pt-3 border-t border-border/30">
-                {/* Tech Tags - Clamped to 1 row preview */}
-                <div className="flex flex-wrap gap-1.5 mb-4 max-h-[34px] overflow-hidden">
+                {/* Tech Tags */}
+                <div className="flex flex-wrap gap-1.5 mb-4">
                   {project.tags.slice(0, 4).map((tag) => (
                     <span
                       key={tag}
@@ -248,7 +248,7 @@ export default function Projects() {
                     </span>
                   ))}
                   {project.tags.length > 4 && (
-                    <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-accent/10 border border-accent/20 text-accent font-semibold">
+                    <span className="rounded-md border border-accent/20 bg-accent/10 px-2 py-0.5 font-mono text-xs font-semibold text-accent">
                       +{project.tags.length - 4} more
                     </span>
                   )}
@@ -273,7 +273,7 @@ export default function Projects() {
                       <span>{project.type === "game" ? "Play Interactive Game" : "View Live Project"}</span>
                       <FontAwesomeIcon
                         icon={faArrowRight}
-                        className="text-[10px] transition-transform duration-300 group-hover/link:translate-x-1"
+                        className="text-xs transition-transform duration-300 group-hover/link:translate-x-1"
                       />
                     </a>
                   ) : (
@@ -307,9 +307,11 @@ export default function Projects() {
       <AnimatePresence>
         {selectedProject && (
           <div
+            ref={projectDialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-modal-title"
+            tabIndex={-1}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             {/* Backdrop */}
@@ -317,7 +319,7 @@ export default function Projects() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedProject(null)}
+              onClick={closeProjectModal}
               className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
 
@@ -337,12 +339,12 @@ export default function Projects() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded bg-foreground/5 border border-border/80 text-[9px] font-bold uppercase tracking-wider text-foreground/85">
+                      <span className="inline-flex items-center rounded border border-border/80 bg-foreground/5 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-foreground/85">
                         {selectedProject.type === "game" ? "Interactive Game" : "Production Platform"}
                       </span>
                       {selectedProject.withAi && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border border-accent/60 text-accent bg-accent/10">
-                          <FontAwesomeIcon icon={faWandSparkles} className="text-[8px]" />
+                        <span className="inline-flex items-center gap-1 rounded border border-accent/60 bg-accent/10 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-accent">
+                          <FontAwesomeIcon icon={faWandSparkles} className="text-xs" />
                           AI Coded
                         </span>
                       )}
@@ -356,7 +358,8 @@ export default function Projects() {
 
                 <button
                   type="button"
-                  onClick={() => setSelectedProject(null)}
+                  onClick={closeProjectModal}
+                  data-dialog-autofocus
                   className="w-11 h-11 rounded-full border border-border/80 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-background/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent transition-colors cursor-pointer shrink-0"
                   aria-label="Close modal"
                 >
@@ -396,7 +399,7 @@ export default function Projects() {
                         key={tag}
                         className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono bg-background border border-border/80 text-foreground/90 shadow-xs"
                       >
-                        <FontAwesomeIcon icon={faCheckCircle} className="text-accent text-[10px]" />
+                        <FontAwesomeIcon icon={faCheckCircle} className="text-xs text-accent" />
                         {tag}
                       </span>
                     ))}
@@ -407,7 +410,7 @@ export default function Projects() {
                 <div className="pt-4 border-t border-border/40 flex items-center justify-end gap-3">
                   <button
                     type="button"
-                    onClick={() => setSelectedProject(null)}
+                    onClick={closeProjectModal}
                     className="min-h-11 px-4 py-2 rounded-xl text-xs font-semibold text-foreground/70 hover:text-foreground hover:bg-background/60 transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     Close
@@ -423,12 +426,12 @@ export default function Projects() {
                           project_type: selectedProject.type,
                           destination: selectedProject.live || "",
                         });
-                        setSelectedProject(null);
+                        closeProjectModal();
                       }}
                       className="inline-flex min-h-11 items-center gap-2 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all duration-300 shadow-sm cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <span>{selectedProject.type === "game" ? "Play Game Now" : "Launch Project"}</span>
-                      <FontAwesomeIcon icon={faArrowRight} className="text-[10px]" />
+                      <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
                     </a>
                   )}
                 </div>

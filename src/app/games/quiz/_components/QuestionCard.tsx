@@ -3,7 +3,7 @@
 import { motion } from 'motion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faXmark, faTag, faGaugeHigh } from '@fortawesome/free-solid-svg-icons';
-import type { QuizQuestion, AnswerState } from '@/types/quiz';
+import type { QuizQuestion, AnswerState, QuestionDifficulty } from '@/types/quiz';
 
 interface Props {
   question: QuizQuestion;
@@ -15,11 +15,31 @@ interface Props {
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
 const OPTION_KEYS = ['1', '2', '3', '4'];
 
-const DIFFICULTY: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  easy: { label: 'Easy', color: '#22c55e', bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.3)' },
-  medium: { label: 'Medium', color: '#eab308', bg: 'rgba(234,179,8,0.1)', border: 'rgba(234,179,8,0.3)' },
-  hard: { label: 'Hard', color: '#f97316', bg: 'rgba(249,115,22,0.1)', border: 'rgba(249,115,22,0.3)' },
-  'extra-hard': { label: 'Extra Hard', color: '#ef4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' },
+const DIFFICULTY: Record<QuestionDifficulty, { label: string; color: string; bg: string; border: string }> = {
+  easy: {
+    label: 'Easy',
+    color: 'var(--color-status-easy)',
+    bg: 'color-mix(in srgb, var(--color-status-easy) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-easy) 35%, var(--color-border))',
+  },
+  medium: {
+    label: 'Medium',
+    color: 'var(--color-status-medium)',
+    bg: 'color-mix(in srgb, var(--color-status-medium) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-medium) 35%, var(--color-border))',
+  },
+  hard: {
+    label: 'Hard',
+    color: 'var(--color-status-hard)',
+    bg: 'color-mix(in srgb, var(--color-status-hard) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-hard) 35%, var(--color-border))',
+  },
+  'extra-hard': {
+    label: 'Extra Hard',
+    color: 'var(--color-status-extra-hard)',
+    bg: 'color-mix(in srgb, var(--color-status-extra-hard) 12%, var(--color-surface))',
+    border: 'color-mix(in srgb, var(--color-status-extra-hard) 35%, var(--color-border))',
+  },
 };
 
 function renderFormattedText(text: string) {
@@ -60,18 +80,18 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
       {/* Metadata Badges */}
       <div className="flex flex-wrap items-center gap-2 mb-5">
         <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/30 inline-flex items-center gap-1.5 uppercase tracking-wider">
-          <FontAwesomeIcon icon={faTag} className="text-[10px]" />
+          <FontAwesomeIcon icon={faTag} className="text-xs" />
           {question.category}
         </span>
         <span
           className="px-3 py-1 rounded-full text-xs font-extrabold border inline-flex items-center gap-1.5 uppercase tracking-wider"
           style={{ color: diff.color, background: diff.bg, borderColor: diff.border }}
         >
-          <FontAwesomeIcon icon={faGaugeHigh} className="text-[10px]" />
+          <FontAwesomeIcon icon={faGaugeHigh} className="text-xs" />
           {diff.label}
         </span>
         {question.type === 'true-false' && (
-          <span className="px-3 py-1 rounded-full text-xs font-extrabold border border-purple-500/30 bg-purple-500/10 text-purple-400 uppercase tracking-wider">
+          <span className="px-3 py-1 rounded-full text-xs font-extrabold border border-[var(--color-status-info)]/30 bg-[var(--color-status-info)]/10 text-[var(--color-status-info)] uppercase tracking-wider">
             True / False
           </span>
         )}
@@ -112,9 +132,9 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
                 state === 'idle'
                   ? 'border-[var(--color-border)] bg-[var(--color-surface)]/60 text-[var(--color-foreground)] hover:border-[var(--color-accent)]/60 hover:bg-[var(--color-surface)]'
                   : state === 'correct'
-                    ? 'border-[#08ca5f] bg-[#08ca5f]/15 text-[var(--color-foreground)] shadow-lg shadow-[#08ca5f]/20'
+                    ? 'border-[var(--color-status-success-strong)] bg-[var(--color-status-success-strong)]/15 text-[var(--color-foreground)] shadow-lg shadow-[var(--color-status-success-strong)]/20'
                     : state === 'wrong'
-                      ? 'border-[#ef4444] bg-[#ef4444]/15 text-[var(--color-foreground)] shadow-lg shadow-[#ef4444]/20'
+                      ? 'border-[var(--color-status-danger-strong)] bg-[var(--color-status-danger-strong)]/15 text-[var(--color-foreground)] shadow-lg shadow-[var(--color-status-danger-strong)]/20'
                       : 'border-[var(--color-border)]/30 bg-transparent text-[var(--color-muted)] opacity-30 cursor-default'
               }`}
             >
@@ -123,16 +143,16 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
                 <span
                   className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-extrabold font-mono transition-all border ${
                     state === 'correct'
-                      ? 'bg-[#08ca5f] text-black border-[#08ca5f]'
+                      ? 'bg-[var(--color-status-success-strong)] text-[var(--color-status-success-contrast)] border-[var(--color-status-success-strong)]'
                       : state === 'wrong'
-                        ? 'bg-[#ef4444] text-white border-[#ef4444]'
+                        ? 'bg-[var(--color-status-danger-strong)] text-[var(--color-status-danger-contrast)] border-[var(--color-status-danger-strong)]'
                         : 'bg-[var(--color-surface)] text-[var(--color-muted)] border-[var(--color-border)]/50 group-hover:text-[var(--color-accent)] group-hover:border-[var(--color-accent)]/40'
                   }`}
                 >
                   {OPTION_LABELS[index]}
                 </span>
                 {!isAnswered && (
-                  <span className="hidden sm:inline-block text-[10px] font-mono text-[var(--color-muted)]/50 px-1.5 py-0.5 border border-[var(--color-border)]/40 rounded-lg">
+                  <span className="hidden sm:inline-block rounded-lg border border-[var(--color-border)]/40 px-1.5 py-0.5 font-mono text-xs text-[var(--color-muted)]/70">
                     {OPTION_KEYS[index]}
                   </span>
                 )}
@@ -147,10 +167,10 @@ export function QuestionCard({ question, answerState, selectedAnswer, onAnswer }
               {isAnswered && (
                 <div className="shrink-0 text-lg">
                   {state === 'correct' && (
-                    <FontAwesomeIcon icon={faCheck} className="text-[#08ca5f]" />
+                    <FontAwesomeIcon icon={faCheck} className="text-[var(--color-status-success)]" />
                   )}
                   {state === 'wrong' && (
-                    <FontAwesomeIcon icon={faXmark} className="text-[#ef4444]" />
+                    <FontAwesomeIcon icon={faXmark} className="text-[var(--color-status-extra-hard)]" />
                   )}
                 </div>
               )}

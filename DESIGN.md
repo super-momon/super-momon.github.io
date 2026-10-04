@@ -11,15 +11,35 @@ colors:
   foreground: "#f1f5f9"
   muted: "#9aa8bd"
   warning: "#fbbf24"
+  overlay: "#0a0a0f"
   light-primary: "#067a3a"
   light-primary-hover: "#05602e"
   light-primary-contrast: "#ffffff"
+  status-easy: "#166534"
+  status-medium: "#854d0e"
+  status-hard: "#9a3412"
+  status-extra-hard: "#b91c1c"
+  status-info: "#6d28d9"
+  status-info-strong: "#5b21b6"
+  status-success-strong: "#15803d"
+  status-danger-strong: "#b91c1c"
+  status-easy-dark: "#4ade80"
+  status-medium-dark: "#fbbf24"
+  status-hard-dark: "#fb923c"
+  status-extra-hard-dark: "#f87171"
+  status-info-dark: "#c4b5fd"
+  status-info-strong-dark: "#7c3aed"
 typography:
   display:
     fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(2rem, 5vw, 4rem)"
     fontWeight: 700
     lineHeight: 1.1
+  caption:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 500
+    lineHeight: 1.4
   body:
     fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1rem"
@@ -70,6 +90,7 @@ The palette pairs deep dark backgrounds with crisp neon emerald highlights for a
 - **Foreground Text** (`#f1f5f9`): Primary high-contrast reading text.
 - **Muted Slate** (`#9aa8bd`): Secondary text, subtitles, and metadata labels.
 - Light surfaces use `#f6f8fa`, borders use `#d5dbe2`, and muted text uses `#4b5563`.
+- Quiz difficulty and feedback labels use semantic status colors with separate light- and dark-theme values; these indicate state and never replace the emerald action accent. Light-theme statuses use darker foregrounds, while dark-theme values remain vivid against elevated surfaces.
 
 ### Named Rules
 **The Single-Accent Anchor.** The emerald accent is reserved for interactive affordances, key scores, and active selections.
@@ -84,6 +105,7 @@ The palette pairs deep dark backgrounds with crisp neon emerald highlights for a
 - **Headline** (600, 1.5rem, 1.25): Card headings, section titles.
 - **Body** (400, 1rem, 1.5): Standard reading prose and question prompts.
 - **Label** (500, 0.875rem, tracking-wide, uppercase): Badges, mode tags, timer displays.
+- **Caption** (500, 0.75rem, 1.4): Dense secondary metadata only; interactive text and core labels use the label size or larger.
 
 ## Layout
 

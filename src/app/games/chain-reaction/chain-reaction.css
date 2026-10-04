@@ -159,7 +159,9 @@
   .orb-layout-3 > .orb-simple,
   .orb-layout-3-row,
   .critical-cell .orb-simple,
-  .shout-shake {
+  .shout-shake,
+  .animate-bullhorn,
+  .shout-pulse-glow {
     animation: none !important;
   }
 }
@@ -823,4 +825,65 @@
   animation: leader-crown-float 2.5s infinite ease-in-out;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .orb-simple,
+  .orb-layout-2,
+  .orb-layout-3,
+  .orb-layout-4,
+  .orb-layout-3-row,
+  .cell-explode,
+  .particle-t,
+  .particle-r,
+  .particle-b,
+  .particle-l,
+  .orb-critical-shake,
+  .animate-fade-in-up,
+  .animate-slide-up-sheet,
+  .shout-shake,
+  .shout-banner,
+  .shout-title,
+  .shout-message,
+  .shout-pulse-active,
+  .animate-bullhorn,
+  .cell-type-portal,
+  .cell-type-multiplier,
+  .cell-type-blackhole,
+  .animate-leader-crown {
+    animation: none !important;
+  }
 
+  .cell-type-portal::before,
+  .cell-type-blackhole::before {
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-simple,
+  .orb-layout-2,
+  .orb-layout-3,
+  .orb-layout-4,
+  .orb-layout-3-row,
+  .cell-explode,
+  .particle-t,
+  .particle-r,
+  .particle-b,
+  .particle-l,
+  .orb-critical-shake,
+  .animate-fade-in-up,
+  .animate-slide-up-sheet,
+  .shout-shake,
+  .shout-banner,
+  .shout-title,
+  .shout-message,
+  .shout-pulse-active,
+  .animate-bullhorn,
+  .cell-type-portal,
+  .cell-type-portal::before,
+  .cell-type-multiplier,
+  .cell-type-blackhole,
+  .cell-type-blackhole::before,
+  .animate-leader-crown {
+    animation: none !important;
+  }
+}

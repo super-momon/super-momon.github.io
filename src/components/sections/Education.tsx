@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "motion/react";
-import { useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,11 +12,11 @@ import {
   faAward,
   faTimes,
   faCheckCircle,
-  faExpand,
 } from "@fortawesome/free-solid-svg-icons";
 import { faAws, faLinkedin, faFreeCodeCamp } from "@fortawesome/free-brands-svg-icons";
 
 import SectionHeader from "@/components/common/SectionHeader";
+import { useDialogFocus } from "@/hooks/useDialogFocus";
 
 interface CertificationUrl {
   label: string;
@@ -29,7 +30,7 @@ interface Certification {
 
 interface EducationItem {
   id: string;
-  icon: any;
+  icon: IconProp;
   topic: string;
   institution: string;
   period: string;
@@ -182,6 +183,11 @@ const cleanDisplayUrl = (rawUrl: string) => {
 
 export default function Education() {
   const [selectedItem, setSelectedItem] = useState<EducationItem | null>(null);
+  const closeEducationModal = useCallback(() => setSelectedItem(null), []);
+  const educationDialogRef = useDialogFocus<HTMLDivElement>(
+    Boolean(selectedItem),
+    closeEducationModal,
+  );
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
@@ -194,19 +200,12 @@ export default function Education() {
   const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 60]);
 
-  // Trap Escape key & prevent background scroll when detail modal is active
+  // Prevent background scroll while education details are open.
   useEffect(() => {
     if (!selectedItem) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSelectedItem(null);
-      }
-    };
     document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedItem]);
 
@@ -261,19 +260,19 @@ export default function Education() {
               >
                 <div className="flex flex-col flex-1 min-h-0">
                   {/* Header */}
-                  <div className="flex items-start justify-between gap-3 pb-3.5 border-b border-border/30 shrink-0">
+                  <div className="flex flex-col items-start justify-between gap-3 border-b border-border/30 pb-3.5 shrink-0 sm:flex-row">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                         <FontAwesomeIcon icon={item.icon} className="text-accent text-lg" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="text-base font-bold text-foreground tracking-tight leading-tight group-hover:text-accent transition-colors truncate">
+                        <h3 className="break-words text-base font-bold leading-tight tracking-tight text-foreground transition-colors group-hover:text-accent">
                           {item.topic}
                         </h3>
-                        <p className="text-accent text-xs font-semibold mt-0.5 truncate">{item.institution}</p>
+                        <p className="mt-0.5 break-words text-xs font-semibold text-accent">{item.institution}</p>
                       </div>
                     </div>
-                    <span className="shrink-0 text-xs font-mono text-foreground/80 border border-border/80 rounded-lg px-2.5 py-1 bg-background/80 shadow-xs">
+                    <span className="shrink-0 rounded-lg border border-border/80 bg-background/80 px-2.5 py-1 text-xs font-mono text-foreground/80 shadow-xs">
                       {item.period}
                     </span>
                   </div>
@@ -301,7 +300,7 @@ export default function Education() {
                             : "Bachelor Degree Credential"}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-accent shrink-0 ml-2">
+                      <span className="ml-2 shrink-0 text-xs font-mono text-accent">
                         View Details →
                       </span>
                     </button>
@@ -310,7 +309,7 @@ export default function Education() {
 
                 {/* Bottom Section: Skills preview */}
                 <div className="shrink-0 pt-3 border-t border-border/30">
-                  <div className="flex flex-wrap gap-1.5 max-h-[34px] overflow-hidden">
+                  <div className="flex flex-wrap gap-1.5">
                     {item.skills.slice(0, 4).map((skill) => (
                       <span
                         key={skill}
@@ -320,7 +319,7 @@ export default function Education() {
                       </span>
                     ))}
                     {item.skills.length > 4 && (
-                      <span className="text-[10px] text-accent bg-accent/10 border border-accent/20 rounded-md px-2 py-0.5 font-mono font-semibold">
+                      <span className="rounded-md border border-accent/20 bg-accent/10 px-2 py-0.5 font-mono text-xs font-semibold text-accent">
                         +{item.skills.length - 4} more
                       </span>
                     )}
@@ -336,9 +335,11 @@ export default function Education() {
       <AnimatePresence>
         {selectedItem && (
           <div
+            ref={educationDialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="edu-modal-title"
+            tabIndex={-1}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             {/* Backdrop */}
@@ -346,7 +347,7 @@ export default function Education() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedItem(null)}
+              onClick={closeEducationModal}
               className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
 
@@ -377,7 +378,8 @@ export default function Education() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setSelectedItem(null)}
+                  onClick={closeEducationModal}
+                  data-dialog-autofocus
                   className="w-11 h-11 rounded-full border border-border/80 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-background/80 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent transition-colors cursor-pointer shrink-0"
                   aria-label="Close modal"
                 >
@@ -434,7 +436,7 @@ export default function Education() {
                                   <p className="text-xs font-semibold text-foreground group-hover/link:text-accent transition-colors truncate">
                                     {link.label}
                                   </p>
-                                  <p className="text-[9px] text-foreground/50 truncate font-mono mt-0.5">
+                                  <p className="mt-0.5 truncate font-mono text-xs text-foreground/60">
                                     {cleanDisplayUrl(link.url)}
                                   </p>
                                 </div>
@@ -456,12 +458,12 @@ export default function Education() {
                           <p className="text-xs font-bold text-foreground">
                             Bachelor of Science in Information Technology
                           </p>
-                          <p className="text-[10px] text-foreground/60">
+                          <p className="text-xs text-foreground/70">
                             University of Cebu - Lapulapu and Mandaue
                           </p>
                         </div>
                       </div>
-                      <span className="text-[10px] font-mono text-accent font-semibold">
+                      <span className="text-xs font-mono font-semibold text-accent">
                         Graduated 2022
                       </span>
                     </div>
@@ -479,7 +481,7 @@ export default function Education() {
                         key={skill}
                         className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono bg-background border border-border/80 text-foreground/90 shadow-xs"
                       >
-                        <FontAwesomeIcon icon={faCheckCircle} className="text-accent text-[10px]" />
+                        <FontAwesomeIcon icon={faCheckCircle} className="text-xs text-accent" />
                         {skill}
                       </span>
                     ))}
@@ -490,7 +492,7 @@ export default function Education() {
                 <div className="pt-4 border-t border-border/40 flex items-center justify-end">
                   <button
                     type="button"
-                    onClick={() => setSelectedItem(null)}
+                    onClick={closeEducationModal}
                     className="min-h-11 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all cursor-pointer shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     Done
@@ -504,4 +506,3 @@ export default function Education() {
     </section>
   );
 }
-

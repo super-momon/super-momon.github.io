@@ -8,7 +8,7 @@ import {
   faFaceSmile, 
   faBullhorn 
 } from '@fortawesome/free-solid-svg-icons';
-import { ChatMessage, Player } from './GameBoard';
+import { ChatMessage } from './GameBoard';
 import { getThemeColor } from './colors';
 
 interface GameChatProps {
@@ -20,7 +20,6 @@ interface GameChatProps {
   myClientId: string;
   sendChatMessage: (text: string, isAlert?: boolean) => void;
   isDark: boolean;
-  players: Player[];
 }
 
 const EMOJIS = [
@@ -38,7 +37,6 @@ export default function GameChat({
   myClientId,
   sendChatMessage,
   isDark,
-  players
 }: GameChatProps) {
   const [inputText, setInputText] = useState<string>('');
   const [isEmojiOpen, setIsEmojiOpen] = useState<boolean>(false);
@@ -54,7 +52,7 @@ export default function GameChat({
   }, [messages, isChatOpen]);
 
   const handleEmojiClick = (emoji: string) => {
-    const input = inputRef.current as any;
+    const input = inputRef.current;
     const start = input?.selectionStart || 0;
     const end = input?.selectionEnd || 0;
     const newText = inputText.substring(0, start) + emoji + inputText.substring(end);
@@ -115,18 +113,18 @@ export default function GameChat({
 
           {/* Chat Header */}
           <div className="flex items-center gap-2.5 px-4 py-3 sm:p-4 border-b border-[var(--color-border)]/40 bg-[var(--color-background)]/60">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+            <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--color-status-easy)] animate-pulse" />
             <div className="flex-1 min-w-0">
               <h3 className="text-xs font-extrabold text-[var(--color-foreground)] tracking-wide">Session Chat</h3>
-              <p className="text-[9px] text-[var(--color-muted)] font-bold uppercase tracking-wider truncate">Room Code: {roomCode}</p>
+              <p className="truncate text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Room Code: {roomCode}</p>
             </div>
-            <span className="text-[9px] font-bold text-[var(--color-muted)] bg-[var(--color-surface)] px-2 py-0.5 rounded-full border border-[var(--color-border)]/50 flex-shrink-0">
+            <span className="flex-shrink-0 rounded-full border border-[var(--color-border)]/50 bg-[var(--color-surface)] px-2 py-0.5 text-xs font-bold text-[var(--color-muted)]">
               {messages.length} msgs
             </span>
             <button
               onClick={toggleChat}
               aria-label="Close chat"
-              className="sm:hidden w-7 h-7 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] active:scale-95 transition text-xs font-bold"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-xs font-bold text-[var(--color-muted)] transition hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 sm:hidden"
             >
               ✕
             </button>
@@ -140,7 +138,7 @@ export default function GameChat({
                   <FontAwesomeIcon icon={faComments} className="text-sm opacity-60" />
                 </div>
                 <p className="text-xs font-bold text-[var(--color-foreground)]/80 mb-0.5">No messages yet</p>
-                <p className="text-[10px] text-[var(--color-muted)] max-w-[200px] leading-relaxed">Send a message to coordinate strategy with other players.</p>
+                <p className="max-w-[200px] text-xs leading-relaxed text-[var(--color-muted)]">Send a message to coordinate strategy with other players.</p>
               </div>
             ) : (
               messages.map((msg) => {
@@ -156,15 +154,15 @@ export default function GameChat({
                         className="w-1.5 h-1.5 rounded-full animate-pulse"
                         style={{ backgroundColor: senderThemeColor }}
                       />
-                      <span className="text-[9px] font-extrabold text-[var(--color-muted)] truncate max-w-[100px]">
+                      <span className="max-w-[100px] truncate text-xs font-extrabold text-[var(--color-muted)]">
                         {msg.senderName} {isMe && '(You)'}
                       </span>
                       {msg.isAlert && (
-                        <span className="text-[8px] font-bold text-orange-500 bg-orange-500/10 px-1 rounded border border-orange-500/20">
+                        <span className="rounded border border-[var(--color-status-hard)]/20 bg-[var(--color-status-hard)]/10 px-1 text-xs font-bold text-[var(--color-status-hard)]">
                           SHOUT
                         </span>
                       )}
-                      <span className="text-[8px] text-[var(--color-muted)]/60 font-medium font-mono">
+                      <span className="font-mono text-xs font-medium text-[var(--color-muted)]/80">
                         {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
@@ -197,22 +195,23 @@ export default function GameChat({
           {isEmojiOpen && (
             <div className="absolute bottom-[110px] left-3 right-3 bg-[var(--color-surface)]/95 backdrop-blur-md border border-[var(--color-border)]/80 rounded-2xl p-2.5 shadow-xl animate-fade-in-up z-50 pointer-events-auto">
               <div className="flex justify-between items-center mb-1.5 px-1">
-                <span className="text-[9px] font-extrabold text-[var(--color-muted)] uppercase tracking-wider">Quick Emojis</span>
+                <span className="text-xs font-extrabold uppercase tracking-wider text-[var(--color-muted)]">Quick Emojis</span>
                 <button 
                   type="button" 
                   onClick={() => setIsEmojiOpen(false)} 
-                  className="text-[10px] font-bold text-[var(--color-muted)] hover:text-[var(--color-foreground)] px-1 cursor-pointer"
+                  aria-label="Close emoji picker"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-xs font-bold text-[var(--color-muted)] transition hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
-              <div className="grid grid-cols-6 gap-1 max-h-[120px] overflow-y-auto emoji-scrollbar pr-0.5">
+              <div className="grid max-h-36 grid-cols-5 gap-2 overflow-y-auto pr-0.5 emoji-scrollbar">
                 {EMOJIS.map((emoji) => (
                   <button
                     key={emoji}
                     type="button"
                     onClick={() => handleEmojiClick(emoji)}
-                    className="text-lg p-1 hover:bg-[var(--color-border)]/45 rounded-lg active:scale-90 transition cursor-pointer flex items-center justify-center"
+                    className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-1 text-2xl transition hover:bg-[var(--color-border)]/45 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     {emoji}
                   </button>
@@ -237,13 +236,14 @@ export default function GameChat({
             {/* Toolbar for Quick Emojis & Shout Mode */}
             <div className="flex items-center justify-between gap-2 px-1">
               <div className="flex items-center gap-1.5">
-                {/* Micro emoji buttons */}
+                {/* Quick emoji shortcuts */}
                 {['🔥', '😂', '👍', '❤️'].map((emoji) => (
                   <button
                     key={emoji}
                     type="button"
                     onClick={() => handleEmojiClick(emoji)}
-                    className="text-xs hover:scale-125 active:scale-95 transition cursor-pointer"
+                    aria-label={`Send ${emoji} reaction`}
+                    className="flex h-11 w-11 items-center justify-center rounded-lg text-xl transition hover:scale-105 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
                   >
                     {emoji}
                   </button>
@@ -251,7 +251,9 @@ export default function GameChat({
                 <button
                   type="button"
                   onClick={() => setIsEmojiOpen(!isEmojiOpen)}
-                  className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] hover:bg-[var(--color-border)]/40 text-[var(--color-muted)] hover:text-[var(--color-foreground)] active:scale-90 transition cursor-pointer ${
+                  aria-label="Open emoji picker"
+                  aria-expanded={isEmojiOpen}
+                  className={`flex h-11 w-11 items-center justify-center rounded-lg text-xs text-[var(--color-muted)] transition hover:bg-[var(--color-border)]/40 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer ${
                     isEmojiOpen ? 'bg-[var(--color-border)]/40 text-[var(--color-foreground)]' : ''
                   }`}
                   title="Open emoji grid"
@@ -264,14 +266,15 @@ export default function GameChat({
               <button
                 type="button"
                 onClick={() => setIsAlertMode(!isAlertMode)}
-                className={`px-2 py-1 rounded-md flex items-center gap-1 text-[9px] font-bold border transition duration-200 cursor-pointer active:scale-95 ${
+                aria-pressed={isAlertMode}
+                className={`flex min-h-11 items-center gap-1 rounded-md border px-3 py-2 text-xs font-bold transition duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer ${
                   isAlertMode
-                    ? 'bg-orange-500/10 border-orange-500/30 text-orange-500 hover:bg-orange-500/20'
+                    ? 'bg-[var(--color-status-hard)]/10 border-[var(--color-status-hard)]/30 text-[var(--color-status-hard)] hover:bg-[var(--color-status-hard)]/20'
                     : 'bg-transparent border-[var(--color-border)]/60 text-[var(--color-muted)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-border)]/20'
                 }`}
                 title="Toggle Shout mode (creates screen banner overlay)"
               >
-                <FontAwesomeIcon icon={faBullhorn} className={isAlertMode ? 'animate-bounce' : ''} />
+                <FontAwesomeIcon icon={faBullhorn} className={isAlertMode ? 'text-[var(--color-status-hard)]' : ''} />
                 SHOUT {isAlertMode ? 'ON' : 'OFF'}
               </button>
             </div>
@@ -319,7 +322,7 @@ export default function GameChat({
           />
           
           {!isChatOpen && unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black h-5 min-w-5 px-1 rounded-full flex items-center justify-center border-2 border-[var(--color-background)] shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse">
+            <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-[var(--color-background)] bg-[var(--color-status-danger-strong)] px-1 text-xs font-black text-[var(--color-status-danger-contrast)] shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse">
               {unreadCount}
             </span>
           )}

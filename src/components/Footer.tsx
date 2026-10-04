@@ -194,9 +194,9 @@ export default function Footer() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[10px] text-foreground/70 font-mono mb-0.5 uppercase tracking-wider font-semibold">Based in</p>
+                    <p className="mb-0.5 font-mono text-xs font-semibold uppercase tracking-wider text-foreground/70">Based in</p>
                     <p className="text-xs font-semibold text-foreground">Cebu, Philippines</p>
-                    <p className="text-[11px] text-foreground/80 font-normal">Available for Remote</p>
+                    <p className="text-xs font-normal text-foreground/80">Available for Remote</p>
                   </div>
                 </div>
 
@@ -208,9 +208,9 @@ export default function Footer() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[10px] text-foreground/70 font-mono mb-0.5 uppercase tracking-wider font-semibold">Response Time</p>
+                    <p className="mb-0.5 font-mono text-xs font-semibold uppercase tracking-wider text-foreground/70">Response Time</p>
                     <p className="text-xs font-semibold text-foreground">Within 24 hours</p>
-                    <p className="text-[11px] text-foreground/80 font-normal">Always ready to connect</p>
+                    <p className="text-xs font-normal text-foreground/80">Always ready to connect</p>
                   </div>
                 </div>
               </div>

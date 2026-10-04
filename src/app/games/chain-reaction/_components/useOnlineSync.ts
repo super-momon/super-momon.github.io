@@ -46,6 +46,31 @@ interface UseOnlineSyncReturn {
   disconnectTimersRef: MutableRefObject<Record<string, ReturnType<typeof setTimeout>>>;
 }
 
+interface BroadcastEvent<TPayload> {
+  payload: TPayload;
+}
+
+interface MoveBroadcast {
+  r: number;
+  c: number;
+  playerIdx: number;
+  ability?: Ability | null;
+}
+
+type SyncBroadcast = PendingSyncState;
+
+interface ResetBroadcast {
+  board?: Cell[][];
+}
+
+interface ChatBroadcast {
+  message: ChatMessage;
+}
+
+interface RestCapableChannel extends RealtimeChannel {
+  canPush?: () => boolean;
+}
+
 /**
  * Manages the Supabase Realtime channel for an online Chain Reaction game session.
  *
@@ -139,7 +164,7 @@ export function useOnlineSync({
 
     channelRef.current = gameChannel;
 
-    const handleMoveBroadcast = (payload: any) => {
+    const handleMoveBroadcast = (payload: BroadcastEvent<MoveBroadcast>) => {
       const { r, c, playerIdx, ability } = payload.payload;
       if (playerIdx !== currentPlayerIndexRef.current) {
         console.warn(
@@ -150,7 +175,7 @@ export function useOnlineSync({
       onExecuteMoveRef.current(r, c, playerIdx, ability);
     };
 
-    const handleSyncStateBroadcast = (payload: any) => {
+    const handleSyncStateBroadcast = (payload: BroadcastEvent<SyncBroadcast>) => {
       const {
         board: syncedBoard,
         players: syncedPlayers,
@@ -180,14 +205,14 @@ export function useOnlineSync({
       }
     };
 
-    const handleResetGameBroadcast = (payload: any) => {
+    const handleResetGameBroadcast = (payload: BroadcastEvent<ResetBroadcast>) => {
       onInitializeGameRef.current();
       if (payload?.payload?.board) {
         setBoard(payload.payload.board);
       }
     };
 
-    const handleChatBroadcast = (payload: any) => {
+    const handleChatBroadcast = (payload: BroadcastEvent<ChatBroadcast>) => {
       const { message } = payload.payload;
       setMessages((prev) => [...prev, message]);
       // Use ref to read fresh state without re-running subscription useEffect
@@ -238,7 +263,7 @@ export function useOnlineSync({
     };
 
     // Wrap sync-state handler so receiving a sync also cancels any pending retries
-    const wrappedSyncState = (payload: any) => {
+    const wrappedSyncState = (payload: BroadcastEvent<SyncBroadcast>) => {
       clearSyncRetry();
       handleSyncStateBroadcast(payload);
     };
@@ -277,8 +302,18 @@ export function useOnlineSync({
       })
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {
         const leftClientIds = leftPresences
-          .map((p: any) => p.clientId)
-          .filter(Boolean) as string[];
+          .map((presence: unknown) => {
+            if (
+              typeof presence === 'object' &&
+              presence !== null &&
+              'clientId' in presence &&
+              typeof presence.clientId === 'string'
+            ) {
+              return presence.clientId;
+            }
+            return null;
+          })
+          .filter((clientId): clientId is string => clientId !== null);
 
         leftClientIds.forEach((cid) => {
           // Don't start a timer if one is already pending
@@ -385,7 +420,28 @@ export function useOnlineSync({
       }
       hasSubscribedRef.current = false;
     };
-  }, [isOnline, roomCode, myClientId, isHost]);
+  }, [
+    isOnline,
+    roomCode,
+    myClientId,
+    isHost,
+    boardRef,
+    playersRef,
+    currentPlayerIndexRef,
+    isAnimatingRef,
+    isChatOpenRef,
+    onExecuteMoveRef,
+    onInitializeGameRef,
+    onTriggerAlertRef,
+    setBoard,
+    setPlayers,
+    setCurrentPlayerIndex,
+    setMessages,
+    setUnreadCount,
+    setToast,
+    onGoToLobby,
+    onQuit,
+  ]);
 
   return { channelRef, pendingSyncStateRef, disconnectTimersRef };
 }
@@ -398,13 +454,14 @@ export function useOnlineSync({
 export async function sendBroadcast(
   channel: RealtimeChannel | null,
   event: string,
-  payload?: any
-): Promise<any> {
+  payload?: Record<string, unknown>
+): Promise<unknown> {
   if (!channel) return;
   const safePayload = payload || {};
   try {
     const isJoined = channel.state === 'joined';
-    const canPush = typeof (channel as any).canPush === 'function' ? (channel as any).canPush() : isJoined;
+    const transport = channel as RestCapableChannel;
+    const canPush = typeof transport.canPush === 'function' ? transport.canPush() : isJoined;
 
     if (isJoined && canPush) {
       return await channel.send({
@@ -412,8 +469,8 @@ export async function sendBroadcast(
         event,
         payload: safePayload,
       });
-    } else if (typeof (channel as any).httpSend === 'function') {
-      return await (channel as any).httpSend(event, safePayload);
+    } else if (typeof transport.httpSend === 'function') {
+      return await transport.httpSend(event, safePayload);
     } else {
       return await channel.send({
         type: 'broadcast',

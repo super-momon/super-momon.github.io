@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Cell, getNeighbors, getCellCriticalMass, countPlayerOrbs } from './gameUtils';
@@ -156,7 +156,7 @@ export default function GameBoard({
 
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
-  const triggerAlert = (message: ChatMessage) => {
+  const triggerAlert = useCallback((message: ChatMessage) => {
     if (!message.isAlert) return;
     
     // Play alert sound if enabled
@@ -177,7 +177,7 @@ export default function GameBoard({
     setTimeout(() => {
       setActiveAlerts((prev) => prev.filter((a) => a.id !== message.id));
     }, 3500);
-  };
+  }, [soundEnabled]);
 
   const isAnimatingRef = useRef(false);
 
@@ -209,9 +209,9 @@ export default function GameBoard({
   const executeMoveRef = useRef<(r: number, c: number, playerIdx: number, ability?: Ability | null) => void>(() => {});
   const initializeGameRef = useRef<() => void>(() => {});
   const triggerAlertRef = useRef<(message: ChatMessage) => void>(() => {});
-  // triggerAlert is defined above — keep the ref current on every render so
-  // useOnlineSync always invokes the latest closure.
-  triggerAlertRef.current = triggerAlert;
+  useEffect(() => {
+    triggerAlertRef.current = triggerAlert;
+  }, [triggerAlert]);
 
   // Match duration and per-turn countdown timers
   const {
@@ -219,7 +219,6 @@ export default function GameBoard({
     setSecondsElapsed,
     turnSecondsLeft,
     setTurnSecondsLeft,
-    formatTime,
   } = useGameTimers({
     isAnimating,
     currentPlayerIndex,
@@ -295,7 +294,16 @@ export default function GameBoard({
         });
       }
     }
-  }, [players, currentPlayerIndex, isOnline, isHost, board, isAnimating]);
+  }, [
+    players,
+    currentPlayerIndex,
+    isOnline,
+    isHost,
+    board,
+    isAnimating,
+    channelRef,
+    disconnectTimersRef,
+  ]);
 
   // Player disconnect timeout (120 seconds)
   useEffect(() => {
@@ -327,7 +335,7 @@ export default function GameBoard({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOnline, players.length]);
+  }, [isOnline, players.length, channelRef, disconnectTimersRef]);
 
   // Game win condition evaluation (for when players are eliminated by disconnect)
   useEffect(() => {
@@ -341,8 +349,6 @@ export default function GameBoard({
       const winner = activePlayers[0];
       const winnerOrbs = countPlayerOrbs(board, winner.id);
       
-      setIsAnimating(false);
-      isAnimatingRef.current = false;
       audioSynth.playVictory();
       onGameFinished(winner.name, winner.color, winnerOrbs);
     }
@@ -350,7 +356,7 @@ export default function GameBoard({
 
 
   // Initialize Board and Players
-  const initializeGame = () => {
+  const initializeGame = useCallback(() => {
     const freshBoard = buildBoardWithSpecialCells(rows, cols, specialCells);
 
     const freshPlayers: Player[] = initialPlayers.map((p) => ({
@@ -369,13 +375,15 @@ export default function GameBoard({
     setExplodingCells({});
     setSecondsElapsed(0);
     return freshBoard;
-  };
-  initializeGameRef.current = initializeGame;
+  }, [rows, cols, specialCells, initialPlayers, setSecondsElapsed]);
+  useEffect(() => {
+    initializeGameRef.current = initializeGame;
+  }, [initializeGame]);
 
   // countPlayerOrbs and getCellCriticalMass are imported from gameUtils.ts
 
   // Asynchronous Cascade / Chain Reaction Solver
-  const runChainReaction = async (
+  const runChainReaction = useCallback(async (
     startBoard: Cell[][],
     currentPlayers: Player[],
     placerId: number
@@ -552,19 +560,28 @@ export default function GameBoard({
     } else {
       // Offline local game: advance turn index normally
       let nextIdx = (placerId + 1) % tempPlayers.length;
-      let foundNext = false;
       for (let i = 0; i < tempPlayers.length; i++) {
         if (tempPlayers[nextIdx].active) {
           setCurrentPlayerIndex(nextIdx);
-          foundNext = true;
           break;
         }
         nextIdx = (nextIdx + 1) % tempPlayers.length;
       }
     }
-  };
+  }, [
+    isOnline,
+    myClientId,
+    onGameFinished,
+    channelRef,
+    pendingSyncStateRef,
+    setBoard,
+    setCurrentPlayerIndex,
+    setExplodingCells,
+    setIsAnimating,
+    setPlayers,
+  ]);
 
-  const skipCurrentPlayerTurn = () => {
+  const skipCurrentPlayerTurn = useCallback(() => {
     const currentPlayers = playersRef.current;
     const currentIdx = currentPlayerIndexRef.current;
     const currentActivePlayer = currentPlayers[currentIdx];
@@ -604,9 +621,18 @@ export default function GameBoard({
         }
       }
     }
-  };
-  // Keep forward ref current so useGameTimers always calls the latest version
-  skipCurrentPlayerTurnRef.current = skipCurrentPlayerTurn;
+  }, [
+    isOnline,
+    myClientId,
+    isHost,
+    turnSecondsLimit,
+    setTurnSecondsLeft,
+    setToast,
+    channelRef,
+  ]);
+  useEffect(() => {
+    skipCurrentPlayerTurnRef.current = skipCurrentPlayerTurn;
+  }, [skipCurrentPlayerTurn]);
 
   const handleCellClick = (r: number, c: number) => {
     if (isAnimatingRef.current) return;
@@ -637,7 +663,7 @@ export default function GameBoard({
     setActiveAbility(null);
   };
 
-  const executeMove = (r: number, c: number, playerIdx: number, ability?: Ability | null) => {
+  const executeMove = useCallback((r: number, c: number, playerIdx: number, ability?: Ability | null) => {
     audioSynth.playPlace();
 
     const currentBoard = boardRef.current;
@@ -679,9 +705,10 @@ export default function GameBoard({
     setPlayers(updatedPlayers);
 
     runChainReaction(updatedBoard, updatedPlayers, playerIdx);
-  };
-  // Keep forward ref current so useOnlineSync always calls the latest version
-  executeMoveRef.current = executeMove;
+  }, [runChainReaction, setBoard, setPlayers]);
+  useEffect(() => {
+    executeMoveRef.current = executeMove;
+  }, [executeMove]);
 
   const handleResetClick = () => {
     const newBoard = initializeGame();
@@ -737,12 +764,12 @@ export default function GameBoard({
       {/* Toast Notification */}
       {toast && (
         <div 
-          className={`fixed bottom-6 left-6 z-50 px-4 py-2.5 rounded-xl border shadow-xl flex items-center gap-2 text-xs font-bold animate-bounce text-white ${
-            toast.type === 'success' 
-              ? 'bg-green-600/90 border-green-500/40 shadow-green-500/10' 
-              : toast.type === 'error' 
-                ? 'bg-red-600/90 border-red-500/40 shadow-red-500/10' 
-                : 'bg-indigo-600/90 border-indigo-500/40 shadow-indigo-500/10'
+          className={`fixed bottom-6 left-6 z-50 flex items-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold shadow-xl ${
+            toast.type === 'success'
+              ? 'border-[var(--color-status-success-strong)] bg-[var(--color-status-success-strong)] text-[var(--color-status-success-contrast)]'
+              : toast.type === 'error'
+                ? 'border-[var(--color-status-danger-strong)] bg-[var(--color-status-danger-strong)] text-[var(--color-status-danger-contrast)]'
+                : 'border-[var(--color-status-info-strong)] bg-[var(--color-status-info-strong)] text-[var(--color-status-info-contrast)]'
           }`}
         >
           <FontAwesomeIcon icon={faCircleInfo} />
@@ -832,8 +859,6 @@ export default function GameBoard({
 
                   const limit = getCellCriticalMass(r, c, actualRows, actualCols, board);
                   const isCritical = cell.orbs > 0 && cell.orbs === limit - 1;
-                  const currentPlayerColor = getThemeColor(players[currentPlayerIndex]?.color, isDark);
-
                   return (
                     <GameCell
                       key={`${r}-${c}`}
@@ -841,7 +866,6 @@ export default function GameBoard({
                       c={c}
                       cell={cell}
                       ownerColor={ownerColor}
-                      currentPlayerColor={currentPlayerColor}
                       isExploding={!!isExploding}
                       isCritical={isCritical}
                       isCellDisabled={isCellDisabled}
@@ -866,7 +890,6 @@ export default function GameBoard({
             myClientId={myClientId}
             sendChatMessage={sendChatMessage}
             isDark={isDark}
-            players={players}
           />
         )}
       </div>

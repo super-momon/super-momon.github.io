@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Leaderboard } from './Leaderboard';
 import type { GameMode } from '@/types/quiz';
+import { useDialogFocus } from '@/hooks/useDialogFocus';
 
 interface Props {
   open: boolean;
@@ -13,12 +14,7 @@ interface Props {
 }
 
 export function LeaderboardModal({ open, onClose, initialMode = 'survival', highlightId }: Props) {
-  useEffect(() => {
-    if (!open) return;
-    const handle = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', handle);
-    return () => window.removeEventListener('keydown', handle);
-  }, [open, onClose]);
+  const dialogRef = useDialogFocus<HTMLDivElement>(open, onClose);
 
   // Lock body scroll while open
   useEffect(() => {
@@ -43,14 +39,7 @@ export function LeaderboardModal({ open, onClose, initialMode = 'survival', high
             transition={{ duration: 0.22 }}
             onClick={onClose}
             aria-hidden="true"
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 80,
-              background: 'rgba(0,0,0,0.6)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-            }}
+            className="fixed inset-0 z-[80] bg-overlay/60 backdrop-blur-[10px]"
           />
 
           {/* Panel wrapper — centers the card */}
@@ -68,9 +57,11 @@ export function LeaderboardModal({ open, onClose, initialMode = 'survival', high
           >
             <motion.div
               key="lb-panel"
+              ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-label="Leaderboard"
+              tabIndex={-1}
               initial={{ opacity: 0, scale: 0.94, y: 18 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 18 }}
@@ -82,7 +73,7 @@ export function LeaderboardModal({ open, onClose, initialMode = 'survival', high
                 overflowY: 'auto',
                 pointerEvents: 'auto',
                 position: 'relative',
-                borderRadius: '1.25rem',
+                borderRadius: '12px',
                 /* Extra ring so the panel stands out from the blurred bg */
                 boxShadow:
                   '0 0 0 1px rgba(255,255,255,0.06), 0 32px 64px rgba(0,0,0,0.45), 0 8px 24px rgba(0,0,0,0.3)',

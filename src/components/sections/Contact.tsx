@@ -1,6 +1,5 @@
 "use client";
 
-import { FadeIn } from "@/components/FadeIn";
 import { trackEvent } from "@/lib/analytics";
 import { EMAIL, GITHUB_URL, GITHUB_USERNAME, LINKEDIN_URL, LINKEDIN_USERNAME } from "@/lib/constants";
 import SectionHeader from "@/components/common/SectionHeader";
@@ -13,7 +12,6 @@ import {
   faEnvelope,
   faArrowRight,
   faArrowUpRightFromSquare,
-  faPaperPlane,
   faCopy,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
@@ -161,7 +159,7 @@ export default function Contact() {
                         }`}
                     >
                       <FontAwesomeIcon icon={method.icon} className={`text-xs ${isActive ? "text-accent" : "text-foreground/50"}`} />
-                      <span className="text-[10px] font-semibold tracking-tight">{method.label}</span>
+                      <span className="text-xs font-semibold tracking-tight">{method.label}</span>
                     </button>
                   );
                 })}
@@ -220,7 +218,7 @@ export default function Contact() {
                         >
                           {method.label}
                         </span>
-                        <span className="text-[10px] text-foreground/60 font-normal leading-normal mt-0.5 max-w-[200px] truncate group-hover:text-foreground/85 transition-colors duration-300">
+                        <span className="mt-0.5 max-w-[200px] truncate text-xs font-normal leading-normal text-foreground/70 transition-colors duration-300 group-hover:text-foreground/85">
                           {method.handle}
                         </span>
                       </div>
@@ -281,7 +279,7 @@ export default function Contact() {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
                           </span>
-                          <span className="text-[10px] font-bold text-foreground/80 tracking-wide uppercase">
+                          <span className="text-xs font-bold uppercase tracking-wide text-foreground/80">
                             Direct Channel
                           </span>
                         </div>
@@ -290,7 +288,7 @@ export default function Contact() {
 
                     {/* Details Description */}
                     <div>
-                      <h4 className="text-[10px] font-bold text-foreground/60 mb-2 uppercase tracking-widest">
+                      <h4 className="mb-2 text-xs font-bold uppercase tracking-widest text-foreground/70">
                         Channel Details
                       </h4>
                       <p className="text-sm text-foreground/85 leading-relaxed font-normal">
@@ -301,7 +299,7 @@ export default function Contact() {
                     {/* Highlight Box / Address Copy */}
                     <div className="p-4 rounded-xl bg-background/50 border border-border/80 flex items-center justify-between gap-4">
                       <div className="min-w-0 flex-1">
-                        <p className="text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
+                        <p className="mb-1 text-xs font-bold uppercase tracking-wider text-foreground/60">
                           Address / Link Handle
                         </p>
                         <p className="text-sm font-semibold text-foreground truncate font-mono select-all">
@@ -343,7 +341,7 @@ export default function Contact() {
                       />
                     </a>
 
-                    <span className="text-[11px] text-foreground/60 font-medium">
+                    <span className="text-xs font-medium text-foreground/70">
                       Typically responds within 24 hours
                     </span>
                   </div>

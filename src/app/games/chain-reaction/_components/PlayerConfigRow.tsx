@@ -1,7 +1,7 @@
 'use client';
 
 import { PlayerSetup } from './SetupScreen';
-import { PRESET_COLORS, getThemeColor } from './colors';
+import { PRESET_COLORS, PRESET_COLOR_LABELS, getThemeColor } from './colors';
 
 interface PlayerConfigRowProps {
   index: number;
@@ -18,40 +18,58 @@ export default function PlayerConfigRow({
   onNameChange,
   onColorChange,
 }: PlayerConfigRowProps) {
-  return (
-    <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-start sm:items-center bg-[var(--color-surface)] border border-[var(--color-border)]/60 rounded-xl p-2.5 sm:p-3">
-      <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-        <div className="flex items-center gap-2">
-          <span
-            className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-black/10 flex-shrink-0"
-            style={{
-              backgroundColor: getThemeColor(player.color, isDark),
-              boxShadow: `0 0 10px ${getThemeColor(player.color, isDark)}40`,
-            }}
-          />
-          <span className="text-xs font-bold text-[var(--color-muted)] whitespace-nowrap min-w-16">
-            Player {index + 1}
-          </span>
-        </div>
+  const nameInputId = `player-name-${player.id}`;
 
-        {/* Color swatches displayed inline on mobile for quick access */}
-        <div className="flex sm:hidden gap-1.5 flex-shrink-0">
-          {PRESET_COLORS.map((color) => (
-            <button
-              key={color}
-              type="button"
-              onClick={() => onColorChange(index, color)}
-              aria-label={`Select color for Player ${index + 1}`}
-              className={`w-6 h-6 rounded-full border-2 transition-all active:scale-90 cursor-pointer flex items-center justify-center ${
-                player.color === color ? 'border-[var(--color-foreground)] scale-110 shadow-sm ring-1 ring-[var(--color-primary)]' : 'border-transparent'
+  const colorButtons = (
+    <div className="grid grid-cols-3 gap-2 sm:flex sm:gap-1.5">
+      {PRESET_COLORS.map((color) => {
+        const isSelected = player.color === color;
+
+        return (
+          <button
+            key={color}
+            type="button"
+            onClick={() => onColorChange(index, color)}
+            aria-label={`Set Player ${index + 1} color to ${PRESET_COLOR_LABELS[color] ?? color}`}
+            aria-pressed={isSelected}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-transparent transition-colors hover:bg-[var(--color-background)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 cursor-pointer"
+          >
+            <span
+              aria-hidden="true"
+              className={`h-6 w-6 rounded-full border-2 ${
+                isSelected
+                  ? 'scale-110 border-[var(--color-foreground)] shadow-sm ring-1 ring-[var(--color-accent)]'
+                  : 'border-transparent'
               }`}
               style={{ backgroundColor: getThemeColor(color, isDark) }}
             />
-          ))}
-        </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-start gap-2.5 rounded-xl border border-[var(--color-border)]/60 bg-[var(--color-surface)] p-2.5 sm:p-3 md:flex-row md:items-center md:gap-3">
+      <div className="flex w-full items-center gap-2 md:w-auto md:shrink-0">
+        <span
+          aria-hidden="true"
+          className="h-4 w-4 shrink-0 rounded-full border border-black/10 sm:h-5 sm:w-5"
+          style={{
+            backgroundColor: getThemeColor(player.color, isDark),
+            boxShadow: `0 0 10px ${getThemeColor(player.color, isDark)}40`,
+          }}
+        />
+        <span className="min-w-16 whitespace-nowrap text-xs font-bold text-[var(--color-muted)]">
+            Player {index + 1}
+        </span>
       </div>
 
+      <label htmlFor={nameInputId} className="sr-only">
+        Player {index + 1} name
+      </label>
       <input
+        id={nameInputId}
         type="text"
         required
         maxLength={20}
@@ -59,25 +77,12 @@ export default function PlayerConfigRow({
         autoCapitalize="words"
         value={player.name}
         onChange={(e) => onNameChange(index, e.target.value)}
-        className="w-full bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none focus:border-[var(--color-accent)] transition"
+        className="min-h-11 w-full min-w-0 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-1.5 text-base font-medium transition focus:border-[var(--color-accent)] focus:outline-none sm:text-sm md:flex-1"
         placeholder={`Player ${index + 1} Name`}
       />
 
-      {/* Color swatches on desktop */}
-      <div className="hidden sm:flex gap-1.5 flex-shrink-0">
-        {PRESET_COLORS.map((color) => (
-          <button
-            key={color}
-            type="button"
-            onClick={() => onColorChange(index, color)}
-            aria-label={`Select color for Player ${index + 1}`}
-            className={`w-6 h-6 rounded-full border-2 transition-all active:scale-95 cursor-pointer flex items-center justify-center ${
-              player.color === color ? 'border-[var(--color-foreground)] scale-110 shadow-sm' : 'border-transparent hover:scale-105'
-            }`}
-            style={{ backgroundColor: getThemeColor(color, isDark) }}
-          />
-        ))}
-      </div>
+      <div className="md:hidden">{colorButtons}</div>
+      <div className="hidden md:block">{colorButtons}</div>
     </div>
   );
 }

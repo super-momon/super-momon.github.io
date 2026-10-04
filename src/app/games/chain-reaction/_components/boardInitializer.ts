@@ -72,7 +72,6 @@ export const buildBoardWithSpecialCells = (
   }
 
   let posIdx = 0;
-  let innerPosIdx = 0;
   let multiplierPosIdx = 0;
 
   const placeCells = (type: 'wall' | 'portal' | 'multiplier' | 'blackhole', count: number) => {

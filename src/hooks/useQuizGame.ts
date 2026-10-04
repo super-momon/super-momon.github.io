@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useSyncExternalStore } from 'react';
 import type { QuizQuestion, GameMode, GamePhase, AnswerState, QuestionDifficulty } from '@/types/quiz';
 import { QUESTIONS_BY_CATEGORY, type CategoryKey, getAllQuestions } from '@/data/quiz';
 import { trackEvent } from '@/lib/analytics';
@@ -42,18 +42,14 @@ export function useQuizGame() {
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [totalTimeSpentMs, setTotalTimeSpentMs] = useState(0);
-  const [activeCategories, setActiveCategories] = useState<CategoryKey[]>([]);
-  const [activeDifficulties, setActiveDifficulties] = useState<QuestionDifficulty[]>([]);
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
-
-  // Sync sound status on mount
-  useEffect(() => {
-    setSoundEnabled(quizAudio.isSoundEnabled());
-  }, []);
+  const soundEnabled = useSyncExternalStore(
+    quizAudio.subscribe,
+    quizAudio.getSnapshot,
+    () => true,
+  );
 
   const handleToggleSound = useCallback(() => {
-    const updated = quizAudio.toggleSound();
-    setSoundEnabled(updated);
+    quizAudio.toggleSound();
   }, []);
 
   // Refs for async callbacks
@@ -96,7 +92,7 @@ export function useQuizGame() {
 
     if (nextIdx >= questionsRef.current.length) {
       const lastId = questionsRef.current[questionsRef.current.length - 1]?.id;
-      let reshuffled = shuffle([...questionsRef.current]);
+      const reshuffled = shuffle([...questionsRef.current]);
       if (reshuffled.length > 1 && reshuffled[0].id === lastId) {
         [reshuffled[0], reshuffled[1]] = [reshuffled[1], reshuffled[0]];
       }
@@ -256,9 +252,6 @@ export function useQuizGame() {
 
       activeCategoriesRef.current = categories;
       activeDifficultiesRef.current = difficulties;
-      setActiveCategories(categories);
-      setActiveDifficulties(difficulties);
-
       let questionsToUse: QuizQuestion[] = [];
       if (categories.length > 0) {
         categories.forEach((cat) => {
@@ -337,8 +330,6 @@ export function useQuizGame() {
     setTotalTimeSpentMs(0);
     totalTimeSpentMsRef.current = 0;
     questionStartTimeRef.current = 0;
-    setActiveCategories([]);
-    setActiveDifficulties([]);
   }, [clearPendingAdvance]);
 
   useEffect(() => () => clearPendingAdvance(), [clearPendingAdvance]);

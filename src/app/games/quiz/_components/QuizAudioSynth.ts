@@ -3,6 +3,7 @@
 class QuizAudioSynth {
   private ctx: AudioContext | null = null;
   private enabled: boolean = true;
+  private listeners = new Set<() => void>();
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -31,15 +32,27 @@ class QuizAudioSynth {
     return this.enabled;
   }
 
+  public subscribe = (listener: () => void) => {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  };
+
+  public getSnapshot = () => this.enabled;
+
   public toggleSound(enabled?: boolean): boolean {
     const nextState = enabled !== undefined ? enabled : !this.enabled;
     this.enabled = nextState;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('quiz_sound_enabled', String(nextState));
+      try {
+        localStorage.setItem('quiz_sound_enabled', String(nextState));
+      } catch {
+        // Sound remains usable for this page load when storage is unavailable.
+      }
     }
     if (nextState && this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume().catch(() => {});
     }
+    this.listeners.forEach((listener) => listener());
     return this.enabled;
   }
 

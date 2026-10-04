@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { motion } from 'motion/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrophy,
   faRotateRight,
   faXmark,
   faCrown,
-  faMedal,
 } from '@fortawesome/free-solid-svg-icons';
 import type { GameMode } from '@/types/quiz';
 import type { LeaderboardEntry } from '@/types/leaderboard';
@@ -98,7 +96,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <FontAwesomeIcon icon={faTrophy} className="text-amber-400 text-lg" />
+          <FontAwesomeIcon icon={faTrophy} className="text-[var(--color-status-medium)] text-lg" />
           <h3 className="text-lg font-extrabold text-[var(--color-foreground)]">
             Global Leaderboard
           </h3>
@@ -171,7 +169,7 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
           Loading scores...
         </div>
       ) : error ? (
-        <div className="h-[480px] sm:h-[500px] flex items-center justify-center text-red-400 text-sm font-bold">{error}</div>
+        <div className="h-[480px] sm:h-[500px] flex items-center justify-center text-[var(--color-status-extra-hard)] text-sm font-bold">{error}</div>
       ) : entries.length === 0 ? (
         <div className="h-[480px] sm:h-[500px] flex items-center justify-center text-[var(--color-muted)] text-sm font-semibold">
           No scores recorded yet for this mode. Be the first!
@@ -182,7 +180,13 @@ export function Leaderboard({ initialMode, highlightId, onClose }: Props) {
             const isHighlight = highlightId === entry.id;
             const rank = index + 1;
             const medalColor =
-              rank === 1 ? 'text-amber-400' : rank === 2 ? 'text-slate-300' : rank === 3 ? 'text-amber-600' : '';
+              rank === 1
+                ? 'text-[var(--color-status-medium)]'
+                : rank === 2
+                  ? 'text-[var(--color-muted)]'
+                  : rank === 3
+                    ? 'text-[var(--color-status-hard)]'
+                    : '';
 
             return (
               <div

@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faIndustry, faBriefcase, faCalendarAlt, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faIndustry, faBriefcase, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import SectionHeader from "@/components/common/SectionHeader";
 
 const experiences = [
@@ -139,7 +139,7 @@ export default function Experience() {
                           {exp.role}
                         </h3>
                         {exp.current && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-accent/15 border border-accent/40 text-accent shadow-xs">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/15 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-accent shadow-xs">
                             <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                             Current Role
                           </span>
@@ -147,13 +147,13 @@ export default function Experience() {
                       </div>
                       <p className="text-accent text-sm font-semibold mb-1.5">{exp.company}</p>
                       <p className="text-xs text-foreground/75 flex items-center gap-1.5">
-                        <FontAwesomeIcon icon={faIndustry} className="text-accent text-[10px]" />
+                        <FontAwesomeIcon icon={faIndustry} className="text-xs text-accent" />
                         {exp.industry}
                       </p>
                     </div>
 
                     <span className="shrink-0 self-start text-xs font-mono text-foreground/85 border border-border/80 rounded-xl px-3 py-1.5 bg-background/80 shadow-xs flex items-center gap-1.5">
-                      <FontAwesomeIcon icon={faCalendarAlt} className="text-[10px] text-accent" />
+                      <FontAwesomeIcon icon={faCalendarAlt} className="text-xs text-accent" />
                       {exp.period}
                     </span>
                   </div>
@@ -184,7 +184,7 @@ export default function Experience() {
                             targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
                           }
                         }}
-                        className="px-2.5 py-1 rounded-lg text-xs font-mono bg-background/80 border border-border/70 text-foreground/80 hover:border-accent hover:text-accent hover:bg-accent/10 transition-all cursor-pointer shadow-2xs"
+                        className="min-h-11 px-2.5 py-2 rounded-lg text-xs font-mono bg-background/80 border border-border/70 text-foreground/80 hover:border-accent hover:text-accent hover:bg-accent/10 transition-all cursor-pointer shadow-2xs"
                         title={`View projects & skills related to ${tag}`}
                       >
                         #{tag}
@@ -200,5 +200,3 @@ export default function Experience() {
     </section>
   );
 }
-
-

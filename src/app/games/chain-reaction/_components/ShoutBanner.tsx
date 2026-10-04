@@ -46,7 +46,7 @@ export function ShoutBanner({
             >
               <div className="shout-header-container">
                 <div className="shout-title">
-                  <FontAwesomeIcon icon={faBullhorn} className="text-[10px] animate-bullhorn" />
+                  <FontAwesomeIcon icon={faBullhorn} className="text-xs animate-bullhorn" />
                   <span className="truncate max-w-[140px]" title={alert.senderName}>{alert.senderName}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -55,7 +55,7 @@ export function ShoutBanner({
                       e.stopPropagation();
                       onDismiss(alert.id);
                     }}
-                    className="w-7 h-7 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10 text-black/50 dark:text-white/60 hover:text-black dark:hover:text-white hover:bg-black/20 dark:hover:bg-white/20 active:scale-90 transition cursor-pointer text-xs border-0 flex-shrink-0"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-0 bg-black/10 text-xs text-black/50 transition hover:bg-black/20 hover:text-black focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent dark:bg-white/10 dark:text-white/60 dark:hover:bg-white/20 dark:hover:text-white active:scale-90 cursor-pointer"
                     aria-label="Dismiss alert"
                   >
                     <FontAwesomeIcon icon={faTimes} />

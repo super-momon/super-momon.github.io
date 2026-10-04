@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { useDialogFocus } from '@/hooks/useDialogFocus';
 
 interface GameGuideModalProps {
   isOpen: boolean;
@@ -13,29 +13,41 @@ export function GameGuideModal({
   isOpen,
   onClose,
 }: GameGuideModalProps) {
+  const dialogRef = useDialogFocus<HTMLDivElement>(isOpen, onClose);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
-      <div 
+    <div role="presentation" className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+      <div
         onClick={onClose}
-        className="absolute inset-0 bg-black/65 backdrop-blur-sm transition-opacity" 
+        aria-hidden="true"
+        className="absolute inset-0 bg-black/65 backdrop-blur-sm transition-opacity"
       />
-      
-      <div className="relative w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl overflow-y-auto max-h-[88dvh] sm:max-h-[90vh] glass-panel text-xs text-slate-800 dark:text-slate-200 z-10 animate-in fade-in zoom-in duration-200 custom-scrollbar">
+
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="chain-reaction-guide-title"
+        tabIndex={-1}
+        className="relative z-10 max-h-[88dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-[var(--color-border)]/50 bg-[var(--color-surface)] p-4 text-xs text-slate-800 shadow-2xl glass-panel dark:text-slate-200 sm:max-h-[90vh] sm:rounded-3xl sm:p-6 animate-in fade-in zoom-in duration-200 custom-scrollbar"
+      >
         {/* Glow Accent */}
         <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--color-accent)]/10 rounded-full blur-2xl pointer-events-none" />
 
         {/* Header */}
         <div className="flex justify-between items-center mb-3 sm:mb-4 border-b border-[var(--color-border)]/30 pb-2.5 sm:pb-3 sticky top-0 bg-[var(--color-surface)]/95 backdrop-blur-md z-20">
-          <h4 className="text-[var(--color-foreground)] font-bold text-sm flex items-center gap-1.5">
+          <h4 id="chain-reaction-guide-title" className="flex items-center gap-1.5 text-sm font-bold text-[var(--color-foreground)]">
             <FontAwesomeIcon icon={faCircleInfo} className="text-[var(--color-accent)] text-base" />
             Critical Mass Explosion Guide
           </h4>
           <button
             onClick={onClose}
+            type="button"
             aria-label="Close guide modal"
-            className="w-9 h-9 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-muted)]/50 flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-background)] active:scale-90 transition cursor-pointer font-bold text-xs"
+            data-dialog-autofocus
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-xs font-bold text-[var(--color-muted)] transition hover:border-[var(--color-muted)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 active:scale-90 cursor-pointer"
           >
             ✕
           </button>
@@ -45,18 +57,18 @@ export function GameGuideModal({
         <div className="grid grid-cols-3 gap-3 text-center mb-4">
           <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
             <span className="text-[var(--color-foreground)] font-extrabold">Corners</span>
-            <span className="text-[10px] text-yellow-600 dark:text-yellow-500 font-bold bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20">2 Orbs</span>
-            <span className="text-[9px] text-slate-600 dark:text-slate-400 leading-tight mt-0.5">Explodes to 2 neighbors</span>
+            <span className="rounded-full border border-[var(--color-status-medium)]/20 bg-[var(--color-status-medium)]/10 px-2 py-0.5 text-xs font-bold text-[var(--color-status-medium)]">2 Orbs</span>
+            <span className="mt-0.5 text-xs leading-tight text-slate-600 dark:text-slate-400">Explodes to 2 neighbors</span>
           </div>
           <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
             <span className="text-[var(--color-foreground)] font-extrabold">Edges</span>
-            <span className="text-[10px] text-orange-600 dark:text-orange-500 font-bold bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">3 Orbs</span>
-            <span className="text-[9px] text-slate-600 dark:text-slate-400 leading-tight mt-0.5">Explodes to 3 neighbors</span>
+            <span className="rounded-full border border-[var(--color-status-hard)]/20 bg-[var(--color-status-hard)]/10 px-2 py-0.5 text-xs font-bold text-[var(--color-status-hard)]">3 Orbs</span>
+            <span className="mt-0.5 text-xs leading-tight text-slate-600 dark:text-slate-400">Explodes to 3 neighbors</span>
           </div>
           <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl flex flex-col gap-1.5 items-center">
             <span className="text-[var(--color-foreground)] font-extrabold">Inner Cells</span>
-            <span className="text-[10px] text-red-600 dark:text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">4 Orbs</span>
-            <span className="text-[9px] text-slate-600 dark:text-slate-400 leading-tight mt-0.5">Explodes to 4 neighbors</span>
+            <span className="rounded-full border border-[var(--color-status-extra-hard)]/20 bg-[var(--color-status-extra-hard)]/10 px-2 py-0.5 text-xs font-bold text-[var(--color-status-extra-hard)]">4 Orbs</span>
+            <span className="mt-0.5 text-xs leading-tight text-slate-600 dark:text-slate-400">Explodes to 4 neighbors</span>
           </div>
         </div>
 
@@ -70,19 +82,19 @@ export function GameGuideModal({
           <div className="grid grid-cols-2 gap-3 text-left">
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl">
               <span className="text-[var(--color-foreground)] font-bold block mb-1">🧱 Wall</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Impenetrable cell. Orbs cannot enter or explode into it.</span>
+              <span className="text-xs leading-tight text-slate-600 dark:text-slate-400">Impenetrable cell. Orbs cannot enter or explode into it.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl">
               <span className="text-[var(--color-foreground)] font-bold block mb-1">🌀 Portal</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Teleports exploding orbs directly to its linked destination cell.</span>
+              <span className="text-xs leading-tight text-slate-600 dark:text-slate-400">Teleports exploding orbs directly to its linked destination cell.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl">
               <span className="text-[var(--color-foreground)] font-bold block mb-1">✨ Multiplier</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Place an orb here and it counts as 2 orbs, letting you reach critical mass faster.</span>
+              <span className="text-xs leading-tight text-slate-600 dark:text-slate-400">Place an orb here and it counts as 2 orbs, letting you reach critical mass faster.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2.5 rounded-xl">
               <span className="text-[var(--color-foreground)] font-bold block mb-1">⚫ Black Hole</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Absorbs all incoming exploding orbs throughout the entire game session.</span>
+              <span className="text-xs leading-tight text-slate-600 dark:text-slate-400">Absorbs all incoming exploding orbs throughout the entire game session.</span>
             </div>
           </div>
         </div>
@@ -93,15 +105,15 @@ export function GameGuideModal({
           <div className="grid grid-cols-1 gap-2 text-left">
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2 rounded-lg flex items-center gap-3">
               <span className="text-blue-600 dark:text-blue-400 font-bold w-16 flex-shrink-0">🛡️ Shield</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Protects one of your cells from being overtaken by an enemy explosion until your next turn.</span>
+              <span className="text-xs leading-tight text-slate-600 dark:text-slate-400">Protects one of your cells from being overtaken by an enemy explosion until your next turn.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2 rounded-lg flex items-center gap-3">
               <span className="text-cyan-600 dark:text-cyan-400 font-bold w-16 flex-shrink-0">❄️ Freeze</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Prevents an enemy cell from exploding until your next turn.</span>
+              <span className="text-xs leading-tight text-slate-600 dark:text-slate-400">Prevents an enemy cell from exploding until your next turn.</span>
             </div>
             <div className="bg-[var(--color-background)]/50 border border-[var(--color-border)]/30 p-2 rounded-lg flex items-center gap-3">
               <span className="text-red-600 dark:text-red-400 font-bold w-16 flex-shrink-0">🧨 Detonate</span>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Forces one of your cells to explode immediately, costing 1 orb.</span>
+              <span className="text-xs leading-tight text-slate-600 dark:text-slate-400">Forces one of your cells to explode immediately, costing 1 orb.</span>
             </div>
           </div>
         </div>

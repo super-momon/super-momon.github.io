@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import SectionHeader from "@/components/common/SectionHeader";
@@ -102,7 +102,6 @@ function SkillPill({ skill, index }: { skill: { name: string; icon: string }; in
 
 export default function Skills() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
 
   const { scrollYProgress } = useScroll({
@@ -157,7 +156,7 @@ export default function Skills() {
                     <span className="w-2 h-2 rounded-full bg-accent" />
                     {category.title}
                   </h3>
-                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-background border border-border/70 text-foreground/75">
+                  <span className="rounded border border-border/70 bg-background px-2 py-0.5 font-mono text-xs font-semibold text-foreground/75">
                     {category.items.length} Techs
                   </span>
                 </div>

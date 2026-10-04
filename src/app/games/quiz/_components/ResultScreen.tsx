@@ -10,7 +10,6 @@ import {
   faShareNodes,
   faCheck,
   faFire,
-  faBolt,
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import type { GameMode } from '@/types/quiz';
@@ -31,11 +30,11 @@ interface Props {
 }
 
 function getRating(accuracy: number) {
-  if (accuracy >= 90) return { label: 'Legendary', color: '#f59e0b' };
-  if (accuracy >= 75) return { label: 'Expert', color: '#8b5cf6' };
-  if (accuracy >= 60) return { label: 'Solid Run', color: '#3b82f6' };
-  if (accuracy >= 40) return { label: 'Keep Grinding', color: '#f97316' };
-  return { label: 'Keep Learning', color: '#ef4444' };
+  if (accuracy >= 90) return { label: 'Legendary', color: 'var(--color-status-medium)' };
+  if (accuracy >= 75) return { label: 'Expert', color: 'var(--color-status-info)' };
+  if (accuracy >= 60) return { label: 'Solid Run', color: 'var(--color-status-easy)' };
+  if (accuracy >= 40) return { label: 'Keep Grinding', color: 'var(--color-status-hard)' };
+  return { label: 'Keep Learning', color: 'var(--color-status-extra-hard)' };
 }
 
 function useCountUp(target: number, duration = 1200) {
@@ -141,7 +140,7 @@ export function ResultScreen({
         {/* Stats Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           <div className="bg-[var(--color-surface)]/40 p-3.5 rounded-2xl border border-[var(--color-border)]/40 text-center">
-            <div className="text-[10px] uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
+            <div className="text-xs uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
               Answered
             </div>
             <div className="text-xl font-extrabold text-[var(--color-foreground)] tabular-nums mt-0.5">
@@ -150,29 +149,29 @@ export function ResultScreen({
           </div>
 
           <div className="bg-[var(--color-surface)]/40 p-3.5 rounded-2xl border border-[var(--color-border)]/40 text-center">
-            <div className="text-[10px] uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
+            <div className="text-xs uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
               Correct
             </div>
-            <div className="text-xl font-extrabold text-[#08ca5f] tabular-nums mt-0.5">
+            <div className="text-xl font-extrabold text-[var(--color-status-easy)] tabular-nums mt-0.5">
               {correctCount}
             </div>
           </div>
 
           <div className="bg-[var(--color-surface)]/40 p-3.5 rounded-2xl border border-[var(--color-border)]/40 text-center">
-            <div className="text-[10px] uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
+            <div className="text-xs uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
               Max Streak
             </div>
-            <div className="text-xl font-extrabold text-amber-400 tabular-nums mt-0.5 flex items-center justify-center gap-1">
+            <div className="text-xl font-extrabold text-[var(--color-status-medium)] tabular-nums mt-0.5 flex items-center justify-center gap-1">
               <FontAwesomeIcon icon={faFire} className="text-xs" />
               {maxStreak}
             </div>
           </div>
 
           <div className="bg-[var(--color-surface)]/40 p-3.5 rounded-2xl border border-[var(--color-border)]/40 text-center">
-            <div className="text-[10px] uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
+            <div className="text-xs uppercase font-extrabold text-[var(--color-muted)] tracking-wider">
               Avg Speed
             </div>
-            <div className="text-xl font-extrabold text-sky-400 tabular-nums mt-0.5">
+            <div className="text-xl font-extrabold text-[var(--color-status-info)] tabular-nums mt-0.5">
               {avgSecondsPerQuestion}s
             </div>
           </div>
@@ -195,7 +194,7 @@ export function ResultScreen({
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="w-full py-3.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-extrabold text-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl border border-[var(--color-status-medium)]/30 bg-[var(--color-status-medium)]/10 font-extrabold text-[var(--color-status-medium)] text-sm transition-all hover:bg-[var(--color-status-medium)]/20 cursor-pointer flex items-center justify-center gap-2"
             >
               <FontAwesomeIcon icon={faTrophy} />
               Submit Score to Leaderboard
@@ -214,7 +213,7 @@ export function ResultScreen({
               onClick={handleCopyShare}
               className="flex-1 py-3.5 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-accent)] text-[var(--color-foreground)] font-bold text-sm bg-[var(--color-surface)]/50 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <FontAwesomeIcon icon={copied ? faCheck : faShareNodes} className={copied ? 'text-[#08ca5f]' : ''} />
+              <FontAwesomeIcon icon={copied ? faCheck : faShareNodes} className={copied ? 'text-[var(--color-status-easy)]' : ''} />
               {copied ? 'Link Copied!' : 'Share Score'}
             </button>
 

@@ -82,11 +82,11 @@ export default function InlineQuizTeaser() {
       <div className="flex items-center justify-between gap-3 mb-3 pb-2.5 border-b border-border/40">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-accent/80 animate-pulse" />
-          <span className="text-[11px] font-semibold text-accent uppercase tracking-wider">
+          <span className="text-xs font-semibold uppercase tracking-wider text-accent">
             Live Quiz Teaser • {currentQ.category}
           </span>
         </div>
-        <span className="text-[10px] font-mono text-foreground/50">
+        <span className="text-xs font-mono text-foreground/60">
           Sample {questionIndex + 1}/{sampleQuestions.length}
         </span>
       </div>
@@ -123,7 +123,7 @@ export default function InlineQuizTeaser() {
               onClick={() => handleSelectOption(i)}
               className={`flex items-start gap-2.5 p-2.5 min-h-[50px] rounded-xl border text-left text-xs transition-colors duration-200 cursor-pointer ${btnStyle}`}
             >
-              <span className="shrink-0 w-5 h-5 rounded-md bg-background/60 border border-border/50 flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background/60 font-mono text-xs font-bold">
                 {String.fromCharCode(65 + i)}
               </span>
               <span className="flex-1 leading-snug">{option}</span>
@@ -169,7 +169,7 @@ export default function InlineQuizTeaser() {
               className="p-3 rounded-xl bg-surface/40 border border-border/30 text-xs text-foreground/50 leading-relaxed flex items-center justify-between"
             >
               <span>Select an option above to test your knowledge.</span>
-              <span className="text-[10px] font-mono text-accent/70 uppercase tracking-wider shrink-0 ml-2">Quick Quiz</span>
+              <span className="ml-2 shrink-0 font-mono text-xs uppercase tracking-wider text-accent/80">Quick Quiz</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -182,7 +182,7 @@ export default function InlineQuizTeaser() {
           onClick={handleNextQuestion}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface/80 border border-border/60 text-xs font-medium text-foreground/80 hover:text-accent hover:border-accent/50 transition-colors cursor-pointer"
         >
-          <FontAwesomeIcon icon={faRotateRight} className="text-[10px]" />
+          <FontAwesomeIcon icon={faRotateRight} className="text-xs" />
           <span>{isAnswered ? "Next Sample" : "Skip Question"}</span>
         </button>
 
@@ -191,9 +191,9 @@ export default function InlineQuizTeaser() {
           onClick={() => trackEvent("inline_quiz_play_full", { category: currentQ.category })}
           className="inline-flex min-h-11 items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all shadow-xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
-          <FontAwesomeIcon icon={faGamepad} className="text-[11px]" />
+          <FontAwesomeIcon icon={faGamepad} className="text-xs" />
           <span>Play Full Game</span>
-          <FontAwesomeIcon icon={faArrowRight} className="text-[10px]" />
+          <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
         </a>
       </div>
     </div>

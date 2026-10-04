@@ -97,7 +97,7 @@ export default function OnlineSetupForm({
           />
         </div>
 
-        <p className="text-[10px] text-[var(--color-muted)]">
+        <p className="text-xs text-[var(--color-muted)]">
           You can pick your color once you&apos;re in the lobby.
         </p>
       </div>

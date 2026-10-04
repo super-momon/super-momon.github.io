@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useReducedMotion } from "motion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -92,6 +93,7 @@ const notifications: Notification[] = [
  * Auto-closes on outside click or page scroll.
  */
 export default function NotificationDropdown() {
+  const shouldReduceMotion = useReducedMotion() ?? false;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const latestNotification = notifications[0];
@@ -141,7 +143,7 @@ export default function NotificationDropdown() {
           </span>
 
           {notifications.length > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 bg-gradient-to-br from-red-500 to-red-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-pulse">
+            <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gradient-to-br from-red-700 to-red-800 px-1 text-xs font-extrabold text-white shadow-xs animate-pulse">
               {notifications.length}
             </span>
           )}
@@ -149,7 +151,7 @@ export default function NotificationDropdown() {
 
         {latestNotification && (
           <div className="hidden sm:flex items-center gap-2 max-w-[140px] md:max-w-[180px] lg:max-w-[220px] overflow-hidden text-left leading-none">
-            <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-wider uppercase bg-[var(--color-accent)]/15 text-[var(--color-accent)] border border-[var(--color-accent)]/20 shrink-0">
+            <span className="shrink-0 rounded border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/15 px-1.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-accent)]">
               NEW
             </span>
             <span className="text-xs font-semibold text-[var(--color-foreground)] truncate group-hover:text-[var(--color-accent)] transition-colors">
@@ -162,7 +164,11 @@ export default function NotificationDropdown() {
       {isOpen && (
         <div
           className="fixed sm:absolute left-4 right-4 sm:left-auto sm:right-0 mt-3 sm:w-[360px] max-w-[calc(100vw-2rem)] z-50 origin-top-right"
-          style={{ animation: "dropdownSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }}
+          style={
+            shouldReduceMotion
+              ? undefined
+              : { animation: "dropdownSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }
+          }
           role="menu"
         >
           {/* Caret */}
@@ -180,7 +186,7 @@ export default function NotificationDropdown() {
                 </h3>
                 <div className="flex items-center gap-1.5 px-2 py-1 bg-[var(--color-accent)]/10 rounded-full">
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
-                  <span className="text-[10px] font-semibold text-[var(--color-accent)] uppercase tracking-wider">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">
                     {notifications.length} New
                   </span>
                 </div>
@@ -207,9 +213,11 @@ export default function NotificationDropdown() {
                   const className = `relative flex items-start gap-3.5 px-5 py-4 hover:bg-[var(--color-surface)]/50 transition-all duration-300 border-b border-[var(--color-border)]/30 last:border-b-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
                     isClickable ? "cursor-pointer" : "cursor-default"
                   }`;
-                  const style = {
-                    animation: `notificationSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.05}s backwards`,
-                  };
+                  const style = shouldReduceMotion
+                    ? undefined
+                    : {
+                        animation: `notificationSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.05}s backwards`,
+                      };
 
                   const innerContent = (
                     <>
@@ -233,27 +241,27 @@ export default function NotificationDropdown() {
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] text-[var(--color-foreground)] leading-relaxed font-medium">
+                        <p className="text-sm font-medium leading-relaxed text-[var(--color-foreground)]">
                           {notification.text}
                         </p>
 
                         <div className="flex items-center justify-between mt-2.5 gap-3">
-                          <div className="flex items-center gap-1.5 text-[11px] text-[var(--color-muted)]">
+                          <div className="flex items-center gap-1.5 text-xs text-[var(--color-muted)]">
                             <FontAwesomeIcon
                               icon={faClock}
-                              className="text-[10px]"
+                              className="text-xs"
                             />
                             <span>{notification.timestamp}</span>
                           </div>
 
                           {isClickable && (
                             <span
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold text-[var(--color-accent)] group-hover:text-[var(--color-accent-hover)] bg-[var(--color-accent)]/5 group-hover:bg-[var(--color-accent)]/10 rounded-lg transition-all duration-300"
+                              className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--color-accent)]/5 px-2.5 py-1 text-xs font-semibold text-[var(--color-accent)] transition-all duration-300 group-hover:bg-[var(--color-accent)]/10 group-hover:text-[var(--color-accent-hover)]"
                             >
                               {notification.linkText}
                               <FontAwesomeIcon
                                 icon={faArrowRight}
-                                className="text-[9px] translate-x-0 group-hover:translate-x-0.5 transition-transform duration-300"
+                                className="text-xs translate-x-0 group-hover:translate-x-0.5 transition-transform duration-300"
                               />
                             </span>
                           )}
