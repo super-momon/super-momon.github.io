@@ -43,7 +43,7 @@ export default function Hero() {
     animate: { opacity: 1, y: 0 },
     transition: {
       duration: shouldReduceMotion ? 0 : 0.6,
-      delay,
+      delay: shouldReduceMotion ? 0 : delay,
       ease: [0.25, 0.1, 0.25, 1] as const,
     },
   });
@@ -53,7 +53,7 @@ export default function Hero() {
       <section
         ref={heroRef}
         id="hero"
-        className="relative min-h-[100dvh] flex flex-col items-center justify-center text-center px-6 pt-16 pb-20 overflow-hidden"
+        className="relative grid min-h-[100dvh] place-items-center overflow-hidden px-6 pt-16 pb-32 text-left sm:px-8 lg:px-12"
       >
         {/* Soft bottom gradient arc */}
         <div
@@ -69,7 +69,7 @@ export default function Hero() {
         {canvasAllowed && canvasReady && !shouldReduceMotion && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-80"
+            className="pointer-events-none absolute inset-0 opacity-50"
           >
             <Suspense fallback={null}>
               <HeroCanvas reducedMotion={shouldReduceMotion} />
@@ -79,137 +79,107 @@ export default function Hero() {
 
         {/* Atmospheric noise texture */}
         <div
+          aria-hidden="true"
           className="absolute inset-0 opacity-[0.03] pointer-events-none bg-noise mix-blend-overlay"
         />
 
-        {/* Centered content wrapper */}
-        <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center justify-center my-auto">
-          {/* Availability badge */}
-          <m.div
-            className="inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full 
-                       bg-surface/70 backdrop-blur-md border border-border/60 shadow-xs"
-            {...fadeUp(0.1)}
-          >
-            <m.span
-              className="w-1.5 h-1.5 rounded-full bg-accent"
-              animate={
-                shouldReduceMotion
-                  ? {}
-                  : { scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }
-              }
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeInOut",
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)] lg:gap-20">
+          <m.div className="flex flex-col items-start" {...fadeUp(0.1)}>
+            <m.h1
+              onMouseMove={shouldReduceMotion ? undefined : (e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+                const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+                e.currentTarget.style.transform = `perspective(1000px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
               }}
-            />
-            <span className="text-xs font-medium text-foreground/70 tracking-wide">
-              Available for Work
-            </span>
+              onMouseLeave={shouldReduceMotion ? undefined : (e) => {
+                e.currentTarget.style.transform = "perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)";
+              }}
+              className="mb-6 max-w-4xl cursor-default select-none text-balance text-[clamp(2.75rem,7vw,5rem)] font-bold leading-[1.08] tracking-tight transition-transform duration-200 ease-out"
+            >
+              Mark Raymond <span className="text-accent">Ayade</span>
+            </m.h1>
+
+            <p className="mb-8 max-w-2xl text-lg font-light leading-relaxed text-muted md:text-xl">
+              Full Stack Developer with 4+ years of experience crafting scalable web applications and high-performance backends, proficient in AI-assisted development.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-start gap-3">
+              <a
+                href="#projects"
+                className="group relative overflow-hidden rounded-full bg-accent px-7 py-3 text-sm font-semibold text-[var(--color-accent-contrast)]
+                           transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(8,202,95,0.22)]
+                           active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              >
+                <span className="relative z-10">View Projects</span>
+                <m.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
+                  initial={{ x: "-100%" }}
+                  whileHover={shouldReduceMotion ? undefined : { x: "100%" }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                />
+              </a>
+
+              <a
+                href="#contact"
+                className="rounded-full border border-border bg-surface/70 px-7 py-3 text-sm font-semibold text-foreground backdrop-blur-md
+                           transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-accent hover:bg-surface/90
+                           active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              >
+                Let&apos;s Talk
+              </a>
+            </div>
           </m.div>
 
-          {/* Main headline */}
-          <m.h1
-            onMouseMove={shouldReduceMotion ? undefined : (e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-              const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-              e.currentTarget.style.transform = `perspective(1000px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
-            }}
-            onMouseLeave={shouldReduceMotion ? undefined : (e) => {
-              e.currentTarget.style.transform = "perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)";
-            }}
-            className="text-[clamp(2.75rem,8vw,5rem)] font-bold leading-[1.08] tracking-tight mb-6 text-center transition-transform duration-200 ease-out cursor-default select-none"
-            {...fadeUp(0.2)}
+          <m.aside
+            aria-label="Availability and experience highlights"
+            className="w-full max-w-xl lg:justify-self-end"
+            {...fadeUp(0.25)}
           >
-            Mark Raymond{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-              }}
-            >
-              Ayade
-            </span>
-          </m.h1>
-
-          {/* Subheadline */}
-          <m.p
-            className="text-lg md:text-xl text-muted font-light leading-relaxed max-w-2xl mb-8 text-center text-balance"
-            {...fadeUp(0.35)}
-          >
-            Full Stack Developer with 4+ years of experience crafting scalable web applications and high-performance backends, proficient in AI-assisted development.
-          </m.p>
-
-          {/* Primary CTAs */}
-          <m.div
-            className="flex flex-wrap items-center justify-center gap-3 mb-6"
-            {...fadeUp(0.5)}
-          >
-            <a
-              href="#projects"
-              className="group relative px-7 py-3 rounded-full bg-accent text-[var(--color-accent-contrast)] font-semibold text-sm
-                         overflow-hidden transition-all duration-300 ease-out
-                         hover:shadow-[0_0_30px_rgba(0,199,88,0.35)] hover:-translate-y-0.5
-                         active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-            >
-              <span className="relative z-10">View Projects</span>
-              <m.div
-                className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "100%" }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
+            <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-surface/70 px-3.5 py-1.5 shadow-xs backdrop-blur-md">
+              <m.span
+                className="h-1.5 w-1.5 rounded-full bg-accent"
+                animate={
+                  shouldReduceMotion
+                    ? {}
+                    : { scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }
+                }
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
-            </a>
-
-            <a
-              href="#contact"
-              className="px-7 py-3 rounded-full border border-border text-foreground font-semibold text-sm
-                         transition-all duration-300 ease-out bg-surface/70 backdrop-blur-md
-                         hover:border-accent hover:bg-surface/90 hover:-translate-y-0.5
-                         active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-            >
-              Let&apos;s Talk
-            </a>
-          </m.div>
-
-          {/* Highlights Ribbon */}
-          <m.div
-            className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 my-6 px-4 py-2.5 rounded-2xl
-                       bg-surface/60 backdrop-blur-md border border-border/50 text-xs font-mono text-foreground/80 shadow-xs"
-            {...fadeUp(0.55)}
-          >
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span><strong className="text-foreground font-semibold">4+</strong> Years Exp</span>
+              <span className="text-xs font-medium tracking-wide text-foreground/70">
+                Available for Work
+              </span>
             </div>
-            <span className="hidden sm:inline text-border">•</span>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span><strong className="text-foreground font-semibold">Full Stack</strong> .NET & React</span>
-            </div>
-            <span className="hidden sm:inline text-border">•</span>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span><strong className="text-foreground font-semibold">AWS & Cloud</strong> Integration</span>
-            </div>
-          </m.div>
 
-          {/* Resume link */}
-          <m.div {...fadeUp(0.65)}>
+            <ul className="my-7 divide-y divide-border/60 border-y border-border/60 text-base text-foreground/80 sm:text-lg">
+              <li className="py-4">
+                <strong className="font-semibold text-foreground">4+</strong>{" "}Years Exp
+              </li>
+              <li className="py-4">
+                <strong className="font-semibold text-foreground">Full Stack</strong>{" "}.NET &amp; React
+              </li>
+              <li className="py-4">
+                <strong className="font-semibold text-foreground">AWS &amp; Cloud</strong>{" "}Integration
+              </li>
+            </ul>
+
             <a
               href="/resume.pdf"
               download="Mark_Raymond_Ayade_Resume.pdf"
               data-analytics-skip-auto
               onClick={() => trackEvent("resume_download", { method: "hero_link" })}
-              className="inline-flex min-h-11 items-center gap-2 text-sm text-muted hover:text-accent transition-colors
-                         focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-lg px-3 py-1.5"
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 py-1.5 text-sm text-muted transition-colors hover:text-accent
+                         focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
               <FontAwesomeIcon icon={faDownload} className="text-xs" />
               Download Resume
             </a>
-          </m.div>
+          </m.aside>
         </div>
 
         {/* Enhanced Scroll Indicator */}
