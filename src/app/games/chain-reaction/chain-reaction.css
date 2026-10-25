@@ -168,13 +168,79 @@
 
 /* Zoom Sizing Definitions & Variables (Responsive configurations) */
 .zoom-fit {
-  --cell-size: clamp(20px, calc((100vw - 2.5rem) / var(--board-cols, 10)), 48px);
+  --cell-size: clamp(
+    6px,
+    min(
+      calc((100vw - 9.5rem) / var(--board-cols, 10)),
+      calc((100dvh - 25rem) / var(--board-rows, 15))
+    ),
+    48px
+  );
   --orb-overlap: -1.5px;
   --orb-border: 0.8px;
 }
 @media (min-width: 640px) {
   .zoom-fit {
-    --cell-size: clamp(28px, calc((min(100vw, 1200px) - 5rem) / var(--board-cols, 10)), 56px);
+    --cell-size: clamp(
+      6px,
+      min(
+        calc((min(100vw, 1200px) - 9.5rem) / var(--board-cols, 10)),
+        calc((100dvh - 25rem) / var(--board-rows, 15))
+      ),
+      56px
+    );
+  }
+}
+
+@media (min-width: 900px) {
+  .zoom-fit {
+    --cell-size: clamp(
+      6px,
+      min(
+        calc((min(100vw, 1200px) - 9.5rem) / var(--board-cols, 10)),
+        calc((100dvh - 13.5rem) / var(--board-rows, 15) - 2px)
+      ),
+      56px
+    );
+  }
+}
+
+@supports (width: 1cqw) {
+  .zoom-fit {
+    --cell-size: clamp(
+      6px,
+      min(
+        calc((100cqw - 4.5rem) / var(--board-cols, 10)),
+        calc((100dvh - 25rem) / var(--board-rows, 15))
+      ),
+      48px
+    );
+  }
+
+  @media (min-width: 640px) {
+    .zoom-fit {
+      --cell-size: clamp(
+        6px,
+        min(
+          calc((100cqw - 4.5rem) / var(--board-cols, 10)),
+          calc((100dvh - 25rem) / var(--board-rows, 15))
+        ),
+        56px
+      );
+    }
+  }
+
+  @media (min-width: 900px) {
+    .zoom-fit {
+      --cell-size: clamp(
+        6px,
+        min(
+          calc((100cqw - 4.5rem) / var(--board-cols, 10)),
+          calc((100dvh - 13.5rem) / var(--board-rows, 15) - 2px)
+        ),
+        56px
+      );
+    }
   }
 }
 
@@ -227,6 +293,74 @@
   box-shadow: 0 0 6px var(--orb-glow);
 }
 
+.game-workspace {
+  display: grid;
+  grid-template-areas:
+    "hud"
+    "board";
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 1rem;
+}
+
+.game-hud {
+  grid-area: hud;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  container-name: game-hud;
+  container-type: inline-size;
+}
+
+.game-board-area {
+  grid-area: board;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .game-workspace {
+    grid-template-areas: "hud board";
+    grid-template-columns: 20rem minmax(0, 1fr);
+  }
+
+  .game-hud .game-stats-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .game-controls-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .game-controls-preferences {
+    justify-content: space-between;
+  }
+
+  .game-hud .player-scroll-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    overflow: visible;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+
+  .game-hud .player-scroll-strip > [role="group"] {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+  }
+}
+
 .zoom-sm .orb-simple {
   width: 10px;
   height: 10px;
@@ -249,6 +383,7 @@
 .game-board-viewport {
   width: 100%;
   max-width: 100%;
+  container-type: inline-size;
   overflow-x: auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -271,6 +406,17 @@
 .game-board-viewport::-webkit-scrollbar-thumb {
   background: var(--color-border);
   border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+  .game-cell-threshold {
+    display: none;
+  }
+}
+@container (max-width: 600px) {
+  .game-cell-threshold {
+    display: none;
+  }
 }
 
 /* Grid & Cell styling */

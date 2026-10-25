@@ -201,8 +201,8 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
       </div>
 
       {/* Step 3: Board Size & Settings */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-[var(--color-surface)]/30 rounded-2xl p-4 border border-[var(--color-border)]/40 flex flex-col gap-4">
+      <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="flex min-w-0 flex-col gap-4 rounded-2xl border border-[var(--color-border)]/40 bg-[var(--color-surface)]/30 p-4">
           <div>
             <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-2">
               <FontAwesomeIcon icon={faBorderAll} className="text-[var(--color-accent)]" />
@@ -210,7 +210,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
             </label>
 
             {/* Quick Grid Dimension Presets */}
-            <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mb-3.5">
+            <div className="mb-3.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {[
                 { name: 'Mobile', r: 8, c: 6 },
                 { name: 'Standard', r: 12, c: 8 },
@@ -243,7 +243,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
               })}
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
               <div>
                 <label htmlFor="local-board-rows" className="mb-1.5 block text-xs text-[var(--color-muted)]">Rows (6 - 20)</label>
                 <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
@@ -395,12 +395,12 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
         </div>
 
         {/* Right Column: Special Cells & Sound */}
-        <div className="bg-[var(--color-surface)]/30 rounded-2xl p-4 border border-[var(--color-border)]/40 flex flex-col">
+        <div className="flex min-w-0 flex-col rounded-2xl border border-[var(--color-border)]/40 bg-[var(--color-surface)]/30 p-4">
           <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-3">
             <span className="text-[var(--color-accent)]">✨</span>
             Special Cells (Randomly Placed)
           </label>
-          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mb-4 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
             {(['walls', 'portals', 'multipliers', 'blackholes'] as const).map(key => (
               <div key={key} className="bg-[var(--color-background)]/50 p-2.5 rounded-xl border border-[var(--color-border)]/30 flex flex-col gap-2">
                 <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
@@ -410,12 +410,12 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                   {key === 'blackholes' && '⚫'}
                   {key}
                 </span>
-                <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-1 shadow-sm">
+                <div className="flex min-w-0 items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-1 shadow-sm">
                    <button
                     type="button"
                     onClick={() => handleSpecialCellChange(key, false)}
                     aria-label={`Decrease ${key}`}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
+                    className="flex h-11 w-10 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
@@ -424,7 +424,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
                     type="button"
                     onClick={() => handleSpecialCellChange(key, true)}
                     aria-label={`Increase ${key}`}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
+                    className="flex h-11 w-10 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-90 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </button>
@@ -440,6 +440,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
             </div>
             <button
               type="button"
+              aria-label={soundEnabled ? 'Mute sound effects' : 'Enable sound effects'}
               onClick={() => setSoundEnabled(!soundEnabled)}
               className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
                 soundEnabled

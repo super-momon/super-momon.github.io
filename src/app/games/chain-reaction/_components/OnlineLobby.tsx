@@ -427,11 +427,11 @@ export default function OnlineLobby({
           </label>
 
           {isHost ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
               {/* Left Settings: Dimensions & Turn Time */}
-              <div className="space-y-4 flex flex-col justify-center">
+              <div className="flex min-w-0 flex-col justify-center space-y-4">
                 {/* Quick Presets */}
-                <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mb-3.5">
+                <div className="mb-3.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {[
                     { name: 'Mobile', r: 8, c: 6 },
                     { name: 'Standard', r: 12, c: 8 },
@@ -465,10 +465,10 @@ export default function OnlineLobby({
                   })}
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="grid min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">
                   <div>
                     <label htmlFor="online-board-rows" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Rows (6 - 20)</label>
-                    <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20 shadow-sm">
+                    <div className="flex min-w-0 items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-1 shadow-sm transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
                       <button
                         type="button"
                         onClick={handleDecrementRows}
@@ -506,7 +506,7 @@ export default function OnlineLobby({
                   </div>
                   <div>
                     <label htmlFor="online-board-columns" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">Columns (6 - 25)</label>
-                    <div className="flex items-center justify-between bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-1 transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20 shadow-sm">
+                    <div className="flex min-w-0 items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-1 shadow-sm transition-all focus-within:border-[var(--color-accent)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/20">
                       <button
                         type="button"
                         onClick={handleDecrementCols}
@@ -586,13 +586,13 @@ export default function OnlineLobby({
               </div>
 
               {/* Right Settings: Special Cells */}
-              <div className="flex flex-col">
+              <div className="flex min-w-0 flex-col">
                 <label className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                   <span className="text-[var(--color-accent)]">✨</span> Special Cells
                 </label>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
                   {(['walls', 'portals', 'multipliers', 'blackholes'] as const).map(key => (
-                    <div key={key} className="bg-[var(--color-surface)]/40 p-2.5 rounded-xl border border-[var(--color-border)]/30 flex flex-col gap-2">
+                  <div key={key} className="flex min-w-0 flex-col gap-2 rounded-xl border border-[var(--color-border)]/30 bg-[var(--color-surface)]/40 p-2.5">
                       <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--color-muted)]">
                         {key === 'walls' && '🧱'}
                         {key === 'portals' && '🌀'}
@@ -600,11 +600,12 @@ export default function OnlineLobby({
                         {key === 'blackholes' && '⚫'}
                         {key}
                       </span>
-                      <div className="flex items-center justify-between bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-1 shadow-sm">
+                      <div className="flex min-w-0 items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-1 shadow-sm">
                         <button
                           type="button"
                           onClick={() => handleSpecialCellChange(key, false)}
-                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
+                          aria-label={`Decrease ${key}`}
+                          className="flex h-11 w-10 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
                         >
                           <FontAwesomeIcon icon={faMinus} />
                         </button>
@@ -612,7 +613,8 @@ export default function OnlineLobby({
                         <button
                           type="button"
                           onClick={() => handleSpecialCellChange(key, true)}
-                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
+                          aria-label={`Increase ${key}`}
+                          className="flex h-11 w-10 shrink-0 items-center justify-center rounded-md text-xs text-[var(--color-muted)] transition-all hover:bg-[var(--color-border)]/50 hover:text-[var(--color-foreground)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent active:scale-95 cursor-pointer"
                         >
                           <FontAwesomeIcon icon={faPlus} />
                         </button>

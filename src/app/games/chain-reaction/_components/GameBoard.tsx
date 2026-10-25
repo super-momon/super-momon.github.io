@@ -760,7 +760,7 @@ export default function GameBoard({
   const myPlayerColor = myPlayer ? getThemeColor(myPlayer.color, isDark) : 'transparent';
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 pb-12 flex flex-col items-center">
+    <div className="game-workspace w-full max-w-7xl mx-auto px-4 pb-12">
       {/* Toast Notification */}
       {toast && (
         <div 
@@ -777,43 +777,43 @@ export default function GameBoard({
         </div>
       )}
 
-      {/* Control / Info Bar */}
+      <aside className="game-hud w-full" aria-label="Game controls and player standings">
         <GameBoardControls
-        isOnline={isOnline}
-        isHost={isHost}
-        isAnimating={isAnimating}
-        activePlayer={activePlayer}
-        activePlayerThemeColor={activePlayerThemeColor}
-        isMyTurn={isMyTurn}
-        totalOrbsCount={totalOrbsCount}
-        secondsElapsed={secondsElapsed}
-        myPlayer={myPlayer}
-        myPlayerColor={myPlayerColor}
-        zoomLevel={zoomLevel}
-        setZoomLevel={setZoomLevel}
-        soundEnabled={soundEnabled}
-        setSoundEnabled={setSoundEnabled}
-        onQuitClick={handleQuitClick}
-        onResetClick={handleResetClick}
-        onOpenGuide={() => setIsInfoOpen(true)}
-      />
+          isOnline={isOnline}
+          isHost={isHost}
+          isAnimating={isAnimating}
+          activePlayer={activePlayer}
+          activePlayerThemeColor={activePlayerThemeColor}
+          isMyTurn={isMyTurn}
+          totalOrbsCount={totalOrbsCount}
+          secondsElapsed={secondsElapsed}
+          myPlayer={myPlayer}
+          myPlayerColor={myPlayerColor}
+          zoomLevel={zoomLevel}
+          setZoomLevel={setZoomLevel}
+          soundEnabled={soundEnabled}
+          setSoundEnabled={setSoundEnabled}
+          onQuitClick={handleQuitClick}
+          onResetClick={handleResetClick}
+          onOpenGuide={() => setIsInfoOpen(true)}
+        />
 
-      {/* Players Standings / Leaderboard Header */}
-      <PlayerStandings
-        players={players}
-        currentPlayerIndex={currentPlayerIndex}
-        isAnimating={isAnimating}
-        board={board}
-        myClientId={myClientId}
-        isOnline={isOnline}
-        isDark={isDark}
-        turnSecondsLeft={turnSecondsLeft}
-        activeAbility={activeAbility}
-        setActiveAbility={setActiveAbility}
-      />
+        <PlayerStandings
+          players={players}
+          currentPlayerIndex={currentPlayerIndex}
+          isAnimating={isAnimating}
+          board={board}
+          myClientId={myClientId}
+          isOnline={isOnline}
+          isDark={isDark}
+          turnSecondsLeft={turnSecondsLeft}
+          activeAbility={activeAbility}
+          setActiveAbility={setActiveAbility}
+        />
+      </aside>
 
       {/* Board & Chat Responsive Layout Grid */}
-      <div className="w-full relative">
+      <div className="game-board-area relative w-full min-w-0">
         {/* Shout Alert Overlay Banner */}
         <ShoutBanner
           activeAlerts={activeAlerts}
