@@ -38,8 +38,6 @@ export function PlayerStandings({
   activeAbility,
   setActiveAbility,
 }: PlayerStandingsProps) {
-  const activeCardRef = React.useRef<HTMLDivElement | null>(null);
-
   // Compute total orbs on board and leader count for dynamic HUD features
   const playerOrbCounts = React.useMemo(() => {
     return players.map((p) => ({ id: p.id, count: countPlayerOrbs(board, p.id) }));
@@ -55,26 +53,12 @@ export function PlayerStandings({
 
   const activePlayers = players.filter((p) => p.active);
 
-  // Keep the active player visible whenever the standings strip can scroll.
-  React.useEffect(() => {
-    const activeCard = activeCardRef.current;
-    const strip = activeCard?.parentElement;
-
-    if (activeCard && strip && strip.scrollWidth > strip.clientWidth) {
-      activeCard.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
-      });
-    }
-  }, [currentPlayerIndex]);
-
   return (
     <div className="w-full min-w-0 select-none">
       <div
         role="group"
         aria-label="Player standings"
-        className="player-scroll-strip flex w-full flex-nowrap items-stretch gap-2 overflow-x-auto pb-1 px-0.5"
+        className="grid w-full min-w-0 grid-cols-1 items-stretch gap-2 px-0.5"
       >
         {players.map((p, idx) => {
           const isCurrent = idx === currentPlayerIndex && p.active && !isAnimating;
@@ -87,10 +71,9 @@ export function PlayerStandings({
           return (
             <div
               key={p.id}
-              ref={isCurrent ? activeCardRef : null}
               role="group"
               aria-label={`${p.name}: ${totalOrbs} orbs, ${dominancePercent}% of the board${isCurrent ? ', current turn' : ''}`}
-              className={`relative flex w-[148px] shrink-0 flex-col gap-1 overflow-hidden rounded-xl border px-2 py-1 transition-colors duration-200 sm:mx-auto sm:max-w-[220px] sm:min-w-[120px] sm:flex-1 ${
+              className={`relative flex w-full min-w-0 flex-col gap-1 overflow-hidden rounded-xl border px-2 py-1 transition-colors duration-200 ${
                 isCurrent
                   ? 'z-10 bg-[var(--color-surface)]'
                   : 'bg-[var(--color-surface)]/80 hover:bg-[var(--color-surface)]'

@@ -19,6 +19,7 @@ import {
 import { LobbyPresenceUser } from '../ChainReactionGame';
 import { SpecialCellsConfig, DEFAULT_SPECIAL_CELLS } from './SetupScreen';
 import { PRESET_COLORS, PRESET_COLOR_LABELS, getThemeColor, useIsDark } from './colors';
+import ArenaBlueprint from './ArenaBlueprint';
 
 interface OnlineLobbyProps {
   roomCode: string;
@@ -425,6 +426,10 @@ export default function OnlineLobby({
             <FontAwesomeIcon icon={faBorderAll} className="text-[var(--color-accent)]" />
             Lobby Game Settings
           </label>
+
+          <div className="mb-6">
+            <ArenaBlueprint rows={rows} cols={cols} specialCells={specialCells} />
+          </div>
 
           {isHost ? (
             <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">

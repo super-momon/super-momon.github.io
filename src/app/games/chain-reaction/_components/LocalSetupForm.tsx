@@ -16,6 +16,7 @@ import {
 import { PlayerSetup, SpecialCellsConfig, DEFAULT_SPECIAL_CELLS } from './SetupScreen';
 import PlayerConfigRow from './PlayerConfigRow';
 import { PRESET_COLORS, useIsDark } from './colors';
+import ArenaBlueprint from './ArenaBlueprint';
 
 interface LocalSetupFormProps {
   onStartGame: (players: PlayerSetup[], rows: number, cols: number, soundEnabled: boolean, turnSecondsLimit: number, specialCells: SpecialCellsConfig) => void;
@@ -145,10 +146,14 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
       exit={{ opacity: 0, x: 10 }}
       transition={{ duration: 0.2 }}
       onSubmit={handleLocalSubmit}
-      className="space-y-6"
+      className="grid min-w-0 grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(19rem,0.85fr)]"
     >
+      <aside className="min-w-0 self-start lg:sticky lg:top-28 lg:col-start-2 lg:row-start-1 lg:row-span-3">
+        <ArenaBlueprint rows={rows} cols={cols} specialCells={specialCells} />
+      </aside>
+
       {/* Step 1: Players Count */}
-      <div>
+      <div className="lg:col-start-1 lg:row-start-1">
         <p id="player-count-label" className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--color-foreground)]/80">
           <FontAwesomeIcon icon={faUsers} className="text-[var(--color-accent)]" />
           Number of Players (2 - 6)
@@ -174,7 +179,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
       </div>
 
       {/* Step 2: Player Configurations */}
-      <div className="space-y-3 bg-[var(--color-surface)]/40 rounded-2xl p-5 border border-[var(--color-border)]/40">
+      <div className="space-y-3 bg-[var(--color-surface)]/40 rounded-2xl p-5 border border-[var(--color-border)]/40 lg:col-start-1 lg:row-start-2">
         <div className="flex justify-between items-center mb-1">
           <h3 className="text-sm font-semibold text-[var(--color-foreground)]/80">Customize Players</h3>
           <button
@@ -186,7 +191,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
           </button>
         </div>
         
-        <div className="space-y-3 max-h-56 overflow-y-auto pr-1 custom-scrollbar">
+        <div className="player-config-list space-y-3 max-h-88 overflow-y-auto pr-1 custom-scrollbar">
           {Array.from({ length: playerCount }).map((_, i) => (
             <PlayerConfigRow
               key={players[i].id}
@@ -201,7 +206,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
       </div>
 
       {/* Step 3: Board Size & Settings */}
-      <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 lg:col-start-1 lg:row-start-3">
         <div className="flex min-w-0 flex-col gap-4 rounded-2xl border border-[var(--color-border)]/40 bg-[var(--color-surface)]/30 p-4">
           <div>
             <label className="text-sm font-semibold text-[var(--color-foreground)]/80 flex items-center gap-2 mb-2">
@@ -459,7 +464,7 @@ export default function LocalSetupForm({ onStartGame }: LocalSetupFormProps) {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         type="submit"
-        className="w-full py-4 px-6 rounded-2xl bg-[var(--color-accent)] text-[var(--color-accent-contrast)] hover:bg-[var(--color-accent-hover)] font-extrabold tracking-wide text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent)]/20 transition-all cursor-pointer"
+        className="flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-[var(--color-accent)] px-6 py-4 text-sm font-extrabold tracking-wide text-[var(--color-accent-contrast)] shadow-lg shadow-[var(--color-accent)]/20 transition-all hover:bg-[var(--color-accent-hover)] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 cursor-pointer lg:col-span-2"
       >
         <FontAwesomeIcon icon={faPlay} />
         Start Local Game

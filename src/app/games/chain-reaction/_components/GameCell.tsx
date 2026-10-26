@@ -192,13 +192,6 @@ function GameCellComponent({
         </div>
       )}
 
-      {/* Critical mass hover threshold hint */}
-      <div
-        aria-hidden="true"
-        className="game-cell-threshold absolute top-0.5 right-0.5 rounded border border-slate-700/80 bg-slate-900/90 px-1 py-0.25 font-mono text-xs font-bold text-slate-200 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 select-none pointer-events-none z-10"
-      >
-        {cell.orbs}/{limit}
-      </div>
     </button>
   );
 }

@@ -1,0 +1,257 @@
+- generic [ref=f8e1]:
+  - banner [ref=f8e2]:
+    - generic [ref=f8e3]:
+      - generic [ref=f8e4]:
+        - generic [ref=f8e5]: Open for opportunities
+        - generic [ref=f8e6]: ✦
+        - generic [ref=f8e7]: Open for opportunities
+        - generic [ref=f8e8]: ✦
+        - generic [ref=f8e9]: Open for opportunities
+        - generic [ref=f8e10]: ✦
+        - generic [ref=f8e11]: Open for opportunities
+        - generic [ref=f8e12]: ✦
+        - generic [ref=f8e13]: Open for opportunities
+        - generic [ref=f8e14]: ✦
+      - generic [aria-hidden] [ref=f8e15]:
+        - generic [ref=f8e16]: Open for opportunities
+        - generic [ref=f8e17]: ✦
+        - generic [ref=f8e18]: Open for opportunities
+        - generic [ref=f8e19]: ✦
+        - generic [ref=f8e20]: Open for opportunities
+        - generic [ref=f8e21]: ✦
+        - generic [ref=f8e22]: Open for opportunities
+        - generic [ref=f8e23]: ✦
+        - generic [ref=f8e24]: Open for opportunities
+        - generic [ref=f8e25]: ✦
+    - navigation [ref=f8e26]:
+      - link "<momon />" [ref=f8e27] [cursor=pointer]:
+        - /url: /#hero
+      - generic [ref=f8e40]:
+        - button "Notifications" [ref=f8e42] [cursor=pointer]:
+          - generic [ref=f8e43]: "7"
+        - button "Toggle theme" [ref=f8e51]
+        - button "Toggle menu" [ref=f8e967]
+  - generic [ref=f8e446]:
+    - generic [ref=f8e452]:
+      - heading "Chain Reaction" [level=1] [ref=f8e453]
+      - paragraph [ref=f8e454]: Take control of the board by causing cascades. Place your orbs, trigger explosions, and dominate the grid.
+    - group "Choose game mode" [ref=f8e455]:
+      - button "Local Play Set up players and the board" [pressed] [ref=f8e456]:
+        - generic [ref=f8e460]:
+          - generic [ref=f8e461]: Local Play
+          - generic [ref=f8e462]: Set up players and the board
+      - button "Online Multiplayer Create a room or enter a code" [ref=f8e463]:
+        - generic [ref=f8e467]:
+          - generic [ref=f8e468]: Online Multiplayer
+          - generic [ref=f8e469]: Create a room or enter a code
+    - generic [ref=f8e470]:
+      - complementary [ref=f8e471]:
+        - region [ref=f8e472]:
+          - generic [ref=f8e473]:
+            - generic [ref=f8e474]:
+              - heading "Arena blueprint" [level=3] [ref=f8e475]
+              - paragraph [ref=f8e476]: A schematic preview; special cells are randomized at game start.
+            - generic "6 columns by 8 rows" [ref=f8e970]:
+              - generic [ref=f8e478]: "6"
+              - generic [aria-hidden] [ref=f8e479]: ×
+              - generic [ref=f8e480]: "8"
+              - generic [ref=f8e481]: COLS × ROWS
+          - img "Schematic preview of a 8-row by 6-column board. Special cell locations are randomized when a game starts." [ref=f8e971]
+          - list "Special cell counts" [ref=f8e785]:
+            - listitem "0 walls" [ref=f8e786]:
+              - generic [ref=f8e788]: Walls
+              - generic [ref=f8e789]: "0"
+            - listitem "0 portals" [ref=f8e790]:
+              - generic [ref=f8e792]: Portals
+              - generic [ref=f8e793]: "0"
+            - listitem "0 multipliers" [ref=f8e794]:
+              - generic [ref=f8e796]: Multipliers
+              - generic [ref=f8e797]: "0"
+            - listitem "0 black holes" [ref=f8e798]:
+              - generic [ref=f8e800]: Black holes
+              - generic [ref=f8e801]: "0"
+      - generic [ref=f8e802]:
+        - paragraph [ref=f8e803]: Number of Players (2 - 6)
+        - group "Number of Players (2 - 6)" [ref=f8e806]:
+          - button "2 players" [pressed] [ref=f8e807]: "2"
+          - button "3 players" [ref=f8e808]: "3"
+          - button "4 players" [ref=f8e809]: "4"
+          - button "5 players" [ref=f8e810]: "5"
+          - button "6 players" [ref=f8e811]: "6"
+      - generic [ref=f8e812]:
+        - generic [ref=f8e813]:
+          - heading "Customize Players" [level=3] [ref=f8e814]
+          - button "Randomize Names" [ref=f8e815]
+        - generic [ref=f8e818]:
+          - generic [ref=f8e819]:
+            - generic [ref=f8e820]: Player 1
+            - generic [ref=f8e823]:
+              - generic [ref=f8e824]: Player 1 name
+              - textbox "Player 1 name" [ref=f8e825]:
+                - /placeholder: Player 1 Name
+                - text: Player One
+            - generic [ref=f8e826]:
+              - button "Set Player 1 color to Emerald" [pressed] [ref=f8e827] [cursor=pointer]
+              - button "Set Player 1 color to Red" [ref=f8e829] [cursor=pointer]
+              - button "Set Player 1 color to Blue" [ref=f8e831] [cursor=pointer]
+              - button "Set Player 1 color to Cyan" [ref=f8e833] [cursor=pointer]
+              - button "Set Player 1 color to Amber" [ref=f8e835] [cursor=pointer]
+              - button "Set Player 1 color to Violet" [ref=f8e837] [cursor=pointer]
+          - generic [ref=f8e839]:
+            - generic [ref=f8e840]: Player 2
+            - generic [ref=f8e843]:
+              - generic [ref=f8e844]: Player 2 name
+              - textbox "Player 2 name" [ref=f8e845]:
+                - /placeholder: Player 2 Name
+                - text: Player Two
+            - generic [ref=f8e846]:
+              - button "Set Player 2 color to Emerald" [ref=f8e847] [cursor=pointer]
+              - button "Set Player 2 color to Red" [pressed] [ref=f8e849] [cursor=pointer]
+              - button "Set Player 2 color to Blue" [ref=f8e851] [cursor=pointer]
+              - button "Set Player 2 color to Cyan" [ref=f8e853] [cursor=pointer]
+              - button "Set Player 2 color to Amber" [ref=f8e855] [cursor=pointer]
+              - button "Set Player 2 color to Violet" [ref=f8e857] [cursor=pointer]
+      - generic [ref=f8e859]:
+        - generic [ref=f8e860]:
+          - generic [ref=f8e861]:
+            - generic [ref=f8e862]: Grid Board Dimensions
+            - generic [ref=f8e865]:
+              - button "8×6 Mobile" [active] [ref=f8e866] [cursor=pointer]:
+                - generic [ref=f8e867]: 8×6
+                - generic [ref=f8e868]: Mobile
+              - button "12×8 Standard" [ref=f8e869] [cursor=pointer]:
+                - generic [ref=f8e870]: 12×8
+                - generic [ref=f8e871]: Standard
+              - button "15×10 Classic" [ref=f8e872] [cursor=pointer]:
+                - generic [ref=f8e873]: 15×10
+                - generic [ref=f8e874]: Classic
+              - button "20×15 Large" [ref=f8e875] [cursor=pointer]:
+                - generic [ref=f8e876]: 20×15
+                - generic [ref=f8e877]: Large
+            - generic [ref=f8e878]:
+              - generic [ref=f8e879]:
+                - generic [ref=f8e880]: Rows (6 - 20)
+                - generic [ref=f8e881]:
+                  - button "Decrease rows" [ref=f8e882] [cursor=pointer]
+                  - spinbutton "Rows (6 - 20)" [ref=f8e885]: "8"
+                  - button "Increase rows" [ref=f8e886] [cursor=pointer]
+              - generic [ref=f8e889]:
+                - generic [ref=f8e890]: Columns (6 - 25)
+                - generic [ref=f8e891]:
+                  - button "Decrease columns" [ref=f8e892] [cursor=pointer]
+                  - spinbutton "Columns (6 - 25)" [ref=f8e895]: "6"
+                  - button "Increase columns" [ref=f8e896] [cursor=pointer]
+          - generic [ref=f8e899]:
+            - generic [ref=f8e900]: Turn Time Limit (10 - 120s)
+            - generic [ref=f8e904]:
+              - button "Decrease turn seconds" [ref=f8e905] [cursor=pointer]
+              - generic [ref=f8e908]:
+                - spinbutton "Turn Time Limit (10 - 120s)" [ref=f8e909]: "30"
+                - generic [ref=f8e910]: sec
+              - button "Increase turn seconds" [ref=f8e911] [cursor=pointer]
+        - generic [ref=f8e914]:
+          - generic [ref=f8e915]:
+            - generic [ref=f8e916]: ✨
+            - text: Special Cells (Randomly Placed)
+          - generic [ref=f8e917]:
+            - generic [ref=f8e918]:
+              - generic [ref=f8e919]: 🧱walls
+              - generic [ref=f8e920]:
+                - button "Decrease walls" [ref=f8e921] [cursor=pointer]
+                - generic [ref=f8e924]: "0"
+                - button "Increase walls" [ref=f8e925] [cursor=pointer]
+            - generic [ref=f8e928]:
+              - generic [ref=f8e929]: 🌀portals
+              - generic [ref=f8e930]:
+                - button "Decrease portals" [ref=f8e931] [cursor=pointer]
+                - generic [ref=f8e934]: "0"
+                - button "Increase portals" [ref=f8e935] [cursor=pointer]
+            - generic [ref=f8e938]:
+              - generic [ref=f8e939]: ✨multipliers
+              - generic [ref=f8e940]:
+                - button "Decrease multipliers" [ref=f8e941] [cursor=pointer]
+                - generic [ref=f8e944]: "0"
+                - button "Increase multipliers" [ref=f8e945] [cursor=pointer]
+            - generic [ref=f8e948]:
+              - generic [ref=f8e949]: ⚫blackholes
+              - generic [ref=f8e950]:
+                - button "Decrease blackholes" [ref=f8e951] [cursor=pointer]
+                - generic [ref=f8e954]: "0"
+                - button "Increase blackholes" [ref=f8e955] [cursor=pointer]
+          - generic [ref=f8e958]:
+            - generic [ref=f8e959]:
+              - generic [ref=f8e960]: Sound Effects
+              - text: Synthesized retro play sounds
+            - button "Mute sound effects" [ref=f8e961] [cursor=pointer]
+      - button "Start Local Game" [ref=f8e964] [cursor=pointer]
+  - contentinfo [ref=f8e337]:
+    - generic [ref=f8e338]:
+      - generic [ref=f8e339]:
+        - generic [ref=f8e340]:
+          - link "<momon />" [ref=f8e341] [cursor=pointer]:
+            - /url: "#hero"
+          - paragraph [ref=f8e343]: A passionate Full Stack Developer crafting beautiful, intuitive, and performant web experiences.
+          - generic [ref=f8e344]:
+            - link "GitHub" [ref=f8e345] [cursor=pointer]:
+              - /url: https://github.com/super-momon
+            - link "LinkedIn" [ref=f8e350] [cursor=pointer]:
+              - /url: https://linkedin.com/in/super-momon
+            - link "Email" [ref=f8e355] [cursor=pointer]:
+              - /url: mailto:raymond.ayade@gmail.com
+        - generic [ref=f8e361]:
+          - heading "Navigation" [level=3] [ref=f8e362]
+          - navigation [ref=f8e363]:
+            - link "About" [ref=f8e364] [cursor=pointer]:
+              - /url: /#about
+            - link "Experience" [ref=f8e367] [cursor=pointer]:
+              - /url: /#experience
+            - link "Projects" [ref=f8e370] [cursor=pointer]:
+              - /url: /#projects
+            - link "Skills" [ref=f8e373] [cursor=pointer]:
+              - /url: /#skills
+        - generic [ref=f8e376]:
+          - heading "Games" [level=3] [ref=f8e377]
+          - navigation [ref=f8e378]:
+            - link "Developer Quiz" [ref=f8e379] [cursor=pointer]:
+              - /url: /games/quiz
+            - link "Chain Reaction" [ref=f8e382] [cursor=pointer]:
+              - /url: /games/chain-reaction
+        - generic [ref=f8e385]:
+          - heading "Location & Info" [level=3] [ref=f8e386]
+          - generic [ref=f8e387]:
+            - generic [ref=f8e393]:
+              - paragraph [ref=f8e394]: Based in
+              - paragraph [ref=f8e395]: Cebu, Philippines
+              - paragraph [ref=f8e396]: Available for Remote
+            - generic [ref=f8e402]:
+              - paragraph [ref=f8e403]: Response Time
+              - paragraph [ref=f8e404]: Within 24 hours
+              - paragraph [ref=f8e405]: Always ready to connect
+      - generic [ref=f8e406]:
+        - paragraph [ref=f8e407]: © 2026 Mark Raymond Ayade
+        - button "Back to top" [ref=f8e409] [cursor=pointer]
+  - generic [ref=f8e412]:
+    - generic [ref=f8e413]:
+      - generic [ref=f8e414]: Open for opportunities
+      - generic [ref=f8e415]: ✦
+      - generic [ref=f8e416]: Open for opportunities
+      - generic [ref=f8e417]: ✦
+      - generic [ref=f8e418]: Open for opportunities
+      - generic [ref=f8e419]: ✦
+      - generic [ref=f8e420]: Open for opportunities
+      - generic [ref=f8e421]: ✦
+      - generic [ref=f8e422]: Open for opportunities
+      - generic [ref=f8e423]: ✦
+    - generic [aria-hidden] [ref=f8e424]:
+      - generic [ref=f8e425]: Open for opportunities
+      - generic [ref=f8e426]: ✦
+      - generic [ref=f8e427]: Open for opportunities
+      - generic [ref=f8e428]: ✦
+      - generic [ref=f8e429]: Open for opportunities
+      - generic [ref=f8e430]: ✦
+      - generic [ref=f8e431]: Open for opportunities
+      - generic [ref=f8e432]: ✦
+      - generic [ref=f8e433]: Open for opportunities
+      - generic [ref=f8e434]: ✦
+  - button "Open Next.js Dev Tools" [ref=f8e440] [cursor=pointer]
+  - alert [ref=f8e444]

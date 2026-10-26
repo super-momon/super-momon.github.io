@@ -1,0 +1,129 @@
+- generic [ref=f5e1]:
+  - banner [ref=f5e2]:
+    - generic [ref=f5e3]:
+      - generic [ref=f5e4]:
+        - generic [ref=f5e5]: Open for opportunities
+        - generic [ref=f5e6]: ✦
+        - generic [ref=f5e7]: Open for opportunities
+        - generic [ref=f5e8]: ✦
+        - generic [ref=f5e9]: Open for opportunities
+        - generic [ref=f5e10]: ✦
+        - generic [ref=f5e11]: Open for opportunities
+        - generic [ref=f5e12]: ✦
+        - generic [ref=f5e13]: Open for opportunities
+        - generic [ref=f5e14]: ✦
+      - generic [aria-hidden] [ref=f5e15]:
+        - generic [ref=f5e16]: Open for opportunities
+        - generic [ref=f5e17]: ✦
+        - generic [ref=f5e18]: Open for opportunities
+        - generic [ref=f5e19]: ✦
+        - generic [ref=f5e20]: Open for opportunities
+        - generic [ref=f5e21]: ✦
+        - generic [ref=f5e22]: Open for opportunities
+        - generic [ref=f5e23]: ✦
+        - generic [ref=f5e24]: Open for opportunities
+        - generic [ref=f5e25]: ✦
+    - navigation [ref=f5e26]:
+      - link "<momon />" [ref=f5e27] [cursor=pointer]:
+        - /url: /#hero
+      - list [ref=f5e29]:
+        - listitem [ref=f5e30]:
+          - button "Portfolio" [ref=f5e31] [cursor=pointer]
+        - listitem [ref=f5e34]:
+          - button "Games" [ref=f5e35] [cursor=pointer]
+      - generic [ref=f5e40]:
+        - button "Notifications" [ref=f5e42] [cursor=pointer]:
+          - generic [ref=f5e43]: "7"
+          - generic [ref=f5e48]:
+            - generic [ref=f5e49]: NEW
+            - generic [ref=f5e50]: "Promotion: Full Stack Developer - Mid Level"
+        - button "Toggle theme" [ref=f5e155]
+  - generic [ref=f5e161]:
+    - generic [ref=f5e162]:
+      - heading "Chain Reaction" [level=1] [ref=f5e167]
+      - paragraph [ref=f5e168]: Take control of the board by causing cascades. Place your orbs, trigger explosions, and dominate the grid.
+    - generic [ref=f5e169]:
+      - button "Local Play" [ref=f5e170]
+      - button "Online Multiplayer" [active] [ref=f5e173]
+    - generic [ref=f5e352]:
+      - generic [ref=f5e353]:
+        - button "Host A Room" [ref=f5e354]
+        - button "Join A Room" [ref=f5e357]
+      - generic [ref=f5e360]:
+        - heading "Your Profile" [level=3] [ref=f5e361]
+        - generic [ref=f5e362]:
+          - generic [ref=f5e363]: Nickname
+          - textbox "Your Name" [ref=f5e364]: Player
+        - paragraph [ref=f5e365]: You can pick your color once you're in the lobby.
+      - button "Create Online Lobby" [ref=f5e366] [cursor=pointer]
+  - contentinfo [ref=f5e57]:
+    - generic [ref=f5e58]:
+      - generic [ref=f5e59]:
+        - generic [ref=f5e60]:
+          - link "<momon />" [ref=f5e61] [cursor=pointer]:
+            - /url: "#hero"
+          - paragraph [ref=f5e63]: A passionate Full Stack Developer crafting beautiful, intuitive, and performant web experiences.
+          - generic [ref=f5e64]:
+            - link "GitHub" [ref=f5e65] [cursor=pointer]:
+              - /url: https://github.com/super-momon
+            - link "LinkedIn" [ref=f5e70] [cursor=pointer]:
+              - /url: https://linkedin.com/in/super-momon
+            - link "Email" [ref=f5e75] [cursor=pointer]:
+              - /url: mailto:raymond.ayade@gmail.com
+        - generic [ref=f5e81]:
+          - heading "Navigation" [level=3] [ref=f5e82]
+          - navigation [ref=f5e83]:
+            - link "About" [ref=f5e84] [cursor=pointer]:
+              - /url: /#about
+            - link "Experience" [ref=f5e87] [cursor=pointer]:
+              - /url: /#experience
+            - link "Projects" [ref=f5e90] [cursor=pointer]:
+              - /url: /#projects
+            - link "Skills" [ref=f5e93] [cursor=pointer]:
+              - /url: /#skills
+        - generic [ref=f5e96]:
+          - heading "Games" [level=3] [ref=f5e97]
+          - navigation [ref=f5e98]:
+            - link "Developer Quiz" [ref=f5e99] [cursor=pointer]:
+              - /url: /games/quiz
+            - link "Chain Reaction" [ref=f5e102] [cursor=pointer]:
+              - /url: /games/chain-reaction
+        - generic [ref=f5e105]:
+          - heading "Location & Info" [level=3] [ref=f5e106]
+          - generic [ref=f5e107]:
+            - generic [ref=f5e113]:
+              - paragraph [ref=f5e114]: Based in
+              - paragraph [ref=f5e115]: Cebu, Philippines
+              - paragraph [ref=f5e116]: Available for Remote
+            - generic [ref=f5e122]:
+              - paragraph [ref=f5e123]: Response Time
+              - paragraph [ref=f5e124]: Within 24 hours
+              - paragraph [ref=f5e125]: Always ready to connect
+      - generic [ref=f5e126]:
+        - paragraph [ref=f5e127]: © 2026 Mark Raymond Ayade
+        - button "Back to top" [ref=f5e129] [cursor=pointer]
+  - generic [ref=f5e132]:
+    - generic [ref=f5e133]:
+      - generic [ref=f5e134]: Open for opportunities
+      - generic [ref=f5e135]: ✦
+      - generic [ref=f5e136]: Open for opportunities
+      - generic [ref=f5e137]: ✦
+      - generic [ref=f5e138]: Open for opportunities
+      - generic [ref=f5e139]: ✦
+      - generic [ref=f5e140]: Open for opportunities
+      - generic [ref=f5e141]: ✦
+      - generic [ref=f5e142]: Open for opportunities
+      - generic [ref=f5e143]: ✦
+    - generic [aria-hidden] [ref=f5e144]:
+      - generic [ref=f5e145]: Open for opportunities
+      - generic [ref=f5e146]: ✦
+      - generic [ref=f5e147]: Open for opportunities
+      - generic [ref=f5e148]: ✦
+      - generic [ref=f5e149]: Open for opportunities
+      - generic [ref=f5e150]: ✦
+      - generic [ref=f5e151]: Open for opportunities
+      - generic [ref=f5e152]: ✦
+      - generic [ref=f5e153]: Open for opportunities
+      - generic [ref=f5e154]: ✦
+  - button "Open Next.js Dev Tools" [ref=f5e347] [cursor=pointer]
+  - alert [ref=f5e351]

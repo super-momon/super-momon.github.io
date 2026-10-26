@@ -1,0 +1,72 @@
+[     113ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[     195ms] [LOG] [Fast Refresh] done in 182ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[     274ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[     298ms] [LOG] [HMR] connected @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  131800ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  131802ms] [LOG] [Fast Refresh] done in 106ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  135900ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  135917ms] [LOG] [Fast Refresh] done in 123ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  150795ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  150813ms] [LOG] [Fast Refresh] done in 122ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  161195ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  161212ms] [LOG] [Fast Refresh] done in 123ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  227324ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  227552ms] [LOG] [Fast Refresh] done in 200ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  242359ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  242423ms] [LOG] [Fast Refresh] done in 104ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  277412ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  277569ms] [LOG] [Fast Refresh] done in 130ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  304709ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  304714ms] [LOG] [Fast Refresh] done in 107ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  308154ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  308812ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  308874ms] [LOG] [Fast Refresh] done in 165ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  309169ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  311178ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  316186ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  318334ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  318351ms] [LOG] [Fast Refresh] done in 121ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  326195ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  332752ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:54321/realtime/v1/api/broadcast/chain-reaction-lobby%3AAZQE80/events/settings-change?apikey=local-preview-only&vsn=2.0.0:0
+[  332754ms] [ERROR] Error sending broadcast 'settings-change': TypeError: Failed to fetch
+    at http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:15300:23
+    at http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:15325:16
+    at async RealtimeChannel._fetchWithTimeout (http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:6939:26)
+    at async RealtimeChannel.httpSend (http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:6793:26)
+    at async sendBroadcast (http://127.0.0.1:3000/_next/static/chunks/src_0s1lrm0._.js:4507:20) @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3318
+[  333958ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  334021ms] [LOG] [Fast Refresh] done in 169ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  336225ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  341678ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:54321/realtime/v1/api/broadcast/chain-reaction-lobby%3AAZQE80/events/settings-change?apikey=local-preview-only&vsn=2.0.0:0
+[  341678ms] [ERROR] Error sending broadcast 'settings-change': TypeError: Failed to fetch
+    at http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:15300:23
+    at http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:15325:16
+    at async RealtimeChannel._fetchWithTimeout (http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:6939:26)
+    at async RealtimeChannel.httpSend (http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:6793:26)
+    at async sendBroadcast (http://127.0.0.1:3000/_next/static/chunks/src_0s1lrm0._.js:4507:20) @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3318
+[  342840ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  342841ms] [LOG] [Fast Refresh] done in 107ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  346255ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  356274ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  366310ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  376348ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
+[  384497ms] [LOG] [Fast Refresh] rebuilding @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  384685ms] [LOG] [Fast Refresh] done in 149ms @ http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  384738ms] ReferenceError: singular is not defined
+    at eval (http://127.0.0.1:3000/_next/static/chunks/src_0s1lrm0._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fgames%252Fchain-reaction%252F_components%252FArenaBlueprint.tsx+%255Bapp-client%255D+%2528ecmascript%2529:204:77)
+    at Array.map (<anonymous>)
+    at ArenaBlueprint (http://127.0.0.1:3000/_next/static/chunks/src_0s1lrm0._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fgames%252Fchain-reaction%252F_components%252FArenaBlueprint.tsx+%255Bapp-client%255D+%2528ecmascript%2529:201:46)
+    at Object.react_stack_bottom_frame (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:15037:24)
+    at renderWithHooks (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4620:24)
+    at updateFunctionComponent (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6081:21)
+    at beginWork (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6691:24)
+    at runWithFiberInDEV (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:965:74)
+    at performUnitOfWork (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9555:97)
+    at workLoopSync (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9449:40)
+    at renderRootSync (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9433:13)
+    at performWorkOnRoot (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9061:186)
+    at performSyncWorkOnRoot (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10179:316)
+    at processRootScheduleInMicrotask (http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10200:106)
+    at http://127.0.0.1:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10274:158
+[  386392ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:54321/realtime/v1/websocket?apikey=local-preview-only&vsn=2.0.0' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/_next/static/chunks/node_modules_0c4o0h4._.js:9353
