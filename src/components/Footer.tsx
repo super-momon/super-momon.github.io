@@ -93,6 +93,7 @@ export default function Footer() {
   const gameLinks = [
     { label: "Developer Quiz", href: "/games/quiz" },
     { label: "Chain Reaction", href: "/games/chain-reaction" },
+    { label: "Colony Defense", href: "/games/colony-defense" },
   ];
 
   return (

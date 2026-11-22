@@ -15,6 +15,7 @@ import {
   faGamepad,
   faStar,
   faAtom,
+  faBiohazard,
 } from "@fortawesome/free-solid-svg-icons";
 import MarqueeBanner from "./common/MarqueeBanner";
 import NotificationDropdown from "./common/NotificationDropdown";
@@ -40,6 +41,7 @@ const PORTFOLIO_ICONS: Record<string, IconDefinition> = {
 const GAME_ICONS: Record<string, IconDefinition> = {
   "/games/quiz": faGamepad,
   "/games/chain-reaction": faAtom,
+  "/games/colony-defense": faBiohazard,
 };
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
@@ -232,7 +234,7 @@ export default function Navbar() {
               onMouseLeave={gameHandlers.onLeave}
               onClose={() => setGameOpen(false)}
               onLinkClick={(link) => {
-                const gameName = link.href.includes("quiz") ? "quiz" : "chain-reaction";
+                const gameName = link.href.replace("/games/", "");
                 trackEvent("game_nav_click", {
                   game_name: gameName,
                   device: "desktop",
@@ -308,7 +310,7 @@ export default function Navbar() {
               onLinkClick={(link) => {
                 setIsMenuOpen(false);
                 setMobileGameOpen(false);
-                const gameName = link?.href.includes("quiz") ? "quiz" : "chain-reaction";
+                const gameName = link?.href.replace("/games/", "");
                 trackEvent("game_nav_click", {
                   game_name: gameName,
                   device: "mobile",

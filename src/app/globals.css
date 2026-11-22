@@ -70,6 +70,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body:has(.colony-page) {
+  overflow: hidden;
+}
+
+body:has(.colony-page) > header,
+body:has(.colony-page) > footer,
+body:has(.colony-page) > .marquee {
+  display: none;
+}
+
 * {
   box-sizing: border-box;
   /* padding: 0; */

@@ -44,3 +44,5 @@ next-env.d.ts
 #impeccable
 /.agents/skills/impeccable
 /.impeccable
+
+/.playwright-mcp

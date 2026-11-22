@@ -33,6 +33,7 @@ export const PORTFOLIO_LINKS: NavLink[] = [
 export const GAME_LINKS: NavLink[] = [
   { label: "Quiz", href: "/games/quiz" },
   { label: "Chain Reaction", href: "/games/chain-reaction" },
+  { label: "Colony Defense", href: "/games/colony-defense" },
 ];
 
 /** @deprecated use PORTFOLIO_LINKS + GAME_LINKS */
@@ -54,4 +55,3 @@ export const SITE_URL = "https://super-momon.github.io";
 export const SITE_NAME = `${SITE_OWNER} — Portfolio`;
 export const OG_IMAGE = "/logo.PNG";
 export const GA_ID = "G-C3EYYVGG42";
-
