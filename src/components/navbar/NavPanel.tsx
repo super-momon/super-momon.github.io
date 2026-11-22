@@ -100,6 +100,14 @@ const LINK_METADATA: Record<
     detailDescription: "Take control of the grid by placing orbs, causing chain reaction explosions, and eliminating opponents in an interactive pass-and-play match.",
     detailCta: "Start Reacting",
     tag: "New Game"
+  },
+  "/games/colony-defense": {
+    title: "Colony Defense",
+    subtitle: "Hold a microscopic habitat",
+    detailTitle: "Living Frontier Defense",
+    detailDescription: "Place one turret, starve a spreading colony, and see how long the habitat survives in this playable prototype.",
+    detailCta: "Enter the Habitat",
+    tag: "Prototype"
   }
 };
 

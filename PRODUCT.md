@@ -8,10 +8,10 @@ web
 
 ## Users
 - **Engineering Hiring Managers & Technical Recruiters**: Evaluating Mark Raymond Ayade's background, full-stack software development experience, AI-assisted workflow expertise, skills matrix, and project history for employment or contract opportunities.
-- **Developers & Tech Enthusiasts**: Engaging with the interactive technical quiz and mini-games (Chain Reaction), testing CS domain knowledge, and competing on the global Supabase leaderboard.
+- **Developers & Tech Enthusiasts**: Engaging with the interactive technical quiz and mini-games (Chain Reaction and the Colony Defense prototype), testing CS domain knowledge, and competing on the global Supabase leaderboard.
 
 ## Product Purpose
-A modern, single-page professional developer portfolio combined with an interactive technical quiz hub. It showcases Mark Raymond Ayade's full-stack capabilities while engaging visitors through interactive CS quizzes across 12 specialized categories with live leaderboard tracking.
+A modern, single-page professional developer portfolio combined with an interactive technical quiz hub and mini-games. It showcases Mark Raymond Ayade's full-stack capabilities while engaging visitors through interactive CS quizzes across 12 specialized categories with live leaderboard tracking.
 
 ## Positioning
 Combines a professional software developer portfolio with live, interactive mini-games and a Supabase-backed competitive quiz engine, showcasing both production engineering capability and creative frontend/full-stack execution.
@@ -24,7 +24,7 @@ Combines a professional software developer portfolio with live, interactive mini
 ## Capabilities and Constraints
 - **Framework**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Motion (`motion/react`).
 - **Database & Backend**: Supabase JS Client SDK for persistent leaderboard storage (`leaderboard` table).
-- **Core Sections**: Hero, About, Experience Timeline, Project Showcase, Skills Matrix, Education, Contact Form, and Mini-games (`/games/quiz`, `/games/chain-reaction`).
+- **Core Sections**: Hero, About, Experience Timeline, Project Showcase, Skills Matrix, Education, Contact Form, and mini-games (`/games/quiz`, `/games/chain-reaction`, `/games/colony-defense` prototype).
 - **Deployment & Domain**: GitHub Pages hosting at `https://super-momon.github.io`.
 
 ## Brand Commitments

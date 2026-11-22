@@ -14,6 +14,7 @@ import {
   faGamepad,
   faArrowRight,
   faAtom,
+  faBiohazard,
   faExpand,
   faTimes,
   faCheckCircle,
@@ -108,6 +109,18 @@ const projects: Project[] = [
     live: "/games/chain-reaction",
     withAi: true,
     icon: faAtom,
+  },
+  {
+    id: "colony-defense",
+    title: "Colony Defense",
+    subtitle: "Microscopic endless-defense prototype",
+    description:
+      "A playable game prototype about placing one autonomous turret, containing a living colony, and protecting a sealed habitat. The colony spreads in real time, consumes nutrient nodes, and evolves as the run continues.",
+    tags: ["Next.js", "React", "TypeScript", "Canvas 2D", "Game Prototype"],
+    type: "game",
+    live: "/games/colony-defense",
+    withAi: true,
+    icon: faBiohazard,
   },
 ];
 
