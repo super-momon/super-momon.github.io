@@ -19,6 +19,7 @@ Designed with premium dark-themed aesthetics, glassmorphism, subtle micro-animat
 - **Skills Matrix**: Categorized tags grouping full-stack languages, libraries, cloud infrastructure, and databases.
 - **Education Section**: Clean layout showcasing degrees and certifications.
 - **Contact Form**: An integrated channel for users to reach out directly.
+- **Floating Visitor CTA**: A session-scoped “I was here” control that displays and atomically increments a real Supabase-backed portfolio visitor count.
 
 ### 2. Interactive Tech Quiz Game
 A feature-rich technical quiz engine designed to test software development and CS knowledge:
@@ -68,7 +69,7 @@ src/
 │   ├── layout.tsx           # Base page layout structure & providers
 │   └── page.tsx             # Home landing page aggregating portfolio sections
 ├── components/
-│   ├── common/              # Common UI (Marquee, ThemeToggle, Notification, HighlightText)
+│   ├── common/              # Common UI, including the floating portfolio visitor CTA
 │   ├── sections/            # Portfolio page components (Hero, About, Projects, Experience, Skills, Education, Contact)
 │   ├── ClientPageWrapper.tsx# Wrapper dealing with client-side component hydrations
 │   └── Navbar.tsx           # Highly polished interactive desktop & mobile navigation panel
@@ -81,8 +82,13 @@ src/
 │   ├── analytics.ts         # User event logging and analytics helpers
 │   ├── constants.ts         # Navigation and layout links constants
 │   ├── leaderboard.ts       # Database fetch/submit operations for Supabase
+│   ├── portfolioVisitor.ts  # Typed visitor-count RPC operations
 │   └── supabase.ts          # Supabase client instantiation
 └── types/                   # TypeScript schemas and definitions (quiz, leaderboard, navigation)
+
+supabase/
+├── migrations/              # Versioned database setup, including visitor-count functions
+└── tests/                   # pgTAP database access and RLS checks
 ```
 
 ---
@@ -111,7 +117,7 @@ Make sure you have Node.js installed (v18+ recommended) along with `npm`, `yarn`
 
 ### 1. Setup Environment Variables
 
-Create a `.env.local` file in the root directory. You will need to supply credentials for your Supabase backend to enable the quiz leaderboard feature:
+Create a `.env.local` file in the root directory. Supply the public Supabase credentials to enable the quiz leaderboard and portfolio visitor counter:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
@@ -137,6 +143,17 @@ create table leaderboard (
 -- Indexing for performance when fetching top-15 leaderboard scores by mode
 create index leaderboard_mode_score_idx on leaderboard (mode, score desc);
 ```
+
+Apply the checked-in visitor-counter migration before testing the floating CTA:
+
+```bash
+npx --yes supabase@3.4.0 link <your-project-ref>
+npx --yes supabase@3.4.0 db push --remote
+```
+
+The migration in `supabase/migrations/20261125230512_portfolio_visitor_counter.sql` creates or reuses `admin_keys`, seeds `portfolio_visitor`, and exposes only the read and atomic-increment RPC functions to browser roles. The row stores JSON in `key_value` with `current_count` and `last_visitor_date`; direct `admin_keys` access remains revoked from `anon` and `authenticated`.
+
+The CTA uses `sessionStorage` to prevent another count from the same browser tab session. Closing the browser starts a fresh session and allows another acknowledgment. This is a lightweight visit counter, not identity-level or unique-person analytics.
 
 ### 3. Installation & Run
 

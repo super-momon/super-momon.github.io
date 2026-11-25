@@ -23,7 +23,7 @@ Combines a professional software developer portfolio with live, interactive mini
 
 ## Capabilities and Constraints
 - **Framework**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Motion (`motion/react`).
-- **Database & Backend**: Supabase JS Client SDK for persistent leaderboard storage (`leaderboard` table).
+- **Database & Backend**: Supabase JS Client SDK for persistent leaderboard storage (`leaderboard` table) and a session-scoped portfolio visitor counter (`admin_keys` table through restricted RPC functions).
 - **Core Sections**: Hero, About, Experience Timeline, Project Showcase, Skills Matrix, Education, Contact Form, and mini-games (`/games/quiz`, `/games/chain-reaction`, `/games/colony-defense` prototype).
 - **Deployment & Domain**: GitHub Pages hosting at `https://super-momon.github.io`.
 
@@ -35,7 +35,8 @@ Combines a professional software developer portfolio with live, interactive mini
 ## Evidence on Hand
 - Full portfolio section components located in `src/components/sections/` (`Hero.tsx`, `About.tsx`, `Experience.tsx`, `Projects.tsx`, `Skills.tsx`, `Education.tsx`, `Contact.tsx`).
 - Quiz question bank JSON files in `src/data/quiz/` spanning 12 CS/dev categories.
-- Supabase integration modules in `src/lib/supabase.ts` and `src/lib/leaderboard.ts`.
+- Supabase integration modules in `src/lib/supabase.ts`, `src/lib/leaderboard.ts`, and `src/lib/portfolioVisitor.ts`.
+- A floating portfolio visitor CTA that displays the aggregate count and permits one acknowledgment per browser tab session.
 - Navigation and information constants in `src/lib/constants.ts`.
 
 ## Product Principles

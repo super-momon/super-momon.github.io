@@ -7,6 +7,7 @@ import Experience from "@/components/sections/Experience";
 import Education from "@/components/sections/Education";
 import Contact from "@/components/sections/Contact";
 import { ClientPageWrapper } from "@/components/ClientPageWrapper";
+import PortfolioVisitorCta from "@/components/common/PortfolioVisitorCta";
 import { SITE_OWNER, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function Home() {
         <Education />
         <Contact />
       </main>
+      <PortfolioVisitorCta />
     </ClientPageWrapper>
   );
 }

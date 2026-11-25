@@ -126,6 +126,12 @@ Card radii default to `rounded-xl` (12px) to `rounded-2xl` (16px), with pill bad
 - **Primary:** Background `#08ca5f`, text `#052e16`, font weight 600. In light mode use `#067a3a` with white text. Hover uses the theme-specific contrast-safe color.
 - **Ghost / Outline:** Background transparent, border `#1e293b`, hover border `#08ca5f`.
 
+### Floating Actions
+- **Placement:** Lower-right on the portfolio, offset with viewport and mobile safe-area spacing.
+- **Hierarchy:** Use a single compact pill at a lower stacking level than navigation and dialogs; do not cover primary content or add a second competing accent.
+- **Feedback:** Keep the control footprint stable while showing loading, saving, completed, and error states. Dynamic counts use tabular numerals, state changes use text and icons, and errors remain visible until the visitor retries.
+- **Accessibility:** Preserve a 44px minimum target, visible focus ring, explicit accessible label, live status announcements, and reduced-motion/reduced-transparency behavior.
+
 ### Cards
 - **Background:** `#111827` with optional backdrop blur.
 - **Border:** 1px `#1e293b`, transitions to `#08ca5f` on active/focus.
