@@ -106,7 +106,6 @@ export default function NotificationDropdown() {
   const shouldReduceMotion = useReducedMotion() ?? false;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const latestNotification = notifications[0];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -121,13 +120,18 @@ export default function NotificationDropdown() {
     };
 
     const handleScroll = () => setIsOpen(false);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
 
     document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
 
@@ -138,7 +142,8 @@ export default function NotificationDropdown() {
         aria-label="Notifications"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className="relative min-h-11 min-w-11 px-2.5 sm:px-3 rounded-xl flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/60 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/60 hover:border-[var(--color-accent)]/40 backdrop-blur-md transition-all duration-300 group cursor-pointer shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+        aria-controls="notification-menu"
+        className="design-elevated-control relative min-h-11 min-w-11 px-2.5 sm:px-3 rounded-xl flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/60 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/60 hover:border-[var(--color-accent)]/40 backdrop-blur-md transition-all duration-300 group cursor-pointer shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         style={{ transitionProperty: "color, background-color, border-color, box-shadow" }}
       >
         <div className="relative flex items-center justify-center">
@@ -151,28 +156,12 @@ export default function NotificationDropdown() {
               suppressHydrationWarning
             />
           </span>
-
-          {notifications.length > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gradient-to-br from-red-700 to-red-800 px-1 text-xs font-extrabold text-white shadow-xs animate-pulse">
-              {notifications.length}
-            </span>
-          )}
         </div>
-
-        {latestNotification && (
-          <div className="hidden sm:flex items-center gap-2 max-w-[140px] md:max-w-[180px] lg:max-w-[220px] overflow-hidden text-left leading-none">
-            <span className="shrink-0 rounded border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/15 px-1.5 py-0.5 text-xs font-extrabold uppercase tracking-wider text-[var(--color-accent)]">
-              NEW
-            </span>
-            <span className="text-xs font-semibold text-[var(--color-foreground)] truncate group-hover:text-[var(--color-accent)] transition-colors">
-              {latestNotification.headline || latestNotification.text}
-            </span>
-          </div>
-        )}
       </button>
 
       {isOpen && (
         <div
+          id="notification-menu"
           className="fixed sm:absolute left-4 right-4 sm:left-auto sm:right-0 mt-3 sm:w-[360px] max-w-[calc(100vw-2rem)] z-50 origin-top-right"
           style={
             shouldReduceMotion
@@ -184,23 +173,12 @@ export default function NotificationDropdown() {
           {/* Caret */}
           <div className="hidden sm:block absolute -top-[6px] right-[14px] w-3 h-3 rotate-45 bg-[var(--color-surface)] border-l border-t border-[var(--color-border)] z-10" />
 
-          <div className="relative bg-[var(--color-surface)]/98 backdrop-blur-2xl border border-[var(--color-border)] rounded-2xl shadow-2xl shadow-black/35 overflow-hidden">
-            {/* Glass overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-surface)]/50 to-transparent pointer-events-none" />
-
+          <div className="design-elevated-control relative bg-[var(--color-surface)]/98 backdrop-blur-2xl border border-[var(--color-border)] rounded-2xl shadow-2xl shadow-black/35 overflow-hidden">
             {/* Header */}
             <div className="relative px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]/30">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[var(--color-foreground)] tracking-tight">
-                  Recent Updates
-                </h3>
-                <div className="flex items-center gap-1.5 px-2 py-1 bg-[var(--color-accent)]/10 rounded-full">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">
-                    {notifications.length} New
-                  </span>
-                </div>
-              </div>
+              <h3 className="text-sm font-bold text-[var(--color-foreground)] tracking-tight">
+                Recent Updates
+              </h3>
             </div>
 
             {/* Notifications list */}

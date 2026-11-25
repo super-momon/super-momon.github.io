@@ -77,7 +77,7 @@ export default function InlineQuizTeaser() {
   };
 
   return (
-    <div className="mt-4 p-4 sm:p-5 rounded-2xl bg-background/70 border border-border/60 shadow-xs backdrop-blur-md">
+    <div className="design-surface mt-4 p-4 sm:p-5 rounded-2xl bg-background/70 border border-border/60 shadow-xs backdrop-blur-md">
       {/* Quiz Header */}
       <div className="flex items-center justify-between gap-3 mb-3 pb-2.5 border-b border-border/40">
         <div className="flex items-center gap-2">
@@ -189,7 +189,7 @@ export default function InlineQuizTeaser() {
         <a
           href="/games/quiz"
           onClick={() => trackEvent("inline_quiz_play_full", { category: currentQ.category })}
-          className="inline-flex min-h-11 items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all shadow-xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          className="liquid-glass-action inline-flex min-h-11 items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all shadow-xs cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
           <FontAwesomeIcon icon={faGamepad} className="text-xs" />
           <span>Play Full Game</span>

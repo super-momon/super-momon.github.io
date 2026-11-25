@@ -256,7 +256,7 @@ export default function Education() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="group relative rounded-3xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl p-6 md:p-8 flex flex-col justify-between h-auto md:h-[420px] shadow-md shadow-black/5 dark:shadow-black/25 hover:border-accent/50 hover:bg-surface/100 transition-all duration-300"
+                className="design-surface group relative rounded-3xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl p-6 md:p-8 flex flex-col justify-between h-auto md:h-[420px] shadow-md shadow-black/5 dark:shadow-black/25 hover:border-accent/50 hover:bg-surface/100 transition-all duration-300"
               >
                 <div className="flex flex-col flex-1 min-h-0">
                   {/* Header */}
@@ -357,7 +357,7 @@ export default function Education() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-2xl bg-surface/95 dark:bg-surface/95 border border-border/80 dark:border-border/60 rounded-3xl shadow-2xl z-10 backdrop-blur-xl max-h-[85vh] flex flex-col overflow-hidden"
+              className="design-dialog relative w-full max-w-2xl bg-surface/95 dark:bg-surface/95 border border-border/80 dark:border-border/60 rounded-3xl shadow-2xl z-10 backdrop-blur-xl max-h-[85vh] flex flex-col overflow-hidden"
             >
               {/* Header - Fixed Top */}
               <div className="flex items-start justify-between gap-4 p-6 md:px-8 md:pt-8 md:pb-5 border-b border-border/40 shrink-0 bg-surface/95 dark:bg-surface/95 backdrop-blur-xl">
@@ -493,7 +493,7 @@ export default function Education() {
                   <button
                     type="button"
                     onClick={closeEducationModal}
-                    className="min-h-11 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all cursor-pointer shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                    className="liquid-glass-action min-h-11 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all cursor-pointer shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     Done
                   </button>

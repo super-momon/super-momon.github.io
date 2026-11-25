@@ -13,6 +13,7 @@ import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { DesignProvider } from "@/components/DesignProvider";
 import {
   SITE_OWNER,
   SITE_TITLE,
@@ -96,9 +97,40 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable}`}
+      data-design="liquid-glass"
       suppressHydrationWarning
     >
       <head>
+        <script
+          id="design-initializer"
+          dangerouslySetInnerHTML={{
+            __html: `(function () {
+  var root = document.documentElement;
+  var path = window.location.pathname;
+  var search = new URLSearchParams(window.location.search);
+  var urlDesign = search.get("design");
+  var gameRoute = path === "/games" || path.indexOf("/games/") === 0;
+  var design = "liquid-glass";
+
+  if (gameRoute) {
+    design = "classic";
+  } else if (urlDesign === "classic" || urlDesign === "liquid-glass") {
+    design = urlDesign;
+  } else {
+    var storedDesign = null;
+    try {
+      storedDesign = window.localStorage.getItem("design-preference");
+    } catch (_) {}
+
+    if (storedDesign === "classic" || storedDesign === "liquid-glass") {
+      design = storedDesign;
+    }
+  }
+
+  root.setAttribute("data-design", design);
+})();`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -164,14 +196,16 @@ export default function RootLayout({
           }}
         /> */}
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <MotionConfig reducedMotion="user">
-            <Suspense fallback={null}>
-              <AnalyticsTracker />
-            </Suspense>
-            <Navbar />
-            {children}
-            <Footer />
-          </MotionConfig>
+          <DesignProvider>
+            <MotionConfig reducedMotion="user">
+              <Suspense fallback={null}>
+                <AnalyticsTracker />
+              </Suspense>
+              <Navbar />
+              {children}
+              <Footer />
+            </MotionConfig>
+          </DesignProvider>
         </ThemeProvider>
       </body>
     </html>

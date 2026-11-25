@@ -30,7 +30,7 @@ function InfoCard({ icon, label, value }: InfoCardProps) {
   return (
     <motion.div
       whileHover={{ y: -2, transition: { type: "spring", stiffness: 300, damping: 22 } }}
-      className="group flex items-center gap-4 p-3 md:p-4 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-xs shadow-black/5 dark:shadow-black/20 hover:bg-surface/100 dark:hover:bg-surface/50 hover:border-border/100 transition-all duration-300"
+      className="design-surface group flex items-center gap-4 p-3 md:p-4 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-xs shadow-black/5 dark:shadow-black/20 hover:bg-surface/100 dark:hover:bg-surface/50 hover:border-border/100 transition-all duration-300"
     >
       <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-xl bg-background/50 shadow-xs border border-border/50 shrink-0 group-hover:bg-background/80 transition-colors duration-300">
         <FontAwesomeIcon icon={icon} className="text-foreground/80 text-lg md:text-xl group-hover:text-foreground transition-colors duration-300" />
@@ -57,7 +57,7 @@ function ExpertiseCard({ icon, title, description, index }: ExpertiseCardProps) 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative p-5 md:p-7 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-xs shadow-black/5 dark:shadow-black/20 hover:bg-surface/100 dark:hover:bg-surface/50 hover:border-border/100 transition-all duration-300 flex flex-col h-full"
+      className="design-surface group relative p-5 md:p-7 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-xs shadow-black/5 dark:shadow-black/20 hover:bg-surface/100 dark:hover:bg-surface/50 hover:border-border/100 transition-all duration-300 flex flex-col h-full"
     >
       <div className="relative z-10 flex-1">
         <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-xl bg-background/50 shadow-xs border border-border/50 mb-6 group-hover:bg-background/80 group-hover:scale-105 transition-all duration-300">
@@ -161,7 +161,7 @@ export default function About() {
             className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6"
           >
             {/* Profile Picture Card */}
-            <div className="relative p-5 rounded-3xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30 flex flex-col gap-4 items-center text-center">
+            <div className="design-surface relative p-5 rounded-3xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30 flex flex-col gap-4 items-center text-center">
               <div className="relative w-36 h-36 rounded-full overflow-hidden border border-border/60 shadow-inner group/avatar">
                 <Image
                   src="/profile-portrait.webp"
@@ -182,38 +182,12 @@ export default function About() {
             </div>
 
             {/* Interactive Tabs Control */}
-            <div className="flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
-              {/* Mobile tabs row */}
-              <div role="tablist" aria-label="About section tabs (mobile)" className="grid grid-cols-3 lg:hidden gap-1.5">
-                {tabs.map((tab) => {
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      role="tab"
-                      id={`about-tab-mobile-${tab.id}`}
-                      aria-selected={isActive}
-                      aria-controls="about-tabpanel"
-                      tabIndex={isActive ? 0 : -1}
-                      onKeyDown={handleTabListKeyDown}
-                      onClick={() => {
-                        setActiveTab(tab.id);
-                        trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "mobile" });
-                      }}
-                      className={`flex flex-col items-center justify-center min-h-[44px] p-3 rounded-xl transition-all duration-300 border text-center cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
-                        ? "bg-background/85 shadow-xs border-border/50 text-foreground font-bold"
-                        : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
-                        }`}
-                    >
-                      <FontAwesomeIcon icon={tab.icon} className={`text-sm mb-1.5 ${isActive ? "text-accent" : "text-foreground/60"}`} />
-                      <span className="text-xs font-semibold leading-none tracking-tight">{tab.label.split(" ").pop()}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Desktop vertical tabs */}
-              <div role="tablist" aria-label="About section tabs" className="hidden lg:flex flex-col gap-1.5">
+            <div className="design-surface flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
+              <div
+                role="tablist"
+                aria-label="About section tabs"
+                className="flex snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-col lg:overflow-visible lg:pb-0 lg:snap-none"
+              >
                 {tabs.map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
@@ -227,11 +201,11 @@ export default function About() {
                       onKeyDown={handleTabListKeyDown}
                       onClick={() => {
                         setActiveTab(tab.id);
-                        trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "desktop" });
+                        trackEvent("portfolio_about_tab_change", { tab: tab.id, device: "responsive" });
                       }}
-                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
-                        ? "bg-background/80 shadow-xs border border-border/50"
-                        : "hover:bg-background/30 border border-transparent"
+                      className={`relative flex min-h-[56px] w-[11rem] shrink-0 snap-start items-center gap-3 rounded-xl border px-3 py-3 text-left transition-all duration-300 cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 lg:w-full lg:gap-3.5 lg:px-4 ${isActive
+                        ? "border-border/50 bg-background/85 text-foreground shadow-xs lg:bg-background/80 lg:font-bold"
+                        : "border-transparent bg-transparent text-foreground/75 hover:bg-background/20 hover:text-foreground"
                         }`}
                     >
                       {/* Active Indicator on Left */}
@@ -258,7 +232,7 @@ export default function About() {
                       </span>
 
                       {/* Text Content */}
-                      <div className="flex flex-col text-left min-w-0">
+                      <div className="flex min-w-0 flex-col text-left">
                         <span
                           className={`text-xs font-semibold leading-tight transition-colors duration-300 ${isActive ? "text-foreground" : "text-foreground/80 group-hover:text-foreground"
                             }`}
@@ -284,7 +258,7 @@ export default function About() {
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
             className="lg:col-span-7 xl:col-span-8 flex flex-col"
           >
-            <div className="relative bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 rounded-3xl p-6 md:p-8 flex flex-col justify-between min-h-[480px] shadow-lg shadow-black/5 dark:shadow-black/35 select-none">
+            <div className="design-surface relative bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 rounded-3xl p-6 md:p-8 flex flex-col justify-between min-h-[480px] shadow-lg shadow-black/5 dark:shadow-black/35 select-none">
               {/* Subtle glass reflection overlay */}
               <div className="absolute inset-0 bg-gradient-to-b from-surface/10 to-transparent pointer-events-none rounded-3xl" />
 
@@ -393,7 +367,7 @@ export default function About() {
                             href="/workplace-insights.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="relative flex flex-col sm:flex-row items-center gap-5 p-5 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/25 hover:bg-surface/100 dark:hover:bg-surface/50 hover:border-border/100 transition-all duration-300 overflow-hidden cursor-pointer"
+                            className="design-surface relative flex flex-col sm:flex-row items-center gap-5 p-5 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/25 hover:bg-surface/100 dark:hover:bg-surface/50 hover:border-border/100 transition-all duration-300 overflow-hidden cursor-pointer"
                           >
                             <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
 

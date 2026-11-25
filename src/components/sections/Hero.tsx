@@ -53,7 +53,7 @@ export default function Hero() {
       <section
         ref={heroRef}
         id="hero"
-        className="relative grid min-h-[100dvh] place-items-center overflow-hidden px-6 pt-16 pb-32 text-left sm:px-8 lg:px-12"
+        className="design-ambient relative grid min-h-[100dvh] place-items-center overflow-hidden px-6 pt-16 pb-32 text-left sm:px-8 lg:px-12"
       >
         {/* Soft bottom gradient arc */}
         <div
@@ -97,7 +97,7 @@ export default function Hero() {
               }}
               className="mb-6 max-w-4xl cursor-default select-none text-balance text-[clamp(2.75rem,7vw,5rem)] font-bold leading-[1.08] tracking-tight transition-transform duration-200 ease-out"
             >
-              Mark Raymond <span className="text-accent">Ayade</span>
+              Mark Raymond Ayade
             </m.h1>
 
             <p className="mb-8 max-w-2xl text-lg font-light leading-relaxed text-muted md:text-xl">
@@ -107,7 +107,7 @@ export default function Hero() {
             <div className="flex flex-wrap items-center justify-start gap-3">
               <a
                 href="#projects"
-                className="group relative overflow-hidden rounded-full bg-accent px-7 py-3 text-sm font-semibold text-[var(--color-accent-contrast)]
+                className="liquid-glass-action group relative overflow-hidden rounded-full bg-accent px-7 py-3 text-sm font-semibold text-[var(--color-accent-contrast)]
                            transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(8,202,95,0.22)]
                            active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
@@ -123,7 +123,7 @@ export default function Hero() {
 
               <a
                 href="#contact"
-                className="rounded-full border border-border bg-surface/70 px-7 py-3 text-sm font-semibold text-foreground backdrop-blur-md
+                className="design-elevated-control rounded-full border border-border bg-surface/70 px-7 py-3 text-sm font-semibold text-foreground backdrop-blur-md
                            transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-accent hover:bg-surface/90
                            active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
@@ -133,11 +133,11 @@ export default function Hero() {
           </m.div>
 
           <m.aside
-            aria-label="Availability and experience highlights"
+            aria-label="Current role and experience highlights"
             className="w-full max-w-xl lg:justify-self-end"
             {...fadeUp(0.25)}
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-surface/70 px-3.5 py-1.5 shadow-xs backdrop-blur-md">
+            <div className="design-elevated-control inline-flex items-center gap-2 rounded-full border border-border/60 bg-surface/70 px-3.5 py-1.5 shadow-xs backdrop-blur-md">
               <m.span
                 className="h-1.5 w-1.5 rounded-full bg-accent"
                 animate={
@@ -156,15 +156,28 @@ export default function Hero() {
               </span>
             </div>
 
-            <ul className="my-7 divide-y divide-border/60 border-y border-border/60 text-base text-foreground/80 sm:text-lg">
+            <ul className="my-7 divide-y divide-border/60 border-y border-border/60">
               <li className="py-4">
-                <strong className="font-semibold text-foreground">4+</strong>{" "}Years Exp
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
+                  Current Role
+                </p>
+                <p className="mt-1.5 font-semibold text-foreground">
+                  Full Stack Developer · Mid-Level
+                </p>
+                <p className="mt-0.5 text-sm text-muted">
+                  Talleco.com Inc. | JobTarget PH
+                </p>
               </li>
               <li className="py-4">
-                <strong className="font-semibold text-foreground">Full Stack</strong>{" "}.NET &amp; React
-              </li>
-              <li className="py-4">
-                <strong className="font-semibold text-foreground">AWS &amp; Cloud</strong>{" "}Integration
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
+                  Recent Delivery
+                </p>
+                <p className="mt-1.5 font-semibold text-foreground">
+                  AWS event-driven systems
+                </p>
+                <p className="mt-0.5 text-sm text-muted">
+                  .NET, React, Lambda, SQS, SNS &amp; S3
+                </p>
               </li>
             </ul>
 
@@ -190,10 +203,10 @@ export default function Hero() {
           <m.a
             href="#about"
             aria-label="Scroll to About section"
-            className="group flex flex-col items-center gap-2 text-muted/60 hover:text-accent transition-all duration-300
+            className="group flex flex-col items-center gap-2 text-muted hover:text-accent transition-all duration-300
                        focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-full p-2"
           >
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted/60 transition-colors group-hover:text-accent">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted transition-colors group-hover:text-accent">
               Scroll
             </span>
             <div className="w-5 h-8 rounded-full border-2 border-border/80 group-hover:border-accent/60 transition-colors flex justify-center p-1 bg-surface/30 backdrop-blur-xs shadow-xs">
@@ -207,7 +220,7 @@ export default function Hero() {
                 }}
               />
             </div>
-            <FontAwesomeIcon icon={faArrowDown} className="text-xs text-muted/50 group-hover:text-accent group-hover:translate-y-0.5 transition-all" />
+            <FontAwesomeIcon icon={faArrowDown} className="text-xs text-muted group-hover:text-accent group-hover:translate-y-0.5 transition-all" />
           </m.a>
         </m.div>
       </section>

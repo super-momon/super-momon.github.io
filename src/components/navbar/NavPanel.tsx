@@ -143,20 +143,17 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
       role="menu"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 transition-all duration-250 ease-out z-50 ${
+      className={`absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 transition-all duration-300 z-50 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         isOpen
-          ? "opacity-100 translate-y-0 pointer-events-auto visible"
-          : "opacity-0 translate-y-2 pointer-events-none invisible"
+          ? "scale-100 opacity-100 translate-y-0 pointer-events-auto visible"
+          : "scale-[0.98] opacity-0 translate-y-2 pointer-events-none invisible"
       } ${widthClass}`}
       style={{ willChange: "transform, opacity" }}
     >
       {/* Caret */}
       <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-[var(--color-surface)] border-l border-t border-[var(--color-border)] z-10" />
 
-      <div className="relative bg-[var(--color-surface)]/98 backdrop-blur-2xl border border-[var(--color-border)] rounded-2xl shadow-2xl shadow-black/35 p-3 overflow-hidden flex gap-3">
-        {/* Visual glass gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)]/10 to-transparent pointer-events-none rounded-2xl" />
-
+      <div className="design-elevated-control relative bg-[var(--color-surface)]/98 backdrop-blur-2xl border border-[var(--color-border)] rounded-2xl shadow-2xl shadow-black/35 p-3 overflow-hidden flex gap-3">
         {/* Left Column: Link List */}
         <div className="relative z-10 flex flex-col gap-1 flex-1 min-w-0">
           {links.map((link) => {
@@ -212,8 +209,8 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
                       {meta?.title || link.label}
                     </span>
                     {isCurrentSection && (
-                      <span className="rounded border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold tracking-wider text-[var(--color-accent)]">
-                        CURRENT
+                      <span className="rounded border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">
+                        Current
                       </span>
                     )}
                   </div>
@@ -234,7 +231,7 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
           <div>
             {/* Tag */}
             {activeMeta.tag && (
-              <span className="inline-flex items-center rounded bg-[var(--color-accent)]/10 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[var(--color-accent)]">
+              <span className="inline-flex items-center rounded bg-[var(--color-accent)]/10 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">
                 {activeMeta.tag}
               </span>
             )}
@@ -250,15 +247,21 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
             </p>
           </div>
 
-          {/* CTA Link (Visual indicator) */}
-          <div className="mt-4 flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-[var(--color-accent)] group/cta">
+          {/* Detail action */}
+          {activeHref && (
+            <a
+              href={activeHref}
+              onClick={onClose}
+              className="mt-4 flex min-h-11 items-center gap-1.5 text-xs font-semibold text-[var(--color-accent)] group/cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
+            >
             <span>{activeMeta.detailCta}</span>
             <FontAwesomeIcon
               icon={faArrowRight}
               className="text-xs transition-transform duration-300 group-hover/cta:translate-x-1"
               aria-hidden="true"
             />
-          </div>
+            </a>
+          )}
         </div>
       </div>
     </div>

@@ -6,60 +6,46 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
-  faUser,
-  faBriefcase,
-  faCode,
-  faWrench,
-  faGraduationCap,
-  faEnvelope,
   faGamepad,
-  faStar,
   faAtom,
   faBiohazard,
 } from "@fortawesome/free-solid-svg-icons";
-import MarqueeBanner from "./common/MarqueeBanner";
 import NotificationDropdown from "./common/NotificationDropdown";
 import ThemeToggle from "./common/ThemeToggle";
-import { useMagneticEffect } from "@/hooks/useMagneticEffect";
-import { PORTFOLIO_LINKS, GAME_LINKS, isLinkActive } from "@/lib/constants";
+import DesignToggle from "./common/DesignToggle";
+import AppearanceDropdown from "./common/AppearanceDropdown";
+import { GAME_LINKS, isLinkActive } from "@/lib/constants";
+import { isGameRoute } from "@/lib/designSystem";
 import NavPanel from "./navbar/NavPanel";
 import NavTrigger from "./navbar/NavTrigger";
 import MobileNavSection from "./navbar/MobileNavSection";
 import { trackEvent } from "@/lib/analytics";
 
 // ─── Icon maps ────────────────────────────────────────────────────────────────
-const PORTFOLIO_ICONS: Record<string, IconDefinition> = {
-  "/": faStar,
-  "/#about": faUser,
-  "/#experience": faBriefcase,
-  "/#projects": faCode,
-  "/#skills": faWrench,
-  "/#education": faGraduationCap,
-  "/#contact": faEnvelope,
-};
-
 const GAME_ICONS: Record<string, IconDefinition> = {
   "/games/quiz": faGamepad,
   "/games/chain-reaction": faAtom,
   "/games/colony-defense": faBiohazard,
 };
 
+const MOBILE_PORTFOLIO_LINKS = [
+  { label: "Experience", href: "/#experience" },
+  { label: "Projects", href: "/#projects" },
+  { label: "Contact", href: "/#contact" },
+];
+
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 export default function Navbar() {
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion() ?? false;
   const [scrolled, setScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [portfolioOpen, setPortfolioOpen] = useState(false);
   const [gameOpen, setGameOpen] = useState(false);
-  const [mobilePortfolioOpen, setMobilePortfolioOpen] = useState(false);
   const [mobileGameOpen, setMobileGameOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>(() => pathname || "/");
 
-  const lastScrollY = useRef(0);
-  const mobileButtonRef = useMagneticEffect(0.25);
-  const portfolioTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mobileButtonRef = useRef<HTMLButtonElement>(null);
   const gameTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ─── Scroll direction & backdrop handling ──────────────────────────────────
@@ -70,17 +56,13 @@ export default function Navbar() {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
           setScrolled(currentScrollY > 20);
-          if (currentScrollY < 100) {
-            setIsVisible(true);
-          } else if (currentScrollY > lastScrollY.current) {
-            setIsVisible(false);
-            setIsMenuOpen(false);
-            setPortfolioOpen(false);
-            setGameOpen(false);
-          } else {
-            setIsVisible(true);
-          }
-          lastScrollY.current = currentScrollY;
+          const scrollableHeight =
+            document.documentElement.scrollHeight - window.innerHeight;
+          setScrollProgress(
+            scrollableHeight > 0
+              ? Math.min(100, Math.max(0, (currentScrollY / scrollableHeight) * 100))
+              : 0
+          );
           ticking = false;
         });
         ticking = true;
@@ -123,13 +105,15 @@ export default function Navbar() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsMenuOpen(false);
-        setPortfolioOpen(false);
         setGameOpen(false);
+        if (isMenuOpen) {
+          window.requestAnimationFrame(() => mobileButtonRef.current?.focus());
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isMenuOpen, mobileButtonRef]);
 
   // ─── Mobile drawer body scroll locking ─────────────────────────────────────
   useEffect(() => {
@@ -143,16 +127,6 @@ export default function Navbar() {
     };
   }, [isMenuOpen]);
 
-  const portfolioHandlers = {
-    onEnter: () => {
-      if (portfolioTimeoutRef.current) clearTimeout(portfolioTimeoutRef.current);
-      setPortfolioOpen(true);
-    },
-    onLeave: () => {
-      portfolioTimeoutRef.current = setTimeout(() => setPortfolioOpen(false), 120);
-    }
-  };
-
   const gameHandlers = {
     onEnter: () => {
       if (gameTimeoutRef.current) clearTimeout(gameTimeoutRef.current);
@@ -164,23 +138,42 @@ export default function Navbar() {
   };
 
   const currentActiveSection = pathname === "/" ? activeSection : pathname;
-  const isPortfolioActive = PORTFOLIO_LINKS.some((l) => isLinkActive(l.href, currentActiveSection, pathname));
   const isGameActive = GAME_LINKS.some((l) => isLinkActive(l.href, currentActiveSection, pathname));
+  const gameRoute = isGameRoute(pathname);
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      } ${
-        scrolled
-          ? "bg-[var(--color-background)]/95 md:bg-[var(--color-background)]/80 md:backdrop-blur-2xl border-b border-[var(--color-border)]/50 shadow-lg shadow-black/5"
-          : "bg-transparent"
-      }`}
-      style={{ willChange: "transform" }}
-    >
-      <MarqueeBanner />
+    <header className="fixed top-0 left-0 right-0 z-50">
+      <div className="relative">
+        <div className="border-b border-[var(--color-border)]/60 bg-[var(--color-background)]/95">
+          <div className="mx-auto flex h-7 max-w-6xl items-center justify-between px-3 text-xs font-semibold text-[var(--color-muted)] md:px-6">
+            <span className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
+              Open for opportunities
+            </span>
+            <span className="hidden sm:inline">Cebu, Philippines · Remote</span>
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-px overflow-hidden bg-[var(--color-accent-contrast)]/20"
+        >
+          <div
+            className="h-full origin-left bg-[var(--color-accent-contrast)]/90 transition-[width] duration-100 ease-out"
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+      </div>
 
-      <nav className="w-full max-w-6xl mx-auto px-6 h-16 flex justify-between items-center relative">
+      <div className="px-3 pt-2 md:px-6 md:pt-3">
+        <nav
+          className={`design-navbar relative mx-auto flex h-14 w-full max-w-5xl items-center justify-between rounded-2xl border border-[var(--color-border)]/80 px-2 md:h-16 md:px-4 ${
+            scrolled
+              ? "shadow-[0_22px_44px_-24px_rgba(0,0,0,0.55)]"
+              : "shadow-[0_18px_38px_-24px_rgba(0,0,0,0.42)]"
+          } transition-[box-shadow,transform,border-color] duration-500 ${
+            shouldReduceMotion ? "" : "ease-[cubic-bezier(0.16,1,0.3,1)]"
+          }`}
+        >
         {/* Logo */}
         <Link
           href="/#hero"
@@ -194,33 +187,35 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center justify-center gap-1 absolute left-1/2 -translate-x-1/2">
-          {/* Portfolio */}
-          <NavTrigger
-            label="Portfolio"
-            isOpen={portfolioOpen}
-            isActive={isPortfolioActive}
-            onClick={() => setPortfolioOpen((p) => !p)}
-            onMouseEnter={portfolioHandlers.onEnter}
-            onMouseLeave={portfolioHandlers.onLeave}
-          >
-            <NavPanel
-              links={PORTFOLIO_LINKS}
-              icons={PORTFOLIO_ICONS}
-              isOpen={portfolioOpen}
-              activeSection={currentActiveSection}
-              pathname={pathname}
-              onMouseEnter={portfolioHandlers.onEnter}
-              onMouseLeave={portfolioHandlers.onLeave}
-              onClose={() => setPortfolioOpen(false)}
-            />
-          </NavTrigger>
+          {[
+            { label: "Experience", href: "/#experience" },
+            { label: "Projects", href: "/#projects" },
+            { label: "Contact", href: "/#contact" },
+          ].map((link) => {
+            const active = isLinkActive(link.href, currentActiveSection, pathname);
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`inline-flex min-h-11 items-center rounded-xl px-3 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+                    active
+                      ? "bg-accent/10 text-accent"
+                      : "text-[var(--color-muted)] hover:bg-[var(--color-surface)] hover:text-[var(--color-foreground)]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
 
           {/* Games */}
           <NavTrigger
             label="Games"
             isOpen={gameOpen}
             isActive={isGameActive}
-            onClick={() => setGameOpen((p) => !p)}
+            onClick={() => setGameOpen(true)}
             onMouseEnter={gameHandlers.onEnter}
             onMouseLeave={gameHandlers.onLeave}
           >
@@ -248,7 +243,7 @@ export default function Navbar() {
         {/* Action Buttons */}
         <div className="flex items-center gap-2 justify-self-end z-10">
           <NotificationDropdown />
-          <ThemeToggle />
+          <AppearanceDropdown />
 
           {/* Mobile Menu Toggle */}
           <button
@@ -256,7 +251,8 @@ export default function Navbar() {
             onClick={() => setIsMenuOpen((prev) => !prev)}
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
-            className="md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/90 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            aria-controls="mobile-navigation"
+            className="design-elevated-control md:hidden w-11 h-11 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/90 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             style={{ transitionProperty: "color, background-color, border-color" }}
           >
             <div className="relative w-[18px] h-[18px]">
@@ -272,32 +268,49 @@ export default function Navbar() {
             </div>
           </button>
         </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div
-          className="md:hidden bg-[var(--color-background)] border-b border-[var(--color-border)]/50 px-6 pb-4 overflow-hidden"
+          id="mobile-navigation"
+          className="md:hidden px-3 pt-2 pb-3 overflow-hidden"
           style={
             shouldReduceMotion
               ? undefined
               : { animation: "mobileMenuSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1)" }
           }
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)]/30 to-transparent pointer-events-none" />
-
-          <ul className="relative flex flex-col gap-1 pt-2">
-            <MobileNavSection
-              label="Portfolio"
-              links={PORTFOLIO_LINKS}
-              icons={PORTFOLIO_ICONS}
-              isOpen={mobilePortfolioOpen}
-              activeSection={currentActiveSection}
-              pathname={pathname}
-              onToggle={() => setMobilePortfolioOpen((p) => !p)}
-              onLinkClick={() => { setIsMenuOpen(false); setMobilePortfolioOpen(false); }}
-              slideDelay="0s"
-            />
+          <div className="design-dialog relative mx-auto max-w-6xl overflow-hidden rounded-2xl border border-[var(--color-border)]/80 px-3 pb-3 shadow-[0_16px_36px_-24px_rgba(0,0,0,0.38)]">
+            <ul className="relative flex flex-col gap-1 pt-3">
+            <li
+              className="grid grid-cols-3 gap-1"
+              style={
+                shouldReduceMotion
+                  ? undefined
+                  : { animation: "mobileMenuItemSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0s backwards" }
+              }
+            >
+              {MOBILE_PORTFOLIO_LINKS.map((link) => {
+                const active = isLinkActive(link.href, currentActiveSection, pathname);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`design-elevated-control min-h-11 rounded-xl border px-2 py-2 text-center text-sm font-semibold transition-colors ${
+                      active
+                        ? "border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
+                        : "border-[var(--color-border)]/40 bg-[var(--color-surface)]/30 text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </li>
 
             <MobileNavSection
               label="Games"
@@ -319,7 +332,32 @@ export default function Navbar() {
               }}
               slideDelay="0.05s"
             />
-          </ul>
+            {!gameRoute && (
+              <li
+                className="design-surface relative w-full min-h-11 flex items-center justify-between gap-3 px-4 py-2 rounded-xl text-sm font-medium text-[var(--color-muted)] bg-[var(--color-surface)]/30 border border-[var(--color-border)]/40"
+                style={
+                  shouldReduceMotion
+                    ? undefined
+                    : { animation: "mobileMenuItemSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.075s backwards" }
+                }
+              >
+                <span>Design</span>
+                <DesignToggle />
+              </li>
+            )}
+            <li
+              className="design-surface relative w-full min-h-11 flex items-center justify-between gap-3 px-4 py-2 rounded-xl text-sm font-medium text-[var(--color-muted)] bg-[var(--color-surface)]/30 border border-[var(--color-border)]/40"
+              style={
+                shouldReduceMotion
+                  ? undefined
+                  : { animation: "mobileMenuItemSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.0875s backwards" }
+              }
+            >
+              <span>Theme</span>
+              <ThemeToggle />
+            </li>
+            </ul>
+          </div>
         </div>
       )}
 

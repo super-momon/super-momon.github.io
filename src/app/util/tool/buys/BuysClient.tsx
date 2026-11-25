@@ -112,7 +112,7 @@ function MagneticBuyCard({ buy, index }: { buy: typeof buys[0], index: number })
       className="group relative will-change-transform"
     >
       <motion.div
-        className="relative overflow-hidden rounded-2xl border border-border bg-surface/60 backdrop-blur-xl p-6 lg:p-8 hover:border-accent/50 transition-colors duration-500 h-full"
+        className="design-surface relative overflow-hidden rounded-2xl border border-border bg-surface/60 backdrop-blur-xl p-6 lg:p-8 hover:border-accent/50 transition-colors duration-500 h-full"
         whileHover={{ scale: 1.015 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
       >
@@ -196,7 +196,7 @@ function MagneticBuyCard({ buy, index }: { buy: typeof buys[0], index: number })
             }}
           >
             {/* Frosted glass effect */}
-            <div className="absolute inset-0 backdrop-blur-xl bg-surface/40 border border-accent/20"
+            <div className="design-elevated-control absolute inset-0 backdrop-blur-xl bg-surface/40 border border-accent/20"
               style={{ borderRadius: 'inherit' }}
             />
 
