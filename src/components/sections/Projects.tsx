@@ -7,7 +7,6 @@ import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faWandSparkles,
   faBriefcase,
   faCode,
   faBuilding,
@@ -30,10 +29,12 @@ interface Project {
   title: string;
   subtitle: string;
   description: string;
+  role: string;
+  outcome: string;
+  aiContribution?: string;
   tags: string[];
   type: string;
   live: string | null;
-  withAi: boolean;
   icon: IconProp;
 }
 
@@ -43,11 +44,13 @@ const projects: Project[] = [
     title: "Open Post",
     subtitle: "Infinite anonymous spatial canvas board",
     description:
-      "An open, interactive spatial canvas board where anyone can drop sticky notes anonymously with zero sign-up friction. Features real-time multi-user synchronization powered by Supabase Realtime & Next.js, nested comment threads, upvote reactions, board search, and tag filtering.",
-    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Supabase", "Realtime", "Framer Motion", "AI-Coded"],
+      "A sign-up-free spatial canvas where people can post sticky notes, react, comment, search, and filter boards in real time.",
+    role: "Designed and built the full-stack Next.js application, including realtime synchronization and the content interactions.",
+    outcome: "Shipped as a live prototype with anonymous sticky notes, nested comments, reactions, board search, tag filters, and Supabase Realtime updates.",
+    aiContribution: "Used AI assistance for implementation support while directing the architecture and reviewing integrated changes.",
+    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Supabase", "Realtime", "Framer Motion", "AI-Assisted"],
     type: "app",
     live: "https://openboard-post.vercel.app/",
-    withAi: true,
     icon: faComments,
   },
   {
@@ -55,11 +58,13 @@ const projects: Project[] = [
     title: "Job Manager",
     subtitle: "Blazor & .NET recruiting platform",
     description:
-      "A job posting management tool built on .Net both frontend and backend. A client facing application where clients can manage their job postings. I contributed to the development of new features, integration with other services, and performance improvements to enhance user experience and operational efficiency.",
+      "A recruiting operations platform for managing job postings across a Blazor and .NET application.",
+    role: "Contributed to frontend and backend feature work, third-party integrations, and performance improvements.",
+    outcome: "Delivered work across both the Blazor frontend and .NET backend, covering job-post management, service integrations, and operational reliability.",
+    aiContribution: "Used AI-assisted development tools to investigate implementations and review changes before integration.",
     tags: [".NET", "Blazor", "MSSQL", "Rest API", "Bootstrap", "AI Integration"],
     type: "work",
     live: null,
-    withAi: true,
     icon: faBriefcase,
   },
   {
@@ -67,11 +72,12 @@ const projects: Project[] = [
     title: "Internal Admin",
     subtitle: "ASP.NET backend operations panel",
     description:
-      "A full-stack admin dashboard built on ASP.NET. A legacy application I maintained and enhanced with new features, bug fixes, and performance optimizations to support internal operations and data management.",
+      "A legacy ASP.NET operations panel used for internal data management and administrative workflows.",
+    role: "Maintained the application, implemented feature changes, resolved defects, and improved data operations.",
+    outcome: "Combined feature delivery and maintenance so internal users retained working MSSQL-backed administrative workflows.",
     tags: ["C#", "ASP.NET", "MSSQL", "Bootstrap", "jQuery"],
     type: "work",
     live: null,
-    withAi: false,
     icon: faCode,
   },
   {
@@ -79,11 +85,13 @@ const projects: Project[] = [
     title: "Several Client Facing Apps",
     subtitle: "Scalable SaaS client platforms",
     description:
-      "Various client-facing application built on different tech stacks. I contributed to the development and maintenance of several client-facing applications across different technology stacks. My work involved implementing new features, optimizing performance, and ensuring seamless integration with backend services to enhance user experience and meet client requirements.",
+      "A portfolio of client-facing applications delivered across React, Next.js, .NET, Node.js, and related services.",
+    role: "Implemented features and integrations, maintained production workflows, and investigated performance and data issues.",
+    outcome: "Worked across more than one client application and connected React, Next.js, .NET, Node.js, GraphQL, AWS, and database services.",
+    aiContribution: "Used AI-assisted development tools to accelerate implementation and validation while reviewing domain-specific behavior.",
     tags: ["React", "Next.js", ".NET", "MSSQL", "Rest API", "Node.js", "GraphQL", "AWS", "Docker"],
     type: "work",
     live: null,
-    withAi: true,
     icon: faBuilding,
   },
   {
@@ -91,11 +99,13 @@ const projects: Project[] = [
     title: "Developer Quiz",
     subtitle: "Interactive Next.js trivia game",
     description:
-      "An interactive trivia game challenging developers with comprehensive coding questions on JavaScript, React, Next.js, and web systems. Developed as an optimized Next.js client application with dynamic feedback and score keeping. Coded entirely using advanced AI pairing instructions.",
-    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion", "AI-Coded"],
+      "A timed trivia game with 12 categories, 3 game modes, dynamic scoring, and live leaderboard competition.",
+    role: "Built the Next.js client, quiz state, timed interactions, result flow, and Supabase leaderboard integration.",
+    outcome: "Supports 12 categories, 3 game modes, 15-second question timers, difficulty-based points, result metrics, and persistent leaderboard scores.",
+    aiContribution: "Used AI-assisted implementation for rapid iteration while directing the architecture and reviewing integration behavior.",
+    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion", "AI-Assisted"],
     type: "game",
     live: "/games/quiz",
-    withAi: true,
     icon: faGamepad,
   },
   {
@@ -103,11 +113,13 @@ const projects: Project[] = [
     title: "Chain Reaction",
     subtitle: "Cascading physics board game",
     description:
-      "A strategic board game with tactical cascade animation physics, local pass-and-play multiplayer capabilities, and real-time lobby segments. Players claim grid cells and trigger reaction cascading explosions to eliminate rivals. Coded entirely using AI pairing assistance.",
-    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion", "AI-Coded"],
+      "A board game built around cascade reactions, local pass-and-play sessions, and a real-time lobby.",
+    role: "Built the game board, turn flow, cascade animations, setup controls, and lobby synchronization.",
+    outcome: "Provides local pass-and-play, turn and player-state tracking, cascade reactions, and a lobby with realtime match setup.",
+    aiContribution: "Used AI-assisted implementation to explore and refine game behavior while retaining final technical decisions.",
+    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion", "AI-Assisted"],
     type: "game",
     live: "/games/chain-reaction",
-    withAi: true,
     icon: faAtom,
   },
   {
@@ -115,17 +127,29 @@ const projects: Project[] = [
     title: "Colony Defense",
     subtitle: "Microscopic endless-defense prototype",
     description:
-      "A playable game prototype about placing one autonomous turret, containing a living colony, and protecting a sealed habitat. The colony spreads in real time, consumes nutrient nodes, and evolves as the run continues.",
+      "A playable colony-defense prototype about spreading biological growth, nutrient collection, and habitat survival.",
+    role: "Built the simulation, placement controls, combat loop, and visual feedback for the colony-defense prototype.",
+    outcome: "Includes colony growth, nutrient collection, turret placement, wall repair, cache interactions, and escalating enemy waves.",
+    aiContribution: "Used AI-assisted implementation to iterate on the prototype and simulate gameplay states.",
     tags: ["Next.js", "React", "TypeScript", "Canvas 2D", "Game Prototype"],
     type: "game",
     live: "/games/colony-defense",
-    withAi: true,
     icon: faBiohazard,
   },
 ];
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [showAllProjects, setShowAllProjects] = useState(false);
+  const featuredProjectIds = new Set([
+    "open-post",
+    "job-manager",
+    "client-apps",
+    "quiz-game",
+  ]);
+  const visibleProjects = showAllProjects
+    ? projects
+    : projects.filter((project) => featuredProjectIds.has(project.id));
   const closeProjectModal = useCallback(() => setSelectedProject(null), []);
   const projectDialogRef = useDialogFocus<HTMLDivElement>(
     Boolean(selectedProject),
@@ -176,99 +200,77 @@ export default function Projects() {
           eyebrow="Selected Work"
           titlePrefix="Projects &"
           titleItalic="Contributions"
-          subtitle="A selection of applications and games I have worked on, designed, and optimized."
+          subtitle="Real applications and games, with the work I owned and the systems each project delivers."
         />
 
-        {/* Feature Grid Layout - Strict Uniform Dimensions */}
+        {/* Project evidence grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch"
         >
-          {projects.map((project, index) => (
+          {visibleProjects.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="group relative rounded-3xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl p-6 md:p-8 flex flex-col justify-between h-auto md:h-[420px] shadow-md shadow-black/5 dark:shadow-black/25 hover:border-accent/50 hover:bg-surface/100 transition-all duration-300"
+              className="design-surface group relative flex flex-col rounded-2xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 p-6 backdrop-blur-xl transition-all duration-300 hover:border-accent/50 hover:bg-surface/100 md:p-8"
             >
-              <div className="flex flex-col flex-1 min-h-0">
+              <div className="flex flex-1 flex-col">
                 {/* Header */}
-                <div className="flex items-start justify-between gap-4 mb-3 shrink-0">
+                <div className="mb-3 flex shrink-0 items-start justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                       <FontAwesomeIcon icon={project.icon} className="text-accent text-lg" />
                     </div>
                     <div className="min-w-0">
-                      <span className="mb-1 inline-flex items-center rounded border border-border/80 bg-foreground/5 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-foreground/85">
-                        {project.type === "game" ? "Interactive Game" : "Production Platform"}
-                      </span>
-                      <h3 className="text-lg font-bold text-foreground tracking-tight group-hover:text-accent transition-colors truncate">
+                      <h3 className="text-lg font-bold text-foreground tracking-tight group-hover:text-accent transition-colors">
                         {project.title}
                       </h3>
+                      <p className="mt-1 text-xs font-semibold text-accent">
+                        {project.subtitle}
+                      </p>
                     </div>
                   </div>
-
-                  {project.withAi && (
-                    <span
-                      className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border border-accent/60 bg-accent/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-accent shadow-xs"
-                      title="Coded with AI Assistance"
-                    >
-                      <FontAwesomeIcon icon={faWandSparkles} className="text-xs" />
-                      AI Coded
-                    </span>
-                  )}
                 </div>
 
-                <p className="text-xs text-accent font-semibold mb-2.5 shrink-0 truncate">
-                  {project.subtitle}
-                </p>
-
-                {/* Clamped description for perfect card symmetry */}
-                <p className="text-sm text-foreground/85 leading-relaxed line-clamp-3 mb-3">
+                <p className="mb-5 text-sm leading-relaxed text-foreground/85">
                   {project.description}
                 </p>
 
-                {/* Modal Trigger for extra details or teaser */}
-                <div className="mt-auto mb-4 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedProject(project)}
-                    className="w-full min-h-11 flex items-center justify-between px-3 py-2 rounded-xl bg-background/60 hover:bg-background border border-border/70 hover:border-accent/50 text-xs text-foreground/80 hover:text-accent font-medium transition-all group/btn cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                  >
-                    <span className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faExpand} className="text-xs text-accent/80 group-hover/btn:scale-110 transition-transform" />
-                      <span>{project.id === "quiz-game" ? "Preview Quiz Teaser & Overview" : "View Architectural Details"}</span>
-                    </span>
-                    <span className="text-xs font-mono text-accent">Details →</span>
-                  </button>
+                <div className="mb-5 grid grid-cols-1 gap-4 border-y border-border/40 py-4 sm:grid-cols-2">
+                  <div>
+                    <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-foreground/70">
+                      My Role
+                    </p>
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      {project.role}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-foreground/70">
+                      Outcome
+                    </p>
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      {project.outcome}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Bottom Section: Tech Tags & Primary Action */}
-              <div className="shrink-0 pt-3 border-t border-border/30">
-                {/* Tech Tags */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {project.tags.slice(0, 4).map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2.5 py-0.5 rounded-md text-xs font-mono bg-background/80 border border-border/70 text-foreground/80 group-hover:border-accent/30 transition-colors"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                  {project.tags.length > 4 && (
-                    <span className="rounded-md border border-accent/20 bg-accent/10 px-2 py-0.5 font-mono text-xs font-semibold text-accent">
-                      +{project.tags.length - 4} more
-                    </span>
-                  )}
-                </div>
-
-                {/* CTA Link */}
-                <div className="flex items-center justify-between">
+              <div className="shrink-0 border-t border-border/30 pt-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProject(project)}
+                    className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-foreground/80 transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                  >
+                    <FontAwesomeIcon icon={faExpand} className="text-xs text-accent/80" />
+                    <span>{project.id === "quiz-game" ? "Preview the quiz" : "View project details"}</span>
+                  </button>
                   {project.live ? (
                     <a
                       href={project.live}
@@ -281,16 +283,16 @@ export default function Projects() {
                           destination: project.live || "",
                         })
                       }
-                      className="inline-flex min-h-11 items-center gap-2 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer group/link focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                      className="liquid-glass-action inline-flex min-h-11 items-center gap-2 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer group/link focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
-                      <span>{project.type === "game" ? "Play Interactive Game" : "View Live Project"}</span>
+                      <span>{project.type === "game" ? "Play game" : "Open live project"}</span>
                       <FontAwesomeIcon
                         icon={faArrowRight}
                         className="text-xs transition-transform duration-300 group-hover/link:translate-x-1"
                       />
                     </a>
                   ) : (
-                    <span className="inline-flex items-center gap-2 text-xs text-foreground/75 font-mono">
+                    <span className="inline-flex items-center gap-2 text-sm text-foreground/75">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="12"
@@ -314,6 +316,16 @@ export default function Projects() {
             </motion.div>
           ))}
         </motion.div>
+        <div className="mt-8 flex justify-center">
+          <button
+            type="button"
+            aria-expanded={showAllProjects}
+            onClick={() => setShowAllProjects((current) => !current)}
+            className="design-elevated-control inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-surface/70 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          >
+            {showAllProjects ? "Show featured work" : "Show all work"}
+          </button>
+        </div>
       </div>
 
       {/* Morphing Details Modal */}
@@ -342,7 +354,7 @@ export default function Projects() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-2xl bg-surface/95 dark:bg-surface/95 border border-border/80 dark:border-border/60 rounded-3xl shadow-2xl z-10 backdrop-blur-xl max-h-[85vh] flex flex-col overflow-hidden"
+              className="design-dialog relative w-full max-w-2xl bg-surface/95 dark:bg-surface/95 border border-border/80 dark:border-border/60 rounded-3xl shadow-2xl z-10 backdrop-blur-xl max-h-[85vh] flex flex-col overflow-hidden"
             >
               {/* Header - Fixed Top */}
               <div className="flex items-start justify-between gap-4 p-6 md:px-8 md:pt-8 md:pb-5 border-b border-border/40 shrink-0 bg-surface/95 dark:bg-surface/95 backdrop-blur-xl">
@@ -351,17 +363,6 @@ export default function Projects() {
                     <FontAwesomeIcon icon={selectedProject.icon} className="text-accent text-xl" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="inline-flex items-center rounded border border-border/80 bg-foreground/5 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-foreground/85">
-                        {selectedProject.type === "game" ? "Interactive Game" : "Production Platform"}
-                      </span>
-                      {selectedProject.withAi && (
-                        <span className="inline-flex items-center gap-1 rounded border border-accent/60 bg-accent/10 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-accent">
-                          <FontAwesomeIcon icon={faWandSparkles} className="text-xs" />
-                          AI Coded
-                        </span>
-                      )}
-                    </div>
                     <h3 id="project-modal-title" className="text-xl font-bold text-foreground tracking-tight">
                       {selectedProject.title}
                     </h3>
@@ -390,6 +391,36 @@ export default function Projects() {
                     {selectedProject.description}
                   </p>
                 </div>
+
+                <div className="grid grid-cols-1 gap-5 border-y border-border/40 py-5 sm:grid-cols-2">
+                  <div>
+                    <h4 className="text-xs font-bold text-foreground/70 uppercase tracking-wider mb-2">
+                      My Role
+                    </h4>
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      {selectedProject.role}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-foreground/70 uppercase tracking-wider mb-2">
+                      Outcome
+                    </h4>
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      {selectedProject.outcome}
+                    </p>
+                  </div>
+                </div>
+
+                {selectedProject.aiContribution && (
+                  <div>
+                    <h4 className="text-xs font-bold text-foreground/70 uppercase tracking-wider mb-2">
+                      AI-Assisted Approach
+                    </h4>
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      {selectedProject.aiContribution}
+                    </p>
+                  </div>
+                )}
 
                 {/* Inline quiz teaser inside Developer Quiz modal */}
                 {selectedProject.id === "quiz-game" && (
@@ -441,9 +472,9 @@ export default function Projects() {
                         });
                         closeProjectModal();
                       }}
-                      className="inline-flex min-h-11 items-center gap-2 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all duration-300 shadow-sm cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                      className="liquid-glass-action inline-flex min-h-11 items-center gap-2 px-5 py-2 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-xs font-semibold transition-all duration-300 shadow-sm cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
-                      <span>{selectedProject.type === "game" ? "Play Game Now" : "Launch Project"}</span>
+                      <span>{selectedProject.type === "game" ? "Play game" : "Open project"}</span>
                       <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
                     </a>
                   )}

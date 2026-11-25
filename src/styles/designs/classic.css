@@ -1,0 +1,78 @@
+/* Classic is the default cyber-arcade surface contract. */
+html[data-design="classic"],
+html:not([data-design]) {
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-surface: #f6f8fa;
+  --color-border: #d5dbe2;
+  --color-accent: #067a3a;
+  --color-accent-hover: #05602e;
+  --color-accent-contrast: #ffffff;
+  --color-muted: #4b5563;
+  --color-warning: #b45309;
+  --color-overlay: #0a0a0f;
+  --color-highlight-01: #3f7f1e;
+  --color-status-easy: #166534;
+  --color-status-medium: #854d0e;
+  --color-status-hard: #9a3412;
+  --color-status-extra-hard: #b91c1c;
+  --color-status-info: #6d28d9;
+  --color-status-info-strong: #5b21b6;
+  --color-status-info-contrast: #ffffff;
+  --color-status-success-strong: #15803d;
+  --color-status-success-contrast: #ffffff;
+  --color-status-danger-strong: #b91c1c;
+  --color-status-danger-contrast: #ffffff;
+}
+
+html[data-design="classic"].dark,
+html.dark:not([data-design]) {
+  --color-background: #0a0a0f;
+  --color-foreground: #f1f5f9;
+  --color-surface: #111827;
+  --color-border: #273449;
+  --color-accent: #08ca5f;
+  --color-accent-hover: #23d873;
+  --color-accent-contrast: #052e16;
+  --color-muted: #9aa8bd;
+  --color-warning: #fbbf24;
+  --color-overlay: #0a0a0f;
+  --color-highlight-01: #6ec038;
+  --color-status-easy: #4ade80;
+  --color-status-medium: #fbbf24;
+  --color-status-hard: #fb923c;
+  --color-status-extra-hard: #f87171;
+  --color-status-info: #c4b5fd;
+  --color-status-info-strong: #7c3aed;
+  --color-status-info-contrast: #ffffff;
+  --color-status-success-strong: #08ca5f;
+  --color-status-success-contrast: #052e16;
+  --color-status-danger-strong: #ef4444;
+  --color-status-danger-contrast: #0a0a0f;
+}
+
+html[data-design="classic"] .design-surface,
+html:not([data-design]) .design-surface,
+html[data-design="classic"] .design-elevated-control,
+html:not([data-design]) .design-elevated-control,
+html[data-design="classic"] .design-navbar,
+html:not([data-design]) .design-navbar,
+html[data-design="classic"] .design-dialog,
+html:not([data-design]) .design-dialog {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+html[data-design="classic"] .design-navbar,
+html:not([data-design]) .design-navbar {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 22px 46px -26px rgba(15, 23, 42, 0.35);
+}
+
+html[data-design="classic"].dark .design-navbar,
+html.dark:not([data-design]) .design-navbar {
+  box-shadow:
+    inset 0 1px 0 rgba(241, 245, 249, 0.1),
+    0 24px 50px -24px rgba(0, 0, 0, 0.72);
+}

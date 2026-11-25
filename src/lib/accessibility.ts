@@ -29,6 +29,8 @@ export function handleTabListKeyDown(event: KeyboardEvent<HTMLButtonElement>): v
   }
 
   event.preventDefault();
-  tabs[nextIndex].focus();
-  tabs[nextIndex].click();
+  const nextTab = tabs[nextIndex];
+  nextTab.focus({ preventScroll: true });
+  nextTab.scrollIntoView({ block: "nearest", inline: "nearest" });
+  nextTab.click();
 }

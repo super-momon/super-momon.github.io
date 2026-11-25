@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
 import { trackEvent } from "@/lib/analytics";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -78,6 +78,7 @@ const experiences: ExperienceItem[] = [
 
 export default function Experience() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [showFullHistory, setShowFullHistory] = useState(false);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const skipParallax = useSkipParallax();
 
@@ -130,7 +131,7 @@ export default function Experience() {
           />
 
           <div className="space-y-8 md:space-y-12">
-            {experiences.map((exp, index) => (
+            {(showFullHistory ? experiences : experiences.slice(0, 2)).map((exp, index) => (
               <motion.div
                 key={exp.role}
                 initial={{ opacity: 0, x: -16 }}
@@ -152,7 +153,7 @@ export default function Experience() {
 
                 {/* Role Card */}
                 <div
-                  className={`p-6 md:p-8 rounded-3xl border backdrop-blur-xl transition-all duration-300 group-hover:-translate-y-0.5 ${
+                  className={`design-surface p-6 md:p-8 rounded-3xl border backdrop-blur-xl transition-all duration-300 group-hover:-translate-y-0.5 ${
                     exp.promoted
                       ? "border-accent/60 bg-accent/5 dark:bg-accent/5 shadow-lg shadow-accent/10 ring-1 ring-accent/15 group-hover:border-accent group-hover:bg-accent/10"
                       : "border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 shadow-md shadow-black/5 dark:shadow-black/25 group-hover:border-accent/50 group-hover:bg-surface/100"
@@ -232,6 +233,16 @@ export default function Experience() {
                 </div>
               </motion.div>
             ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              aria-expanded={showFullHistory}
+              onClick={() => setShowFullHistory((current) => !current)}
+              className="design-elevated-control inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-surface/70 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            >
+              {showFullHistory ? "Show recent experience" : "Show full history"}
+            </button>
           </div>
         </motion.div>
       </div>

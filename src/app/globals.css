@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "../styles/designs/classic.css";
+@import "../styles/designs/liquid-glass.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

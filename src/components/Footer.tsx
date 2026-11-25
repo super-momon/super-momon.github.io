@@ -1,8 +1,8 @@
 "use client";
 
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/constants";
-import MarqueeBanner from "./common/MarqueeBanner";
 import React, { useRef, useEffect } from "react";
+import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 
 // Magnetic button hook for premium interactions
@@ -49,18 +49,12 @@ function SocialLink({ href, label, children }: { href: string; label: string; ch
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
       aria-label={label}
-      className="group relative w-11 h-11 rounded-xl flex items-center justify-center text-foreground/80 hover:text-[var(--color-accent-contrast)] bg-surface/80 dark:bg-surface/40 hover:bg-accent border border-border/85 dark:border-border/50 hover:border-accent shadow-xs hover:shadow-md transition-all duration-300 will-change-transform overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+      className="design-elevated-control group relative h-11 rounded-xl px-3 flex items-center justify-center gap-2 text-sm font-semibold text-foreground/80 hover:text-[var(--color-accent)] bg-surface/80 dark:bg-surface/40 hover:bg-accent/5 border border-border/85 dark:border-border/50 hover:border-accent/60 transition-all duration-300 will-change-transform focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     >
-      {/* Glow effect on hover */}
-      <span className="absolute inset-0 bg-accent/0 group-hover:bg-accent/5 transition-all duration-300 rounded-xl" />
-
-      {/* Icon */}
-      <span className="relative z-10 transition-transform duration-300 group-hover:scale-105 scale-90">
+      <span className="relative z-10 transition-transform duration-300 group-hover:scale-105">
         {children}
       </span>
-
-      {/* Bottom shine line */}
-      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-white group-hover:w-6 transition-all duration-300" />
+      <span>{label}</span>
     </a>
   );
 }
@@ -69,9 +63,8 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <a
       href={href}
-      className="group relative min-h-11 text-xs md:text-sm text-foreground/80 hover:text-foreground transition-all duration-300 py-1.5 inline-flex items-center gap-1.5 font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+      className="group relative min-h-11 text-sm text-foreground/80 hover:text-foreground transition-colors duration-300 py-1.5 inline-flex items-center font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     >
-      <span className="w-1 h-1 rounded-full bg-accent/0 group-hover:bg-accent transition-colors duration-300" />
       <span className="relative">
         {children}
         <span className="absolute -bottom-0.5 left-0 w-0 h-[1px] bg-accent group-hover:w-full transition-all duration-300" />
@@ -88,6 +81,8 @@ export default function Footer() {
     { label: "Experience", href: "/#experience" },
     { label: "Projects", href: "/#projects" },
     { label: "Skills", href: "/#skills" },
+    { label: "Education", href: "/#education" },
+    { label: "Contact", href: "/#contact" },
   ];
 
   const gameLinks = [
@@ -98,41 +93,25 @@ export default function Footer() {
 
   return (
     <React.Fragment>
-      <footer className="relative border-t border-border/80 dark:border-border/50 mt-32 overflow-hidden bg-surface/30 dark:bg-surface/10 backdrop-blur-xl">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Gradient orbs */}
-          <div className="absolute top-0 right-1/4 w-[30rem] h-[30rem] bg-accent/5 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: "8s" }} />
-          <div className="absolute bottom-0 left-1/4 w-[30rem] h-[30rem] bg-accent/3 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: "12s", animationDelay: "2s" }} />
-
-          {/* Grid pattern overlay */}
-          <div
-            className="absolute inset-0 opacity-[0.02]"
-            style={{
-              backgroundImage: "linear-gradient(var(--color-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--color-foreground) 1px, transparent 1px)",
-              backgroundSize: "32px 32px",
-            }}
-          />
-        </div>
-
+      <footer className="design-surface relative border-t border-border/80 dark:border-border/50 mt-16 md:mt-24 overflow-hidden bg-surface/30 dark:bg-surface/10 backdrop-blur-xl">
         {/* Main footer content */}
-        <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-12">
+        <div className="relative max-w-6xl mx-auto px-6 pt-12 md:pt-16 pb-8">
 
           {/* Grid section - Brand, Navigation, Info */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-8 mb-12 pb-12 border-b border-border/30">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-8 mb-8 pb-8 border-b border-border/30">
 
             {/* Brand & Socials (Spans 4 cols) */}
             <div className="md:col-span-4 flex flex-col items-start">
-              <a href="#hero" className="text-xl font-bold text-foreground hover:text-accent transition-colors group mb-4 inline-block">
+              <Link href="/#hero" className="text-xl font-bold text-foreground hover:text-accent transition-colors group mb-4 inline-block">
                 <span className="relative inline-block">
                   &lt;momon /&gt;
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
                 </span>
-              </a>
-              <p className="text-foreground/80 mb-6 max-w-xs leading-relaxed font-normal text-xs">
-                A passionate Full Stack Developer crafting beautiful, intuitive, and performant web experiences.
+              </Link>
+              <p className="text-foreground/80 mb-6 max-w-xs leading-relaxed text-sm">
+                Full Stack Developer specializing in AI-assisted development and scalable web applications.
               </p>
-              <div className="flex flex-wrap gap-2.5">
+              <div className="flex flex-wrap gap-2">
                 <SocialLink href={GITHUB_URL} label="GitHub">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
@@ -152,38 +131,40 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Quick Links (Spans 2 cols) */}
-            <div className="md:col-span-2">
-              <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">
-                Navigation
-              </h3>
-              <nav className="flex flex-col gap-0.5">
-                {quickLinks.map((link) => (
-                  <NavLink key={link.href} href={link.href}>
-                    {link.label}
-                  </NavLink>
-                ))}
-              </nav>
-            </div>
+            <div className="grid grid-cols-2 gap-6 md:contents">
+              {/* Quick Links (Spans 2 cols) */}
+              <div className="md:col-span-2">
+                <h3 className="text-sm font-bold text-foreground mb-3">
+                  Navigation
+                </h3>
+                <nav className="flex flex-col gap-0.5">
+                  {quickLinks.map((link) => (
+                    <NavLink key={link.href} href={link.href}>
+                      {link.label}
+                    </NavLink>
+                  ))}
+                </nav>
+              </div>
 
-            {/* Games Links (Spans 2 cols) */}
-            <div className="md:col-span-2">
-              <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">
-                Games
-              </h3>
-              <nav className="flex flex-col gap-0.5">
-                {gameLinks.map((link) => (
-                  <NavLink key={link.href} href={link.href}>
-                    {link.label}
-                  </NavLink>
-                ))}
-              </nav>
+              {/* Games Links (Spans 2 cols) */}
+              <div className="md:col-span-2">
+                <h3 className="text-sm font-bold text-foreground mb-3">
+                  Games
+                </h3>
+                <nav className="flex flex-col gap-0.5">
+                  {gameLinks.map((link) => (
+                    <NavLink key={link.href} href={link.href}>
+                      {link.label}
+                    </NavLink>
+                  ))}
+                </nav>
+              </div>
             </div>
 
             {/* Info (Spans 4 cols) */}
             <div className="md:col-span-4">
-              <h3 className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">
-                Location &amp; Info
+              <h3 className="text-sm font-bold text-foreground mb-3">
+                Location and availability
               </h3>
 
               <div className="space-y-4">
@@ -195,9 +176,9 @@ export default function Footer() {
                     </svg>
                   </div>
                   <div>
-                    <p className="mb-0.5 font-mono text-xs font-semibold uppercase tracking-wider text-foreground/70">Based in</p>
-                    <p className="text-xs font-semibold text-foreground">Cebu, Philippines</p>
-                    <p className="text-xs font-normal text-foreground/80">Available for Remote</p>
+                    <p className="mb-0.5 text-xs font-semibold text-foreground/70">Based in</p>
+                    <p className="text-sm font-semibold text-foreground">Cebu, Philippines</p>
+                    <p className="text-sm text-foreground/80">Available for remote work</p>
                   </div>
                 </div>
 
@@ -209,9 +190,8 @@ export default function Footer() {
                     </svg>
                   </div>
                   <div>
-                    <p className="mb-0.5 font-mono text-xs font-semibold uppercase tracking-wider text-foreground/70">Response Time</p>
-                    <p className="text-xs font-semibold text-foreground">Within 24 hours</p>
-                    <p className="text-xs font-normal text-foreground/80">Always ready to connect</p>
+                    <p className="mb-0.5 text-xs font-semibold text-foreground/70">Response time</p>
+                    <p className="text-sm font-semibold text-foreground">Within 24 hours</p>
                   </div>
                 </div>
               </div>
@@ -220,32 +200,41 @@ export default function Footer() {
           </div>
 
           {/* Bottom section - Copyright and branding */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-xs text-foreground/80 font-medium order-2 md:order-1">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-xs text-foreground/80 font-medium">
               © {year} Mark Raymond Ayade
             </p>
 
-            <div className="order-1 md:order-2">
-              <button
-                onClick={() => {
-                  trackEvent("scroll_to_top_click", { location: "footer" });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="group flex items-center justify-center w-11 h-11 rounded-full bg-surface/95 dark:bg-surface/40 border border-border/85 dark:border-border/50 text-foreground/80 hover:text-accent hover:border-accent hover:bg-accent/10 transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                aria-label="Back to top"
+            <button
+              onClick={() => {
+                trackEvent("scroll_to_top_click", { location: "footer" });
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="group flex h-11 items-center justify-center gap-2 rounded-xl border border-border/85 bg-surface/95 px-3 text-sm font-semibold text-foreground/80 transition-all duration-300 hover:border-accent hover:bg-accent/10 hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              aria-label="Back to top"
+            >
+              <span>Back to top</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+                className="transition-transform duration-300 group-hover:-translate-y-1"
+                aria-hidden="true"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" className="transition-transform duration-300 group-hover:-translate-y-1">
-                  <line x1="12" y1="19" x2="12" y2="5" />
-                  <polyline points="5 12 12 5 19 12" />
-                </svg>
-              </button>
-            </div>
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <polyline points="5 12 12 5 19 12" />
+              </svg>
+            </button>
           </div>
         </div>
 
       </footer>
-
-      <MarqueeBanner />
     </React.Fragment>
   );
 }

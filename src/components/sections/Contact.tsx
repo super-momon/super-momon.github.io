@@ -3,7 +3,7 @@
 import { trackEvent } from "@/lib/analytics";
 import { EMAIL, GITHUB_URL, GITHUB_USERNAME, LINKEDIN_URL, LINKEDIN_USERNAME } from "@/lib/constants";
 import SectionHeader from "@/components/common/SectionHeader";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { handleTabListKeyDown } from "@/lib/accessibility";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { useSkipParallax } from "@/hooks/useSkipParallax";
@@ -49,7 +49,8 @@ const contactMethods = [
 
 export default function Contact() {
   const [activeMethodId, setActiveMethodId] = useState("email");
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
+  const copyResetTimeoutRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const skipParallax = useSkipParallax();
 
@@ -61,11 +62,31 @@ export default function Contact() {
   const orb1Y = useTransform(scrollYProgress, [0, 1], [0, -50]);
   const orb2Y = useTransform(scrollYProgress, [0, 1], [0, 50]);
 
-  const handleCopyEmail = (e: React.MouseEvent) => {
+  useEffect(() => {
+    return () => {
+      if (copyResetTimeoutRef.current !== null) {
+        window.clearTimeout(copyResetTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleCopyEmail = async (e: React.MouseEvent) => {
     e.preventDefault();
-    navigator.clipboard.writeText(EMAIL);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copyResetTimeoutRef.current !== null) {
+      window.clearTimeout(copyResetTimeoutRef.current);
+    }
+
+    try {
+      if (!navigator.clipboard) {
+        throw new Error("Clipboard API unavailable");
+      }
+      await navigator.clipboard.writeText(EMAIL);
+      setCopyStatus("copied");
+      copyResetTimeoutRef.current = window.setTimeout(() => setCopyStatus("idle"), 2000);
+    } catch {
+      setCopyStatus("error");
+      copyResetTimeoutRef.current = window.setTimeout(() => setCopyStatus("idle"), 4000);
+    }
   };
 
   const active = contactMethods.find((m) => m.id === activeMethodId) || contactMethods[0];
@@ -129,44 +150,13 @@ export default function Contact() {
           {/* Left Column: Selector */}
           <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 lg:sticky lg:top-24">
             {/* Interactive Tabs list */}
-            <div className="flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
+            <div className="design-surface flex flex-col gap-2 p-2 rounded-2xl bg-surface/95 dark:bg-surface/40 backdrop-blur-xl border border-border/80 dark:border-border/50 shadow-md shadow-black/5 dark:shadow-black/30">
 
-              {/* Mobile tabs row */}
               <div
                 role="tablist"
-                aria-label="Contact channels (mobile)"
-                style={{ scrollbarWidth: "none" }}
-                className="flex flex-row lg:hidden gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
+                aria-label="Contact channels"
+                className="flex snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-col lg:overflow-visible lg:pb-0 lg:snap-none"
               >
-                {contactMethods.map((method) => {
-                  const isActive = activeMethodId === method.id;
-                  return (
-                    <button
-                      key={method.id}
-                      role="tab"
-                      id={`contact-tab-mobile-${method.id}`}
-                      aria-selected={isActive}
-                      aria-controls="contact-tabpanel"
-                      tabIndex={isActive ? 0 : -1}
-                      onKeyDown={handleTabListKeyDown}
-                      onClick={() => {
-                        setActiveMethodId(method.id);
-                        trackEvent("portfolio_contact_method_select", { method: method.id, device: "mobile" });
-                      }}
-                      className={`flex items-center gap-2 min-h-[44px] px-3 py-2 rounded-xl transition-all duration-300 border cursor-pointer whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
-                        ? "bg-background/85 shadow-xs border-border/50 text-accent font-bold"
-                        : "bg-transparent border-transparent text-foreground/75 hover:text-foreground hover:bg-background/20"
-                        }`}
-                    >
-                      <FontAwesomeIcon icon={method.icon} className={`text-xs ${isActive ? "text-accent" : "text-foreground/50"}`} />
-                      <span className="text-xs font-semibold tracking-tight">{method.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Desktop vertical tabs */}
-              <div role="tablist" aria-label="Contact channels" className="hidden lg:flex flex-col gap-1.5">
                 {contactMethods.map((method) => {
                   const isActive = activeMethodId === method.id;
                   return (
@@ -180,11 +170,11 @@ export default function Contact() {
                       onKeyDown={handleTabListKeyDown}
                       onClick={() => {
                         setActiveMethodId(method.id);
-                        trackEvent("portfolio_contact_method_select", { method: method.id, device: "desktop" });
+                        trackEvent("portfolio_contact_method_select", { method: method.id, device: "responsive" });
                       }}
-                      className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 text-left cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${isActive
-                        ? "bg-background/80 shadow-xs border border-border/50"
-                        : "hover:bg-background/30 border border-transparent"
+                      className={`relative flex min-h-[56px] w-[11.5rem] shrink-0 snap-start items-center gap-3 rounded-xl border px-3 py-3 transition-all duration-300 cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 lg:w-full lg:gap-3.5 lg:px-4 lg:text-left ${isActive
+                        ? "border-border/50 bg-background/85 text-accent shadow-xs lg:bg-background/80"
+                        : "border-transparent bg-transparent text-foreground/75 hover:bg-background/20 hover:text-foreground"
                         }`}
                     >
                       {/* Active Indicator on Left */}
@@ -229,7 +219,7 @@ export default function Contact() {
             </div>
 
             {/* Availability status badge */}
-            <div className="hidden lg:flex items-center gap-2.5 px-4 py-3 rounded-2xl border border-border/80 dark:border-border/60 bg-surface/95 dark:bg-surface/40 shadow-xs">
+            <div className="design-surface hidden lg:flex items-center gap-2.5 px-4 py-3 rounded-2xl border border-border/80 dark:border-border/60 bg-surface/95 dark:bg-surface/40 shadow-xs">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent" />
@@ -256,7 +246,7 @@ export default function Contact() {
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
                   transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  className="p-6 md:p-8 rounded-2xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/35 h-full flex flex-col justify-between"
+                  className="design-surface p-6 md:p-8 rounded-2xl border border-border/80 dark:border-border/50 bg-surface/95 dark:bg-surface/40 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/35 h-full flex flex-col justify-between"
                 >
                   <div className="space-y-6">
                     {/* Header */}
@@ -308,13 +298,25 @@ export default function Contact() {
                       </div>
 
                       {active.id === "email" && (
-                        <button
-                          onClick={handleCopyEmail}
-                          className="shrink-0 min-h-11 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                        >
-                          <FontAwesomeIcon icon={copied ? faCheck : faCopy} className="text-xs" />
-                          <span>{copied ? "Copied" : "Copy Address"}</span>
-                        </button>
+                        <div className="flex shrink-0 flex-col items-end gap-1">
+                          <button
+                            type="button"
+                            onClick={handleCopyEmail}
+                            className="min-h-11 p-2.5 rounded-lg border border-border/80 bg-surface/90 hover:border-accent hover:bg-accent/5 text-foreground/80 hover:text-accent transition-all duration-300 flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                          >
+                            <FontAwesomeIcon icon={copyStatus === "copied" ? faCheck : faCopy} className="text-xs" />
+                            <span>
+                              {copyStatus === "copied"
+                                ? "Copied"
+                                : copyStatus === "error"
+                                  ? "Copy failed"
+                                  : "Copy Address"}
+                            </span>
+                          </button>
+                          <span aria-live="polite" aria-atomic="true" className="text-xs text-foreground/70">
+                            {copyStatus === "error" ? "Select the address above to copy manually." : ""}
+                          </span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -332,7 +334,7 @@ export default function Contact() {
                           event_label: active.label.toLowerCase(),
                         })
                       }
-                      className="group/btn inline-flex min-h-11 items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                      className="liquid-glass-action group/btn inline-flex min-h-11 items-center gap-2 px-5 py-2.5 rounded-xl bg-accent hover:bg-accent-hover text-[var(--color-accent-contrast)] text-sm font-semibold transition-all duration-300 shadow-xs hover:shadow-md cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                       <span>{active.actionText}</span>
                       <FontAwesomeIcon

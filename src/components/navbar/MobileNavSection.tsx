@@ -34,6 +34,7 @@ export default function MobileNavSection({
   const sectionActive = activeSection || "/";
 
   const hasActiveLink = links.some((l) => isLinkActive(l.href, sectionActive, currentPath));
+  const disclosureId = `mobile-nav-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-links`;
 
   return (
     <li
@@ -45,7 +46,9 @@ export default function MobileNavSection({
     >
       <button
         onClick={onToggle}
-        className={`relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+        aria-expanded={isOpen}
+        aria-controls={disclosureId}
+        className={`design-elevated-control relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
           hasActiveLink ? "text-[var(--color-foreground)] bg-[var(--color-surface)]/60" : "text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
         }`}
       >
@@ -64,7 +67,10 @@ export default function MobileNavSection({
         <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-0 bg-[var(--color-accent)] group-hover:h-8 transition-all duration-300" />
       </button>
 
-      <div className={`overflow-hidden transition-all duration-300 ease-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+      <div
+        id={disclosureId}
+        className={`overflow-hidden transition-all duration-300 ease-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+      >
         <ul className="pl-4 flex flex-col gap-0.5 pt-1 pb-1">
           {links.map((link, i) => {
             const isCurrentSection = isLinkActive(link.href, sectionActive, currentPath);
@@ -96,7 +102,7 @@ export default function MobileNavSection({
                     {link.label}
                   </span>
                   {isCurrentSection ? (
-                    <span className="relative z-10 rounded bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold uppercase text-[var(--color-accent)]">
+                    <span className="relative z-10 rounded bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">
                       Current
                     </span>
                   ) : (

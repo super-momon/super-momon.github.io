@@ -87,6 +87,22 @@ src/
 
 ---
 
+## Reusable Design System
+
+Design switching is owned by `src/lib/designSystem.ts` and `src/components/DesignProvider.tsx`. The registry defines supported IDs and metadata; dedicated CSS lives in `src/styles/designs/`; and `src/app/globals.css` imports those files. The provider applies the active ID to `html[data-design="<id>"]`, while components consume the shared `design-surface`, `design-elevated-control`, `design-navbar`, `design-dialog`, and `design-ambient` contracts plus semantic color variables.
+
+Tailwind owns layout and reusable utility composition. Design CSS owns palettes, solid/glass surfaces, elevation, and `html[data-design]` overrides. Design and light/dark theme states are independent. For non-game routes, a valid `?design=<id>` parameter takes precedence over the `design-preference` local-storage value, then the default. `/games` and `/games/*` are excluded and always use Classic.
+
+To add a design:
+1. Add its ID, metadata, and allowlist entry in `src/lib/designSystem.ts`.
+2. Add `src/styles/designs/<design-id>.css` with complete light/dark rules for the shared design classes and semantic variables.
+3. Import the CSS file from `src/app/globals.css`.
+4. Use semantic classes and variables in components; add route opt-outs to both `isGameRoute()` and the inline initializer in `src/app/layout.tsx` if needed.
+
+The global reduced-motion rules stop nonessential animation and smooth scrolling. Liquid Glass also disables its specular motion and uses opaque surface fallbacks when reduced transparency is requested or `backdrop-filter` is unavailable. See `DESIGN.md` for the full reusable architecture contract.
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
