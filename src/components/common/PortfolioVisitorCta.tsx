@@ -140,7 +140,7 @@ export default function PortfolioVisitorCta() {
           id="portfolio-visitor-prompt"
           className="relative max-w-52 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-xs leading-relaxed text-[var(--color-foreground)] shadow-lg shadow-black/15 sm:max-w-72 sm:px-4 sm:py-3 sm:text-sm"
         >
-          Glad you made it. Tap <strong>I was here</strong> to say hello.
+          Thanks for stopping by. Let me know you visited by tapping <strong>I was here</strong>.
           <span
             aria-hidden="true"
             className="absolute -bottom-1.5 right-8 h-3 w-3 rotate-45 border-b border-r border-[var(--color-border)] bg-[var(--color-surface)]"
