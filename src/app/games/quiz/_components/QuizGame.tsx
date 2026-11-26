@@ -93,7 +93,7 @@ export function QuizGame({
   }, [answerState, question.options.length, onAnswer, onSkipFeedback]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 pt-24 sm:pt-28 md:pt-32 pb-12">
+    <div className="mx-auto w-full max-w-2xl px-4 pb-12 pt-28 sm:pt-32 md:pt-36">
       {/* Header bar styled matching Chain Reaction control panels */}
       <motion.div
         initial={{ opacity: 0, y: -12 }}

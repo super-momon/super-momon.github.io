@@ -102,7 +102,7 @@ export function ResultScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-xl mx-auto px-4 pt-24 sm:pt-28 md:pt-32 pb-12"
+      className="mx-auto w-full max-w-xl px-4 pb-12 pt-28 sm:pt-32 md:pt-36"
     >
       <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-[var(--color-border)]/80 bg-[var(--color-surface)]/80 backdrop-blur-xl text-center">
         {/* Glow accent */}

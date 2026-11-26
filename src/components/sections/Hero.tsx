@@ -53,7 +53,7 @@ export default function Hero() {
       <section
         ref={heroRef}
         id="hero"
-        className="design-ambient relative grid min-h-[100dvh] place-items-center overflow-hidden px-6 pt-16 pb-32 text-left sm:px-8 lg:px-12"
+        className="design-ambient relative grid min-h-[100dvh] place-items-center overflow-hidden px-6 pb-32 pt-32 text-left sm:px-8 sm:pt-36 lg:px-12"
       >
         {/* Soft bottom gradient arc */}
         <div
