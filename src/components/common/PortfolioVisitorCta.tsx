@@ -45,6 +45,7 @@ export default function PortfolioVisitorCta() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasDismissedPrompt, setHasDismissedPrompt] = useState(false);
   const requestInFlightRef = useRef(false);
 
   useEffect(() => {
@@ -78,6 +79,13 @@ export default function PortfolioVisitorCta() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    if (isLoading || isSaving || hasRecorded || errorMessage) return;
+
+    const timeoutId = window.setTimeout(() => setHasDismissedPrompt(true), 8000);
+    return () => window.clearTimeout(timeoutId);
+  }, [errorMessage, hasRecorded, isLoading, isSaving]);
+
   const handleVisit = async () => {
     if (
       isLoading
@@ -88,6 +96,7 @@ export default function PortfolioVisitorCta() {
     }
 
     requestInFlightRef.current = true;
+    setHasDismissedPrompt(true);
     setIsSaving(true);
     setErrorMessage(null);
 
@@ -118,9 +127,27 @@ export default function PortfolioVisitorCta() {
       : hasRecorded
         ? `Your visit is recorded. ${countLabel}.`
         : `${countLabel}. Select I was here to record your visit.`;
+  const showVisitorPrompt = !isLoading
+    && !isSaving
+    && !hasRecorded
+    && !errorMessage
+    && !hasDismissedPrompt;
 
   return (
     <div className="pointer-events-none fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-2 sm:right-6 sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))]">
+      {showVisitorPrompt && (
+        <div
+          id="portfolio-visitor-prompt"
+          className="relative max-w-52 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-xs leading-relaxed text-[var(--color-foreground)] shadow-lg shadow-black/15 sm:max-w-72 sm:px-4 sm:py-3 sm:text-sm"
+        >
+          Glad you made it. Tap <strong>I was here</strong> to say hello.
+          <span
+            aria-hidden="true"
+            className="absolute -bottom-1.5 right-8 h-3 w-3 rotate-45 border-b border-r border-[var(--color-border)] bg-[var(--color-surface)]"
+          />
+        </div>
+      )}
+
       {errorMessage && (
         <div
           id="portfolio-visitor-error"
@@ -136,11 +163,17 @@ export default function PortfolioVisitorCta() {
         onClick={handleVisit}
         disabled={isLoading || isSaving || hasRecorded}
         aria-busy={isLoading || isSaving}
-        aria-describedby={errorMessage ? "portfolio-visitor-error" : undefined}
+        aria-describedby={
+          errorMessage
+            ? "portfolio-visitor-error"
+            : showVisitorPrompt
+              ? "portfolio-visitor-prompt"
+              : undefined
+        }
         aria-label={hasRecorded
           ? `Your visit is recorded. ${countLabel}.`
           : `Mark my visit. ${countLabel}.`}
-        className={`design-elevated-control pointer-events-auto inline-flex min-h-12 max-w-full items-center gap-2.5 rounded-full border px-4 py-2.5 text-sm font-semibold shadow-lg shadow-black/15 transition-[background-color,border-color,color,box-shadow,transform] duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+        className={`pointer-events-auto inline-flex min-h-12 max-w-full items-center gap-2.5 rounded-full border px-4 py-2.5 text-sm font-semibold shadow-lg shadow-black/15 transition-[background-color,border-color,color,box-shadow,transform] duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
           hasRecorded
             ? "cursor-default border-[var(--color-border)] bg-[var(--color-surface)]/95 text-[var(--color-foreground)] backdrop-blur-xl"
             : "liquid-glass-action cursor-pointer border-transparent bg-accent text-[var(--color-accent-contrast)] hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-xl disabled:translate-y-0 disabled:cursor-wait disabled:opacity-70"

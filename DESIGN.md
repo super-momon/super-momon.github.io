@@ -129,7 +129,7 @@ Card radii default to `rounded-xl` (12px) to `rounded-2xl` (16px), with pill bad
 ### Floating Actions
 - **Placement:** Lower-right on the portfolio, offset with viewport and mobile safe-area spacing.
 - **Hierarchy:** Use a single compact pill at a lower stacking level than navigation and dialogs; do not cover primary content or add a second competing accent.
-- **Feedback:** Keep the control footprint stable while showing loading, saving, completed, and error states. Dynamic counts use tabular numerals, state changes use text and icons, and errors remain visible until the visitor retries.
+- **Feedback:** Keep the control footprint stable while showing loading, saving, completed, and error states. On an unrecorded visit, attach a concise invitation to the control and remove it when the visit is recorded. Dynamic counts use tabular numerals, state changes use text and icons, and errors remain visible until the visitor retries.
 - **Accessibility:** Preserve a 44px minimum target, visible focus ring, explicit accessible label, live status announcements, and reduced-motion/reduced-transparency behavior.
 
 ### Cards
@@ -155,7 +155,7 @@ The Liquid Glass design uses a mobile-app inspired frosted surface language:
 - Light mode uses cool pearl backgrounds, soft sky-blue glass, pale cyan ambient light, and clear navy text.
 - Dark mode uses a deeper ink-navy base (`#080f1c`), softened blue-navy surfaces, and ice-blue highlights for a floating optical-lens effect.
 - Functional glass is used for navigation, menus, dialogs, elevated controls, section cards, and primary accent actions. Underlying content remains readable because each layer uses a translucent but bounded surface.
-- Section cards use the `design-surface` contract; selected tab navigation uses a translucent control state; primary accent actions use the `liquid-glass-action` contract with a near-solid fill and only the optical highlight kept translucent.
+- Section cards use the `design-surface` contract; selected tab navigation uses a distinct high-opacity control state, especially in dark mode, so the selected surface stays separated from the parent card; primary accent actions use the `liquid-glass-action` contract with a near-solid fill and only the optical highlight kept translucent.
 - Surface treatments use 12-20px backdrop blur on supported screens, a fine 1px border, one soft top-edge highlight, and restrained offset depth.
 - Cards retain the documented 12-16px radius scale. The navbar uses a pill or 20px mobile radius, and the dialog family keeps the 24px radius scale.
 - Emerald remains the action accent. Blue and cyan are atmospheric and structural, so they do not introduce competing action colors.

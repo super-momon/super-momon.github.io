@@ -16,6 +16,8 @@ html[data-design="liquid-glass"]:not(.dark) {
   --design-glass-ambient-b: rgba(105, 181, 211, 0.16);
   --design-glass-ambient-c: rgba(190, 224, 239, 0.20);
   --design-glass-border-hover: rgba(105, 158, 202, 0.42);
+  --design-glass-tab-active: rgba(231, 243, 251, 0.96);
+  --design-glass-tab-hover: rgba(225, 239, 249, 0.84);
   --design-glass-action: rgba(6, 122, 58, 0.98);
   --design-glass-action-hover: rgba(5, 96, 46, 1);
   --design-glass-action-highlight: rgba(255, 255, 255, 0.58);
@@ -41,6 +43,8 @@ html[data-design="liquid-glass"].dark {
   --design-glass-ambient-c: rgba(129, 169, 206, 0.10);
   --design-glass-border-hover: rgba(180, 210, 238, 0.44);
   --design-glass-border-soft: rgba(180, 210, 238, 0.12);
+  --design-glass-tab-active: rgba(42, 63, 92, 0.96);
+  --design-glass-tab-hover: rgba(34, 52, 79, 0.84);
   --design-glass-action: rgba(8, 202, 95, 0.96);
   --design-glass-action-hover: rgba(35, 216, 115, 1);
   --design-glass-action-highlight: rgba(220, 255, 235, 0.62);
@@ -183,7 +187,7 @@ html[data-design="liquid-glass"] .liquid-glass-action::before {
 
 html[data-design="liquid-glass"] [role="tab"][aria-selected="true"] {
   border-color: var(--design-glass-border-hover);
-  background: var(--design-glass-control);
+  background: var(--design-glass-tab-active);
   box-shadow:
     inset 0 1px 0 var(--design-glass-highlight),
     inset 0 -1px 0 var(--design-glass-refraction),
@@ -256,7 +260,7 @@ html[data-design="liquid-glass"].dark .design-dialog::before {
   }
 
   html[data-design="liquid-glass"] [role="tab"][aria-selected="false"]:hover {
-    background: var(--design-glass-control);
+    background: var(--design-glass-tab-hover);
     border-color: var(--design-glass-border-soft);
   }
 }
@@ -287,6 +291,8 @@ html[data-design="liquid-glass"].dark .design-dialog::before {
     --design-glass-control: #edf5fb;
     --design-glass-navbar: #f2f8fd;
     --design-glass-dialog: #f7fafc;
+    --design-glass-tab-active: #edf5fb;
+    --design-glass-tab-hover: #e1edf5;
     --design-glass-action: #067a3a;
     --design-glass-action-hover: #05602e;
   }
@@ -299,6 +305,8 @@ html[data-design="liquid-glass"].dark .design-dialog::before {
     --design-glass-control: #22334c;
     --design-glass-navbar: #0d1727;
     --design-glass-dialog: #152234;
+    --design-glass-tab-active: #2a3f5c;
+    --design-glass-tab-hover: #22344f;
     --design-glass-action: #08ca5f;
     --design-glass-action-hover: #23d873;
   }

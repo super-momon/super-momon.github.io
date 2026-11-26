@@ -173,9 +173,9 @@ export default function NotificationDropdown() {
           {/* Caret */}
           <div className="hidden sm:block absolute -top-[6px] right-[14px] w-3 h-3 rotate-45 bg-[var(--color-surface)] border-l border-t border-[var(--color-border)] z-10" />
 
-          <div className="design-elevated-control relative bg-[var(--color-surface)]/98 backdrop-blur-2xl border border-[var(--color-border)] rounded-2xl shadow-2xl shadow-black/35 overflow-hidden">
+          <div className="relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl shadow-black/35">
             {/* Header */}
-            <div className="relative px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]/30">
+            <div className="relative border-b border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-4">
               <h3 className="text-sm font-bold text-[var(--color-foreground)] tracking-tight">
                 Recent Updates
               </h3>
@@ -198,7 +198,7 @@ export default function NotificationDropdown() {
               ) : (
                 notifications.map((notification, index) => {
                   const isClickable = !!notification.link;
-                  const className = `relative flex items-start gap-3.5 px-5 py-4 hover:bg-[var(--color-surface)]/50 transition-all duration-300 border-b border-[var(--color-border)]/30 last:border-b-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
+                  const className = `relative flex items-start gap-3.5 border-b border-[var(--color-border)]/40 px-5 py-4 transition-all duration-300 last:border-b-0 hover:bg-[var(--color-background)]/55 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
                     isClickable ? "cursor-pointer" : "cursor-default"
                   }`;
                   const style = shouldReduceMotion

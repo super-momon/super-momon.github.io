@@ -11,6 +11,7 @@ import {
   faBiohazard,
 } from "@fortawesome/free-solid-svg-icons";
 import NotificationDropdown from "./common/NotificationDropdown";
+import MarqueeBanner from "./common/MarqueeBanner";
 import ThemeToggle from "./common/ThemeToggle";
 import DesignToggle from "./common/DesignToggle";
 import AppearanceDropdown from "./common/AppearanceDropdown";
@@ -144,15 +145,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="relative">
-        <div className="border-b border-[var(--color-border)]/60 bg-[var(--color-background)]/95">
-          <div className="mx-auto flex h-7 max-w-6xl items-center justify-between px-3 text-xs font-semibold text-[var(--color-muted)] md:px-6">
-            <span className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
-              Open for opportunities
-            </span>
-            <span className="hidden sm:inline">Cebu, Philippines · Remote</span>
-          </div>
-        </div>
+        <MarqueeBanner />
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-px overflow-hidden bg-[var(--color-accent-contrast)]/20"
