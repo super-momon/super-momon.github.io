@@ -74,6 +74,10 @@ A high-performance, dark-mode-first developer workspace combined with an immersi
 - Tactical borders (`#273449`) and subtle glow effects
 - Responsive, gaming-inspired layouts with interactive feedback
 
+## Motion
+
+Motion must explain feedback, state, continuity, or spatial relationships without delaying interaction. Follow [UI_ANIMATION_GUIDELINES.md](UI_ANIMATION_GUIDELINES.md) for timing, easing, press feedback, popover origins, touch behavior, staggering, performance, and reduced-motion implementation.
+
 ## Colors
 
 The palette pairs deep dark backgrounds with crisp neon emerald highlights for a tech-focused, tactile feel.
@@ -129,7 +133,7 @@ Card radii default to `rounded-xl` (12px) to `rounded-2xl` (16px), with pill bad
 ### Floating Actions
 - **Placement:** Lower-right on the portfolio, offset with viewport and mobile safe-area spacing.
 - **Hierarchy:** Use a single compact pill at a lower stacking level than navigation and dialogs; do not cover primary content or add a second competing accent.
-- **Feedback:** Keep the control footprint stable while showing loading, saving, completed, and error states. On an unrecorded visit, attach a concise invitation to the control and remove it when the visit is recorded. Dynamic counts use tabular numerals, state changes use text and icons, and errors remain visible until the visitor retries.
+- **Feedback:** Keep the control footprint stable while showing loading, saving, completed, and error states. On an unrecorded visit, attach a concise invitation to the control and keep it visible until the visitor activates the button. Dynamic counts use tabular numerals, state changes use text and icons, and errors remain visible until the visitor retries.
 - **Accessibility:** Preserve a 44px minimum target, visible focus ring, explicit accessible label, live status announcements, and reduced-motion/reduced-transparency behavior.
 
 ### Cards

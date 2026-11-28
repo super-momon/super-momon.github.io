@@ -4,7 +4,7 @@
 
 Use this checklist when creating or reviewing user interfaces in this project. It complements `UI_DESIGN_LAWS.md` with concrete implementation criteria for clarity, hierarchy, polish, and interaction feedback.
 
-Follow `DESIGN.md` for the project-specific palette, typography, shapes, surfaces, motion, and responsive requirements. Follow `PRODUCT.md` for audience and product goals.
+Follow `DESIGN.md` for the project-specific palette, typography, shapes, surfaces, and responsive requirements. Follow [UI_ANIMATION_GUIDELINES.md](UI_ANIMATION_GUIDELINES.md) for motion behavior, timing, and implementation review. Follow `PRODUCT.md` for audience and product goals.
 
 ## Delete Filter Badges
 
@@ -184,6 +184,7 @@ Motion should confirm an action, explain a state change, or preserve spatial con
 
 - Animate success, selection, disclosure, navigation, target, and error feedback when the motion adds meaning.
 - Keep transitions short and restrained.
+- Use the timing, easing, origin, and interruption rules in `UI_ANIMATION_GUIDELINES.md`.
 - Respect `prefers-reduced-motion` and disable nonessential motion.
 - Avoid decorative looping effects that compete with quiz timers or game feedback.
 - Do not use animation to delay an action or force a user to wait.
@@ -211,4 +212,4 @@ Before completing a UI change, confirm:
 - [ ] Alignment looks balanced and preserves the layout grid.
 - [ ] Numeric values use tabular digits where they improve stability.
 - [ ] Loading, success, error, and completion states are clear.
-- [ ] Motion communicates useful feedback and supports reduced-motion preferences.
+- [ ] Motion communicates useful feedback, follows `UI_ANIMATION_GUIDELINES.md`, and supports reduced-motion preferences.

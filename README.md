@@ -105,7 +105,7 @@ To add a design:
 3. Import the CSS file from `src/app/globals.css`.
 4. Use semantic classes and variables in components; add route opt-outs to both `isGameRoute()` and the inline initializer in `src/app/layout.tsx` if needed.
 
-The global reduced-motion rules stop nonessential animation and smooth scrolling. Liquid Glass also disables its specular motion and uses opaque surface fallbacks when reduced transparency is requested or `backdrop-filter` is unavailable. See `DESIGN.md` for the full reusable architecture contract.
+The global reduced-motion rules stop nonessential animation and smooth scrolling. Liquid Glass also disables its specular motion and uses opaque surface fallbacks when reduced transparency is requested or `backdrop-filter` is unavailable. See `DESIGN.md` for the full reusable architecture contract and `UI_ANIMATION_GUIDELINES.md` for motion behavior, timing, interaction, and accessibility rules.
 
 ---
 

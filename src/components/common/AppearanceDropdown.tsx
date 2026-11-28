@@ -12,6 +12,7 @@ export default function AppearanceDropdown() {
   const shouldReduceMotion = useReducedMotion() ?? false;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const gameRoute = isGameRoute(pathname);
 
   useEffect(() => {
@@ -27,7 +28,10 @@ export default function AppearanceDropdown() {
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsOpen(false);
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        window.requestAnimationFrame(() => triggerRef.current?.focus());
+      }
     };
 
     const handleScroll = () => setIsOpen(false);
@@ -46,12 +50,18 @@ export default function AppearanceDropdown() {
   return (
     <div className="relative hidden md:block" ref={dropdownRef}>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen((open) => !open)}
         aria-label="Appearance settings"
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className="design-elevated-control relative w-11 h-11 rounded-xl flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-foreground)] bg-[var(--color-surface)]/50 hover:bg-[var(--color-surface)] border border-[var(--color-border)]/50 backdrop-blur-sm transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+        aria-controls="appearance-menu"
+        className={`design-elevated-control relative w-11 h-11 rounded-xl flex items-center justify-center bg-[var(--color-surface)]/50 hover:bg-[var(--color-surface)] border backdrop-blur-sm transition-all duration-300 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+          isOpen
+            ? "border-[var(--color-accent)]/50 text-[var(--color-foreground)]"
+            : "border-[var(--color-border)]/50 text-[var(--color-muted)] hover:border-[var(--color-accent)]/40 hover:text-[var(--color-foreground)]"
+        }`}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -76,6 +86,7 @@ export default function AppearanceDropdown() {
 
       {isOpen && (
         <div
+          id="appearance-menu"
           className="absolute right-0 top-[calc(100%+12px)] z-50 w-72 origin-top-right"
           style={
             shouldReduceMotion
@@ -84,8 +95,8 @@ export default function AppearanceDropdown() {
           }
           role="menu"
         >
-          <div className="absolute -top-[6px] right-[14px] w-3 h-3 rotate-45 bg-[var(--color-surface)] border-l border-t border-[var(--color-border)] z-10" />
-          <div className="relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-2xl shadow-black/35">
+          <div className="design-dialog absolute -top-[6px] right-[14px] w-3 h-3 rotate-45 border-l border-t border-[var(--color-border)] z-10" />
+          <div className="design-dialog relative overflow-hidden rounded-2xl border border-[var(--color-border)] p-3 shadow-2xl shadow-black/35">
             <div className="px-2 pb-3 text-sm font-bold text-[var(--color-foreground)]">
               Appearance
             </div>
@@ -94,7 +105,7 @@ export default function AppearanceDropdown() {
                 className="grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-t border-[var(--color-border)]/50 px-2 py-2 text-sm font-medium text-[var(--color-foreground)]"
                 role="menuitem"
               >
-                <span className="whitespace-nowrap">Design</span>
+                <span className="truncate">Design</span>
                 <DesignToggle />
               </div>
             )}
@@ -102,7 +113,7 @@ export default function AppearanceDropdown() {
               className="grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-t border-[var(--color-border)]/50 px-2 py-2 text-sm font-medium text-[var(--color-foreground)]"
               role="menuitem"
             >
-              <span className="whitespace-nowrap">Theme</span>
+              <span className="truncate">Theme</span>
               <ThemeToggle />
             </div>
           </div>

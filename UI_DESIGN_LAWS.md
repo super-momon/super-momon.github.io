@@ -4,7 +4,7 @@
 
 Use these principles as guidance when designing, reviewing, or implementing interfaces in this project. They describe user perception and behavior; they are not rigid rules or substitutes for usability testing. Prefer the simplest implementation that preserves clarity, accessibility, and the project's `Cyber-Engineered Arcade` identity.
 
-Refer to `DESIGN.md` for project-specific visual tokens and component contracts, and to `PRODUCT.md` for audience and product principles.
+Refer to `DESIGN.md` for project-specific visual tokens and component contracts, [UI_ANIMATION_GUIDELINES.md](UI_ANIMATION_GUIDELINES.md) for motion behavior, and to `PRODUCT.md` for audience and product principles.
 
 ## How to Use This Guide
 
