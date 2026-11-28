@@ -9,6 +9,7 @@ Read the documents that govern the area you are changing before implementation:
 - `DESIGN.md` - canonical visual, theme, spacing, component, accessibility, and responsive design contract.
 - `UI_DESIGN_LAWS.md` - shared principles for hierarchy, perception, cognitive load, and interaction decisions.
 - `UI_DESIGN_CRITERIA.md` - concrete interface quality criteria for clarity, hierarchy, typography, states, and motion.
+- `UI_ANIMATION_GUIDELINES.md` - canonical timing, easing, interaction, continuity, performance, and reduced-motion guidance.
 - `src/app/games/colony-defense/COLONY_DEFENSE_GDD.md` - requirements for Colony Defense behavior, balancing, and UI.
 - Relevant feature code and existing tests or components - use nearby patterns before adding abstractions.
 

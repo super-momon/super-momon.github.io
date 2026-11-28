@@ -48,17 +48,17 @@ export default function MobileNavSection({
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={disclosureId}
-        className={`design-elevated-control relative w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 group overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+        className={`design-elevated-control relative flex w-full items-center justify-between overflow-hidden rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
           hasActiveLink ? "text-[var(--color-foreground)] bg-[var(--color-surface)]/60" : "text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
         }`}
       >
         <span className="absolute inset-0 bg-[var(--color-surface)]/50 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 rounded-xl" />
         <span className="absolute inset-0 rounded-xl border border-[var(--color-border)]/0 group-hover:border-[var(--color-border)]/50 transition-all duration-300" />
-        <span className="relative z-10 flex items-center gap-2">
+        <span className="relative z-10 flex min-w-0 items-center gap-2">
           {hasActiveLink && (
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_8px_var(--color-accent)] shrink-0" aria-hidden="true" />
           )}
-          {label}
+          <span className="truncate">{label}</span>
         </span>
         <FontAwesomeIcon
           icon={faChevronDown}
@@ -69,7 +69,8 @@ export default function MobileNavSection({
 
       <div
         id={disclosureId}
-        className={`overflow-hidden transition-all duration-300 ease-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
+        className={`overflow-x-hidden overflow-y-auto overscroll-contain transition-[height,opacity] duration-300 ease-out ${isOpen ? "h-40 opacity-100" : "h-0 opacity-0"}`}
+        aria-hidden={!isOpen}
       >
         <ul className="pl-4 flex flex-col gap-0.5 pt-1 pb-1">
           {links.map((link, i) => {
@@ -81,6 +82,7 @@ export default function MobileNavSection({
                 <a
                   href={link.href}
                   onClick={() => onLinkClick(link)}
+                  tabIndex={isOpen ? undefined : -1}
                   className={`relative min-h-11 flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group/sub overflow-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                     isCurrentSection
                       ? "text-[var(--color-foreground)] bg-[var(--color-accent)]/10 font-semibold"
@@ -92,14 +94,14 @@ export default function MobileNavSection({
                   <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 bg-[var(--color-accent)] transition-all duration-200 rounded-full ${
                     isCurrentSection ? "h-5" : "h-0 group-hover/sub:h-5"
                   }`} />
-                  <span className="relative z-10 flex items-center gap-2">
+                  <span className="relative z-10 flex min-w-0 items-center gap-2">
                     {icons[link.href] && (
                       <FontAwesomeIcon
                         icon={icons[link.href]}
                         className={`text-xs ${isCurrentSection ? "text-[var(--color-accent)] opacity-100" : "text-[var(--color-accent)] opacity-60"}`}
                       />
                     )}
-                    {link.label}
+                    <span className="truncate">{link.label}</span>
                   </span>
                   {isCurrentSection ? (
                     <span className="relative z-10 rounded bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">

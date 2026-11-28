@@ -316,7 +316,7 @@ The stage should be announced by the HUD and arena, not only as a small status v
 
 ## Audio and Motion
 
-Audio and motion should communicate changes rather than decorate them.
+Audio and motion should communicate changes rather than decorate them. Apply the project's [UI animation guidelines](../../../../UI_ANIMATION_GUIDELINES.md) alongside the game-specific requirements below.
 
 - Turret fire should have a restrained impact sound.
 - Wall and habitat damage should escalate audibly.

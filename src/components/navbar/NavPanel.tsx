@@ -151,9 +151,9 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
       style={{ willChange: "transform, opacity" }}
     >
       {/* Caret */}
-      <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-[var(--color-surface)] border-l border-t border-[var(--color-border)] z-10" />
+      <div className="design-dialog absolute -top-[6px] left-1/2 z-10 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-[var(--color-border)]" />
 
-      <div className="design-elevated-control relative bg-[var(--color-surface)]/98 backdrop-blur-2xl border border-[var(--color-border)] rounded-2xl shadow-2xl shadow-black/35 p-3 overflow-hidden flex gap-3">
+      <div className="design-dialog relative flex h-[272px] gap-3 overflow-hidden rounded-2xl border border-[var(--color-border)] p-3 shadow-2xl shadow-black/35">
         {/* Left Column: Link List */}
         <div className="relative z-10 flex flex-col gap-1 flex-1 min-w-0">
           {links.map((link) => {
@@ -172,7 +172,7 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
                   onClose();
                 }}
                 onMouseEnter={() => setHoveredHref(link.href)}
-                className={`relative min-h-11 flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group/link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${
+                className={`relative flex h-16 items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 transition-all duration-300 group/link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${
                   isHovered
                     ? "bg-[var(--color-background)]/80 shadow-sm border border-[var(--color-border)]/50"
                     : isCurrentSection
@@ -203,18 +203,18 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
                 {/* Text Content */}
                 <div className="flex flex-col text-left min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-1">
-                    <span className={`text-xs font-semibold leading-tight transition-colors duration-300 ${
+                    <span className={`min-w-0 truncate text-xs font-semibold leading-tight transition-colors duration-300 ${
                       isHovered || isCurrentSection ? "text-[var(--color-foreground)]" : "text-[var(--color-foreground)]/75 group-hover/link:text-[var(--color-foreground)]"
                     }`}>
                       {meta?.title || link.label}
                     </span>
                     {isCurrentSection && (
-                      <span className="rounded border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">
+                      <span className="shrink-0 rounded border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/20 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">
                         Current
                       </span>
                     )}
                   </div>
-                  <span className="mt-0.5 max-w-[200px] truncate text-xs font-normal leading-normal text-[var(--color-foreground)]/70 transition-colors duration-300 group-hover/link:text-[var(--color-foreground)]/80">
+                  <span className="mt-0.5 truncate text-xs font-normal leading-normal text-[var(--color-foreground)]/70 transition-colors duration-300 group-hover/link:text-[var(--color-foreground)]/80">
                     {meta?.subtitle || "Explore this page section"}
                   </span>
                 </div>
@@ -227,8 +227,8 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
         <div className="w-[1px] bg-[var(--color-border)] self-stretch my-1 shrink-0" aria-hidden="true" />
 
         {/* Right Column: Detail View */}
-        <div className="relative z-10 w-[220px] bg-[var(--color-background)]/50 border border-[var(--color-border)]/70 rounded-xl p-4 flex flex-col justify-between shrink-0 select-none">
-          <div>
+        <div className="relative z-10 flex w-[220px] min-h-0 shrink-0 select-none flex-col justify-between overflow-hidden rounded-xl border border-[var(--color-border)]/70 bg-[var(--color-background)]/50 p-4">
+          <div className="min-h-0 overflow-hidden">
             {/* Tag */}
             {activeMeta.tag && (
               <span className="inline-flex items-center rounded bg-[var(--color-accent)]/10 px-1.5 py-0.5 text-xs font-bold text-[var(--color-accent)]">
@@ -237,12 +237,12 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
             )}
 
             {/* Title */}
-            <h4 className="text-xs font-bold text-[var(--color-foreground)] mt-2.5 tracking-tight line-clamp-1">
+            <h4 className="mt-2.5 line-clamp-1 text-xs font-bold tracking-tight text-[var(--color-foreground)]">
               {activeMeta.detailTitle}
             </h4>
 
             {/* Description */}
-            <p className="mt-2 text-xs font-normal leading-relaxed text-[var(--color-foreground)]/80">
+            <p className="mt-2 line-clamp-5 text-xs font-normal leading-relaxed text-[var(--color-foreground)]/80">
               {activeMeta.detailDescription}
             </p>
           </div>
@@ -252,12 +252,12 @@ export default function NavPanel({ links, icons, isOpen, activeSection, pathname
             <a
               href={activeHref}
               onClick={onClose}
-              className="mt-4 flex min-h-11 items-center gap-1.5 text-xs font-semibold text-[var(--color-accent)] group/cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
+              className="mt-3 flex min-h-11 shrink-0 items-center gap-1.5 text-xs font-semibold text-[var(--color-accent)] group/cta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
             >
-            <span>{activeMeta.detailCta}</span>
+            <span className="min-w-0 truncate">{activeMeta.detailCta}</span>
             <FontAwesomeIcon
               icon={faArrowRight}
-              className="text-xs transition-transform duration-300 group-hover/cta:translate-x-1"
+              className="shrink-0 text-xs transition-transform duration-300 group-hover/cta:translate-x-1"
               aria-hidden="true"
             />
             </a>

@@ -79,13 +79,6 @@ export default function PortfolioVisitorCta() {
     return () => controller.abort();
   }, []);
 
-  useEffect(() => {
-    if (isLoading || isSaving || hasRecorded || errorMessage) return;
-
-    const timeoutId = window.setTimeout(() => setHasDismissedPrompt(true), 8000);
-    return () => window.clearTimeout(timeoutId);
-  }, [errorMessage, hasRecorded, isLoading, isSaving]);
-
   const handleVisit = async () => {
     if (
       isLoading
@@ -130,8 +123,11 @@ export default function PortfolioVisitorCta() {
   const showVisitorPrompt = !isLoading
     && !isSaving
     && !hasRecorded
-    && !errorMessage
     && !hasDismissedPrompt;
+  const describedBy = [
+    errorMessage ? "portfolio-visitor-error" : null,
+    showVisitorPrompt ? "portfolio-visitor-prompt" : null,
+  ].filter(Boolean).join(" ") || undefined;
 
   return (
     <div className="pointer-events-none fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 flex max-w-[calc(100vw-2rem)] flex-col items-end gap-2 sm:right-6 sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))]">
@@ -163,13 +159,7 @@ export default function PortfolioVisitorCta() {
         onClick={handleVisit}
         disabled={isLoading || isSaving || hasRecorded}
         aria-busy={isLoading || isSaving}
-        aria-describedby={
-          errorMessage
-            ? "portfolio-visitor-error"
-            : showVisitorPrompt
-              ? "portfolio-visitor-prompt"
-              : undefined
-        }
+        aria-describedby={describedBy}
         aria-label={hasRecorded
           ? `Your visit is recorded. ${countLabel}.`
           : `Mark my visit. ${countLabel}.`}
